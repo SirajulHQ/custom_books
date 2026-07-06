@@ -1,6 +1,9 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
-import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/drawer/models/drawer_item.dart';
+import 'package:custom_books/features/drawer/widgets/drawer_menu_item.dart';
+import 'package:custom_books/features/drawer/widgets/expandable_menu_item.dart';
+import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/features/drawer/widgets/footer_button.dart';
 import 'package:flutter/material.dart';
 
 class DrawerView extends StatefulWidget {
@@ -125,8 +128,8 @@ class _DrawerViewState extends State<DrawerView> {
               padding: EdgeInsets.zero,
               children: [
                 // Home
-                _buildDrawerMenuItem(
-                  DrawerItem(
+                DrawerMenuItem(
+                  item: DrawerItem(
                     icon: Icons.home_rounded,
                     title: 'Home',
                     isSelected: true,
@@ -134,42 +137,53 @@ class _DrawerViewState extends State<DrawerView> {
                 ),
 
                 // Items
-                _buildDrawerMenuItem(
-                  DrawerItem(icon: Icons.shopping_bag_rounded, title: 'Items'),
+                DrawerMenuItem(
+                  item: DrawerItem(
+                    icon: Icons.shopping_bag_rounded,
+                    title: 'Items',
+                  ),
                 ),
 
                 // Inventory (Expandable)
-                _buildExpandableMenuItem(
-                  'Inventory',
-                  Icons.inventory_2_rounded,
-                  ['Inventory Adjustments', 'Item Groups'],
+                ExpandableMenuItem(
+                  title: 'Inventory',
+                  icon: Icons.inventory_2_rounded,
+                  subItems: const ['Inventory Adjustments', 'Item Groups'],
+                  isExpanded: _expandedSections['Inventory'] ?? false,
+                  onTap: () => _toggleSection('Inventory'),
                 ),
 
                 // Banking
-                _buildDrawerMenuItem(
-                  DrawerItem(
+                DrawerMenuItem(
+                  item: DrawerItem(
                     icon: Icons.account_balance_rounded,
                     title: 'Banking',
                   ),
                 ),
 
                 // Sales (Expandable)
-                _buildExpandableMenuItem('Sales', Icons.shopping_cart_rounded, [
-                  'Customers',
-                  'Quotes',
-                  'Sales Orders',
-                  'Delivery Challans',
-                  'Invoices',
-                  'Payments Received',
-                  'Recurring Invoices',
-                  'Credit Notes',
-                ]),
+                ExpandableMenuItem(
+                  title: 'Sales',
+                  icon: Icons.shopping_cart_rounded,
+                  subItems: const [
+                    'Customers',
+                    'Quotes',
+                    'Sales Orders',
+                    'Delivery Challans',
+                    'Invoices',
+                    'Payments Received',
+                    'Recurring Invoices',
+                    'Credit Notes',
+                  ],
+                  isExpanded: _expandedSections['Sales'] ?? false,
+                  onTap: () => _toggleSection('Sales'),
+                ),
 
                 // Purchases (Expandable)
-                _buildExpandableMenuItem(
-                  'Purchases',
-                  Icons.shopping_basket_rounded,
-                  [
+                ExpandableMenuItem(
+                  title: 'Purchases',
+                  icon: Icons.shopping_basket_rounded,
+                  subItems: const [
                     'Vendors',
                     'Expenses',
                     'Purchase Orders',
@@ -177,35 +191,51 @@ class _DrawerViewState extends State<DrawerView> {
                     'Payments Made',
                     'Vendor Credits',
                   ],
+                  isExpanded: _expandedSections['Purchases'] ?? false,
+                  onTap: () => _toggleSection('Purchases'),
                 ),
 
                 // Time Tracking (Expandable)
-                _buildExpandableMenuItem(
-                  'Time Tracking',
-                  Icons.access_time_rounded,
-                  ['Projects', 'Time Entries', 'Timer'],
+                ExpandableMenuItem(
+                  title: 'Time Tracking',
+                  icon: Icons.access_time_rounded,
+                  subItems: const ['Projects', 'Time Entries', 'Timer'],
+                  isExpanded: _expandedSections['Time Tracking'] ?? false,
+                  onTap: () => _toggleSection('Time Tracking'),
                 ),
 
                 // Accountant (Expandable)
-                _buildExpandableMenuItem('Accountant', Icons.person_rounded, [
-                  'Manual Journals',
-                ]),
+                ExpandableMenuItem(
+                  title: 'Accountant',
+                  icon: Icons.person_rounded,
+                  subItems: const ['Manual Journals'],
+                  isExpanded: _expandedSections['Accountant'] ?? false,
+                  onTap: () => _toggleSection('Accountant'),
+                ),
 
                 // Documents (Expandable)
-                _buildExpandableMenuItem('Documents', Icons.folder_rounded, [
-                  'Inbox',
-                  'All Files',
-                  'Folders',
-                ]),
+                ExpandableMenuItem(
+                  title: 'Documents',
+                  icon: Icons.folder_rounded,
+                  subItems: const ['Inbox', 'All Files', 'Folders'],
+                  isExpanded: _expandedSections['Documents'] ?? false,
+                  onTap: () => _toggleSection('Documents'),
+                ),
 
                 // Reports
-                _buildDrawerMenuItem(
-                  DrawerItem(icon: Icons.bar_chart_rounded, title: 'Reports'),
+                DrawerMenuItem(
+                  item: DrawerItem(
+                    icon: Icons.bar_chart_rounded,
+                    title: 'Reports',
+                  ),
                 ),
 
                 // Settings
-                _buildDrawerMenuItem(
-                  DrawerItem(icon: Icons.settings_rounded, title: 'Settings'),
+                DrawerMenuItem(
+                  item: DrawerItem(
+                    icon: Icons.settings_rounded,
+                    title: 'Settings',
+                  ),
                 ),
 
                 SizedBox(height: Dimensions.height20),
@@ -224,18 +254,18 @@ class _DrawerViewState extends State<DrawerView> {
                 Row(
                   children: [
                     Expanded(
-                      child: _buildFooterButton(
-                        Icons.dark_mode_rounded,
-                        'Dark Mode',
-                        false,
+                      child: FooterButton(
+                        icon: Icons.dark_mode_rounded,
+                        label: 'Dark Mode',
+                        isDanger: false,
                       ),
                     ),
                     SizedBox(width: Dimensions.width10),
                     Expanded(
-                      child: _buildFooterButton(
-                        Icons.logout_rounded,
-                        'Logout',
-                        true,
+                      child: FooterButton(
+                        icon: Icons.logout_rounded,
+                        label: 'Logout',
+                        isDanger: true,
                       ),
                     ),
                   ],
@@ -256,162 +286,9 @@ class _DrawerViewState extends State<DrawerView> {
     );
   }
 
-  Widget _buildExpandableMenuItem(
-    String title,
-    IconData icon,
-    List<String> subItems,
-  ) {
-    final isExpanded = _expandedSections[title] ?? false;
-
-    return Column(
-      children: [
-        ListTile(
-          leading: Container(
-            width: Dimensions.height45 * 0.9,
-            height: Dimensions.height45 * 0.9,
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-            ),
-            child: Icon(
-              icon,
-              size: Dimensions.iconSize24 * 0.9,
-              color: Colors.black54,
-            ),
-          ),
-          title: Text(
-            title,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.9,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
-            ),
-          ),
-          trailing: Icon(
-            isExpanded
-                ? Icons.keyboard_arrow_up_rounded
-                : Icons.keyboard_arrow_down_rounded,
-            size: Dimensions.iconSize24,
-            color: Colors.black54,
-          ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: Dimensions.width20,
-            vertical: Dimensions.height10 / 4,
-          ),
-          onTap: () {
-            setState(() {
-              _expandedSections[title] = !isExpanded;
-            });
-          },
-        ),
-        if (isExpanded)
-          ...subItems.map(
-            (subItem) => ListTile(
-              leading: SizedBox(width: Dimensions.height45 * 0.9),
-              title: Padding(
-                padding: EdgeInsets.only(left: Dimensions.width10),
-                child: Text(
-                  subItem,
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.85,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-              dense: true,
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width20,
-                vertical: 0,
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                // Handle sub-item navigation
-              },
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildDrawerMenuItem(DrawerItem item) {
-    return ListTile(
-      leading: Container(
-        width: Dimensions.height45 * 0.9,
-        height: Dimensions.height45 * 0.9,
-        decoration: BoxDecoration(
-          color: item.isSelected
-              ? Appcolors.primary.withValues(alpha: 0.1)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-        ),
-        child: Icon(
-          item.icon,
-          size: Dimensions.iconSize24 * 0.9,
-          color: item.isSelected ? Appcolors.primary : Colors.black54,
-        ),
-      ),
-      title: Text(
-        item.title,
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.9,
-          fontWeight: item.isSelected ? FontWeight.w700 : FontWeight.w500,
-          color: item.isSelected ? Appcolors.primary : Colors.black87,
-        ),
-      ),
-      selected: item.isSelected,
-      selectedTileColor: Appcolors.primary.withValues(alpha: 0.05),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-      ),
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width20,
-        vertical: Dimensions.height10 / 4,
-      ),
-      onTap: () {
-        Navigator.pop(context);
-        // Handle navigation
-      },
-    );
-  }
-
-  Widget _buildFooterButton(IconData icon, String label, bool isDanger) {
-    return GestureDetector(
-      onTap: () {
-        // Handle action
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-        decoration: BoxDecoration(
-          color: isDanger
-              ? Appcolors.warn.withValues(alpha: 0.1)
-              : Colors.black.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(
-            color: isDanger
-                ? Appcolors.warn.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.1),
-          ),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              size: Dimensions.iconSize24 * 0.85,
-              color: isDanger ? Appcolors.warn : Colors.black54,
-            ),
-            SizedBox(height: Dimensions.height10 / 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.7,
-                fontWeight: FontWeight.w600,
-                color: isDanger ? Appcolors.warn : Colors.black54,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  void _toggleSection(String section) {
+    setState(() {
+      _expandedSections[section] = !(_expandedSections[section] ?? false);
+    });
   }
 }

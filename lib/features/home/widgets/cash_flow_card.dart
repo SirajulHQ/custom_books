@@ -1,6 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
-import 'package:custom_books/dummy_data/cash_flow_point.dart';
+import 'package:custom_books/dummy_data/dummy_data_list.dart';
 import 'package:flutter/material.dart';
 
 class CashFlowCard extends StatelessWidget {

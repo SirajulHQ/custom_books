@@ -1,4 +1,4 @@
-import 'package:custom_books/features/home/view/home.dart';
+import 'package:custom_books/features/home/view/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       // theme: ThemeData(fontFamily: 'Poppins'),
-      home: const OwnStoreDashboardPage(),
+      home: const HomePage(),
     );
   }
 }

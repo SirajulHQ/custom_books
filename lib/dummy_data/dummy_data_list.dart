@@ -1,34 +1,7 @@
 import 'package:flutter/material.dart';
-
-class CashFlowPoint {
-  final String month;
-  final double opening;
-  final double income;
-  final double outgoing;
-  final double ending;
-  CashFlowPoint(
-    this.month,
-    this.opening,
-    this.income,
-    this.outgoing,
-    this.ending,
-  );
-}
-
-class IncomeExpensePoint {
-  final String month;
-  final double income;
-  final double expense;
-  IncomeExpensePoint(this.month, this.income, this.expense);
-}
-
-class ExpenseItem {
-  final String label;
-  final double amount;
-  final double percent;
-  final Color color;
-  ExpenseItem(this.label, this.amount, this.percent, this.color);
-}
+import 'package:custom_books/features/home/models/cash_flow_point.dart';
+import 'package:custom_books/features/home/models/income_expense_point.dart';
+import 'package:custom_books/features/home/models/expense_item.dart';
 
 final List<CashFlowPoint> cashFlowData = [
   CashFlowPoint('Jan', 0, 1250, 450, 800),
