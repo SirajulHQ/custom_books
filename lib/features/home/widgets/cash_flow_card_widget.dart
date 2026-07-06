@@ -3,8 +3,8 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/dummy_data/dummy_data_list.dart';
 import 'package:flutter/material.dart';
 
-class CashFlowCard extends StatelessWidget {
-  const CashFlowCard({super.key});
+class CashFlowCardWidget extends StatelessWidget {
+  const CashFlowCardWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

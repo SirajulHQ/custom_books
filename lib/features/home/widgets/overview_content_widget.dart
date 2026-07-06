@@ -1,265 +1,18 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/dummy_data/dummy_data_list.dart';
-import 'package:custom_books/features/home/widgets/cash_flow_card.dart';
-import 'package:custom_books/features/home/models/income_expense_point.dart';
+import 'package:custom_books/features/home/models/income_expense_point_model.dart';
 import 'package:flutter/material.dart';
 
-class OverviewContent extends StatefulWidget {
-  const OverviewContent({super.key});
+// -------- Card Title Widget --------
+class CardTitle extends StatelessWidget {
+  final String title;
+  final IconData icon;
 
-  @override
-  State<OverviewContent> createState() => _OverviewContentState();
-}
-
-class _OverviewContentState extends State<OverviewContent> {
-  bool _isAccrual = true;
+  const CardTitle({super.key, required this.title, required this.icon});
 
   @override
   Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-      sliver: SliverList(
-        delegate: SliverChildListDelegate([
-          SizedBox(height: Dimensions.height15),
-          _buildBalancesGrid(),
-          SizedBox(height: Dimensions.height20),
-          _buildQuickActionsGrid(),
-          SizedBox(height: Dimensions.height20),
-          _buildBankingStrip(),
-          SizedBox(height: Dimensions.height20),
-          const CashFlowCard(),
-          SizedBox(height: Dimensions.height20),
-          _buildIncomeExpenseCard(),
-          SizedBox(height: Dimensions.height20),
-          _buildProjectTimerCard(),
-          SizedBox(height: Dimensions.height20),
-          _buildExpenseBreakdownCard(),
-          SizedBox(height: Dimensions.height30),
-        ]),
-      ),
-    );
-  }
-
-  // -------- Balances grid (2x2 instead of a wide split row) --------
-  Widget _buildBalancesGrid() {
-    final tiles = [
-      _BalanceTileData(
-        'Receivables',
-        'AED5,886.00',
-        Icons.call_received_rounded,
-        Appcolors.primary,
-      ),
-      _BalanceTileData(
-        'Payables',
-        'AED0.00',
-        Icons.call_made_rounded,
-        Appcolors.accent,
-      ),
-      _BalanceTileData(
-        'Overdue Invoices',
-        '6',
-        Icons.error_outline_rounded,
-        Appcolors.warn,
-      ),
-      _BalanceTileData(
-        'Overdue Bills',
-        '0',
-        Icons.check_circle_outline_rounded,
-        Appcolors.ok,
-      ),
-    ];
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: Dimensions.height15,
-      crossAxisSpacing: Dimensions.width15,
-      childAspectRatio: 1.5,
-      children: tiles.map((t) => _balanceTile(t)).toList(),
-    );
-  }
-
-  Widget _balanceTile(_BalanceTileData data) {
-    return Container(
-      padding: EdgeInsets.all(Dimensions.width15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            padding: EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: data.color.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              data.icon,
-              size: Dimensions.iconSize16,
-              color: data.color,
-            ),
-          ),
-          Text(
-            data.value,
-            style: TextStyle(
-              fontSize: Dimensions.font20,
-              fontWeight: FontWeight.w800,
-              color: const Color(0xFF0F172A),
-            ),
-          ),
-          Text(
-            data.label,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.75,
-              color: Colors.black54,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // -------- Quick actions grid (replaces the icon row) --------
-  Widget _buildQuickActionsGrid() {
-    final items = [
-      _ActionItem(
-        Icons.person_add_alt_1_rounded,
-        'Customer',
-        Appcolors.primary,
-      ),
-      _ActionItem(Icons.note_add_rounded, 'Invoice', Appcolors.primaryLight),
-      _ActionItem(Icons.assignment_rounded, 'Bill', Appcolors.accent),
-      _ActionItem(Icons.shopping_bag_rounded, 'Expense', Appcolors.warn),
-    ];
-    return Container(
-      padding: EdgeInsets.all(Dimensions.width15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Quick Actions',
-            style: TextStyle(
-              fontSize: Dimensions.font16,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          SizedBox(height: Dimensions.height15),
-          Wrap(
-            spacing: Dimensions.width10,
-            runSpacing: Dimensions.height15,
-            children: items.map((item) {
-              return SizedBox(
-                width:
-                    (Dimensions.screenWidth -
-                        Dimensions.width20 * 2 -
-                        Dimensions.width15 * 2 -
-                        Dimensions.width10 * 3) /
-                    4,
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(Dimensions.width15 * 0.7),
-                      decoration: BoxDecoration(
-                        color: item.color.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                      child: Icon(
-                        item.icon,
-                        size: Dimensions.iconSize24 - 4,
-                        color: item.color,
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height10 / 2),
-                    Text(
-                      item.label,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.7,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // -------- Banking strip (horizontal scroll instead of a row of two cards) --------
-  Widget _buildBankingStrip() {
-    final entries = [
-      _BankEntry('Bank Balance', 'AED306.73', Icons.account_balance_rounded),
-      _BankEntry('Cash In Hand', 'AED6,135.00', Icons.wallet_rounded),
-    ];
-    return SizedBox(
-      height: Dimensions.height45 * 2.3,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: entries.length,
-        separatorBuilder: (_, index) => SizedBox(width: Dimensions.width15),
-        itemBuilder: (context, i) {
-          final e = entries[i];
-          return Container(
-            width: Dimensions.screenWidth * 0.55,
-            padding: EdgeInsets.all(Dimensions.width15),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Appcolors.primary, Appcolors.primaryLight],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(Dimensions.radius20),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(
-                  e.icon,
-                  color: Colors.white,
-                  size: Dimensions.iconSize24 - 4,
-                ),
-                Text(
-                  e.value,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: Dimensions.font20,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                Text(
-                  e.label,
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: Dimensions.font16 * 0.8,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  // -------- Helper method for card titles --------
-  Widget _cardTitle(String title, IconData icon) {
     return Row(
       children: [
         Icon(icon, size: Dimensions.iconSize16, color: Appcolors.primary),
@@ -274,9 +27,21 @@ class _OverviewContentState extends State<OverviewContent> {
       ],
     );
   }
+}
 
-  // -------- Income & Expense --------
-  Widget _buildIncomeExpenseCard() {
+// -------- Income & Expense Card Widget --------
+class IncomeExpenseCard extends StatefulWidget {
+  const IncomeExpenseCard({super.key});
+
+  @override
+  State<IncomeExpenseCard> createState() => _IncomeExpenseCardState();
+}
+
+class _IncomeExpenseCardState extends State<IncomeExpenseCard> {
+  bool _isAccrual = true;
+
+  @override
+  Widget build(BuildContext context) {
     final totalIncome = incomeExpenseData.fold<double>(
       0,
       (p, e) => p + e.income,
@@ -298,7 +63,10 @@ class _OverviewContentState extends State<OverviewContent> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _cardTitle('Income vs Expense', Icons.stacked_bar_chart_rounded),
+              CardTitle(
+                title: 'Income vs Expense',
+                icon: Icons.stacked_bar_chart_rounded,
+              ),
               GestureDetector(
                 onTap: () => setState(() => _isAccrual = !_isAccrual),
                 child: Container(
@@ -326,20 +94,20 @@ class _OverviewContentState extends State<OverviewContent> {
           Row(
             children: [
               Expanded(
-                child: _miniStat(
-                  'Income',
-                  totalIncome,
-                  Appcolors.ok,
-                  Icons.arrow_upward_rounded,
+                child: MiniStat(
+                  label: 'Income',
+                  value: totalIncome,
+                  color: Appcolors.ok,
+                  icon: Icons.arrow_upward_rounded,
                 ),
               ),
               SizedBox(width: Dimensions.width15),
               Expanded(
-                child: _miniStat(
-                  'Expense',
-                  totalExpense,
-                  Appcolors.warn,
-                  Icons.arrow_downward_rounded,
+                child: MiniStat(
+                  label: 'Expense',
+                  value: totalExpense,
+                  color: Appcolors.warn,
+                  icon: Icons.arrow_downward_rounded,
                 ),
               ),
             ],
@@ -375,8 +143,25 @@ class _OverviewContentState extends State<OverviewContent> {
       ),
     );
   }
+}
 
-  Widget _miniStat(String label, double value, Color color, IconData icon) {
+// -------- Mini Stat Widget --------
+class MiniStat extends StatelessWidget {
+  final String label;
+  final double value;
+  final Color color;
+  final IconData icon;
+
+  const MiniStat({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(Dimensions.width10),
       decoration: BoxDecoration(
@@ -413,9 +198,14 @@ class _OverviewContentState extends State<OverviewContent> {
       ),
     );
   }
+}
 
-  // -------- Project timer --------
-  Widget _buildProjectTimerCard() {
+// -------- Project Timer Card Widget --------
+class ProjectTimerCard extends StatelessWidget {
+  const ProjectTimerCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
@@ -455,27 +245,45 @@ class _OverviewContentState extends State<OverviewContent> {
           SizedBox(height: Dimensions.height20),
           Row(
             children: [
-              Expanded(child: _outlineChip('Log Time', Colors.white)),
+              Expanded(
+                child: OutlineChip(label: 'Log Time', color: Colors.white),
+              ),
               SizedBox(width: Dimensions.width15),
               Expanded(
-                child: _filledChip('Start Timer', Appcolors.primaryLight),
+                child: FilledChip(
+                  label: 'Start Timer',
+                  color: Appcolors.primaryLight,
+                ),
               ),
             ],
           ),
           SizedBox(height: Dimensions.height15),
           Row(
             children: [
-              Expanded(child: _statChip('Unbilled Hours', '00:00')),
+              Expanded(
+                child: StatChip(label: 'Unbilled Hours', value: '00:00'),
+              ),
               SizedBox(width: Dimensions.width15),
-              Expanded(child: _statChip('Unbilled Expenses', 'AED0.00')),
+              Expanded(
+                child: StatChip(label: 'Unbilled Expenses', value: 'AED0.00'),
+              ),
             ],
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _outlineChip(String label, Color color) {
+// -------- Outline Chip Widget --------
+class OutlineChip extends StatelessWidget {
+  final String label;
+  final Color color;
+
+  const OutlineChip({super.key, required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
       alignment: Alignment.center,
@@ -493,8 +301,17 @@ class _OverviewContentState extends State<OverviewContent> {
       ),
     );
   }
+}
 
-  Widget _filledChip(String label, Color color) {
+// -------- Filled Chip Widget --------
+class FilledChip extends StatelessWidget {
+  final String label;
+  final Color color;
+
+  const FilledChip({super.key, required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
       alignment: Alignment.center,
@@ -512,8 +329,17 @@ class _OverviewContentState extends State<OverviewContent> {
       ),
     );
   }
+}
 
-  Widget _statChip(String label, String value) {
+// -------- Stat Chip Widget --------
+class StatChip extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const StatChip({super.key, required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(Dimensions.width10),
       decoration: BoxDecoration(
@@ -542,9 +368,14 @@ class _OverviewContentState extends State<OverviewContent> {
       ),
     );
   }
+}
 
-  // -------- Expense breakdown (list with trailing bars instead of a stacked bar + list) --------
-  Widget _buildExpenseBreakdownCard() {
+// -------- Expense Breakdown Card Widget --------
+class ExpenseBreakdownCard extends StatelessWidget {
+  const ExpenseBreakdownCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     final total = topExpenses.fold<double>(0, (p, e) => p + e.amount);
     return Container(
       padding: EdgeInsets.all(Dimensions.width15),
@@ -559,7 +390,10 @@ class _OverviewContentState extends State<OverviewContent> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _cardTitle('Expense Breakdown', Icons.donut_small_rounded),
+              CardTitle(
+                title: 'Expense Breakdown',
+                icon: Icons.donut_small_rounded,
+              ),
               Text(
                 'AED${total.toStringAsFixed(2)}',
                 style: TextStyle(
@@ -619,30 +453,6 @@ class _OverviewContentState extends State<OverviewContent> {
       ),
     );
   }
-}
-
-// ---------------- Small data holders ----------------
-
-class _BalanceTileData {
-  final String label;
-  final String value;
-  final IconData icon;
-  final Color color;
-  _BalanceTileData(this.label, this.value, this.icon, this.color);
-}
-
-class _ActionItem {
-  final IconData icon;
-  final String label;
-  final Color color;
-  _ActionItem(this.icon, this.label, this.color);
-}
-
-class _BankEntry {
-  final String label;
-  final String value;
-  final IconData icon;
-  _BankEntry(this.label, this.value, this.icon);
 }
 
 // ---------------- Custom Painters ----------------

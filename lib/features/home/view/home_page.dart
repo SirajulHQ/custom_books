@@ -1,7 +1,11 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/drawer/view/custom_drawer.dart';
-import 'package:custom_books/features/home/widgets/overview_content.dart';
+import 'package:custom_books/features/home/widgets/balance_grid_widget.dart';
+import 'package:custom_books/features/home/widgets/banking_strip_widget.dart';
+import 'package:custom_books/features/home/widgets/cash_flow_card_widget.dart';
+import 'package:custom_books/features/home/widgets/overview_content_widget.dart';
+import 'package:custom_books/features/home/widgets/quick_action_grid_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -38,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildSelectedContent() {
     switch (_selectedSegment) {
       case 0:
-        return OverviewContent();
+        return _buildOverviewContent();
       case 1:
         return _buildUpdatesContent();
       case 2:
@@ -49,7 +53,35 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildOverviewContent() {
-    return const OverviewContent();
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+      sliver: SliverList(
+        delegate: SliverChildListDelegate([
+          SizedBox(height: Dimensions.height15),
+
+          const BalancesGridWidget(),
+          SizedBox(height: Dimensions.height20),
+
+          const QuickActionsGridWidget(),
+          SizedBox(height: Dimensions.height20),
+
+          const BankingStripWidget(),
+          SizedBox(height: Dimensions.height20),
+
+          const CashFlowCardWidget(),
+          SizedBox(height: Dimensions.height20),
+
+          const IncomeExpenseCard(),
+          SizedBox(height: Dimensions.height20),
+
+          const ProjectTimerCard(),
+          SizedBox(height: Dimensions.height20),
+
+          const ExpenseBreakdownCard(),
+          SizedBox(height: Dimensions.height30),
+        ]),
+      ),
+    );
   }
 
   Widget _buildUpdatesContent() {

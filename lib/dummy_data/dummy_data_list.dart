@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:custom_books/features/home/models/cash_flow_point.dart';
-import 'package:custom_books/features/home/models/income_expense_point.dart';
-import 'package:custom_books/features/home/models/expense_item.dart';
+import 'package:custom_books/features/home/models/cash_flow_point_model.dart';
+import 'package:custom_books/features/home/models/income_expense_point_model.dart';
+import 'package:custom_books/features/home/models/expense_item_model.dart';
 
 final List<CashFlowPoint> cashFlowData = [
   CashFlowPoint('Jan', 0, 1250, 450, 800),
