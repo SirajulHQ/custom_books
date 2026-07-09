@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: Appcolors.background,
-      drawer: const DrawerView(),
+      drawer: const DrawerView(currentRoute: 'home'),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),

@@ -1,13 +1,18 @@
+import 'dart:developer' as developer;
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/features/drawer/models/drawer_item.dart';
 import 'package:custom_books/features/drawer/widgets/drawer_menu_item.dart';
 import 'package:custom_books/features/drawer/widgets/expandable_menu_item.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/drawer/widgets/footer_button.dart';
+import 'package:custom_books/features/items/view/items_page.dart';
+import 'package:custom_books/features/home/view/home_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerView extends StatefulWidget {
-  const DrawerView({super.key});
+  final String? currentRoute;
+
+  const DrawerView({super.key, this.currentRoute});
 
   @override
   State<DrawerView> createState() => _DrawerViewState();
@@ -132,8 +137,42 @@ class _DrawerViewState extends State<DrawerView> {
                   item: DrawerItem(
                     icon: Icons.home_rounded,
                     title: 'Home',
-                    isSelected: true,
+                    isSelected: widget.currentRoute == 'home',
                   ),
+                  onCustomTap: () {
+                    developer.log(
+                      '🏠 Home button tapped',
+                      name: 'DrawerNavigation',
+                    );
+
+                    // If already on Home page, just close the drawer
+                    if (widget.currentRoute == 'home') {
+                      developer.log(
+                        '⚠️ Already on Home page, just closing drawer',
+                        name: 'DrawerNavigation',
+                      );
+                      Navigator.pop(context);
+                      return;
+                    }
+
+                    Navigator.pop(context);
+                    developer.log(
+                      '📍 Navigating to HomePage...',
+                      name: 'DrawerNavigation',
+                    );
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          developer.log(
+                            '✅ HomePage builder called',
+                            name: 'DrawerNavigation',
+                          );
+                          return const HomePage();
+                        },
+                      ),
+                    );
+                  },
                 ),
 
                 // Items
@@ -141,7 +180,42 @@ class _DrawerViewState extends State<DrawerView> {
                   item: DrawerItem(
                     icon: Icons.shopping_bag_rounded,
                     title: 'Items',
+                    isSelected: widget.currentRoute == 'items',
                   ),
+                  onCustomTap: () {
+                    developer.log(
+                      '🛍️ Items button tapped',
+                      name: 'DrawerNavigation',
+                    );
+
+                    // If already on Items page, just close the drawer
+                    if (widget.currentRoute == 'items') {
+                      developer.log(
+                        '⚠️ Already on Items page, just closing drawer',
+                        name: 'DrawerNavigation',
+                      );
+                      Navigator.pop(context);
+                      return;
+                    }
+
+                    Navigator.pop(context);
+                    developer.log(
+                      '📍 Navigating to ItemsPage...',
+                      name: 'DrawerNavigation',
+                    );
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          developer.log(
+                            '✅ ItemsPage builder called',
+                            name: 'DrawerNavigation',
+                          );
+                          return const ItemsPage();
+                        },
+                      ),
+                    );
+                  },
                 ),
 
                 // Inventory (Expandable)
@@ -150,7 +224,13 @@ class _DrawerViewState extends State<DrawerView> {
                   icon: Icons.inventory_2_rounded,
                   subItems: const ['Inventory Adjustments', 'Item Groups'],
                   isExpanded: _expandedSections['Inventory'] ?? false,
-                  onTap: () => _toggleSection('Inventory'),
+                  onTap: () {
+                    developer.log(
+                      '📦 Inventory section tapped',
+                      name: 'DrawerNavigation',
+                    );
+                    _toggleSection('Inventory');
+                  },
                 ),
 
                 // Banking
@@ -159,6 +239,13 @@ class _DrawerViewState extends State<DrawerView> {
                     icon: Icons.account_balance_rounded,
                     title: 'Banking',
                   ),
+                  onCustomTap: () {
+                    developer.log(
+                      '🏦 Banking button tapped',
+                      name: 'DrawerNavigation',
+                    );
+                    Navigator.pop(context);
+                  },
                 ),
 
                 // Sales (Expandable)
@@ -176,7 +263,13 @@ class _DrawerViewState extends State<DrawerView> {
                     'Credit Notes',
                   ],
                   isExpanded: _expandedSections['Sales'] ?? false,
-                  onTap: () => _toggleSection('Sales'),
+                  onTap: () {
+                    developer.log(
+                      '🛒 Sales section tapped',
+                      name: 'DrawerNavigation',
+                    );
+                    _toggleSection('Sales');
+                  },
                 ),
 
                 // Purchases (Expandable)
@@ -192,7 +285,13 @@ class _DrawerViewState extends State<DrawerView> {
                     'Vendor Credits',
                   ],
                   isExpanded: _expandedSections['Purchases'] ?? false,
-                  onTap: () => _toggleSection('Purchases'),
+                  onTap: () {
+                    developer.log(
+                      '🧺 Purchases section tapped',
+                      name: 'DrawerNavigation',
+                    );
+                    _toggleSection('Purchases');
+                  },
                 ),
 
                 // Time Tracking (Expandable)
@@ -201,7 +300,13 @@ class _DrawerViewState extends State<DrawerView> {
                   icon: Icons.access_time_rounded,
                   subItems: const ['Projects', 'Time Entries', 'Timer'],
                   isExpanded: _expandedSections['Time Tracking'] ?? false,
-                  onTap: () => _toggleSection('Time Tracking'),
+                  onTap: () {
+                    developer.log(
+                      '⏰ Time Tracking section tapped',
+                      name: 'DrawerNavigation',
+                    );
+                    _toggleSection('Time Tracking');
+                  },
                 ),
 
                 // Accountant (Expandable)
@@ -210,7 +315,13 @@ class _DrawerViewState extends State<DrawerView> {
                   icon: Icons.person_rounded,
                   subItems: const ['Manual Journals'],
                   isExpanded: _expandedSections['Accountant'] ?? false,
-                  onTap: () => _toggleSection('Accountant'),
+                  onTap: () {
+                    developer.log(
+                      '👤 Accountant section tapped',
+                      name: 'DrawerNavigation',
+                    );
+                    _toggleSection('Accountant');
+                  },
                 ),
 
                 // Documents (Expandable)
@@ -219,7 +330,13 @@ class _DrawerViewState extends State<DrawerView> {
                   icon: Icons.folder_rounded,
                   subItems: const ['Inbox', 'All Files', 'Folders'],
                   isExpanded: _expandedSections['Documents'] ?? false,
-                  onTap: () => _toggleSection('Documents'),
+                  onTap: () {
+                    developer.log(
+                      '📁 Documents section tapped',
+                      name: 'DrawerNavigation',
+                    );
+                    _toggleSection('Documents');
+                  },
                 ),
 
                 // Reports
@@ -228,6 +345,13 @@ class _DrawerViewState extends State<DrawerView> {
                     icon: Icons.bar_chart_rounded,
                     title: 'Reports',
                   ),
+                  onCustomTap: () {
+                    developer.log(
+                      '📊 Reports button tapped',
+                      name: 'DrawerNavigation',
+                    );
+                    Navigator.pop(context);
+                  },
                 ),
 
                 // Settings
@@ -236,6 +360,13 @@ class _DrawerViewState extends State<DrawerView> {
                     icon: Icons.settings_rounded,
                     title: 'Settings',
                   ),
+                  onCustomTap: () {
+                    developer.log(
+                      '⚙️ Settings button tapped',
+                      name: 'DrawerNavigation',
+                    );
+                    Navigator.pop(context);
+                  },
                 ),
 
                 SizedBox(height: Dimensions.height20),

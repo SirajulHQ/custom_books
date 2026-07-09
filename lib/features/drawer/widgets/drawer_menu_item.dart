@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 
 class DrawerMenuItem extends StatelessWidget {
   final DrawerItem item;
+  final VoidCallback? onCustomTap;
 
-  const DrawerMenuItem({super.key, required this.item});
+  const DrawerMenuItem({super.key, required this.item, this.onCustomTap});
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +44,12 @@ class DrawerMenuItem extends StatelessWidget {
         horizontal: Dimensions.width20,
         vertical: Dimensions.height10 / 4,
       ),
-      onTap: () {
-        Navigator.pop(context);
-        // Handle navigation
-      },
+      onTap:
+          onCustomTap ??
+          () {
+            Navigator.pop(context);
+            // Handle navigation
+          },
     );
   }
 }
