@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddItemPage extends StatefulWidget {
   const AddItemPage({super.key});
@@ -16,6 +19,137 @@ class _AddItemPageState extends State<AddItemPage> {
   bool _salesInformation = true;
   bool _purchaseInformation = true;
   bool _isExciseProduct = false;
+
+  XFile? _itemImage;
+  final _picker = ImagePicker();
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final picked = await _picker.pickImage(
+        source: source,
+        imageQuality: 85,
+        maxWidth: 1080,
+      );
+      if (picked != null) {
+        setState(() => _itemImage = picked);
+        appLog('📷 Image picked: ${picked.path}', name: 'AddItemPage');
+      }
+    } catch (e) {
+      appLog('❌ Image pick error: $e', name: 'AddItemPage');
+    }
+  }
+
+  void _showImageSourceSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
+      ),
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.width20,
+            vertical: Dimensions.height20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Select Photo Source',
+                style: TextStyle(
+                  fontSize: Dimensions.font20 * 0.85,
+                  fontWeight: FontWeight.w800,
+                  color: const Color(0xFF0F172A),
+                ),
+              ),
+              SizedBox(height: Dimensions.height20),
+              _sourceOption(
+                icon: Icons.camera_alt_outlined,
+                label: 'Take Photo',
+                subtitle: 'Use your camera',
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+              SizedBox(height: Dimensions.height10),
+              _sourceOption(
+                icon: Icons.photo_library_outlined,
+                label: 'Choose from Gallery',
+                subtitle: 'Pick from your photo library',
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
+              SizedBox(height: Dimensions.height10),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _sourceOption({
+    required IconData icon,
+    required String label,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(Dimensions.radius15),
+      child: Container(
+        padding: EdgeInsets.all(Dimensions.width15),
+        decoration: BoxDecoration(
+          color: Appcolors.surfaceLight,
+          borderRadius: BorderRadius.circular(Dimensions.radius15),
+          border: Border.all(color: Appcolors.border),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(Dimensions.width10),
+              decoration: BoxDecoration(
+                color: Appcolors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
+              ),
+              child: Icon(
+                icon,
+                color: Appcolors.primary,
+                size: Dimensions.iconSize24,
+              ),
+            ),
+            SizedBox(width: Dimensions.width15),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.9,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF0F172A),
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.75,
+                    color: Colors.black45,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _skuController = TextEditingController();
@@ -207,62 +341,95 @@ class _AddItemPageState extends State<AddItemPage> {
                                 ),
                               ),
                               SizedBox(height: Dimensions.height10),
-                              GestureDetector(
-                                onTap: () {
-                                  appLog(
-                                    '📷 Add Image tapped',
-                                    name: 'AddItemPage',
-                                  );
-                                  // TODO: Implement image picker
-                                },
-                                child: Container(
-                                  width: double.infinity,
-                                  height: Dimensions.height45 * 2.5,
-                                  decoration: BoxDecoration(
-                                    color: Appcolors.surfaceLight,
-                                    border: Border.all(
-                                      color: Appcolors.primary.withValues(
-                                        alpha: 0.3,
-                                      ),
-                                      width: 2,
-                                      style: BorderStyle.solid,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      Dimensions.radius15,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.all(
-                                          Dimensions.width10,
-                                        ),
-                                        decoration: BoxDecoration(
+                              // ---- Live image preview / picker ----
+                              Stack(
+                                children: [
+                                  GestureDetector(
+                                    onTap: _showImageSourceSheet,
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: Dimensions.height45 * 2.5,
+                                      decoration: BoxDecoration(
+                                        color: Appcolors.surfaceLight,
+                                        border: Border.all(
                                           color: Appcolors.primary.withValues(
-                                            alpha: 0.1,
+                                            alpha: 0.3,
                                           ),
-                                          shape: BoxShape.circle,
+                                          width: 2,
+                                          style: BorderStyle.solid,
                                         ),
-                                        child: Icon(
-                                          Icons.add_photo_alternate_outlined,
-                                          size: Dimensions.iconSize24,
-                                          color: Appcolors.primary,
-                                        ),
-                                      ),
-                                      SizedBox(height: Dimensions.height10 / 2),
-                                      Text(
-                                        'Add Photo',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: Dimensions.font16 * 0.75,
-                                          fontWeight: FontWeight.w600,
-                                          color: Appcolors.primary,
+                                        borderRadius: BorderRadius.circular(
+                                          Dimensions.radius15,
                                         ),
                                       ),
-                                    ],
+                                      clipBehavior: Clip.antiAlias,
+                                      child: _itemImage != null
+                                          ? Image.file(
+                                              File(_itemImage!.path),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Container(
+                                                  padding: EdgeInsets.all(
+                                                    Dimensions.width10,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Appcolors.primary
+                                                        .withValues(alpha: 0.1),
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: Icon(
+                                                    Icons
+                                                        .add_photo_alternate_outlined,
+                                                    size: Dimensions.iconSize24,
+                                                    color: Appcolors.primary,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height:
+                                                      Dimensions.height10 / 2,
+                                                ),
+                                                Text(
+                                                  'Add Photo',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        Dimensions.font16 *
+                                                        0.75,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Appcolors.primary,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                    ),
                                   ),
-                                ),
+                                  // Remove button — only shown when an image is selected
+                                  if (_itemImage != null)
+                                    Positioned(
+                                      top: 6,
+                                      right: 6,
+                                      child: GestureDetector(
+                                        onTap: () =>
+                                            setState(() => _itemImage = null),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: const BoxDecoration(
+                                            color: Colors.black54,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                             ],
                           ),

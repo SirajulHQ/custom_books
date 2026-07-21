@@ -66,5 +66,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- image_picker permissions -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Custom Books needs access to your photo library to attach item images.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Custom Books needs camera access to take photos for items and attachments.</string>
+	<!-- file_picker / document picker -->
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Custom Books may save images to your photo library.</string>
 </dict>
 </plist>

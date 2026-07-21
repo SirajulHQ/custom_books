@@ -5,7 +5,7 @@ import 'package:custom_books/features/drawer/view/custom_drawer.dart';
 import 'package:custom_books/features/inventory_adjustments/model/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/view/add_adjustment_page.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/inventory_adjustments_card_widgets.dart';
-import 'package:custom_books/features/inventory_adjustments/widgets/sort_by_sheet_widget.dart';
+import 'package:custom_books/features/inventory_adjustments/widgets/inventory_adjustments_page_widgets.dart';
 import 'package:flutter/material.dart';
 
 class InventoryAdjustmentsPage extends StatefulWidget {
@@ -215,9 +215,11 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
                 ],
               ),
               actions: [
-                _iconBadge(
-                  _searchOpen ? Icons.close_rounded : Icons.search_rounded,
-                  Appcolors.primary,
+                IconBadge(
+                  icon: _searchOpen
+                      ? Icons.close_rounded
+                      : Icons.search_rounded,
+                  color: Appcolors.primary,
                   onTap: () => setState(() {
                     _searchOpen = !_searchOpen;
                     if (!_searchOpen) _searchController.clear();
@@ -251,12 +253,31 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
                 SizedBox(width: Dimensions.width20),
               ],
             ),
-            if (_searchOpen) SliverToBoxAdapter(child: _buildSearchField()),
-            SliverToBoxAdapter(child: _buildTabsAndSort()),
+            if (_searchOpen)
+              SliverToBoxAdapter(
+                child: AdjustmentsSearchField(
+                  controller: _searchController,
+                  onChanged: () => setState(() {}),
+                ),
+              ),
+            SliverToBoxAdapter(
+              child: AdjustmentsTabsAndSort(
+                selectedTab: _selectedTab,
+                onTabChanged: (index) => setState(() => _selectedTab = index),
+                sortField: _sortField,
+                sortDirection: _sortDirection,
+                onSortChanged: (field, direction) {
+                  setState(() {
+                    _sortField = field;
+                    _sortDirection = direction;
+                  });
+                },
+              ),
+            ),
             if (items.isEmpty)
-              SliverFillRemaining(
+              const SliverFillRemaining(
                 hasScrollBody: false,
-                child: _buildEmptyState(),
+                child: AdjustmentsEmptyState(),
               )
             else
               SliverPadding(
@@ -274,182 +295,6 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
             SliverToBoxAdapter(child: SizedBox(height: Dimensions.height30)),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildSearchField() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        Dimensions.width20,
-        0,
-        Dimensions.width20,
-        Dimensions.height15,
-      ),
-      child: TextField(
-        controller: _searchController,
-        autofocus: true,
-        onChanged: (_) => setState(() {}),
-        style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-        decoration: InputDecoration(
-          hintText: 'Search by reason or person',
-          hintStyle: const TextStyle(color: Colors.black26),
-          prefixIcon: const Icon(Icons.search_rounded, color: Colors.black38),
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTabsAndSort() {
-    final segments = ['All', 'By Quantity', 'By Value'];
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        Dimensions.width20,
-        0,
-        Dimensions.width20,
-        Dimensions.height15,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
-              ),
-              child: Row(
-                children: List.generate(segments.length, (i) {
-                  final selected = i == _selectedTab;
-                  return Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() => _selectedTab = i),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 180),
-                        padding: EdgeInsets.symmetric(
-                          vertical: Dimensions.height10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: selected
-                              ? Appcolors.primary
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius15 - 5,
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          segments[i],
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.72,
-                            fontWeight: selected
-                                ? FontWeight.w700
-                                : FontWeight.w500,
-                            color: selected ? Colors.white : Colors.black54,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-              ),
-            ),
-          ),
-          SizedBox(width: Dimensions.width10),
-          _iconBadge(
-            Icons.swap_vert_rounded,
-            Appcolors.primary,
-            onTap: () {
-              showSortBySheet(
-                context,
-                selectedField: _sortField,
-                selectedDirection: _sortDirection,
-                onApply: (field, direction) {
-                  setState(() {
-                    _sortField = field;
-                    _sortDirection = direction;
-                  });
-                },
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: Dimensions.height45 * 1.6,
-              height: Dimensions.height45 * 1.6,
-              decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.inventory_2_rounded,
-                size: Dimensions.iconSize24 * 1.3,
-                color: Appcolors.primary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-            Text(
-              'No adjustments found',
-              style: TextStyle(
-                fontSize: Dimensions.font16,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFF0F172A),
-              ),
-            ),
-            SizedBox(height: Dimensions.height10 / 2),
-            Text(
-              'Tap the + button to record a stock adjustment.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.75,
-                color: Colors.black45,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _iconBadge(IconData icon, Color color, {VoidCallback? onTap}) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: onTap,
-      child: Container(
-        width: Dimensions.height45 * 0.9,
-        height: Dimensions.height45 * 0.9,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-        ),
-        child: Icon(icon, size: Dimensions.iconSize24 - 4, color: color),
       ),
     );
   }

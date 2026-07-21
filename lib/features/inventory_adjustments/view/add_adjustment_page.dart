@@ -1,11 +1,14 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
-import 'package:custom_books/core/utils/image_helper.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/dashed_border.dart';
 import 'package:custom_books/features/inventory_adjustments/model/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/model/line_item_model.dart';
 import 'package:custom_books/features/inventory_adjustments/view/add_line_item_page.dart';
+import 'package:custom_books/features/inventory_adjustments/widgets/adjustment_form_widgets.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class NewAdjustmentPage extends StatefulWidget {
   const NewAdjustmentPage({super.key});
@@ -40,6 +43,463 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
   ];
 
   final List<LineItem> _lineItems = [];
+  final List<PlatformFile> _attachments = [];
+
+  // ── Attachment constants ───────────────────────────────────────────────────
+  static const int _maxAttachments = 5;
+  static const int _maxFileSizeBytes = 10 * 1024 * 1024; // 10 MB
+
+  // ── Show the main Attachments dialog ──────────────────────────────────────
+  void _showAttachmentsDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogCtx) {
+        return StatefulBuilder(
+          builder: (dialogCtx, setDialogState) {
+            return Dialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Dimensions.radius20),
+              ),
+              insetPadding: EdgeInsets.symmetric(
+                horizontal: Dimensions.width20,
+                vertical: Dimensions.height45 * 1.2,
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(Dimensions.width20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // ── Header ──────────────────────────────────────────────
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Attachments',
+                            style: TextStyle(
+                              fontSize: Dimensions.font20 * 0.95,
+                              fontWeight: FontWeight.w800,
+                              color: Appcolors.textPrimary,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(dialogCtx),
+                          icon: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Appcolors.surfaceLight,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Appcolors.border),
+                            ),
+                            child: Icon(
+                              Icons.close_rounded,
+                              size: Dimensions.iconSize16,
+                              color: Appcolors.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Dimensions.height10),
+                    Divider(height: 1, color: Appcolors.border),
+                    SizedBox(height: Dimensions.height10),
+
+                    // ── Attachment list / empty state ────────────────────────
+                    if (_attachments.isEmpty)
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: Dimensions.height30,
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(Dimensions.width20),
+                              decoration: BoxDecoration(
+                                color: Appcolors.primary.withValues(alpha: 0.07),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.attach_file_rounded,
+                                size: Dimensions.iconSize24 * 1.5,
+                                color: Appcolors.primary,
+                              ),
+                            ),
+                            SizedBox(height: Dimensions.height15),
+                            Text(
+                              'No attachments yet',
+                              style: TextStyle(
+                                fontSize: Dimensions.font16 * 0.95,
+                                fontWeight: FontWeight.w700,
+                                color: Appcolors.textPrimary,
+                              ),
+                            ),
+                            SizedBox(height: Dimensions.height10 / 2),
+                            Text(
+                              'You can add up to $_maxAttachments attachments,\neach not exceeding 10 MB.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: Dimensions.font16 * 0.8,
+                                color: Appcolors.textSecondary,
+                                height: 1.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    else
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 260),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: _attachments.length,
+                          separatorBuilder: (_, _) =>
+                              SizedBox(height: Dimensions.height10 / 2),
+                          itemBuilder: (_, i) {
+                            final file = _attachments[i];
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Dimensions.width15,
+                                vertical: Dimensions.height10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Appcolors.surfaceLight,
+                                borderRadius: BorderRadius.circular(
+                                  Dimensions.radius15 / 2,
+                                ),
+                                border: Border.all(color: Appcolors.border),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(
+                                      Dimensions.width10 * 0.7,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Appcolors.primary
+                                          .withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(
+                                        Dimensions.radius15 / 2,
+                                      ),
+                                    ),
+                                    child: Icon(
+                                      _fileIcon(file.extension),
+                                      size: Dimensions.iconSize24 - 4,
+                                      color: Appcolors.primary,
+                                    ),
+                                  ),
+                                  SizedBox(width: Dimensions.width10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          file.name,
+                                          style: TextStyle(
+                                            fontSize: Dimensions.font16 * 0.85,
+                                            fontWeight: FontWeight.w600,
+                                            color: Appcolors.textPrimary,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
+                                        if (file.size > 0)
+                                          Text(
+                                            _formatBytes(file.size),
+                                            style: TextStyle(
+                                              fontSize: Dimensions.font16 * 0.72,
+                                              color: Appcolors.textSecondary,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    icon: Icon(
+                                      Icons.close_rounded,
+                                      size: Dimensions.iconSize16 + 2,
+                                      color: Appcolors.textSecondary,
+                                    ),
+                                    onPressed: () {
+                                      setState(
+                                        () => _attachments.removeAt(i),
+                                      );
+                                      setDialogState(() {});
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+
+                    SizedBox(height: Dimensions.height20),
+
+                    // ── Hint when list has items ─────────────────────────────
+                    if (_attachments.isNotEmpty)
+                      Padding(
+                        padding: EdgeInsets.only(bottom: Dimensions.height10),
+                        child: Text(
+                          '${_attachments.length}/$_maxAttachments attachments · max 10 MB each',
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.75,
+                            color: Appcolors.textSecondary,
+                          ),
+                        ),
+                      ),
+
+                    // ── Add Attachment button ────────────────────────────────
+                    if (_attachments.length < _maxAttachments)
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () => _showSourcePicker(
+                            dialogCtx,
+                            setDialogState,
+                          ),
+                          icon: Icon(
+                            Icons.add_rounded,
+                            color: Appcolors.primary,
+                            size: Dimensions.iconSize24 - 4,
+                          ),
+                          label: Text(
+                            'Add Attachment',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.9,
+                              fontWeight: FontWeight.w700,
+                              color: Appcolors.primary,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                              color: Appcolors.primary,
+                              width: 1.5,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius30,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height15,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // ── Source picker bottom-sheet (Take Photo / Pick from Device) ─────────────
+  void _showSourcePicker(
+    BuildContext dialogCtx,
+    StateSetter setDialogState,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
+      ),
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.width20,
+            vertical: Dimensions.height20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Add Attachment',
+                style: TextStyle(
+                  fontSize: Dimensions.font20 * 0.85,
+                  fontWeight: FontWeight.w800,
+                  color: Appcolors.textPrimary,
+                ),
+              ),
+              SizedBox(height: Dimensions.height20),
+              _sourceRow(
+                icon: Icons.camera_alt_outlined,
+                label: 'Take Photo',
+                subtitle: 'Capture using your camera',
+                onTap: () async {
+                  Navigator.pop(context); // close bottom-sheet
+                  await _addFromCamera(setDialogState);
+                },
+              ),
+              SizedBox(height: Dimensions.height10),
+              _sourceRow(
+                icon: Icons.folder_open_outlined,
+                label: 'Pick from Device',
+                subtitle: 'Browse files on your device',
+                onTap: () async {
+                  Navigator.pop(context); // close bottom-sheet
+                  await _addFromDevice(setDialogState);
+                },
+              ),
+              SizedBox(height: Dimensions.height10),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Camera source ──────────────────────────────────────────────────────────
+  Future<void> _addFromCamera(StateSetter setDialogState) async {
+    final picker = ImagePicker();
+    try {
+      final photo = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 85,
+        maxWidth: 1080,
+      );
+      if (photo == null) return;
+
+      final bytes = await photo.length();
+      if (bytes > _maxFileSizeBytes) {
+        if (mounted) {
+          ToastificationHelper.showWarning(
+            context,
+            'File exceeds 10 MB limit.',
+          );
+        }
+        return;
+      }
+      final pf = PlatformFile(
+        name: photo.name,
+        size: bytes,
+        path: photo.path,
+      );
+      final exists = _attachments.any((f) => f.name == pf.name);
+      if (!exists) {
+        setState(() => _attachments.add(pf));
+        setDialogState(() {});
+      }
+    } catch (e) {
+      if (mounted) {
+        ToastificationHelper.showWarning(context, 'Could not open camera.');
+      }
+    }
+  }
+
+  // ── Device file source ─────────────────────────────────────────────────────
+  Future<void> _addFromDevice(StateSetter setDialogState) async {
+    final remaining = _maxAttachments - _attachments.length;
+    if (remaining <= 0) return;
+
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: remaining > 1,
+      type: FileType.any,
+      withData: false,
+    );
+    if (result == null || result.files.isEmpty) return;
+
+    final existing = _attachments.map((f) => f.name).toSet();
+    final toAdd = <PlatformFile>[];
+    final oversized = <String>[];
+
+    for (final f in result.files) {
+      if (existing.contains(f.name)) continue;
+      if (f.size > _maxFileSizeBytes) {
+        oversized.add(f.name);
+        continue;
+      }
+      toAdd.add(f);
+      if (_attachments.length + toAdd.length >= _maxAttachments) break;
+    }
+
+    if (oversized.isNotEmpty && mounted) {
+      ToastificationHelper.showWarning(
+        context,
+        '${oversized.length} file(s) skipped — each must be under 10 MB.',
+      );
+    }
+    if (toAdd.isNotEmpty) {
+      setState(() => _attachments.addAll(toAdd));
+      setDialogState(() {});
+    }
+  }
+
+  // ── Reusable source option row for the bottom-sheet ───────────────────────
+  Widget _sourceRow({
+    required IconData icon,
+    required String label,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(Dimensions.radius15),
+      child: Container(
+        padding: EdgeInsets.all(Dimensions.width15),
+        decoration: BoxDecoration(
+          color: Appcolors.surfaceLight,
+          borderRadius: BorderRadius.circular(Dimensions.radius15),
+          border: Border.all(color: Appcolors.border),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(Dimensions.width10),
+              decoration: BoxDecoration(
+                color: Appcolors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
+              ),
+              child: Icon(
+                icon,
+                color: Appcolors.primary,
+                size: Dimensions.iconSize24,
+              ),
+            ),
+            SizedBox(width: Dimensions.width15),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 0.9,
+                      fontWeight: FontWeight.w700,
+                      color: Appcolors.textPrimary,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 0.75,
+                      color: Appcolors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: Appcolors.textSecondary,
+              size: Dimensions.iconSize24 - 4,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -133,192 +593,38 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
     return '${d.day} ${months[d.month - 1]} ${d.year}';
   }
 
-  TextStyle _label() => TextStyle(
-    fontSize: Dimensions.font16 * 0.8,
-    fontWeight: FontWeight.w600,
-    color: Appcolors.primary,
-  );
-
-  TextStyle _value() => TextStyle(
-    fontSize: Dimensions.font16 * 0.9,
-    fontWeight: FontWeight.w500,
-    color: const Color(0xFF0F172A),
-  );
-
-  Widget _divider() => Padding(
-    padding: EdgeInsets.symmetric(vertical: Dimensions.height10 / 2),
-    child: const Divider(height: 1, color: Color(0xFFE2E8F0)),
-  );
-
-  Widget _card(List<Widget> children) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(Dimensions.width20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
-      ),
-    );
+  /// Returns a human-readable file size string (e.g. "2.3 MB").
+  String _formatBytes(int bytes) {
+    if (bytes < 1024) return '$bytes B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 
-  Widget _requiredLabel(String text) => Text.rich(
-    TextSpan(
-      text: '$text ',
-      style: _label(),
-      children: [
-        TextSpan(
-          text: '*',
-          style: TextStyle(color: Colors.red.shade400),
-        ),
-      ],
-    ),
-  );
-
-  Widget _radioOption(String label, ModeOfAdjustment value) {
-    final selected = _mode == value;
-    return InkWell(
-      onTap: () => setState(() => _mode = value),
-      borderRadius: BorderRadius.circular(20),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            selected
-                ? Icons.radio_button_checked_rounded
-                : Icons.radio_button_off_rounded,
-            color: selected ? Appcolors.primary : Colors.black26,
-            size: Dimensions.iconSize24 - 2,
-          ),
-          SizedBox(width: Dimensions.width10 / 2),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.85,
-              color: const Color(0xFF0F172A),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _addLineItemButton() {
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: _addLineItem,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: Dimensions.height15),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: Appcolors.primary.withValues(alpha: 0.4)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.add_circle_rounded,
-              color: Appcolors.primary,
-              size: Dimensions.iconSize24 - 2,
-            ),
-            SizedBox(width: Dimensions.width10 / 2),
-            Text(
-              'Add Line Item',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.9,
-                fontWeight: FontWeight.w700,
-                color: Appcolors.primary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _lineItemCard(LineItem item) {
-    final qtyColor = item.quantityAdjusted < 0
-        ? Colors.red.shade600
-        : Colors.green.shade600;
-    return Container(
-      margin: EdgeInsets.only(bottom: Dimensions.height10),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-        onTap: () => _editLineItem(item),
-        child: Container(
-          padding: EdgeInsets.all(Dimensions.width20 * 0.8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: Dimensions.height45 * 0.8,
-                height: Dimensions.height45 * 0.8,
-                decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
-                  image: item.imageUrl != null
-                      ? DecorationImage(
-                          image: ImageHelper.getImageProvider(item.imageUrl!),
-                          fit: BoxFit.cover,
-                        )
-                      : null,
-                ),
-                child: item.imageUrl == null
-                    ? Icon(
-                        Icons.inventory_2_outlined,
-                        color: Appcolors.primary,
-                        size: Dimensions.iconSize24 - 6,
-                      )
-                    : null,
-              ),
-              SizedBox(width: Dimensions.width10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.itemName,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: Dimensions.font16 * 0.85,
-                        color: const Color(0xFF0F172A),
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height10 / 4),
-                    Text(
-                      '${item.quantityAdjusted > 0 ? '+' : ''}${item.quantityAdjusted.toStringAsFixed(2)} qty  •  AED ${item.valueChange.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.7,
-                        color: qtyColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.close_rounded,
-                  size: Dimensions.iconSize24 - 6,
-                  color: Colors.black38,
-                ),
-                onPressed: () => _removeLineItem(item.id),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  /// Picks a material icon that matches the file extension.
+  IconData _fileIcon(String? ext) {
+    switch (ext?.toLowerCase()) {
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'gif':
+      case 'webp':
+        return Icons.image_outlined;
+      case 'pdf':
+        return Icons.picture_as_pdf_outlined;
+      case 'doc':
+      case 'docx':
+        return Icons.description_outlined;
+      case 'xls':
+      case 'xlsx':
+      case 'csv':
+        return Icons.table_chart_outlined;
+      case 'zip':
+      case 'rar':
+      case '7z':
+        return Icons.folder_zip_outlined;
+      default:
+        return Icons.insert_drive_file_outlined;
+    }
   }
 
   @override
@@ -381,205 +687,206 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
           ),
           physics: const BouncingScrollPhysics(),
           children: [
-            _card([
-              Text('Mode of adjustment', style: _label()),
-              SizedBox(height: Dimensions.height10 / 2),
-              Row(
-                children: [
-                  _radioOption('Quantity', ModeOfAdjustment.quantity),
-                  SizedBox(width: Dimensions.width20),
-                  _radioOption('Value', ModeOfAdjustment.value),
-                ],
-              ),
-            ]),
-            SizedBox(height: Dimensions.height15),
-            _card([
-              Text('Reference#', style: _label()),
-              TextField(
-                controller: _referenceController,
-                style: _value(),
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  isDense: true,
-                ),
-              ),
-              _divider(),
-              SizedBox(height: Dimensions.height15),
-              _requiredLabel('Date'),
-              SizedBox(height: Dimensions.height10 / 2),
-              InkWell(
-                onTap: _pickDate,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            FormCard(
+              children: [
+                Text('Mode of adjustment', style: AdjustmentTextStyles.label()),
+                SizedBox(height: Dimensions.height10 / 2),
+                Row(
                   children: [
-                    Text(_formatDate(_date), style: _value()),
-                    Icon(
-                      Icons.calendar_today_outlined,
-                      size: Dimensions.iconSize24 - 6,
-                      color: Colors.black45,
+                    AdjustmentRadioOption(
+                      label: 'Quantity',
+                      value: ModeOfAdjustment.quantity,
+                      selectedValue: _mode,
+                      onChanged: (newMode) => setState(() => _mode = newMode),
+                    ),
+                    SizedBox(width: Dimensions.width20),
+                    AdjustmentRadioOption(
+                      label: 'Value',
+                      value: ModeOfAdjustment.value,
+                      selectedValue: _mode,
+                      onChanged: (newMode) => setState(() => _mode = newMode),
                     ),
                   ],
                 ),
-              ),
-              _divider(),
-              SizedBox(height: Dimensions.height15),
-              _requiredLabel('Account'),
-              SizedBox(height: Dimensions.height10 / 2),
-              DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: _account,
-                  isExpanded: true,
-                  style: _value(),
-                  icon: const Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: Colors.black45,
+              ],
+            ),
+            SizedBox(height: Dimensions.height15),
+            FormCard(
+              children: [
+                Text('Reference#', style: AdjustmentTextStyles.label()),
+                TextField(
+                  controller: _referenceController,
+                  style: AdjustmentTextStyles.value(),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    isDense: true,
                   ),
-                  items: _accounts
-                      .map((a) => DropdownMenuItem(value: a, child: Text(a)))
-                      .toList(),
-                  onChanged: (v) => setState(() => _account = v),
                 ),
-              ),
-              _divider(),
-              SizedBox(height: Dimensions.height15),
-              _requiredLabel('Reason'),
-              SizedBox(height: Dimensions.height10 / 2),
-              DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: _reason,
-                  isExpanded: true,
-                  hint: Text(
-                    'Select a reason',
-                    style: TextStyle(
-                      color: Colors.black26,
-                      fontSize: Dimensions.font16 * 0.85,
+                const FormDivider(),
+                SizedBox(height: Dimensions.height15),
+                RequiredLabel(text: 'Date'),
+                SizedBox(height: Dimensions.height10 / 2),
+                InkWell(
+                  onTap: _pickDate,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        _formatDate(_date),
+                        style: AdjustmentTextStyles.value(),
+                      ),
+                      Icon(
+                        Icons.calendar_today_outlined,
+                        size: Dimensions.iconSize24 - 6,
+                        color: Colors.black45,
+                      ),
+                    ],
+                  ),
+                ),
+                const FormDivider(),
+                SizedBox(height: Dimensions.height15),
+                RequiredLabel(text: 'Account'),
+                SizedBox(height: Dimensions.height10 / 2),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _account,
+                    isExpanded: true,
+                    style: AdjustmentTextStyles.value(),
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: Colors.black45,
                     ),
+                    items: _accounts
+                        .map((a) => DropdownMenuItem(value: a, child: Text(a)))
+                        .toList(),
+                    onChanged: (v) => setState(() => _account = v),
                   ),
-                  style: _value(),
-                  icon: const Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: Colors.black45,
+                ),
+                const FormDivider(),
+                SizedBox(height: Dimensions.height15),
+                RequiredLabel(text: 'Reason'),
+                SizedBox(height: Dimensions.height10 / 2),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _reason,
+                    isExpanded: true,
+                    hint: Text(
+                      'Select a reason',
+                      style: TextStyle(
+                        color: Colors.black26,
+                        fontSize: Dimensions.font16 * 0.85,
+                      ),
+                    ),
+                    style: AdjustmentTextStyles.value(),
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: Colors.black45,
+                    ),
+                    items: _reasons
+                        .map((r) => DropdownMenuItem(value: r, child: Text(r)))
+                        .toList(),
+                    onChanged: (v) => setState(() => _reason = v),
                   ),
-                  items: _reasons
-                      .map((r) => DropdownMenuItem(value: r, child: Text(r)))
-                      .toList(),
-                  onChanged: (v) => setState(() => _reason = v),
                 ),
-              ),
-              _divider(),
-              SizedBox(height: Dimensions.height15),
-              Text('Description', style: _label()),
-              TextField(
-                controller: _descriptionController,
-                maxLength: 500,
-                maxLines: 3,
-                style: _value(),
-                decoration: const InputDecoration(
-                  hintText: 'Max 500 Characters',
-                  hintStyle: TextStyle(color: Colors.black26),
-                  border: InputBorder.none,
-                  isDense: true,
-                  counterText: '',
+                const FormDivider(),
+                SizedBox(height: Dimensions.height15),
+                Text('Description', style: AdjustmentTextStyles.label()),
+                TextField(
+                  controller: _descriptionController,
+                  maxLength: 500,
+                  maxLines: 3,
+                  style: AdjustmentTextStyles.value(),
+                  decoration: const InputDecoration(
+                    hintText: 'Max 500 Characters',
+                    hintStyle: TextStyle(color: Colors.black26),
+                    border: InputBorder.none,
+                    isDense: true,
+                    counterText: '',
+                  ),
                 ),
-              ),
-            ]),
+              ],
+            ),
             SizedBox(height: Dimensions.height15),
             if (_lineItems.isNotEmpty) ...[
-              ..._lineItems.map(_lineItemCard),
+              ..._lineItems.map(
+                (item) => AdjustmentLineItemCard(
+                  item: item,
+                  onTap: () => _editLineItem(item),
+                  onRemove: () => _removeLineItem(item.id),
+                ),
+              ),
               SizedBox(height: Dimensions.height10 / 2),
             ],
-            _addLineItemButton(),
+            AddLineItemButton(onPressed: _addLineItem),
             SizedBox(height: Dimensions.height15),
-            _card([
-              Text('Attachments', style: _label()),
-              SizedBox(height: Dimensions.height10),
-              InkWell(
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-                onTap: () {
-                  // TODO: wire up a real file/image picker (e.g. file_picker
-                  // or image_picker) and store the result on the adjustment.
-                  ToastificationHelper.showInfo(
-                    context,
-                    'File upload coming soon',
-                  );
-                },
-                child: _DashedBorder(
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height15,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.image_outlined,
-                          color: Colors.black45,
-                          size: Dimensions.iconSize24 - 4,
+            FormCard(
+              children: [
+                Row(
+                  children: [
+                    Text('Attachments', style: AdjustmentTextStyles.label()),
+                    if (_attachments.isNotEmpty) ...[
+                      SizedBox(width: Dimensions.width10 / 2),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width10 * 0.6,
+                          vertical: 2,
                         ),
-                        SizedBox(width: Dimensions.width10),
-                        Text(
-                          'Upload File',
+                        decoration: BoxDecoration(
+                          color: Appcolors.primary,
+                          borderRadius: BorderRadius.circular(99),
+                        ),
+                        child: Text(
+                          '${_attachments.length}',
                           style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.85,
-                            color: const Color(0xFF0F172A),
-                            fontWeight: FontWeight.w600,
+                            fontSize: Dimensions.font16 * 0.7,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
                           ),
                         ),
-                      ],
+                      ),
+                    ],
+                  ],
+                ),
+                SizedBox(height: Dimensions.height10),
+                InkWell(
+                  borderRadius: BorderRadius.circular(Dimensions.radius15),
+                  onTap: _showAttachmentsDialog,
+                  child: DashedBorder(
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height15,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.upload_file_outlined,
+                            color: Appcolors.primary,
+                            size: Dimensions.iconSize24 - 4,
+                          ),
+                          SizedBox(width: Dimensions.width10),
+                          Text(
+                            _attachments.isEmpty
+                                ? 'Upload File'
+                                : '${_attachments.length} file(s) attached',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.85,
+                              color: Appcolors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ]),
+              ],
+            ),
             SizedBox(height: Dimensions.height30),
           ],
         ),
       ),
     );
   }
-}
-
-/// Simple dashed-rounded-rectangle border, used for the Attachments
-/// "Upload File" drop zone (no external package dependency needed).
-class _DashedBorder extends StatelessWidget {
-  final Widget child;
-  const _DashedBorder({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(painter: _DashedBorderPainter(), child: child);
-  }
-}
-
-class _DashedBorderPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFFCBD5E1)
-      ..strokeWidth = 1.2
-      ..style = PaintingStyle.stroke;
-    final rrect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      const Radius.circular(14),
-    );
-    final path = Path()..addRRect(rrect);
-    final dashPath = Path();
-    for (final metric in path.computeMetrics()) {
-      double distance = 0;
-      const dashWidth = 6.0;
-      const dashSpace = 4.0;
-      while (distance < metric.length) {
-        dashPath.addPath(
-          metric.extractPath(distance, distance + dashWidth),
-          Offset.zero,
-        );
-        distance += dashWidth + dashSpace;
-      }
-    }
-    canvas.drawPath(dashPath, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

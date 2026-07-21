@@ -4,6 +4,8 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/image_helper.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/features/inventory_adjustments/model/line_item_model.dart';
+import 'package:custom_books/features/inventory_adjustments/widgets/adjustment_form_widgets.dart';
+import 'package:custom_books/features/inventory_adjustments/widgets/cost_price_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -178,178 +180,6 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
     _syncing = false;
   }
 
-  // Cost Price is now edited in a bottom sheet instead of a centered
-  // AlertDialog: rounded top corners, drag handle, a title row with a
-  // pill-shaped "Save" button, and an AED-prefixed input box.
-  Future<void> _editCostPrice() async {
-    final controller = TextEditingController(
-      text: _costPrice.toStringAsFixed(2),
-    );
-    final result = await showModalBottomSheet<double>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.radius15),
-        ),
-      ),
-      builder: (sheetContext) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: Dimensions.width20,
-            right: Dimensions.width20,
-            top: Dimensions.height15,
-            bottom:
-                MediaQuery.of(sheetContext).viewInsets.bottom +
-                Dimensions.height20,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: Dimensions.width20 * 2,
-                  height: 4,
-                  margin: EdgeInsets.only(bottom: Dimensions.height15),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE2E8F0),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Cost Price',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: Dimensions.font16 * 1.05,
-                      color: const Color(0xFF0F172A),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(
-                      sheetContext,
-                      double.tryParse(controller.text) ?? _costPrice,
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Appcolors.primary,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                        vertical: Dimensions.height10 * 0.7,
-                      ),
-                    ),
-                    child: Text(
-                      'Save',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: Dimensions.font16 * 0.8,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: Dimensions.height20),
-              Text.rich(
-                TextSpan(
-                  text: 'Enter Cost Price ',
-                  style: _label(),
-                  children: [
-                    TextSpan(
-                      text: '*',
-                      style: TextStyle(color: Colors.red.shade400),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: Dimensions.height10 / 2),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFCBD5E1)),
-                  borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width10,
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5F9),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(Dimensions.radius15 - 4),
-                          bottomLeft: Radius.circular(Dimensions.radius15 - 4),
-                        ),
-                      ),
-                      child: Text(
-                        'AED',
-                        style: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w600,
-                          fontSize: Dimensions.font16 * 0.85,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: controller,
-                        autofocus: true,
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                            RegExp(r'^\d*\.?\d*'),
-                          ),
-                        ],
-                        style: _value(),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.width10,
-                            vertical: Dimensions.height10,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-    if (result != null) setState(() => _costPrice = result);
-  }
-
-  TextStyle _label() => TextStyle(
-    fontSize: Dimensions.font16 * 0.8,
-    fontWeight: FontWeight.w600,
-    color: Appcolors.primary,
-  );
-
-  TextStyle _value() => TextStyle(
-    fontSize: Dimensions.font16 * 0.9,
-    fontWeight: FontWeight.w500,
-    color: const Color(0xFF0F172A),
-  );
-
-  Widget _divider() => Padding(
-    padding: EdgeInsets.symmetric(vertical: Dimensions.height10 / 2),
-    child: const Divider(height: 1, color: Color(0xFFE2E8F0)),
-  );
-
   void _done() {
     if (_selectedItem == null) {
       ToastificationHelper.showWarning(context, 'Please select an item.');
@@ -379,74 +209,32 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
     Navigator.pop(context, lineItem);
   }
 
-  Widget _numberField({
-    required TextEditingController controller,
-    required FocusNode focusNode,
-    required bool enabled,
-    required String hint,
-    required ValueChanged<String> onChanged,
-  }) {
-    appLog(
-      '🔢 _numberField called - enabled: $enabled, hint: $hint',
-      name: 'NumberField',
+  /// Builds a consistent square item thumbnail with proper error handling.
+  /// Uses [ImageHelper.buildImage] so both network and asset images are
+  /// supported, and the error / loading states are handled gracefully instead
+  /// of failing silently (which happens when a bare [DecorationImage] +
+  /// [NetworkImage] combination encounters a bad URL).
+  Widget _buildItemThumbnail(String? imageUrl) {
+    final fallback = Icon(
+      Icons.inventory_2_outlined,
+      color: Appcolors.primary,
+      size: Dimensions.iconSize24 - 6,
     );
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: enabled
-          ? () {
-              appLog(
-                '👆 Number field tapped - enabled: $enabled',
-                name: 'NumberField',
-              );
-              appLog(
-                '🎯 Requesting focus for field with hint: $hint',
-                name: 'NumberField',
-              );
-              focusNode.requestFocus();
-              appLog('✅ Focus requested', name: 'NumberField');
-            }
-          : () {
-              appLog(
-                '⚠️ Number field tapped but DISABLED',
-                name: 'NumberField',
-              );
-            },
-      child: Container(
-        width: Dimensions.height45 * 2.2,
-        height: Dimensions.height45,
-        alignment: Alignment.centerRight,
-        padding: EdgeInsets.symmetric(horizontal: Dimensions.width10),
-        decoration: BoxDecoration(
-          color: enabled ? Colors.white : const Color(0xFFF1F5F9),
-          borderRadius: BorderRadius.circular(Dimensions.radius15 - 6),
-          border: Border.all(color: const Color(0xFFCBD5E1)),
-        ),
-        child: TextField(
-          controller: controller,
-          focusNode: focusNode,
-          enabled: enabled,
-          onChanged: (value) {
-            appLog('📝 TextField value changed: $value', name: 'NumberField');
-            onChanged(value);
-          },
-          textAlign: TextAlign.right,
-          keyboardType: const TextInputType.numberWithOptions(
-            decimal: true,
-            signed: true,
-          ),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'^-?\d*\.?\d*')),
-          ],
-          style: _value(),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: const TextStyle(color: Colors.black26),
-            border: InputBorder.none,
-            isDense: true,
-            contentPadding: EdgeInsets.zero,
-          ),
-        ),
+    return Container(
+      width: Dimensions.height45 * 0.9,
+      height: Dimensions.height45 * 0.9,
+      decoration: BoxDecoration(
+        color: Appcolors.primary.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
       ),
+      clipBehavior: Clip.antiAlias,
+      child: imageUrl != null
+          ? ImageHelper.buildImage(
+              imageUrl,
+              fit: BoxFit.cover,
+              errorWidget: fallback,
+            )
+          : fallback,
     );
   }
 
@@ -508,7 +296,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                 Text.rich(
                   TextSpan(
                     text: 'Item ',
-                    style: _label(),
+                    style: AdjustmentTextStyles.label(),
                     children: [
                       TextSpan(
                         text: '*',
@@ -526,7 +314,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                         controller: _itemSearchController,
                         readOnly: _selectedItem != null,
                         onChanged: (_) => setState(() {}),
-                        style: _value(),
+                        style: AdjustmentTextStyles.value(),
                         decoration: InputDecoration(
                           hintText: 'Start typing to select an Item',
                           hintStyle: const TextStyle(color: Colors.black26),
@@ -558,36 +346,12 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                     ),
                     if (_selectedItem != null) ...[
                       SizedBox(width: Dimensions.width10),
-                      Container(
-                        width: Dimensions.height45 * 0.9,
-                        height: Dimensions.height45 * 0.9,
-                        decoration: BoxDecoration(
-                          color: Appcolors.primary.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius15 - 4,
-                          ),
-                          image: _selectedItem!.imageUrl != null
-                              ? DecorationImage(
-                                  image: ImageHelper.getImageProvider(
-                                    _selectedItem!.imageUrl!,
-                                  ),
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
-                        ),
-                        child: _selectedItem!.imageUrl == null
-                            ? Icon(
-                                Icons.inventory_2_outlined,
-                                color: Appcolors.primary,
-                                size: Dimensions.iconSize24 - 6,
-                              )
-                            : null,
-                      ),
+                      _buildItemThumbnail(_selectedItem!.imageUrl),
                     ],
                   ],
                 ),
                 if (_suggestions.isNotEmpty) ...[
-                  _divider(),
+                  const FormDivider(),
                   ..._suggestions.map(
                     (item) => InkWell(
                       onTap: () => _selectItem(item),
@@ -597,33 +361,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                         ),
                         child: Row(
                           children: [
-                            Container(
-                              width: Dimensions.height45 * 0.9,
-                              height: Dimensions.height45 * 0.9,
-                              decoration: BoxDecoration(
-                                color: Appcolors.primary.withValues(
-                                  alpha: 0.08,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  Dimensions.radius15 - 4,
-                                ),
-                                image: item.imageUrl != null
-                                    ? DecorationImage(
-                                        image: ImageHelper.getImageProvider(
-                                          item.imageUrl!,
-                                        ),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : null,
-                              ),
-                              child: item.imageUrl == null
-                                  ? Icon(
-                                      Icons.inventory_2_outlined,
-                                      color: Appcolors.primary,
-                                      size: Dimensions.iconSize24 - 6,
-                                    )
-                                  : null,
-                            ),
+                            _buildItemThumbnail(item.imageUrl),
                             SizedBox(width: Dimensions.width10),
                             Expanded(
                               child: Column(
@@ -669,12 +407,12 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                   ),
                 ],
                 if (_selectedItem != null) ...[
-                  _divider(),
+                  const FormDivider(),
                   SizedBox(height: Dimensions.height10),
-                  Text('Description', style: _label()),
+                  Text('Description', style: AdjustmentTextStyles.label()),
                   TextField(
                     controller: _descriptionController,
-                    style: _value(),
+                    style: AdjustmentTextStyles.value(),
                     decoration: const InputDecoration(
                       hintText: 'Add a description for your item',
                       hintStyle: TextStyle(color: Colors.black26),
@@ -682,12 +420,15 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                       isDense: true,
                     ),
                   ),
-                  _divider(),
+                  const FormDivider(),
                   SizedBox(height: Dimensions.height15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Stock on Hand', style: _label()),
+                      Text(
+                        'Stock on Hand',
+                        style: AdjustmentTextStyles.label(),
+                      ),
                       Text(
                         _selectedItem!.stockOnHand.toStringAsFixed(2),
                         style: TextStyle(
@@ -704,8 +445,11 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('New quantity on hand', style: _label()),
-                      _numberField(
+                      Text(
+                        'New quantity on hand',
+                        style: AdjustmentTextStyles.label(),
+                      ),
+                      AdjustmentNumberField(
                         controller: _newQtyController,
                         focusNode: _newQtyFocusNode,
                         enabled: true,
@@ -718,8 +462,11 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Quantity Adjusted', style: _label()),
-                      _numberField(
+                      Text(
+                        'Quantity Adjusted',
+                        style: AdjustmentTextStyles.label(),
+                      ),
+                      AdjustmentNumberField(
                         controller: _adjustedController,
                         focusNode: _adjustedFocusNode,
                         enabled: true,
@@ -748,7 +495,15 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       InkWell(
-                        onTap: _editCostPrice,
+                        onTap: () async {
+                          final result = await CostPriceEditor.show(
+                            context,
+                            initialValue: _costPrice,
+                          );
+                          if (result != null) {
+                            setState(() => _costPrice = result);
+                          }
+                        },
                         child: Icon(
                           Icons.edit_rounded,
                           size: Dimensions.iconSize24 - 8,
