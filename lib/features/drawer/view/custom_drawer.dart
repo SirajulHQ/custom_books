@@ -7,6 +7,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/drawer/widgets/footer_button.dart';
 import 'package:custom_books/features/items/view/items_page.dart';
 import 'package:custom_books/features/home/view/home_page.dart';
+import 'package:custom_books/features/inventory_adjustments/view/inventory_adjustments_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerView extends StatefulWidget {
@@ -216,7 +217,7 @@ class _DrawerViewState extends State<DrawerView> {
                 ExpandableMenuItem(
                   title: 'Inventory',
                   icon: Icons.inventory_2_rounded,
-                  subItems: const ['Inventory Adjustments', 'Item Groups'],
+                  subItems: const ['Inventory Adjustments'],
                   isExpanded: _expandedSections['Inventory'] ?? false,
                   onTap: () {
                     log(
@@ -224,6 +225,42 @@ class _DrawerViewState extends State<DrawerView> {
                       name: 'DrawerNavigation',
                     );
                     _toggleSection('Inventory');
+                  },
+                  onSubItemTap: (subItem) {
+                    log(
+                      '📦 Inventory subitem tapped: $subItem',
+                      name: 'DrawerNavigation',
+                    );
+
+                    if (subItem == 'Inventory Adjustments') {
+                      // If already on Inventory Adjustments page, just close the drawer
+                      if (widget.currentRoute == 'inventory_adjustments') {
+                        log(
+                          '⚠️ Already on Inventory Adjustments page, just closing drawer',
+                          name: 'DrawerNavigation',
+                        );
+                        Navigator.pop(context);
+                        return;
+                      }
+
+                      Navigator.pop(context);
+                      log(
+                        '📍 Navigating to InventoryAdjustmentsPage...',
+                        name: 'DrawerNavigation',
+                      );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            log(
+                              '✅ InventoryAdjustmentsPage builder called',
+                              name: 'DrawerNavigation',
+                            );
+                            return const InventoryAdjustmentsPage();
+                          },
+                        ),
+                      );
+                    }
                   },
                 ),
 

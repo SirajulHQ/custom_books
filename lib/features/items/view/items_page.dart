@@ -16,6 +16,8 @@ class ItemsPage extends StatefulWidget {
 
 class _ItemsPageState extends State<ItemsPage> {
   String _selectedFilter = 'Active Items';
+  bool _searchOpen = false;
+  final _searchController = TextEditingController();
 
   final List<String> _allFilterOptions = [
     'All Items',
@@ -33,6 +35,12 @@ class _ItemsPageState extends State<ItemsPage> {
   void initState() {
     super.initState();
     log('🎯 ItemsPage initialized', name: 'ItemsPage');
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   // Dummy data based on the image
@@ -62,14 +70,26 @@ class _ItemsPageState extends State<ItemsPage> {
   ];
 
   List<ItemModel> get _filteredItems {
-    if (_selectedFilter == 'All Items') return _items;
+    var list = _items;
+
+    // Apply filter
     if (_selectedFilter == 'Active Items') {
-      return _items.where((item) => item.isActive).toList();
+      list = list.where((item) => item.isActive).toList();
     } else if (_selectedFilter == 'Inactive Items') {
-      return _items.where((item) => !item.isActive).toList();
+      list = list.where((item) => !item.isActive).toList();
     }
-    // For other filters, show all items for now
-    return _items;
+    // For 'All Items' and other filters, show all items for now
+
+    // Apply search
+    final query = _searchController.text.trim().toLowerCase();
+    if (query.isNotEmpty) {
+      list = list.where((item) {
+        return item.name.toLowerCase().contains(query) ||
+            (item.sku?.toLowerCase().contains(query) ?? false);
+      }).toList();
+    }
+
+    return list;
   }
 
   void _showFilterBottomSheet() {
@@ -288,10 +308,14 @@ class _ItemsPageState extends State<ItemsPage> {
               ),
               actions: [
                 _buildIconButton(
-                  Icons.search_rounded,
+                  _searchOpen ? Icons.close_rounded : Icons.search_rounded,
                   Appcolors.primary,
                   onTap: () {
                     log('🔍 Search tapped', name: 'ItemsPage');
+                    setState(() {
+                      _searchOpen = !_searchOpen;
+                      if (!_searchOpen) _searchController.clear();
+                    });
                   },
                 ),
                 SizedBox(width: Dimensions.width10),
@@ -305,6 +329,9 @@ class _ItemsPageState extends State<ItemsPage> {
                 SizedBox(width: Dimensions.width20),
               ],
             ),
+
+            // Search Field
+            if (_searchOpen) SliverToBoxAdapter(child: _buildSearchField()),
 
             // Filter Segment Control
             SliverToBoxAdapter(child: _buildFilterSegment()),
@@ -360,6 +387,43 @@ class _ItemsPageState extends State<ItemsPage> {
           borderRadius: BorderRadius.circular(Dimensions.radius15),
         ),
         child: Icon(icon, size: Dimensions.iconSize24 - 4, color: color),
+      ),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        Dimensions.width20,
+        0,
+        Dimensions.width20,
+        Dimensions.height15,
+      ),
+      child: TextField(
+        controller: _searchController,
+        autofocus: true,
+        onChanged: (_) => setState(() {}),
+        style: TextStyle(fontSize: Dimensions.font16 * 0.85),
+        decoration: InputDecoration(
+          hintText: 'Search by name or SKU',
+          hintStyle: const TextStyle(color: Colors.black26),
+          prefixIcon: const Icon(Icons.search_rounded, color: Colors.black38),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
+          ),
+        ),
       ),
     );
   }

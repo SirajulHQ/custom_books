@@ -7,6 +7,7 @@ class ExpandableMenuItem extends StatelessWidget {
   final List<String> subItems;
   final bool isExpanded;
   final VoidCallback onTap;
+  final Function(String)? onSubItemTap;
 
   const ExpandableMenuItem({
     super.key,
@@ -15,6 +16,7 @@ class ExpandableMenuItem extends StatelessWidget {
     required this.subItems,
     required this.isExpanded,
     required this.onTap,
+    this.onSubItemTap,
   });
 
   @override
@@ -77,8 +79,11 @@ class ExpandableMenuItem extends StatelessWidget {
                 vertical: 0,
               ),
               onTap: () {
-                Navigator.pop(context);
-                // Handle sub-item navigation
+                if (onSubItemTap != null) {
+                  onSubItemTap!(subItem);
+                } else {
+                  Navigator.pop(context);
+                }
               },
             ),
           ),
