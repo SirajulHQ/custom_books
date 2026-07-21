@@ -1,5 +1,5 @@
-import 'dart:developer';
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
@@ -82,7 +82,7 @@ class _AddItemPageState extends State<AddItemPage> {
                   ),
                 ),
                 onPressed: () {
-                  log('⬅️ Back button tapped', name: 'AddItemPage');
+                  appLog('⬅️ Back button tapped', name: 'AddItemPage');
                   Navigator.pop(context);
                 },
               ),
@@ -112,7 +112,7 @@ class _AddItemPageState extends State<AddItemPage> {
                   margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
                   child: ElevatedButton(
                     onPressed: () {
-                      log('💾 Save button tapped', name: 'AddItemPage');
+                      appLog('💾 Save button tapped', name: 'AddItemPage');
                       // TODO: Implement save functionality
                     },
                     style: ElevatedButton.styleFrom(
@@ -209,7 +209,7 @@ class _AddItemPageState extends State<AddItemPage> {
                               SizedBox(height: Dimensions.height10),
                               GestureDetector(
                                 onTap: () {
-                                  log(
+                                  appLog(
                                     '📷 Add Image tapped',
                                     name: 'AddItemPage',
                                   );
@@ -567,7 +567,7 @@ class _AddItemPageState extends State<AddItemPage> {
     return GestureDetector(
       onTap: () {
         setState(() => _itemType = label);
-        log('📝 Item type changed to: $label', name: 'AddItemPage');
+        appLog('📝 Item type changed to: $label', name: 'AddItemPage');
       },
       child: Row(
         children: [

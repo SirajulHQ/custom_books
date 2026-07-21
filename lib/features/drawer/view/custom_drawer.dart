@@ -1,5 +1,5 @@
-import 'dart:developer';
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/features/drawer/models/drawer_item.dart';
 import 'package:custom_books/features/drawer/widgets/drawer_menu_item.dart';
 import 'package:custom_books/features/drawer/widgets/expandable_menu_item.dart';
@@ -141,11 +141,11 @@ class _DrawerViewState extends State<DrawerView> {
                     isSelected: widget.currentRoute == 'home',
                   ),
                   onCustomTap: () {
-                    log('🏠 Home button tapped', name: 'DrawerNavigation');
+                    appLog('🏠 Home button tapped', name: 'DrawerNavigation');
 
                     // If already on Home page, just close the drawer
                     if (widget.currentRoute == 'home') {
-                      log(
+                      appLog(
                         '⚠️ Already on Home page, just closing drawer',
                         name: 'DrawerNavigation',
                       );
@@ -154,7 +154,7 @@ class _DrawerViewState extends State<DrawerView> {
                     }
 
                     Navigator.pop(context);
-                    log(
+                    appLog(
                       '📍 Navigating to HomePage...',
                       name: 'DrawerNavigation',
                     );
@@ -162,7 +162,7 @@ class _DrawerViewState extends State<DrawerView> {
                       context,
                       MaterialPageRoute(
                         builder: (context) {
-                          log(
+                          appLog(
                             '✅ HomePage builder called',
                             name: 'DrawerNavigation',
                           );
@@ -181,11 +181,11 @@ class _DrawerViewState extends State<DrawerView> {
                     isSelected: widget.currentRoute == 'items',
                   ),
                   onCustomTap: () {
-                    log('🛍️ Items button tapped', name: 'DrawerNavigation');
+                    appLog('🛍️ Items button tapped', name: 'DrawerNavigation');
 
                     // If already on Items page, just close the drawer
                     if (widget.currentRoute == 'items') {
-                      log(
+                      appLog(
                         '⚠️ Already on Items page, just closing drawer',
                         name: 'DrawerNavigation',
                       );
@@ -194,7 +194,7 @@ class _DrawerViewState extends State<DrawerView> {
                     }
 
                     Navigator.pop(context);
-                    log(
+                    appLog(
                       '📍 Navigating to ItemsPage...',
                       name: 'DrawerNavigation',
                     );
@@ -202,7 +202,7 @@ class _DrawerViewState extends State<DrawerView> {
                       context,
                       MaterialPageRoute(
                         builder: (context) {
-                          log(
+                          appLog(
                             '✅ ItemsPage builder called',
                             name: 'DrawerNavigation',
                           );
@@ -220,14 +220,14 @@ class _DrawerViewState extends State<DrawerView> {
                   subItems: const ['Inventory Adjustments'],
                   isExpanded: _expandedSections['Inventory'] ?? false,
                   onTap: () {
-                    log(
+                    appLog(
                       '📦 Inventory section tapped',
                       name: 'DrawerNavigation',
                     );
                     _toggleSection('Inventory');
                   },
                   onSubItemTap: (subItem) {
-                    log(
+                    appLog(
                       '📦 Inventory subitem tapped: $subItem',
                       name: 'DrawerNavigation',
                     );
@@ -235,7 +235,7 @@ class _DrawerViewState extends State<DrawerView> {
                     if (subItem == 'Inventory Adjustments') {
                       // If already on Inventory Adjustments page, just close the drawer
                       if (widget.currentRoute == 'inventory_adjustments') {
-                        log(
+                        appLog(
                           '⚠️ Already on Inventory Adjustments page, just closing drawer',
                           name: 'DrawerNavigation',
                         );
@@ -244,7 +244,7 @@ class _DrawerViewState extends State<DrawerView> {
                       }
 
                       Navigator.pop(context);
-                      log(
+                      appLog(
                         '📍 Navigating to InventoryAdjustmentsPage...',
                         name: 'DrawerNavigation',
                       );
@@ -252,7 +252,7 @@ class _DrawerViewState extends State<DrawerView> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            log(
+                            appLog(
                               '✅ InventoryAdjustmentsPage builder called',
                               name: 'DrawerNavigation',
                             );
@@ -271,7 +271,10 @@ class _DrawerViewState extends State<DrawerView> {
                     title: 'Banking',
                   ),
                   onCustomTap: () {
-                    log('🏦 Banking button tapped', name: 'DrawerNavigation');
+                    appLog(
+                      '🏦 Banking button tapped',
+                      name: 'DrawerNavigation',
+                    );
                     Navigator.pop(context);
                   },
                 ),
@@ -292,7 +295,7 @@ class _DrawerViewState extends State<DrawerView> {
                   ],
                   isExpanded: _expandedSections['Sales'] ?? false,
                   onTap: () {
-                    log('🛒 Sales section tapped', name: 'DrawerNavigation');
+                    appLog('🛒 Sales section tapped', name: 'DrawerNavigation');
                     _toggleSection('Sales');
                   },
                 ),
@@ -311,7 +314,7 @@ class _DrawerViewState extends State<DrawerView> {
                   ],
                   isExpanded: _expandedSections['Purchases'] ?? false,
                   onTap: () {
-                    log(
+                    appLog(
                       '🧺 Purchases section tapped',
                       name: 'DrawerNavigation',
                     );
@@ -326,7 +329,7 @@ class _DrawerViewState extends State<DrawerView> {
                   subItems: const ['Projects', 'Time Entries', 'Timer'],
                   isExpanded: _expandedSections['Time Tracking'] ?? false,
                   onTap: () {
-                    log(
+                    appLog(
                       '⏰ Time Tracking section tapped',
                       name: 'DrawerNavigation',
                     );
@@ -341,7 +344,7 @@ class _DrawerViewState extends State<DrawerView> {
                   subItems: const ['Manual Journals'],
                   isExpanded: _expandedSections['Accountant'] ?? false,
                   onTap: () {
-                    log(
+                    appLog(
                       '👤 Accountant section tapped',
                       name: 'DrawerNavigation',
                     );
@@ -356,7 +359,7 @@ class _DrawerViewState extends State<DrawerView> {
                   subItems: const ['Inbox', 'All Files', 'Folders'],
                   isExpanded: _expandedSections['Documents'] ?? false,
                   onTap: () {
-                    log(
+                    appLog(
                       '📁 Documents section tapped',
                       name: 'DrawerNavigation',
                     );
@@ -371,7 +374,10 @@ class _DrawerViewState extends State<DrawerView> {
                     title: 'Reports',
                   ),
                   onCustomTap: () {
-                    log('📊 Reports button tapped', name: 'DrawerNavigation');
+                    appLog(
+                      '📊 Reports button tapped',
+                      name: 'DrawerNavigation',
+                    );
                     Navigator.pop(context);
                   },
                 ),
@@ -383,7 +389,10 @@ class _DrawerViewState extends State<DrawerView> {
                     title: 'Settings',
                   ),
                   onCustomTap: () {
-                    log('⚙️ Settings button tapped', name: 'DrawerNavigation');
+                    appLog(
+                      '⚙️ Settings button tapped',
+                      name: 'DrawerNavigation',
+                    );
                     Navigator.pop(context);
                   },
                 ),

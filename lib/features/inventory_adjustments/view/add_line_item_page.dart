@@ -1,6 +1,8 @@
-import 'dart:developer';
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/image_helper.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/features/inventory_adjustments/model/line_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -108,12 +110,12 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
 
   List<InventoryItemLookup> get _suggestions {
     final q = _itemSearchController.text.trim().toLowerCase();
-    log(
+    appLog(
       '🔍 Getting suggestions for query: "$q", _selectedItem: ${_selectedItem?.name ?? "null"}',
       name: 'AddLineItem',
     );
     if (q.isEmpty || _selectedItem != null) {
-      log(
+      appLog(
         '⚠️ Returning empty suggestions (query empty: ${q.isEmpty}, item selected: ${_selectedItem != null})',
         name: 'AddLineItem',
       );
@@ -122,12 +124,12 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
     final results = _catalog
         .where((i) => i.name.toLowerCase().contains(q))
         .toList();
-    log('✅ Found ${results.length} suggestions', name: 'AddLineItem');
+    appLog('✅ Found ${results.length} suggestions', name: 'AddLineItem');
     return results;
   }
 
   void _selectItem(InventoryItemLookup item) {
-    log(
+    appLog(
       '📦 Item selected: ${item.name}, stockOnHand: ${item.stockOnHand}',
       name: 'AddLineItem',
     );
@@ -138,7 +140,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
       _newQtyController.clear();
       _adjustedController.clear();
     });
-    log(
+    appLog(
       '✅ Item selection complete. _selectedItem is now: ${_selectedItem?.name}',
       name: 'AddLineItem',
     );
@@ -146,14 +148,14 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
   }
 
   void _clearItem() {
-    log('🗑️ Clearing selected item', name: 'AddLineItem');
+    appLog('🗑️ Clearing selected item', name: 'AddLineItem');
     setState(() {
       _selectedItem = null;
       _itemSearchController.clear();
       _newQtyController.clear();
       _adjustedController.clear();
     });
-    log('✅ Item cleared. _selectedItem is now: null', name: 'AddLineItem');
+    appLog('✅ Item cleared. _selectedItem is now: null', name: 'AddLineItem');
   }
 
   void _onNewQtyChanged(String value) {
@@ -350,9 +352,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
 
   void _done() {
     if (_selectedItem == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please select an item.')));
+      ToastificationHelper.showWarning(context, 'Please select an item.');
       return;
     }
     final newQty =
@@ -386,7 +386,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
     required String hint,
     required ValueChanged<String> onChanged,
   }) {
-    log(
+    appLog(
       '🔢 _numberField called - enabled: $enabled, hint: $hint',
       name: 'NumberField',
     );
@@ -394,19 +394,22 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
       behavior: HitTestBehavior.opaque,
       onTap: enabled
           ? () {
-              log(
+              appLog(
                 '👆 Number field tapped - enabled: $enabled',
                 name: 'NumberField',
               );
-              log(
+              appLog(
                 '🎯 Requesting focus for field with hint: $hint',
                 name: 'NumberField',
               );
               focusNode.requestFocus();
-              log('✅ Focus requested', name: 'NumberField');
+              appLog('✅ Focus requested', name: 'NumberField');
             }
           : () {
-              log('⚠️ Number field tapped but DISABLED', name: 'NumberField');
+              appLog(
+                '⚠️ Number field tapped but DISABLED',
+                name: 'NumberField',
+              );
             },
       child: Container(
         width: Dimensions.height45 * 2.2,
@@ -423,7 +426,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
           focusNode: focusNode,
           enabled: enabled,
           onChanged: (value) {
-            log('📝 TextField value changed: $value', name: 'NumberField');
+            appLog('📝 TextField value changed: $value', name: 'NumberField');
             onChanged(value);
           },
           textAlign: TextAlign.right,
@@ -450,7 +453,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
-    log(
+    appLog(
       '🏗️ Building AddLineItemPage - _selectedItem: ${_selectedItem?.name ?? "null"}',
       name: 'AddLineItem',
     );
@@ -544,12 +547,9 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                                     size: Dimensions.iconSize24 - 4,
                                   ),
                                   onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Barcode scan coming soon',
-                                        ),
-                                      ),
+                                    ToastificationHelper.showInfo(
+                                      context,
+                                      'Barcode scan coming soon',
                                     );
                                   },
                                 ),
@@ -568,7 +568,9 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                           ),
                           image: _selectedItem!.imageUrl != null
                               ? DecorationImage(
-                                  image: NetworkImage(_selectedItem!.imageUrl!),
+                                  image: ImageHelper.getImageProvider(
+                                    _selectedItem!.imageUrl!,
+                                  ),
                                   fit: BoxFit.cover,
                                 )
                               : null,
@@ -607,7 +609,9 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                                 ),
                                 image: item.imageUrl != null
                                     ? DecorationImage(
-                                        image: NetworkImage(item.imageUrl!),
+                                        image: ImageHelper.getImageProvider(
+                                          item.imageUrl!,
+                                        ),
                                         fit: BoxFit.cover,
                                       )
                                     : null,

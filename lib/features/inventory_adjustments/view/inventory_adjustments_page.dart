@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/features/drawer/view/custom_drawer.dart';
 import 'package:custom_books/features/inventory_adjustments/model/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/view/add_adjustment_page.dart';
@@ -151,11 +152,9 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
                 _adjustments.add(result);
               });
               if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Adjustment "${result.reason}" created'),
-                    backgroundColor: Colors.green.shade600,
-                  ),
+                ToastificationHelper.showSuccess(
+                  context,
+                  'Adjustment "${result.reason}" created',
                 );
               }
             }

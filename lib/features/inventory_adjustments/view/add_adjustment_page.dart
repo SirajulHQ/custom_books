@@ -1,5 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/image_helper.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/features/inventory_adjustments/model/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/model/line_item_model.dart';
 import 'package:custom_books/features/inventory_adjustments/view/add_line_item_page.dart';
@@ -92,12 +94,9 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
 
   void _save() {
     if (!_isValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Please fill Account, Reason, and add at least one line item.',
-          ),
-        ),
+      ToastificationHelper.showWarning(
+        context,
+        'Please fill Account, Reason, and add at least one line item.',
       );
       return;
     }
@@ -269,7 +268,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                   borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
                   image: item.imageUrl != null
                       ? DecorationImage(
-                          image: NetworkImage(item.imageUrl!),
+                          image: ImageHelper.getImageProvider(item.imageUrl!),
                           fit: BoxFit.cover,
                         )
                       : null,
@@ -499,8 +498,9 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                 onTap: () {
                   // TODO: wire up a real file/image picker (e.g. file_picker
                   // or image_picker) and store the result on the adjustment.
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('File upload coming soon')),
+                  ToastificationHelper.showInfo(
+                    context,
+                    'File upload coming soon',
                   );
                 },
                 child: _DashedBorder(

@@ -1,5 +1,5 @@
-import 'dart:developer';
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/drawer/view/custom_drawer.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
@@ -34,7 +34,7 @@ class _ItemsPageState extends State<ItemsPage> {
   @override
   void initState() {
     super.initState();
-    log('🎯 ItemsPage initialized', name: 'ItemsPage');
+    appLog('🎯 ItemsPage initialized', name: 'ItemsPage');
   }
 
   @override
@@ -93,7 +93,7 @@ class _ItemsPageState extends State<ItemsPage> {
   }
 
   void _showFilterBottomSheet() {
-    log('📋 Opening filter bottom sheet', name: 'ItemsPage');
+    appLog('📋 Opening filter bottom sheet', name: 'ItemsPage');
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -134,7 +134,7 @@ class _ItemsPageState extends State<ItemsPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        log('❌ Filter sheet closed', name: 'ItemsPage');
+                        appLog('❌ Filter sheet closed', name: 'ItemsPage');
                         Navigator.pop(context);
                       },
                       child: Icon(
@@ -182,7 +182,7 @@ class _ItemsPageState extends State<ItemsPage> {
 
                   return GestureDetector(
                     onTap: () {
-                      log('✅ Filter selected: $filter', name: 'ItemsPage');
+                      appLog('✅ Filter selected: $filter', name: 'ItemsPage');
                       setState(() {
                         _selectedFilter = filter;
                       });
@@ -246,7 +246,7 @@ class _ItemsPageState extends State<ItemsPage> {
 
   @override
   Widget build(BuildContext context) {
-    log('🏗️ Building ItemsPage', name: 'ItemsPage');
+    appLog('🏗️ Building ItemsPage', name: 'ItemsPage');
     Dimensions.init(context);
 
     return Scaffold(
@@ -280,7 +280,7 @@ class _ItemsPageState extends State<ItemsPage> {
                     ),
                   ),
                   onPressed: () {
-                    log('📂 Drawer menu button tapped', name: 'ItemsPage');
+                    appLog('📂 Drawer menu button tapped', name: 'ItemsPage');
                     Scaffold.of(context).openDrawer();
                   },
                 ),
@@ -311,7 +311,7 @@ class _ItemsPageState extends State<ItemsPage> {
                   _searchOpen ? Icons.close_rounded : Icons.search_rounded,
                   Appcolors.primary,
                   onTap: () {
-                    log('🔍 Search tapped', name: 'ItemsPage');
+                    appLog('🔍 Search tapped', name: 'ItemsPage');
                     setState(() {
                       _searchOpen = !_searchOpen;
                       if (!_searchOpen) _searchController.clear();
@@ -323,7 +323,7 @@ class _ItemsPageState extends State<ItemsPage> {
                   Icons.qr_code_scanner_rounded,
                   Appcolors.accent,
                   onTap: () {
-                    log('📷 QR Scanner tapped', name: 'ItemsPage');
+                    appLog('📷 QR Scanner tapped', name: 'ItemsPage');
                   },
                 ),
                 SizedBox(width: Dimensions.width20),
@@ -357,7 +357,7 @@ class _ItemsPageState extends State<ItemsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          log('➕ Add Item FAB tapped', name: 'ItemsPage');
+          appLog('➕ Add Item FAB tapped', name: 'ItemsPage');
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AddItemPage()),
@@ -452,7 +452,7 @@ class _ItemsPageState extends State<ItemsPage> {
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  log('🔽 Filter dropdown tapped', name: 'ItemsPage');
+                  appLog('🔽 Filter dropdown tapped', name: 'ItemsPage');
                   _showFilterBottomSheet();
                 },
                 child: Container(
@@ -497,7 +497,7 @@ class _ItemsPageState extends State<ItemsPage> {
             // Sort button
             GestureDetector(
               onTap: () {
-                log('🔀 Sort button tapped', name: 'ItemsPage');
+                appLog('🔀 Sort button tapped', name: 'ItemsPage');
                 // TODO: Implement sort functionality
               },
               child: Container(

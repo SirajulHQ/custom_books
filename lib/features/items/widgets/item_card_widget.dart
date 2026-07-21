@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/image_helper.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:flutter/material.dart';
 
@@ -31,11 +32,10 @@ class ItemCardWidget extends StatelessWidget {
             child: item.imageUrl != null
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    child: Image.network(
+                    child: ImageHelper.buildImage(
                       item.imageUrl!,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          _buildPlaceholderIcon(),
+                      errorWidget: _buildPlaceholderIcon(),
                     ),
                   )
                 : _buildPlaceholderIcon(),
