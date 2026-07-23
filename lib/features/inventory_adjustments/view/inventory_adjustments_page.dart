@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/features/drawer/view/custom_drawer.dart';
 import 'package:custom_books/features/inventory_adjustments/model/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/view/add_adjustment_page.dart';
+import 'package:custom_books/features/inventory_adjustments/view/adjustment_details_page.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/inventory_adjustments_card_widgets.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/inventory_adjustments_page_widgets.dart';
 import 'package:flutter/material.dart';
@@ -287,6 +288,15 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
                     (context, index) => InventoryAdjustmentCardWidget(
                       adjustment: items[index],
                       mode: _listMode,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AdjustmentDetailsPage(adjustment: items[index]),
+                          ),
+                        );
+                      },
                     ),
                     childCount: items.length,
                   ),
