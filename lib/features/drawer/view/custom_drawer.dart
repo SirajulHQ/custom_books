@@ -9,6 +9,7 @@ import 'package:custom_books/features/items/view/items_page.dart';
 import 'package:custom_books/features/home/view/home_page.dart';
 import 'package:custom_books/features/inventory_adjustments/view/inventory_adjustments_page.dart';
 import 'package:custom_books/features/banking/view/banking_page.dart';
+import 'package:custom_books/features/customers/view/customers_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerView extends StatefulWidget {
@@ -326,6 +327,42 @@ class _DrawerViewState extends State<DrawerView> {
                   onTap: () {
                     appLog('🛒 Sales section tapped', name: 'DrawerNavigation');
                     _toggleSection('Sales');
+                  },
+                  onSubItemTap: (subItem) {
+                    appLog(
+                      '🛒 Sales subitem tapped: $subItem',
+                      name: 'DrawerNavigation',
+                    );
+
+                    if (subItem == 'Customers') {
+                      // If already on Customers page, just close the drawer
+                      if (widget.currentRoute == 'customers') {
+                        appLog(
+                          '⚠️ Already on Customers page, just closing drawer',
+                          name: 'DrawerNavigation',
+                        );
+                        Navigator.pop(context);
+                        return;
+                      }
+
+                      Navigator.pop(context);
+                      appLog(
+                        '📍 Navigating to CustomersPage...',
+                        name: 'DrawerNavigation',
+                      );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            appLog(
+                              '✅ CustomersPage builder called',
+                              name: 'DrawerNavigation',
+                            );
+                            return const CustomersPage();
+                          },
+                        ),
+                      );
+                    }
                   },
                 ),
 

@@ -1,0 +1,585 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/app_logger.dart';
+import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/features/drawer/view/custom_drawer.dart';
+import 'package:custom_books/features/customers/models/customer_model.dart';
+import 'package:custom_books/features/customers/widgets/customer_card_widget.dart';
+import 'package:custom_books/features/customers/view/add_customer_page.dart';
+import 'package:flutter/material.dart';
+
+class CustomersPage extends StatefulWidget {
+  const CustomersPage({super.key});
+
+  @override
+  State<CustomersPage> createState() => _CustomersPageState();
+}
+
+class _CustomersPageState extends State<CustomersPage> {
+  String _selectedFilter = 'Active Customers';
+  bool _searchOpen = false;
+  final _searchController = TextEditingController();
+
+  final List<String> _allFilterOptions = [
+    'All Customers',
+    'Active Customers',
+    'CRM Customers',
+    'Duplicate Customers',
+    'Inactive Customers',
+    'Customer Portal Enabled',
+    'Customer Portal Disabled',
+    'Overdue Customers',
+    'Unpaid Customers',
+    'Associated with Payment Options',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    appLog('🎯 CustomersPage initialized', name: 'CustomersPage');
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  // Dummy data based on the image
+  final List<CustomerModel> _customers = [
+    CustomerModel(
+      id: '1',
+      name: 'Amal',
+      receivables: 315.00,
+      unusedCredits: 0.00,
+      isActive: true,
+    ),
+    CustomerModel(
+      id: '2',
+      name: 'nabeel',
+      email: 'nabeelkari18@gmail.com',
+      receivables: 0.00,
+      unusedCredits: 0.00,
+      isActive: true,
+    ),
+    CustomerModel(
+      id: '3',
+      name: 'Nandhu',
+      receivables: 3430.00,
+      unusedCredits: 1210.00,
+      isActive: true,
+    ),
+    CustomerModel(
+      id: '4',
+      name: 'Parthiv Ajith',
+      receivables: 0.00,
+      unusedCredits: 0.00,
+      isActive: true,
+    ),
+    CustomerModel(
+      id: '5',
+      name: 'Parthiv Ajith',
+      receivables: 0.00,
+      unusedCredits: 1000.00,
+      isActive: true,
+    ),
+    CustomerModel(
+      id: '6',
+      name: 'Parthiv2 Ajith2',
+      receivables: 0.00,
+      unusedCredits: 0.00,
+      isActive: true,
+    ),
+  ];
+
+  List<CustomerModel> get _filteredCustomers {
+    var list = _customers;
+
+    // Apply filter
+    if (_selectedFilter == 'Active Customers') {
+      list = list.where((customer) => customer.isActive).toList();
+    } else if (_selectedFilter == 'Inactive Customers') {
+      list = list.where((customer) => !customer.isActive).toList();
+    }
+    // For other filters, show all customers for now
+    // TODO: Implement specific filter logic for:
+    // - CRM Customers
+    // - Duplicate Customers
+    // - Customer Portal Enabled/Disabled
+    // - Overdue Customers
+    // - Unpaid Customers
+    // - Associated with Payment Options
+
+    // Apply search
+    final query = _searchController.text.trim().toLowerCase();
+    if (query.isNotEmpty) {
+      list = list.where((customer) {
+        return customer.name.toLowerCase().contains(query) ||
+            (customer.email?.toLowerCase().contains(query) ?? false);
+      }).toList();
+    }
+
+    return list;
+  }
+
+  void _showFilterBottomSheet() {
+    appLog('📋 Opening filter bottom sheet', name: 'CustomersPage');
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(Dimensions.radius20),
+              topRight: Radius.circular(Dimensions.radius20),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width20,
+                  vertical: Dimensions.height15,
+                ),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Appcolors.border, width: 1),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Filter',
+                      style: TextStyle(
+                        fontSize: Dimensions.font20,
+                        fontWeight: FontWeight.bold,
+                        color: Appcolors.textPrimary,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        appLog('❌ Filter sheet closed', name: 'CustomersPage');
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: Dimensions.iconSize24,
+                        color: Appcolors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Default Filters Label
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  Dimensions.height20,
+                  Dimensions.width20,
+                  Dimensions.height10,
+                ),
+                child: Text(
+                  'DEFAULT FILTERS',
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.7,
+                    fontWeight: FontWeight.w600,
+                    color: Appcolors.textTertiary,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+
+              // Filter options
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width20,
+                  vertical: Dimensions.height10,
+                ),
+                itemCount: _allFilterOptions.length,
+                itemBuilder: (context, index) {
+                  final filter = _allFilterOptions[index];
+                  final isSelected = filter == _selectedFilter;
+
+                  return GestureDetector(
+                    onTap: () {
+                      appLog(
+                        '✅ Filter selected: $filter',
+                        name: 'CustomersPage',
+                      );
+                      setState(() {
+                        _selectedFilter = filter;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: Dimensions.height10),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Dimensions.width15,
+                        vertical: Dimensions.height15,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? Appcolors.primary.withValues(alpha: 0.05)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15,
+                        ),
+                        border: Border.all(
+                          color: isSelected
+                              ? Appcolors.primary
+                              : Appcolors.border,
+                          width: isSelected ? 2 : 1,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            filter,
+                            style: TextStyle(
+                              fontSize: Dimensions.font16,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w500,
+                              color: isSelected
+                                  ? Appcolors.primary
+                                  : Appcolors.textPrimary,
+                            ),
+                          ),
+                          if (isSelected)
+                            Icon(
+                              Icons.check_circle,
+                              color: Appcolors.primary,
+                              size: Dimensions.iconSize24,
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    appLog('🏗️ Building CustomersPage', name: 'CustomersPage');
+    Dimensions.init(context);
+
+    return Scaffold(
+      backgroundColor: Appcolors.background,
+      drawer: const DrawerView(currentRoute: 'customers'),
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // App Bar
+            SliverAppBar(
+              pinned: true,
+              backgroundColor: Appcolors.background,
+              surfaceTintColor: Appcolors.background,
+              elevation: 0,
+              toolbarHeight: Dimensions.height45 * 1.6,
+              titleSpacing: Dimensions.width20,
+              leading: Builder(
+                builder: (context) => IconButton(
+                  icon: Container(
+                    width: Dimensions.height45 * 0.9,
+                    height: Dimensions.height45 * 0.9,
+                    decoration: BoxDecoration(
+                      color: Appcolors.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    ),
+                    child: Icon(
+                      Icons.menu_rounded,
+                      size: Dimensions.iconSize24 - 4,
+                      color: Appcolors.primary,
+                    ),
+                  ),
+                  onPressed: () {
+                    appLog(
+                      '📂 Drawer menu button tapped',
+                      name: 'CustomersPage',
+                    );
+                    Scaffold.of(context).openDrawer();
+                  },
+                ),
+              ),
+              title: Text(
+                'Customers',
+                style: TextStyle(
+                  fontSize: Dimensions.font26 * 0.85,
+                  fontWeight: FontWeight.w800,
+                  color: const Color(0xFF0F172A),
+                ),
+              ),
+              actions: [
+                _buildIconButton(
+                  _searchOpen ? Icons.close_rounded : Icons.search_rounded,
+                  Appcolors.primary,
+                  onTap: () {
+                    appLog('🔍 Search tapped', name: 'CustomersPage');
+                    setState(() {
+                      _searchOpen = !_searchOpen;
+                      if (!_searchOpen) _searchController.clear();
+                    });
+                  },
+                ),
+                SizedBox(width: Dimensions.width10),
+                _buildIconButton(
+                  Icons.more_vert_rounded,
+                  Appcolors.textSecondary,
+                  onTap: () {
+                    appLog('⋮ More options tapped', name: 'CustomersPage');
+                  },
+                ),
+                SizedBox(width: Dimensions.width20),
+              ],
+            ),
+
+            // Search Field
+            if (_searchOpen) SliverToBoxAdapter(child: _buildSearchField()),
+
+            // Filter Segment Control
+            SliverToBoxAdapter(child: _buildFilterSegment()),
+
+            // Customers List
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+              sliver: _filteredCustomers.isEmpty
+                  ? SliverToBoxAdapter(child: _buildEmptyState())
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: Dimensions.height15),
+                          child: CustomerCardWidget(
+                            customer: _filteredCustomers[index],
+                          ),
+                        );
+                      }, childCount: _filteredCustomers.length),
+                    ),
+            ),
+
+            SliverToBoxAdapter(child: SizedBox(height: Dimensions.height30)),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          appLog('➕ Add Customer FAB tapped', name: 'CustomersPage');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddCustomerPage()),
+          );
+        },
+        backgroundColor: Appcolors.primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Dimensions.radius20),
+        ),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+          size: Dimensions.iconSize24 * 1.2,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIconButton(IconData icon, Color color, {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: Dimensions.height45 * 0.9,
+        height: Dimensions.height45 * 0.9,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(Dimensions.radius15),
+        ),
+        child: Icon(icon, size: Dimensions.iconSize24 - 4, color: color),
+      ),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        Dimensions.width20,
+        0,
+        Dimensions.width20,
+        Dimensions.height15,
+      ),
+      child: TextField(
+        controller: _searchController,
+        autofocus: true,
+        onChanged: (_) => setState(() {}),
+        style: TextStyle(fontSize: Dimensions.font16 * 0.85),
+        decoration: InputDecoration(
+          hintText: 'Search by name or email',
+          hintStyle: const TextStyle(color: Colors.black26),
+          prefixIcon: const Icon(Icons.search_rounded, color: Colors.black38),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterSegment() {
+    // Simplify the display text by removing "Customers" suffix if present
+    String displayText = _selectedFilter.replaceAll(' Customers', '');
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        Dimensions.width20,
+        0,
+        Dimensions.width20,
+        Dimensions.height15,
+      ),
+      child: Container(
+        padding: EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(Dimensions.radius15),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: Row(
+          children: [
+            // Filter dropdown button
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  appLog('🔽 Filter dropdown tapped', name: 'CustomersPage');
+                  _showFilterBottomSheet();
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                  decoration: BoxDecoration(
+                    color: Appcolors.primary,
+                    borderRadius: BorderRadius.circular(
+                      Dimensions.radius15 - 5,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        displayText,
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.8,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(width: Dimensions.width10 / 2),
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: Dimensions.iconSize16,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            SizedBox(width: 8),
+
+            // Sort button
+            GestureDetector(
+              onTap: () {
+                appLog('🔀 Sort button tapped', name: 'CustomersPage');
+                // TODO: Implement sort functionality
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width15,
+                  vertical: Dimensions.height10,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(Dimensions.radius15 - 5),
+                ),
+                child: Icon(
+                  Icons.sort_rounded,
+                  size: Dimensions.iconSize24 - 4,
+                  color: Appcolors.textSecondary,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(Dimensions.width30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(Dimensions.width30),
+              decoration: BoxDecoration(
+                color: Appcolors.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.people_outline_rounded,
+                size: Dimensions.height45 * 1.5,
+                color: Appcolors.primary,
+              ),
+            ),
+            SizedBox(height: Dimensions.height20),
+            Text(
+              'No customers found',
+              style: TextStyle(
+                fontSize: Dimensions.font20,
+                fontWeight: FontWeight.w700,
+                color: Appcolors.textPrimary,
+              ),
+            ),
+            SizedBox(height: Dimensions.height10),
+            Text(
+              'Tap the + button to add your first customer',
+              style: TextStyle(
+                fontSize: Dimensions.font16 * 0.85,
+                color: Appcolors.textTertiary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

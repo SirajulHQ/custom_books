@@ -1,0 +1,422 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/app_logger.dart';
+import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:flutter/material.dart';
+
+class AddAddressPage extends StatefulWidget {
+  const AddAddressPage({super.key});
+
+  @override
+  State<AddAddressPage> createState() => _AddAddressPageState();
+}
+
+class _AddAddressPageState extends State<AddAddressPage> {
+  // Billing Address Controllers
+  final TextEditingController _billingAttentionController =
+      TextEditingController();
+  final TextEditingController _billingCountryController =
+      TextEditingController();
+  final TextEditingController _billingStreet1Controller =
+      TextEditingController();
+  final TextEditingController _billingStreet2Controller =
+      TextEditingController();
+  final TextEditingController _billingCityController = TextEditingController();
+  final TextEditingController _billingStateController = TextEditingController();
+  final TextEditingController _billingZipController = TextEditingController();
+  final TextEditingController _billingFaxController = TextEditingController();
+  final TextEditingController _billingPhoneController = TextEditingController();
+
+  // Shipping Address Controllers
+  final TextEditingController _shippingAttentionController =
+      TextEditingController();
+  final TextEditingController _shippingCountryController =
+      TextEditingController();
+  final TextEditingController _shippingStreet1Controller =
+      TextEditingController();
+  final TextEditingController _shippingStreet2Controller =
+      TextEditingController();
+  final TextEditingController _shippingCityController = TextEditingController();
+  final TextEditingController _shippingStateController =
+      TextEditingController();
+  final TextEditingController _shippingZipController = TextEditingController();
+  final TextEditingController _shippingFaxController = TextEditingController();
+  final TextEditingController _shippingPhoneController =
+      TextEditingController();
+
+  String _billingPhoneCountryCode = '+91';
+  String _shippingPhoneCountryCode = '+91';
+
+  @override
+  void dispose() {
+    _billingAttentionController.dispose();
+    _billingCountryController.dispose();
+    _billingStreet1Controller.dispose();
+    _billingStreet2Controller.dispose();
+    _billingCityController.dispose();
+    _billingStateController.dispose();
+    _billingZipController.dispose();
+    _billingFaxController.dispose();
+    _billingPhoneController.dispose();
+    _shippingAttentionController.dispose();
+    _shippingCountryController.dispose();
+    _shippingStreet1Controller.dispose();
+    _shippingStreet2Controller.dispose();
+    _shippingCityController.dispose();
+    _shippingStateController.dispose();
+    _shippingZipController.dispose();
+    _shippingFaxController.dispose();
+    _shippingPhoneController.dispose();
+    super.dispose();
+  }
+
+  void _copyBillingToShipping() {
+    setState(() {
+      _shippingAttentionController.text = _billingAttentionController.text;
+      _shippingCountryController.text = _billingCountryController.text;
+      _shippingStreet1Controller.text = _billingStreet1Controller.text;
+      _shippingStreet2Controller.text = _billingStreet2Controller.text;
+      _shippingCityController.text = _billingCityController.text;
+      _shippingStateController.text = _billingStateController.text;
+      _shippingZipController.text = _billingZipController.text;
+      _shippingFaxController.text = _billingFaxController.text;
+      _shippingPhoneController.text = _billingPhoneController.text;
+      _shippingPhoneCountryCode = _billingPhoneCountryCode;
+    });
+    appLog('📋 Copied billing address to shipping', name: 'AddAddressPage');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Dimensions.init(context);
+
+    return Scaffold(
+      backgroundColor: Appcolors.background,
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // App Bar
+            SliverAppBar(
+              pinned: true,
+              backgroundColor: Appcolors.background,
+              surfaceTintColor: Appcolors.background,
+              elevation: 0,
+              toolbarHeight: Dimensions.height45 * 1.6,
+              titleSpacing: Dimensions.width20,
+              leading: IconButton(
+                icon: Container(
+                  width: Dimensions.height45 * 0.9,
+                  height: Dimensions.height45 * 0.9,
+                  decoration: BoxDecoration(
+                    color: Appcolors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                  ),
+                  child: Icon(
+                    Icons.arrow_back,
+                    size: Dimensions.iconSize24 - 4,
+                    color: Appcolors.primary,
+                  ),
+                ),
+                onPressed: () {
+                  appLog('⬅️ Back button tapped', name: 'AddAddressPage');
+                  Navigator.pop(context);
+                },
+              ),
+              title: Text(
+                'Address',
+                style: TextStyle(
+                  fontSize: Dimensions.font26 * 0.85,
+                  fontWeight: FontWeight.w800,
+                  color: const Color(0xFF0F172A),
+                ),
+              ),
+              actions: [
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      appLog('💾 Save button tapped', name: 'AddAddressPage');
+                      // TODO: Implement save functionality
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Appcolors.primary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Dimensions.width20,
+                        vertical: Dimensions.height10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15,
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      'SAVE',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.85,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: Dimensions.width20),
+              ],
+            ),
+
+            // Content
+            SliverPadding(
+              padding: EdgeInsets.all(Dimensions.width20),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // Billing Address Card
+                  _buildAddressCard(
+                    'Billing Address',
+                    _billingAttentionController,
+                    _billingCountryController,
+                    _billingStreet1Controller,
+                    _billingStreet2Controller,
+                    _billingCityController,
+                    _billingStateController,
+                    _billingZipController,
+                    _billingFaxController,
+                    _billingPhoneController,
+                    _billingPhoneCountryCode,
+                    (value) =>
+                        setState(() => _billingPhoneCountryCode = value!),
+                  ),
+
+                  SizedBox(height: Dimensions.height20),
+
+                  // Copy Billing Address Button
+                  Center(
+                    child: TextButton(
+                      onPressed: _copyBillingToShipping,
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width20,
+                          vertical: Dimensions.height10,
+                        ),
+                      ),
+                      child: Text(
+                        'Copy Billing Address',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.9,
+                          fontWeight: FontWeight.w600,
+                          color: Appcolors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: Dimensions.height10),
+
+                  // Shipping Address Card
+                  _buildAddressCard(
+                    'Shipping Address',
+                    _shippingAttentionController,
+                    _shippingCountryController,
+                    _shippingStreet1Controller,
+                    _shippingStreet2Controller,
+                    _shippingCityController,
+                    _shippingStateController,
+                    _shippingZipController,
+                    _shippingFaxController,
+                    _shippingPhoneController,
+                    _shippingPhoneCountryCode,
+                    (value) =>
+                        setState(() => _shippingPhoneCountryCode = value!),
+                  ),
+
+                  SizedBox(height: Dimensions.height30),
+                ]),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddressCard(
+    String title,
+    TextEditingController attentionController,
+    TextEditingController countryController,
+    TextEditingController street1Controller,
+    TextEditingController street2Controller,
+    TextEditingController cityController,
+    TextEditingController stateController,
+    TextEditingController zipController,
+    TextEditingController faxController,
+    TextEditingController phoneController,
+    String phoneCountryCode,
+    Function(String?) onCountryChanged,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(Dimensions.width20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(Dimensions.radius20),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: Dimensions.font16 * 0.95,
+              fontWeight: FontWeight.w700,
+              color: Appcolors.textPrimary,
+            ),
+          ),
+          SizedBox(height: Dimensions.height20),
+          _buildSimpleTextField('Attention', attentionController),
+          SizedBox(height: Dimensions.height15),
+          _buildSimpleTextField('Country/Region', countryController),
+          SizedBox(height: Dimensions.height15),
+          _buildSimpleTextField('Street 1', street1Controller),
+          SizedBox(height: Dimensions.height15),
+          _buildSimpleTextField('Street 2', street2Controller),
+          SizedBox(height: Dimensions.height15),
+          _buildSimpleTextField('City', cityController),
+          SizedBox(height: Dimensions.height15),
+          _buildSimpleTextField('State', stateController),
+          SizedBox(height: Dimensions.height15),
+          _buildSimpleTextField('Zip Code', zipController),
+          SizedBox(height: Dimensions.height15),
+          _buildSimpleTextField('Fax', faxController),
+          SizedBox(height: Dimensions.height15),
+          _buildPhoneField(
+            'Phone',
+            phoneController,
+            phoneCountryCode,
+            onCountryChanged,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSimpleTextField(String hint, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      style: TextStyle(
+        fontSize: Dimensions.font16 * 0.85,
+        color: Appcolors.textPrimary,
+      ),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: TextStyle(
+          color: Appcolors.textTertiary,
+          fontSize: Dimensions.font16 * 0.85,
+        ),
+        filled: true,
+        fillColor: Appcolors.surfaceLight,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: Dimensions.width15,
+          vertical: Dimensions.height15,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Dimensions.radius15),
+          borderSide: BorderSide(color: Appcolors.border),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Dimensions.radius15),
+          borderSide: BorderSide(color: Appcolors.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Dimensions.radius15),
+          borderSide: BorderSide(color: Appcolors.primary, width: 2),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPhoneField(
+    String label,
+    TextEditingController controller,
+    String countryCode,
+    Function(String?) onCountryChanged,
+  ) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.width15,
+            vertical: Dimensions.height15,
+          ),
+          decoration: BoxDecoration(
+            color: Appcolors.surfaceLight,
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            border: Border.all(color: Appcolors.border),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                countryCode,
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.85,
+                  fontWeight: FontWeight.w600,
+                  color: Appcolors.textPrimary,
+                ),
+              ),
+              SizedBox(width: Dimensions.width10 / 2),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                size: Dimensions.iconSize16 * 1.2,
+                color: Appcolors.textSecondary,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: Dimensions.width10),
+        Expanded(
+          child: TextField(
+            controller: controller,
+            keyboardType: TextInputType.phone,
+            style: TextStyle(
+              fontSize: Dimensions.font16 * 0.85,
+              color: Appcolors.textPrimary,
+            ),
+            decoration: InputDecoration(
+              hintText: label,
+              hintStyle: TextStyle(
+                color: Appcolors.textTertiary,
+                fontSize: Dimensions.font16 * 0.85,
+              ),
+              filled: true,
+              fillColor: Appcolors.surfaceLight,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: Dimensions.width15,
+                vertical: Dimensions.height15,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Dimensions.radius15),
+                borderSide: BorderSide(color: Appcolors.border),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Dimensions.radius15),
+                borderSide: BorderSide(color: Appcolors.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Dimensions.radius15),
+                borderSide: BorderSide(color: Appcolors.primary, width: 2),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
