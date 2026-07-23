@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/view/custom_drawer.dart';
 import 'package:custom_books/features/inventory_adjustments/model/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/view/add_adjustment_page.dart';
@@ -152,7 +153,7 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
               setState(() {
                 _adjustments.add(result);
               });
-              if (mounted) {
+              if (context.mounted) {
                 ToastificationHelper.showSuccess(
                   context,
                   'Adjustment "${result.reason}" created',
@@ -167,61 +168,18 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            SliverAppBar(
-              pinned: true,
-              backgroundColor: Appcolors.background,
-              surfaceTintColor: Appcolors.background,
-              elevation: 0,
-              toolbarHeight: Dimensions.height45 * 1.6,
-              titleSpacing: Dimensions.width20,
-              leading: Builder(
-                builder: (context) => IconButton(
-                  icon: Container(
-                    width: Dimensions.height45 * 0.9,
-                    height: Dimensions.height45 * 0.9,
-                    decoration: BoxDecoration(
-                      color: Appcolors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    ),
-                    child: Icon(
-                      Icons.menu_rounded,
-                      size: Dimensions.iconSize24 - 4,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                ),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Inventory Adjustments',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: Dimensions.font26 * 0.7,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF0F172A),
-                    ),
-                  ),
-                  Text(
-                    '${items.length} adjustment${items.length == 1 ? '' : 's'}',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.7,
-                      color: Colors.black45,
-                    ),
-                  ),
-                ],
-              ),
+            CustomSliverAppBar(
+              title: 'Inventory Adjustments',
+              subtitle:
+                  '${items.length} adjustment${items.length == 1 ? '' : 's'}',
+              leadingType: AppBarLeadingType.menu,
               actions: [
-                IconBadge(
+                AppBarIconButton(
                   icon: _searchOpen
                       ? Icons.close_rounded
                       : Icons.search_rounded,
                   color: Appcolors.primary,
-                  onTap: () => setState(() {
+                  onPressed: () => setState(() {
                     _searchOpen = !_searchOpen;
                     if (!_searchOpen) _searchController.clear();
                   }),

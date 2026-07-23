@@ -13,7 +13,7 @@ class UpdatesContentWidget extends StatelessWidget {
         delegate: SliverChildListDelegate([
           SizedBox(height: Dimensions.height15),
 
-          AnnouncementCardWidgat(
+          AnnouncementCardWidget(
             title: 'New Feature: Automated Invoicing',
             description:
                 'Save time with our new automated invoicing system. Schedule recurring invoices and never miss a payment.',
@@ -24,7 +24,7 @@ class UpdatesContentWidget extends StatelessWidget {
 
           SizedBox(height: Dimensions.height15),
 
-          AnnouncementCardWidgat(
+          AnnouncementCardWidget(
             title: 'System Maintenance Scheduled',
             description:
                 'We will be performing system maintenance on Saturday, 8 PM - 10 PM. Services may be temporarily unavailable.',
@@ -35,7 +35,7 @@ class UpdatesContentWidget extends StatelessWidget {
 
           SizedBox(height: Dimensions.height15),
 
-          AnnouncementCardWidgat(
+          AnnouncementCardWidget(
             title: 'Tax Season Reminder',
             description:
                 'Tax season is approaching. Ensure all your financial records are up to date and consult with your accountant.',
@@ -46,7 +46,7 @@ class UpdatesContentWidget extends StatelessWidget {
 
           SizedBox(height: Dimensions.height15),
 
-          AnnouncementCardWidgat(
+          AnnouncementCardWidget(
             title: 'New Payment Gateway Integration',
             description:
                 'We have added support for multiple payment gateways. Check settings to configure your preferred options.',
@@ -62,14 +62,14 @@ class UpdatesContentWidget extends StatelessWidget {
   }
 }
 
-class AnnouncementCardWidgat extends StatelessWidget {
+class AnnouncementCardWidget extends StatelessWidget {
   final String title;
   final String description;
   final String time;
   final IconData icon;
   final Color color;
 
-  const AnnouncementCardWidgat({
+  const AnnouncementCardWidget({
     super.key,
     required this.title,
     required this.description,
@@ -124,7 +124,7 @@ class AnnouncementCardWidgat extends StatelessWidget {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 1.05,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF0F172A),
+                    color: Appcolors.textPrimary,
                   ),
                 ),
                 SizedBox(height: Dimensions.height10 / 2),

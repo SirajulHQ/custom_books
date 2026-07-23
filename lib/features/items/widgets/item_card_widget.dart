@@ -54,7 +54,7 @@ class ItemCardWidget extends StatelessWidget {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 1.1,
                     fontWeight: FontWeight.w800,
-                    color: const Color(0xFF0F172A),
+                    color: Appcolors.textPrimary,
                   ),
                 ),
 
@@ -204,7 +204,7 @@ class ItemCardWidget extends StatelessWidget {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.85,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF0F172A),
+              color: Appcolors.textPrimary,
             ),
           ),
         ],

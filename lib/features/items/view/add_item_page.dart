@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -63,7 +64,7 @@ class _AddItemPageState extends State<AddItemPage> {
                 style: TextStyle(
                   fontSize: Dimensions.font20 * 0.85,
                   fontWeight: FontWeight.w800,
-                  color: const Color(0xFF0F172A),
+                  color: Appcolors.textPrimary,
                 ),
               ),
               SizedBox(height: Dimensions.height20),
@@ -133,7 +134,7 @@ class _AddItemPageState extends State<AddItemPage> {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.9,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF0F172A),
+                    color: Appcolors.textPrimary,
                   ),
                 ),
                 Text(
@@ -164,10 +165,10 @@ class _AddItemPageState extends State<AddItemPage> {
   final TextEditingController _purchaseDescriptionController =
       TextEditingController();
 
-  String _selectedAccount = 'Cost of Goods Sold';
-  String _selectedSalesAccount = 'Sales';
-  String _selectedInventoryAccount = 'Inventory Asset';
-  String _selectedValuationMethod = 'FIFO (First In First Out)';
+  final String _selectedAccount = 'Cost of Goods Sold';
+  final String _selectedSalesAccount = 'Sales';
+  final String _selectedInventoryAccount = 'Inventory Asset';
+  final String _selectedValuationMethod = 'FIFO (First In First Out)';
 
   @override
   void dispose() {
@@ -194,83 +195,21 @@ class _AddItemPageState extends State<AddItemPage> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             // App Bar
-            SliverAppBar(
-              pinned: true,
-              backgroundColor: Appcolors.background,
-              surfaceTintColor: Appcolors.background,
-              elevation: 0,
-              toolbarHeight: Dimensions.height45 * 1.6,
-              titleSpacing: Dimensions.width20,
-              leading: IconButton(
-                icon: Container(
-                  width: Dimensions.height45 * 0.9,
-                  height: Dimensions.height45 * 0.9,
-                  decoration: BoxDecoration(
-                    color: Appcolors.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  ),
-                  child: Icon(
-                    Icons.arrow_back,
-                    size: Dimensions.iconSize24 - 4,
-                    color: Appcolors.primary,
-                  ),
-                ),
-                onPressed: () {
-                  appLog('⬅️ Back button tapped', name: 'AddItemPage');
-                  Navigator.pop(context);
-                },
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'New Item',
-                    style: TextStyle(
-                      fontSize: Dimensions.font26 * 0.85,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF0F172A),
-                    ),
-                  ),
-                  Text(
-                    'Fill in the details below',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.7,
-                      color: Colors.black45,
-                    ),
-                  ),
-                ],
-              ),
+            CustomSliverAppBar(
+              title: 'New Item',
+              subtitle: 'Fill in the details below',
+              leadingType: AppBarLeadingType.back,
+              onLeadingPressed: () {
+                appLog('⬅️ Back button tapped', name: 'AddItemPage');
+                Navigator.pop(context);
+              },
               actions: [
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      appLog('💾 Save button tapped', name: 'AddItemPage');
-                      // TODO: Implement save functionality
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Appcolors.primary,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                        vertical: Dimensions.height10,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      'SAVE',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
+                AppBarElevatedButton(
+                  label: 'SAVE',
+                  onPressed: () {
+                    appLog('💾 Save button tapped', name: 'AddItemPage');
+                    // TODO: Implement save functionality
+                  },
                 ),
                 SizedBox(width: Dimensions.width20),
               ],
@@ -710,7 +649,7 @@ class _AddItemPageState extends State<AddItemPage> {
                 Switch(
                   value: value,
                   onChanged: onChanged,
-                  activeColor: Appcolors.primary,
+                  activeThumbColor: Appcolors.primary,
                 ),
               ],
             ),
@@ -731,6 +670,7 @@ class _AddItemPageState extends State<AddItemPage> {
   }
 
   Widget _buildRadioOption(String label, IconData icon) {
+    final isSelected = _itemType == label;
     return GestureDetector(
       onTap: () {
         setState(() => _itemType = label);
@@ -738,13 +678,31 @@ class _AddItemPageState extends State<AddItemPage> {
       },
       child: Row(
         children: [
-          Radio<String>(
-            value: label,
-            groupValue: _itemType,
-            onChanged: (value) {
-              setState(() => _itemType = value!);
-            },
-            activeColor: Appcolors.primary,
+          Padding(
+            padding: EdgeInsets.all(Dimensions.width10),
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected ? Appcolors.primary : Appcolors.textTertiary,
+                  width: 2,
+                ),
+              ),
+              child: isSelected
+                  ? Center(
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Appcolors.primary,
+                        ),
+                      ),
+                    )
+                  : null,
+            ),
           ),
           Icon(
             icon,

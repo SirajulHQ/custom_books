@@ -114,7 +114,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                       child: Image.asset(
                         'assets/images/placeholder_attachment.png',
                         fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => Container(
+                        errorBuilder: (_, _, _) => Container(
                           height: 300,
                           color: Appcolors.surfaceLight,
                           child: Center(
@@ -244,7 +244,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
         surfaceTintColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF0F172A)),
+          icon: Icon(Icons.arrow_back_rounded, color: Appcolors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -252,7 +252,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
           style: TextStyle(
             fontSize: Dimensions.font26 * 0.7,
             fontWeight: FontWeight.w800,
-            color: const Color(0xFF0F172A),
+            color: Appcolors.textPrimary,
           ),
         ),
         actions: [

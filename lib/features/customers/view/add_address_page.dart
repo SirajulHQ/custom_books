@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:flutter/material.dart';
 
 class AddAddressPage extends StatefulWidget {
@@ -96,71 +97,21 @@ class _AddAddressPageState extends State<AddAddressPage> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             // App Bar
-            SliverAppBar(
-              pinned: true,
-              backgroundColor: Appcolors.background,
-              surfaceTintColor: Appcolors.background,
-              elevation: 0,
-              toolbarHeight: Dimensions.height45 * 1.6,
-              titleSpacing: Dimensions.width20,
-              leading: IconButton(
-                icon: Container(
-                  width: Dimensions.height45 * 0.9,
-                  height: Dimensions.height45 * 0.9,
-                  decoration: BoxDecoration(
-                    color: Appcolors.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  ),
-                  child: Icon(
-                    Icons.arrow_back,
-                    size: Dimensions.iconSize24 - 4,
-                    color: Appcolors.primary,
-                  ),
-                ),
-                onPressed: () {
-                  appLog('⬅️ Back button tapped', name: 'AddAddressPage');
-                  Navigator.pop(context);
-                },
-              ),
-              title: Text(
-                'Address',
-                style: TextStyle(
-                  fontSize: Dimensions.font26 * 0.85,
-                  fontWeight: FontWeight.w800,
-                  color: const Color(0xFF0F172A),
-                ),
-              ),
+            CustomSliverAppBar(
+              title: 'Address',
+              leadingType: AppBarLeadingType.back,
+              onLeadingPressed: () {
+                appLog('⬅️ Back button tapped', name: 'AddAddressPage');
+                Navigator.pop(context);
+              },
               actions: [
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      appLog('💾 Save button tapped', name: 'AddAddressPage');
-                      // TODO: Implement save functionality
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Appcolors.primary,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                        vertical: Dimensions.height10,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      'SAVE',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
+                AppBarElevatedButton(
+                  label: 'SAVE',
+                  onPressed: () {
+                    appLog('💾 Save button tapped', name: 'AddAddressPage');
+                    // TODO: Implement save functionality
+                    Navigator.pop(context);
+                  },
                 ),
                 SizedBox(width: Dimensions.width20),
               ],

@@ -83,7 +83,7 @@ class BalanceTile extends StatelessWidget {
             style: TextStyle(
               fontSize: Dimensions.font20,
               fontWeight: FontWeight.w800,
-              color: const Color(0xFF0F172A),
+              color: Appcolors.textPrimary,
             ),
           ),
           Text(

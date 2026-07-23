@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/view/custom_drawer.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/widgets/customer_card_widget.dart';
@@ -289,50 +290,17 @@ class _CustomersPageState extends State<CustomersPage> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             // App Bar
-            SliverAppBar(
-              pinned: true,
-              backgroundColor: Appcolors.background,
-              surfaceTintColor: Appcolors.background,
-              elevation: 0,
-              toolbarHeight: Dimensions.height45 * 1.6,
-              titleSpacing: Dimensions.width20,
-              leading: Builder(
-                builder: (context) => IconButton(
-                  icon: Container(
-                    width: Dimensions.height45 * 0.9,
-                    height: Dimensions.height45 * 0.9,
-                    decoration: BoxDecoration(
-                      color: Appcolors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    ),
-                    child: Icon(
-                      Icons.menu_rounded,
-                      size: Dimensions.iconSize24 - 4,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                  onPressed: () {
-                    appLog(
-                      '📂 Drawer menu button tapped',
-                      name: 'CustomersPage',
-                    );
-                    Scaffold.of(context).openDrawer();
-                  },
-                ),
-              ),
-              title: Text(
-                'Customers',
-                style: TextStyle(
-                  fontSize: Dimensions.font26 * 0.85,
-                  fontWeight: FontWeight.w800,
-                  color: const Color(0xFF0F172A),
-                ),
-              ),
+            CustomSliverAppBar(
+              title: 'Customers',
+              subtitle: '${_filteredCustomers.length} customers',
+              leadingType: AppBarLeadingType.menu,
               actions: [
-                _buildIconButton(
-                  _searchOpen ? Icons.close_rounded : Icons.search_rounded,
-                  Appcolors.primary,
-                  onTap: () {
+                AppBarIconButton(
+                  icon: _searchOpen
+                      ? Icons.close_rounded
+                      : Icons.search_rounded,
+                  color: Appcolors.primary,
+                  onPressed: () {
                     appLog('🔍 Search tapped', name: 'CustomersPage');
                     setState(() {
                       _searchOpen = !_searchOpen;
@@ -341,10 +309,10 @@ class _CustomersPageState extends State<CustomersPage> {
                   },
                 ),
                 SizedBox(width: Dimensions.width10),
-                _buildIconButton(
-                  Icons.more_vert_rounded,
-                  Appcolors.textSecondary,
-                  onTap: () {
+                AppBarIconButton(
+                  icon: Icons.more_vert_rounded,
+                  color: Appcolors.textSecondary,
+                  onPressed: () {
                     appLog('⋮ More options tapped', name: 'CustomersPage');
                   },
                 ),
@@ -400,21 +368,6 @@ class _CustomersPageState extends State<CustomersPage> {
     );
   }
 
-  Widget _buildIconButton(IconData icon, Color color, {VoidCallback? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: Dimensions.height45 * 0.9,
-        height: Dimensions.height45 * 0.9,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-        ),
-        child: Icon(icon, size: Dimensions.iconSize24 - 4, color: color),
-      ),
-    );
-  }
-
   Widget _buildSearchField() {
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -464,11 +417,10 @@ class _CustomersPageState extends State<CustomersPage> {
         Dimensions.height15,
       ),
       child: Container(
-        padding: EdgeInsets.all(4),
+        padding: EdgeInsets.all(Dimensions.width10 / 2),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          color: const Color(0xFFF1F3F5),
+          borderRadius: BorderRadius.circular(Dimensions.radius30),
         ),
         child: Row(
           children: [
@@ -482,10 +434,19 @@ class _CustomersPageState extends State<CustomersPage> {
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
                   decoration: BoxDecoration(
-                    color: Appcolors.primary,
-                    borderRadius: BorderRadius.circular(
-                      Dimensions.radius15 - 5,
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(Dimensions.radius30),
+                    border: Border.all(
+                      color: Appcolors.primary.withValues(alpha: 0.3),
+                      width: 1.5,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Appcolors.primary.withValues(alpha: 0.08),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -494,15 +455,16 @@ class _CustomersPageState extends State<CustomersPage> {
                         displayText,
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.8,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.3,
+                          color: Appcolors.primary,
                         ),
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Icon(
                         Icons.keyboard_arrow_down_rounded,
                         size: Dimensions.iconSize16,
-                        color: Colors.white,
+                        color: Appcolors.primary,
                       ),
                     ],
                   ),
@@ -525,7 +487,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 ),
                 decoration: BoxDecoration(
                   color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(Dimensions.radius15 - 5),
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
                 ),
                 child: Icon(
                   Icons.sort_rounded,

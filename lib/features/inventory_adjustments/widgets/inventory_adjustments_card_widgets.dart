@@ -64,7 +64,7 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.95,
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFF0F172A),
+                      color: Appcolors.textPrimary,
                     ),
                   ),
                   SizedBox(height: Dimensions.height10 / 2),

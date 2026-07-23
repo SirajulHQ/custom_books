@@ -637,7 +637,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
         surfaceTintColor: Appcolors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF0F172A)),
+          icon: Icon(Icons.arrow_back_rounded, color: Appcolors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -645,7 +645,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
           style: TextStyle(
             fontSize: Dimensions.font26 * 0.7,
             fontWeight: FontWeight.w800,
-            color: const Color(0xFF0F172A),
+            color: Appcolors.textPrimary,
           ),
         ),
         actions: [

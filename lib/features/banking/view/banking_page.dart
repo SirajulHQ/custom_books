@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/banking/models/bank_account.dart';
 import 'package:custom_books/features/banking/view/add_bank_account_page.dart';
 import 'package:custom_books/features/banking/widgets/account_card.dart';
@@ -99,56 +100,20 @@ class _BankingPageState extends State<BankingPage> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             // App Bar
-            SliverAppBar(
-              pinned: true,
-              backgroundColor: Appcolors.background,
-              surfaceTintColor: Appcolors.background,
-              elevation: 0,
-              toolbarHeight: Dimensions.height45 * 1.6,
-              titleSpacing: Dimensions.width20,
-              leading: Builder(
-                builder: (context) => IconButton(
-                  icon: Container(
-                    width: Dimensions.height45 * 0.9,
-                    height: Dimensions.height45 * 0.9,
-                    decoration: BoxDecoration(
-                      color: Appcolors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    ),
-                    child: Icon(
-                      Icons.menu_rounded,
-                      size: Dimensions.iconSize24 - 4,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                ),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Banking Overview',
-                    style: TextStyle(
-                      fontSize: Dimensions.font26 * 0.85,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF0F172A),
-                    ),
-                  ),
-                  Text(
-                    'Track your accounts & transactions',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.7,
-                      color: Colors.black45,
-                    ),
-                  ),
-                ],
-              ),
+            CustomSliverAppBar(
+              title: 'Banking Overview',
+              subtitle: 'Track your accounts & transactions',
+              leadingType: AppBarLeadingType.menu,
               actions: [
-                _buildIconButton(Icons.filter_list_rounded, Appcolors.primary),
+                AppBarIconButton(
+                  icon: Icons.filter_list_rounded,
+                  color: Appcolors.primary,
+                ),
                 SizedBox(width: Dimensions.width10),
-                _buildIconButton(Icons.more_vert_rounded, Appcolors.accent),
+                AppBarIconButton(
+                  icon: Icons.more_vert_rounded,
+                  color: Appcolors.accent,
+                ),
                 SizedBox(width: Dimensions.width20),
               ],
             ),
@@ -201,18 +166,6 @@ class _BankingPageState extends State<BankingPage> {
     );
   }
 
-  Widget _buildIconButton(IconData icon, Color color) {
-    return Container(
-      width: Dimensions.height45 * 0.9,
-      height: Dimensions.height45 * 0.9,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-      ),
-      child: Icon(icon, size: Dimensions.iconSize24 - 4, color: color),
-    );
-  }
-
   Widget _buildFilterSection() {
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -222,11 +175,10 @@ class _BankingPageState extends State<BankingPage> {
         Dimensions.height15,
       ),
       child: Container(
-        padding: const EdgeInsets.all(4),
+        padding: EdgeInsets.all(Dimensions.width10 / 2),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          color: const Color(0xFFF1F3F5),
+          borderRadius: BorderRadius.circular(Dimensions.radius30),
         ),
         child: Row(
           children: [
@@ -268,7 +220,7 @@ class _BankingPageState extends State<BankingPage> {
         padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
         decoration: BoxDecoration(
           color: Colors.transparent,
-          borderRadius: BorderRadius.circular(Dimensions.radius15 - 5),
+          borderRadius: BorderRadius.circular(Dimensions.radius30),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -567,7 +519,7 @@ class _BankingPageState extends State<BankingPage> {
               icon: Icons.payments_rounded,
               iconBgColor: Appcolors.primary,
               title: 'Cash In Hand',
-              amount: '₹${cashInHand.toStringAsFixed(2)}',
+              amount: 'AED${cashInHand.toStringAsFixed(2)}',
             ),
           ),
           SizedBox(width: Dimensions.width15),
@@ -576,7 +528,7 @@ class _BankingPageState extends State<BankingPage> {
               icon: Icons.account_balance_rounded,
               iconBgColor: Appcolors.success,
               title: 'Bank Balance',
-              amount: '₹${bankBalance.toStringAsFixed(2)}',
+              amount: 'AED${bankBalance.toStringAsFixed(2)}',
             ),
           ),
         ],

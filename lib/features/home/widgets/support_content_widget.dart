@@ -20,7 +20,7 @@ class SupportContentWidget extends StatelessWidget {
               fontSize: Dimensions.font26,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.5,
-              color: const Color(0xFF0F172A),
+              color: Appcolors.textPrimary,
             ),
           ),
 
@@ -150,7 +150,7 @@ class HelpCategoryCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: Dimensions.font20 * 0.9,
                         fontWeight: FontWeight.w800,
-                        color: const Color(0xFF0F172A),
+                        color: Appcolors.textPrimary,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10 / 2),

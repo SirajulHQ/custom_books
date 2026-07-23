@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/customers/view/add_address_page.dart';
 import 'package:custom_books/features/customers/view/add_contact_person_page.dart';
 import 'package:flutter/material.dart';
@@ -170,55 +171,17 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             // App Bar
-            SliverAppBar(
-              pinned: true,
-              backgroundColor: Appcolors.background,
-              surfaceTintColor: Appcolors.background,
-              elevation: 0,
-              toolbarHeight: Dimensions.height45 * 1.6,
-              titleSpacing: Dimensions.width20,
-              leading: IconButton(
-                icon: Container(
-                  width: Dimensions.height45 * 0.9,
-                  height: Dimensions.height45 * 0.9,
-                  decoration: BoxDecoration(
-                    color: Appcolors.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  ),
-                  child: Icon(
-                    Icons.arrow_back,
-                    size: Dimensions.iconSize24 - 4,
-                    color: Appcolors.primary,
-                  ),
-                ),
-                onPressed: () {
-                  appLog('⬅️ Back button tapped', name: 'AddCustomerPage');
-                  Navigator.pop(context);
-                },
-              ),
-              title: Text(
-                'New Customer',
-                style: TextStyle(
-                  fontSize: Dimensions.font26 * 0.85,
-                  fontWeight: FontWeight.w800,
-                  color: const Color(0xFF0F172A),
-                ),
-              ),
+            CustomSliverAppBar(
+              title: 'New Customer',
+              leadingType: AppBarLeadingType.back,
+              onLeadingPressed: () {
+                appLog('⬅️ Back button tapped', name: 'AddCustomerPage');
+                Navigator.pop(context);
+              },
               actions: [
-                IconButton(
-                  icon: Container(
-                    width: Dimensions.height45 * 0.9,
-                    height: Dimensions.height45 * 0.9,
-                    decoration: BoxDecoration(
-                      color: Appcolors.textSecondary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    ),
-                    child: Icon(
-                      Icons.contacts_outlined,
-                      size: Dimensions.iconSize24 - 4,
-                      color: Appcolors.textSecondary,
-                    ),
-                  ),
+                AppBarIconButton(
+                  icon: Icons.contacts_outlined,
+                  color: Appcolors.textSecondary,
                   onPressed: () {
                     appLog(
                       '📱 Contacts button tapped',
@@ -227,35 +190,12 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                   },
                 ),
                 SizedBox(width: Dimensions.width10),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      appLog('💾 Save button tapped', name: 'AddCustomerPage');
-                      // TODO: Implement save functionality
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Appcolors.primary,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                        vertical: Dimensions.height10,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      'SAVE',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
+                AppBarElevatedButton(
+                  label: 'SAVE',
+                  onPressed: () {
+                    appLog('💾 Save button tapped', name: 'AddCustomerPage');
+                    // TODO: Implement save functionality
+                  },
                 ),
                 SizedBox(width: Dimensions.width20),
               ],
@@ -927,7 +867,7 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                     style: TextStyle(
                       fontSize: Dimensions.font20 * 0.85,
                       fontWeight: FontWeight.w800,
-                      color: const Color(0xFF0F172A),
+                      color: Appcolors.textPrimary,
                     ),
                   ),
                   GestureDetector(
@@ -1228,7 +1168,7 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                     style: TextStyle(
                       fontSize: Dimensions.font20 * 0.85,
                       fontWeight: FontWeight.w800,
-                      color: const Color(0xFF0F172A),
+                      color: Appcolors.textPrimary,
                     ),
                   ),
                   GestureDetector(

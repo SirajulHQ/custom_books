@@ -119,9 +119,8 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
+                color: const Color(0xFFF1F3F5),
+                borderRadius: BorderRadius.circular(Dimensions.radius30),
               ),
               child: Row(
                 children: List.generate(segments.length, (i) {
@@ -136,11 +135,28 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: selected
-                              ? Appcolors.primary
+                              ? Colors.white
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(
-                            Dimensions.radius15 - 5,
+                            Dimensions.radius30,
                           ),
+                          border: selected
+                              ? Border.all(
+                                  color: Appcolors.primary
+                                      .withValues(alpha: 0.3),
+                                  width: 1.5,
+                                )
+                              : null,
+                          boxShadow: selected
+                              ? [
+                                  BoxShadow(
+                                    color: Appcolors.primary
+                                        .withValues(alpha: 0.08),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ]
+                              : null,
                         ),
                         alignment: Alignment.center,
                         child: Text(
@@ -148,9 +164,12 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.72,
                             fontWeight: selected
-                                ? FontWeight.w700
+                                ? FontWeight.w800
                                 : FontWeight.w500,
-                            color: selected ? Colors.white : Colors.black54,
+                            letterSpacing: 0.3,
+                            color: selected
+                                ? Appcolors.primary
+                                : Appcolors.textSecondary,
                           ),
                         ),
                       ),
@@ -210,7 +229,7 @@ class AdjustmentsEmptyState extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16,
                 fontWeight: FontWeight.w700,
-                color: const Color(0xFF0F172A),
+                color: Appcolors.textPrimary,
               ),
             ),
             SizedBox(height: Dimensions.height10 / 2),

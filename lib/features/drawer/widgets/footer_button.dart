@@ -9,6 +9,7 @@ class FooterButton extends StatelessWidget {
   final bool isDanger;
 
   const FooterButton({
+    super.key,
     required this.icon,
     required this.label,
     required this.isDanger,

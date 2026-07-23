@@ -41,7 +41,7 @@ class AdjustmentRadioOption extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.85,
-              color: const Color(0xFF0F172A),
+              color: Appcolors.textPrimary,
             ),
           ),
         ],
@@ -114,7 +114,7 @@ class AdjustmentLineItemCard extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: Dimensions.font16 * 0.85,
-                        color: const Color(0xFF0F172A),
+                        color: Appcolors.textPrimary,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10 / 4),
@@ -265,7 +265,7 @@ class AdjustmentTextStyles {
   static TextStyle value() => TextStyle(
     fontSize: Dimensions.font16 * 0.9,
     fontWeight: FontWeight.w500,
-    color: const Color(0xFF0F172A),
+    color: Appcolors.textPrimary,
   );
 }
 

@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/view/custom_drawer.dart';
 import 'package:custom_books/features/home/widgets/overview_contents/balance_grid_widget.dart';
 import 'package:custom_books/features/home/widgets/overview_contents/banking_strip_widget.dart';
@@ -33,59 +34,20 @@ class _HomePageState extends State<HomePage> {
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            SliverAppBar(
-              pinned: true,
-              backgroundColor: Appcolors.background,
-              surfaceTintColor: Appcolors.background,
-              elevation: 0,
-              toolbarHeight: Dimensions.height45 * 1.6,
-              titleSpacing: Dimensions.width20,
-              leading: Builder(
-                builder: (context) => IconButton(
-                  icon: Container(
-                    width: Dimensions.height45 * 0.9,
-                    height: Dimensions.height45 * 0.9,
-                    decoration: BoxDecoration(
-                      color: Appcolors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    ),
-                    child: Icon(
-                      Icons.menu_rounded,
-                      size: Dimensions.iconSize24 - 4,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                ),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Business Overview',
-                    style: TextStyle(
-                      fontSize: Dimensions.font26 * 0.85,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF0F172A),
-                    ),
-                  ),
-                  Text(
-                    'Snapshot for this fiscal year',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.7,
-                      color: Colors.black45,
-                    ),
-                  ),
-                ],
-              ),
+            CustomSliverAppBar(
+              title: 'Business Overview',
+              subtitle: 'Snapshot for this fiscal year',
+              leadingType: AppBarLeadingType.menu,
               actions: [
-                _iconBadge(Icons.tune_rounded, Appcolors.primary),
+                AppBarIconButton(
+                  icon: Icons.tune_rounded,
+                  color: Appcolors.primary,
+                ),
                 SizedBox(width: Dimensions.width10),
-                _iconBadge(
-                  Icons.notifications_none_rounded,
-                  Appcolors.accent,
-                  showDot: true,
+                AppBarIconButton(
+                  icon: Icons.notifications_none_rounded,
+                  color: Appcolors.accent,
+                  showBadge: true,
                 ),
                 SizedBox(width: Dimensions.width20),
               ],
@@ -144,36 +106,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _iconBadge(IconData icon, Color color, {bool showDot = false}) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          width: Dimensions.height45 * 0.9,
-          height: Dimensions.height45 * 0.9,
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-          ),
-          child: Icon(icon, size: Dimensions.iconSize24 - 4, color: color),
-        ),
-        if (showDot)
-          Positioned(
-            top: -2,
-            right: -2,
-            child: Container(
-              width: 9,
-              height: 9,
-              decoration: const BoxDecoration(
-                color: Appcolors.warn,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
   // -------- Segmented control (replaces underline tabs) --------
   Widget _buildSegmentedControl() {
     final segments = ['Overview', 'Updates', 'Support'];
@@ -185,11 +117,10 @@ class _HomePageState extends State<HomePage> {
         Dimensions.height15,
       ),
       child: Container(
-        padding: EdgeInsets.all(4),
+        padding: EdgeInsets.all(Dimensions.width10 / 2),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          color: const Color(0xFFF1F3F5),
+          borderRadius: BorderRadius.circular(Dimensions.radius30),
         ),
         child: Row(
           children: List.generate(segments.length, (i) {
@@ -201,18 +132,32 @@ class _HomePageState extends State<HomePage> {
                   duration: const Duration(milliseconds: 180),
                   padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
                   decoration: BoxDecoration(
-                    color: selected ? Appcolors.primary : Colors.transparent,
-                    borderRadius: BorderRadius.circular(
-                      Dimensions.radius15 - 5,
-                    ),
+                    color: selected ? Colors.white : Colors.transparent,
+                    borderRadius: BorderRadius.circular(Dimensions.radius30),
+                    border: selected
+                        ? Border.all(
+                            color: Appcolors.primary.withValues(alpha: 0.3),
+                            width: 1.5,
+                          )
+                        : null,
+                    boxShadow: selected
+                        ? [
+                            BoxShadow(
+                              color: Appcolors.primary.withValues(alpha: 0.08),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ]
+                        : null,
                   ),
                   alignment: Alignment.center,
                   child: Text(
                     segments[i],
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.8,
-                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                      color: selected ? Colors.white : Colors.black54,
+                      fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
+                      letterSpacing: 0.3,
+                      color: selected ? Appcolors.primary : Appcolors.textSecondary,
                     ),
                   ),
                 ),

@@ -80,7 +80,7 @@ class _SortBySheetState extends State<_SortBySheet> {
                   style: TextStyle(
                     fontSize: Dimensions.font20,
                     fontWeight: FontWeight.w800,
-                    color: const Color(0xFF0F172A),
+                    color: Appcolors.textPrimary,
                   ),
                 ),
                 InkWell(
@@ -158,7 +158,7 @@ class _SortBySheetState extends State<_SortBySheet> {
                                 fontSize: Dimensions.font16 * 0.9,
                                 fontWeight:
                                     selected ? FontWeight.w700 : FontWeight.w500,
-                                color: const Color(0xFF0F172A),
+                                color: Appcolors.textPrimary,
                               ),
                             ),
                           ),
@@ -255,7 +255,7 @@ class _SortBySheetState extends State<_SortBySheet> {
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.85,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFF0F172A),
+                          color: Appcolors.textPrimary,
                         ),
                       ),
                     ],

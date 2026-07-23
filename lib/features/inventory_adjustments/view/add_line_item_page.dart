@@ -7,7 +7,6 @@ import 'package:custom_books/features/inventory_adjustments/model/line_item_mode
 import 'package:custom_books/features/inventory_adjustments/widgets/adjustment_form_widgets.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/cost_price_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class AddLineItemPage extends StatefulWidget {
   final LineItem? initial;
@@ -252,7 +251,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
         surfaceTintColor: Appcolors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF0F172A)),
+          icon: Icon(Icons.arrow_back_rounded, color: Appcolors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -260,7 +259,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
           style: TextStyle(
             fontSize: Dimensions.font26 * 0.7,
             fontWeight: FontWeight.w800,
-            color: const Color(0xFF0F172A),
+            color: Appcolors.textPrimary,
           ),
         ),
         actions: [
@@ -372,7 +371,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: Dimensions.font16 * 0.85,
-                                      color: const Color(0xFF0F172A),
+                                      color: Appcolors.textPrimary,
                                     ),
                                   ),
                                   SizedBox(height: Dimensions.height10 / 4),
@@ -436,7 +435,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                           fontWeight: FontWeight.w700,
                           color: _selectedItem!.stockOnHand < 0
                               ? Colors.red.shade600
-                              : const Color(0xFF0F172A),
+                              : Appcolors.textPrimary,
                         ),
                       ),
                     ],
@@ -490,7 +489,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.85,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFF0F172A),
+                          color: Appcolors.textPrimary,
                         ),
                       ),
                       SizedBox(width: Dimensions.width10 / 2),

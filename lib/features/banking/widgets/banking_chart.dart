@@ -105,7 +105,7 @@ class _BankingChartState extends State<BankingChart> {
             horizontalInterval: 1000,
             getDrawingHorizontalLine: (value) {
               return FlLine(
-                color: const Color(0xFFE2E8F0).withOpacity(0.5),
+                color: const Color(0xFFE2E8F0).withValues(alpha: 0.5),
                 strokeWidth: 1,
               );
             },
@@ -174,7 +174,7 @@ class _BankingChartState extends State<BankingChart> {
               spots: widget.dataPoints,
               isCurved: true,
               gradient: LinearGradient(
-                colors: [Appcolors.success.withOpacity(0.9), Appcolors.success],
+                colors: [Appcolors.success.withValues(alpha: 0.9), Appcolors.success],
               ),
               barWidth: 3,
               isStrokeCapRound: true,
@@ -183,8 +183,8 @@ class _BankingChartState extends State<BankingChart> {
                 show: true,
                 gradient: LinearGradient(
                   colors: [
-                    Appcolors.success.withOpacity(0.12),
-                    Appcolors.success.withOpacity(0.02),
+                    Appcolors.success.withValues(alpha: 0.12),
+                    Appcolors.success.withValues(alpha: 0.02),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,

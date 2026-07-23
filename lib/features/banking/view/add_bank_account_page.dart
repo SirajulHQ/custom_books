@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:flutter/material.dart';
 
 class AddBankAccountPage extends StatefulWidget {
@@ -71,78 +72,12 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             // App Bar
-            SliverAppBar(
-              pinned: true,
-              backgroundColor: Appcolors.background,
-              surfaceTintColor: Appcolors.background,
-              elevation: 0,
-              toolbarHeight: Dimensions.height45 * 1.6,
-              titleSpacing: Dimensions.width20,
-              leading: IconButton(
-                icon: Container(
-                  width: Dimensions.height45 * 0.9,
-                  height: Dimensions.height45 * 0.9,
-                  decoration: BoxDecoration(
-                    color: Appcolors.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  ),
-                  child: Icon(
-                    Icons.arrow_back,
-                    size: Dimensions.iconSize24 - 4,
-                    color: Appcolors.primary,
-                  ),
-                ),
-                onPressed: () => Navigator.pop(context),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Add Bank or Credit Card',
-                    style: TextStyle(
-                      fontSize: Dimensions.font26 * 0.85,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF0F172A),
-                    ),
-                  ),
-                  Text(
-                    'Fill in the account details',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.7,
-                      color: Colors.black45,
-                    ),
-                  ),
-                ],
-              ),
+            CustomSliverAppBar(
+              title: 'Add Bank or Credit Card',
+              subtitle: 'Fill in the account details',
+              leadingType: AppBarLeadingType.back,
               actions: [
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-                  child: ElevatedButton(
-                    onPressed: _saveAccount,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Appcolors.primary,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                        vertical: Dimensions.height10,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      'SAVE',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
+                AppBarElevatedButton(label: 'SAVE', onPressed: _saveAccount),
                 SizedBox(width: Dimensions.width20),
               ],
             ),
@@ -359,24 +294,43 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
   }
 
   Widget _buildRadioOption(String label, IconData icon) {
+    final isSelected = _selectedAccountType == label;
     return GestureDetector(
       onTap: () {
         setState(() => _selectedAccountType = label);
       },
       child: Row(
         children: [
-          Radio<String>(
-            value: label,
-            groupValue: _selectedAccountType,
-            onChanged: (value) {
-              setState(() => _selectedAccountType = value!);
-            },
-            activeColor: Appcolors.primary,
+          Padding(
+            padding: EdgeInsets.all(Dimensions.width10),
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected ? Appcolors.primary : Appcolors.textTertiary,
+                  width: 2,
+                ),
+              ),
+              child: isSelected
+                  ? Center(
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Appcolors.primary,
+                        ),
+                      ),
+                    )
+                  : null,
+            ),
           ),
           Icon(
             icon,
             size: Dimensions.iconSize16,
-            color: _selectedAccountType == label
+            color: isSelected
                 ? Appcolors.primary
                 : Appcolors.textSecondary,
           ),
@@ -385,10 +339,10 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
             label,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.85,
-              fontWeight: _selectedAccountType == label
+              fontWeight: isSelected
                   ? FontWeight.w600
                   : FontWeight.w500,
-              color: _selectedAccountType == label
+              color: isSelected
                   ? Appcolors.primary
                   : Appcolors.textPrimary,
             ),

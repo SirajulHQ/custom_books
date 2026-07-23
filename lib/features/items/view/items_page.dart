@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/view/custom_drawer.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:custom_books/features/items/widgets/item_card_widget.dart';
@@ -257,60 +258,17 @@ class _ItemsPageState extends State<ItemsPage> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             // App Bar
-            SliverAppBar(
-              pinned: true,
-              backgroundColor: Appcolors.background,
-              surfaceTintColor: Appcolors.background,
-              elevation: 0,
-              toolbarHeight: Dimensions.height45 * 1.6,
-              titleSpacing: Dimensions.width20,
-              leading: Builder(
-                builder: (context) => IconButton(
-                  icon: Container(
-                    width: Dimensions.height45 * 0.9,
-                    height: Dimensions.height45 * 0.9,
-                    decoration: BoxDecoration(
-                      color: Appcolors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    ),
-                    child: Icon(
-                      Icons.menu_rounded,
-                      size: Dimensions.iconSize24 - 4,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                  onPressed: () {
-                    appLog('📂 Drawer menu button tapped', name: 'ItemsPage');
-                    Scaffold.of(context).openDrawer();
-                  },
-                ),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Items',
-                    style: TextStyle(
-                      fontSize: Dimensions.font26 * 0.85,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF0F172A),
-                    ),
-                  ),
-                  Text(
-                    '${_filteredItems.length} items found',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.7,
-                      color: Colors.black45,
-                    ),
-                  ),
-                ],
-              ),
+            CustomSliverAppBar(
+              title: 'Items',
+              subtitle: '${_filteredItems.length} items found',
+              leadingType: AppBarLeadingType.menu,
               actions: [
-                _buildIconButton(
-                  _searchOpen ? Icons.close_rounded : Icons.search_rounded,
-                  Appcolors.primary,
-                  onTap: () {
+                AppBarIconButton(
+                  icon: _searchOpen
+                      ? Icons.close_rounded
+                      : Icons.search_rounded,
+                  color: Appcolors.primary,
+                  onPressed: () {
                     appLog('🔍 Search tapped', name: 'ItemsPage');
                     setState(() {
                       _searchOpen = !_searchOpen;
@@ -319,10 +277,10 @@ class _ItemsPageState extends State<ItemsPage> {
                   },
                 ),
                 SizedBox(width: Dimensions.width10),
-                _buildIconButton(
-                  Icons.qr_code_scanner_rounded,
-                  Appcolors.accent,
-                  onTap: () {
+                AppBarIconButton(
+                  icon: Icons.qr_code_scanner_rounded,
+                  color: Appcolors.accent,
+                  onPressed: () {
                     appLog('📷 QR Scanner tapped', name: 'ItemsPage');
                   },
                 ),
@@ -376,21 +334,6 @@ class _ItemsPageState extends State<ItemsPage> {
     );
   }
 
-  Widget _buildIconButton(IconData icon, Color color, {VoidCallback? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: Dimensions.height45 * 0.9,
-        height: Dimensions.height45 * 0.9,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-        ),
-        child: Icon(icon, size: Dimensions.iconSize24 - 4, color: color),
-      ),
-    );
-  }
-
   Widget _buildSearchField() {
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -440,11 +383,10 @@ class _ItemsPageState extends State<ItemsPage> {
         Dimensions.height15,
       ),
       child: Container(
-        padding: EdgeInsets.all(4),
+        padding: EdgeInsets.all(Dimensions.width10 / 2),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          color: const Color(0xFFF1F3F5),
+          borderRadius: BorderRadius.circular(Dimensions.radius30),
         ),
         child: Row(
           children: [
@@ -458,10 +400,19 @@ class _ItemsPageState extends State<ItemsPage> {
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
                   decoration: BoxDecoration(
-                    color: Appcolors.primary,
-                    borderRadius: BorderRadius.circular(
-                      Dimensions.radius15 - 5,
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(Dimensions.radius30),
+                    border: Border.all(
+                      color: Appcolors.primary.withValues(alpha: 0.3),
+                      width: 1.5,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Appcolors.primary.withValues(alpha: 0.08),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -469,22 +420,23 @@ class _ItemsPageState extends State<ItemsPage> {
                       Icon(
                         Icons.filter_list_rounded,
                         size: Dimensions.iconSize16,
-                        color: Colors.white,
+                        color: Appcolors.primary,
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
                         displayText,
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.8,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.3,
+                          color: Appcolors.primary,
                         ),
                       ),
                       SizedBox(width: Dimensions.width10 / 3),
                       Icon(
                         Icons.keyboard_arrow_down_rounded,
                         size: Dimensions.iconSize16,
-                        color: Colors.white,
+                        color: Appcolors.primary,
                       ),
                     ],
                   ),
@@ -507,7 +459,7 @@ class _ItemsPageState extends State<ItemsPage> {
                 ),
                 decoration: BoxDecoration(
                   color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(Dimensions.radius15 - 5),
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
                 ),
                 child: Icon(
                   Icons.sort_rounded,

@@ -67,7 +67,7 @@ class CostPriceEditor extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: Dimensions.font16 * 1.05,
-                  color: const Color(0xFF0F172A),
+                  color: Appcolors.textPrimary,
                 ),
               ),
               ElevatedButton(
@@ -165,7 +165,7 @@ class CostPriceEditor extends StatelessWidget {
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.9,
                       fontWeight: FontWeight.w500,
-                      color: const Color(0xFF0F172A),
+                      color: Appcolors.textPrimary,
                     ),
                     decoration: InputDecoration(
                       border: InputBorder.none,
