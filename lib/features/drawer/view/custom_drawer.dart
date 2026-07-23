@@ -8,6 +8,7 @@ import 'package:custom_books/features/drawer/widgets/footer_button.dart';
 import 'package:custom_books/features/items/view/items_page.dart';
 import 'package:custom_books/features/home/view/home_page.dart';
 import 'package:custom_books/features/inventory_adjustments/view/inventory_adjustments_page.dart';
+import 'package:custom_books/features/banking/view/banking_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerView extends StatefulWidget {
@@ -269,13 +270,41 @@ class _DrawerViewState extends State<DrawerView> {
                   item: DrawerItem(
                     icon: Icons.account_balance_rounded,
                     title: 'Banking',
+                    isSelected: widget.currentRoute == 'banking',
                   ),
                   onCustomTap: () {
                     appLog(
                       '🏦 Banking button tapped',
                       name: 'DrawerNavigation',
                     );
+
+                    // If already on Banking page, just close the drawer
+                    if (widget.currentRoute == 'banking') {
+                      appLog(
+                        '⚠️ Already on Banking page, just closing drawer',
+                        name: 'DrawerNavigation',
+                      );
+                      Navigator.pop(context);
+                      return;
+                    }
+
                     Navigator.pop(context);
+                    appLog(
+                      '📍 Navigating to BankingPage...',
+                      name: 'DrawerNavigation',
+                    );
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          appLog(
+                            '✅ BankingPage builder called',
+                            name: 'DrawerNavigation',
+                          );
+                          return const BankingPage();
+                        },
+                      ),
+                    );
                   },
                 ),
 
