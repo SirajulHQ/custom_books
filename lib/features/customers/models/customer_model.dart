@@ -2,6 +2,8 @@ class CustomerModel {
   final String id;
   final String name;
   final String? email;
+  final String? mobileNumber;
+  final String? workPhone;
   final double receivables;
   final double unusedCredits;
   final bool isActive;
@@ -10,6 +12,8 @@ class CustomerModel {
     required this.id,
     required this.name,
     this.email,
+    this.mobileNumber,
+    this.workPhone,
     required this.receivables,
     required this.unusedCredits,
     this.isActive = true,

@@ -3,6 +3,8 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
+import 'package:custom_books/features/customers/view/add_customer_page.dart';
+import 'package:custom_books/features/invoices/view/new_invoice_page.dart';
 import 'package:flutter/material.dart';
 
 class CustomerDetailsPage extends StatefulWidget {
@@ -69,7 +71,13 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                       '✏️ Edit button pressed',
                       name: 'CustomerDetailsPage',
                     );
-                    // TODO: Navigate to edit customer page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AddCustomerPage(customer: widget.customer),
+                      ),
+                    );
                   },
                 ),
                 SizedBox(width: Dimensions.width10),
@@ -131,7 +139,13 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                   '➕ Add Transaction FAB tapped',
                   name: 'CustomerDetailsPage',
                 );
-                // TODO: Navigate to add transaction page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        NewInvoicePage(customer: widget.customer),
+                  ),
+                );
               },
               backgroundColor: Appcolors.primary,
               shape: RoundedRectangleBorder(
@@ -263,45 +277,8 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
         children: [
           SizedBox(height: Dimensions.height20),
 
-          // Customer Info Section
-          _buildDetailsSection(
-            subtitle: widget.customer.email ?? '',
-            actions: [
-              _buildActionButton(
-                icon: Icons.phone_iphone_rounded,
-                label: 'Mobile',
-                color: const Color(0xFF90CAF9),
-                onTap: () {
-                  appLog(
-                    '📱 Mobile button tapped',
-                    name: 'CustomerDetailsPage',
-                  );
-                  // TODO: Handle mobile action
-                },
-              ),
-              _buildActionButton(
-                icon: Icons.phone_rounded,
-                label: 'Work Phone',
-                color: const Color(0xFF90CAF9),
-                onTap: () {
-                  appLog(
-                    '☎️ Work Phone button tapped',
-                    name: 'CustomerDetailsPage',
-                  );
-                  // TODO: Handle work phone action
-                },
-              ),
-              _buildActionButton(
-                icon: Icons.email_rounded,
-                label: 'Email',
-                color: Appcolors.primary,
-                onTap: () {
-                  appLog('✉️ Email button tapped', name: 'CustomerDetailsPage');
-                  // TODO: Handle email action
-                },
-              ),
-            ],
-          ),
+          // Contact Information Section
+          _buildContactInformationSection(),
 
           // Receivables Section
           _buildReceivablesSection(),
@@ -318,10 +295,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
     );
   }
 
-  Widget _buildDetailsSection({
-    required String subtitle,
-    required List<Widget> actions,
-  }) {
+  Widget _buildContactInformationSection() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: Dimensions.width20),
       padding: EdgeInsets.all(Dimensions.width20),
@@ -331,58 +305,119 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
         border: Border.all(color: Appcolors.border),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Email displayed prominently at top
-          if (subtitle.isNotEmpty) ...[
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: Dimensions.font16,
-                fontWeight: FontWeight.w600,
-                color: Appcolors.textPrimary,
-              ),
-              textAlign: TextAlign.center,
+          // Section Title
+          Text(
+            'CONTACT INFORMATION',
+            style: TextStyle(
+              fontSize: Dimensions.font16 * 0.7,
+              fontWeight: FontWeight.w700,
+              color: Appcolors.textTertiary,
+              letterSpacing: 1.2,
             ),
-            SizedBox(height: Dimensions.height20),
-          ],
+          ),
+          SizedBox(height: Dimensions.height20),
 
-          // Action buttons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: actions,
+          // Mobile
+          _buildContactInfoRow(
+            icon: Icons.phone_iphone_rounded,
+            iconColor: const Color(0xFF5C6BC0),
+            label: 'Mobile',
+            value: widget.customer.mobileNumber,
+            placeholder: 'Add mobile number',
+            onTap: () {
+              appLog('📱 Mobile tapped', name: 'CustomerDetailsPage');
+              // TODO: Handle mobile action
+            },
+          ),
+
+          SizedBox(height: Dimensions.height20),
+
+          // Work Phone
+          _buildContactInfoRow(
+            icon: Icons.phone_rounded,
+            iconColor: const Color(0xFF5C6BC0),
+            label: 'Work Phone',
+            value: widget.customer.workPhone,
+            placeholder: 'Add work phone',
+            onTap: () {
+              appLog('☎️ Work Phone tapped', name: 'CustomerDetailsPage');
+              // TODO: Handle work phone action
+            },
+          ),
+
+          SizedBox(height: Dimensions.height20),
+
+          // Email
+          _buildContactInfoRow(
+            icon: Icons.email_rounded,
+            iconColor: const Color(0xFF5C6BC0),
+            label: 'Email',
+            value: widget.customer.email,
+            placeholder: 'Add email',
+            onTap: () {
+              appLog('✉️ Email tapped', name: 'CustomerDetailsPage');
+              // TODO: Handle email action
+            },
           ),
         ],
       ),
     );
   }
 
-  Widget _buildActionButton({
+  Widget _buildContactInfoRow({
     required IconData icon,
+    required Color iconColor,
     required String label,
-    required Color color,
+    String? value,
+    required String placeholder,
     required VoidCallback onTap,
   }) {
+    final hasValue = value != null && value.isNotEmpty;
+
     return GestureDetector(
       onTap: onTap,
-      child: Column(
+      child: Row(
         children: [
+          // Icon
           Container(
-            width: Dimensions.height45 * 1.3,
-            height: Dimensions.height45 * 1.3,
+            width: Dimensions.height45,
+            height: Dimensions.height45,
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
-              shape: BoxShape.circle,
+              color: iconColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(Dimensions.radius15 / 1.5),
             ),
-            child: Icon(icon, color: color, size: Dimensions.iconSize24),
+            child: Icon(icon, color: iconColor, size: Dimensions.iconSize24),
           ),
-          SizedBox(height: Dimensions.height10 / 2),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.75,
-              color: color,
-              fontWeight: FontWeight.w600,
+
+          SizedBox(width: Dimensions.width15),
+
+          // Label and Value/Placeholder
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.9,
+                    fontWeight: FontWeight.w700,
+                    color: Appcolors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: Dimensions.height10 / 3),
+                Text(
+                  hasValue ? value : placeholder,
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.8,
+                    color: hasValue
+                        ? Appcolors.textSecondary
+                        : Appcolors.textTertiary,
+                    fontWeight: hasValue ? FontWeight.w500 : FontWeight.w400,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

@@ -2,12 +2,15 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/view/add_address_page.dart';
 import 'package:custom_books/features/customers/view/add_contact_person_page.dart';
 import 'package:flutter/material.dart';
 
 class AddCustomerPage extends StatefulWidget {
-  const AddCustomerPage({super.key});
+  final CustomerModel? customer;
+
+  const AddCustomerPage({super.key, this.customer});
 
   @override
   State<AddCustomerPage> createState() => _AddCustomerPageState();
@@ -144,6 +147,24 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.customer != null) {
+      // Pre-populate with customer data for editing
+      _displayNameController.text = widget.customer!.name;
+      _emailController.text = widget.customer!.email ?? '';
+      _phoneController.text = widget.customer!.workPhone ?? '';
+      _mobileController.text = widget.customer!.mobileNumber ?? '';
+      _phoneCountryCode = '+971';
+      _mobileCountryCode = '+971';
+      appLog(
+        '📝 Editing customer: ${widget.customer!.name}',
+        name: 'AddCustomerPage',
+      );
+    }
+  }
+
+  @override
   void dispose() {
     _firstNameController.dispose();
     _websiteController.dispose();
@@ -172,7 +193,7 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
           slivers: [
             // App Bar
             CustomSliverAppBar(
-              title: 'New Customer',
+              title: widget.customer != null ? 'Edit Customer' : 'New Customer',
               leadingType: AppBarLeadingType.back,
               onLeadingPressed: () {
                 appLog('⬅️ Back button tapped', name: 'AddCustomerPage');
