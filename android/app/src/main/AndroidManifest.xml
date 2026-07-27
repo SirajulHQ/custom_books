@@ -12,10 +12,6 @@
         android:label="custom_books"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <!-- Work around intermittent missing text/icon glyphs on some Android GPUs. -->
-        <meta-data
-            android:name="io.flutter.embedding.android.EnableImpeller"
-            android:value="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
