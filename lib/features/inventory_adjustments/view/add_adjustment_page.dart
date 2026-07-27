@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/dashed_border.dart';
+import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/inventory_adjustments/model/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/model/line_item_model.dart';
 import 'package:custom_books/features/inventory_adjustments/view/add_line_item_page.dart';
@@ -117,7 +118,9 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                             Container(
                               padding: EdgeInsets.all(Dimensions.width20),
                               decoration: BoxDecoration(
-                                color: Appcolors.primary.withValues(alpha: 0.07),
+                                color: Appcolors.primary.withValues(
+                                  alpha: 0.07,
+                                ),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -177,8 +180,9 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                       Dimensions.width10 * 0.7,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Appcolors.primary
-                                          .withValues(alpha: 0.1),
+                                      color: Appcolors.primary.withValues(
+                                        alpha: 0.1,
+                                      ),
                                       borderRadius: BorderRadius.circular(
                                         Dimensions.radius15 / 2,
                                       ),
@@ -209,7 +213,8 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                           Text(
                                             _formatBytes(file.size),
                                             style: TextStyle(
-                                              fontSize: Dimensions.font16 * 0.72,
+                                              fontSize:
+                                                  Dimensions.font16 * 0.72,
                                               color: Appcolors.textSecondary,
                                             ),
                                           ),
@@ -225,9 +230,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                       color: Appcolors.textSecondary,
                                     ),
                                     onPressed: () {
-                                      setState(
-                                        () => _attachments.removeAt(i),
-                                      );
+                                      setState(() => _attachments.removeAt(i));
                                       setDialogState(() {});
                                     },
                                   ),
@@ -258,10 +261,8 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                       SizedBox(
                         width: double.infinity,
                         child: OutlinedButton.icon(
-                          onPressed: () => _showSourcePicker(
-                            dialogCtx,
-                            setDialogState,
-                          ),
+                          onPressed: () =>
+                              _showSourcePicker(dialogCtx, setDialogState),
                           icon: Icon(
                             Icons.add_rounded,
                             color: Appcolors.primary,
@@ -302,10 +303,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
   }
 
   // ── Source picker bottom-sheet (Take Photo / Pick from Device) ─────────────
-  void _showSourcePicker(
-    BuildContext dialogCtx,
-    StateSetter setDialogState,
-  ) {
+  void _showSourcePicker(BuildContext dialogCtx, StateSetter setDialogState) {
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.white,
@@ -381,11 +379,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
         }
         return;
       }
-      final pf = PlatformFile(
-        name: photo.name,
-        size: bytes,
-        path: photo.path,
-      );
+      final pf = PlatformFile(name: photo.name, size: bytes, path: photo.path);
       final exists = _attachments.any((f) => f.name == pf.name);
       if (!exists) {
         setState(() => _attachments.add(pf));
@@ -689,7 +683,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
           children: [
             FormCard(
               children: [
-                Text('Mode of adjustment', style: AdjustmentTextStyles.label()),
+                Text('Mode of adjustment', style: FormTextStyles.label()),
                 SizedBox(height: Dimensions.height10 / 2),
                 Row(
                   children: [
@@ -713,10 +707,10 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
             SizedBox(height: Dimensions.height15),
             FormCard(
               children: [
-                Text('Reference#', style: AdjustmentTextStyles.label()),
+                Text('Reference#', style: FormTextStyles.label()),
                 TextField(
                   controller: _referenceController,
-                  style: AdjustmentTextStyles.value(),
+                  style: FormTextStyles.value(),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     isDense: true,
@@ -731,10 +725,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        _formatDate(_date),
-                        style: AdjustmentTextStyles.value(),
-                      ),
+                      Text(_formatDate(_date), style: FormTextStyles.value()),
                       Icon(
                         Icons.calendar_today_outlined,
                         size: Dimensions.iconSize24 - 6,
@@ -751,7 +742,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                   child: DropdownButton<String>(
                     value: _account,
                     isExpanded: true,
-                    style: AdjustmentTextStyles.value(),
+                    style: FormTextStyles.value(),
                     icon: const Icon(
                       Icons.keyboard_arrow_down_rounded,
                       color: Colors.black45,
@@ -777,7 +768,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                         fontSize: Dimensions.font16 * 0.85,
                       ),
                     ),
-                    style: AdjustmentTextStyles.value(),
+                    style: FormTextStyles.value(),
                     icon: const Icon(
                       Icons.keyboard_arrow_down_rounded,
                       color: Colors.black45,
@@ -790,12 +781,12 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                 ),
                 const FormDivider(),
                 SizedBox(height: Dimensions.height15),
-                Text('Description', style: AdjustmentTextStyles.label()),
+                Text('Description', style: FormTextStyles.label()),
                 TextField(
                   controller: _descriptionController,
                   maxLength: 500,
                   maxLines: 3,
-                  style: AdjustmentTextStyles.value(),
+                  style: FormTextStyles.value(),
                   decoration: const InputDecoration(
                     hintText: 'Max 500 Characters',
                     hintStyle: TextStyle(color: Colors.black26),
@@ -823,7 +814,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
               children: [
                 Row(
                   children: [
-                    Text('Attachments', style: AdjustmentTextStyles.label()),
+                    Text('Attachments', style: FormTextStyles.label()),
                     if (_attachments.isNotEmpty) ...[
                       SizedBox(width: Dimensions.width10 / 2),
                       Container(

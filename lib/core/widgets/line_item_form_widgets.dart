@@ -111,7 +111,7 @@ class ItemSearchField<T> extends StatelessWidget {
                 ),
               ),
             ),
-            if (isItemSelected && selectedItemImageUrl != null) ...[
+            if (isItemSelected) ...[
               SizedBox(width: Dimensions.width10),
               ItemThumbnail(imageUrl: selectedItemImageUrl),
             ],

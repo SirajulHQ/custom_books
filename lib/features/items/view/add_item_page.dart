@@ -4,6 +4,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -221,206 +222,212 @@ class _AddItemPageState extends State<AddItemPage> {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   // Item Type and Image Card
-                  _buildCard([
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Item Type',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.9,
-                                  fontWeight: FontWeight.w700,
-                                  color: Appcolors.textPrimary,
-                                ),
-                              ),
-                              SizedBox(height: Dimensions.height10),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Appcolors.surfaceLight,
-                                  borderRadius: BorderRadius.circular(
-                                    Dimensions.radius15 / 2,
+                  _ItemOverviewSection(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Item Type',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    fontWeight: FontWeight.w700,
+                                    color: Appcolors.textPrimary,
                                   ),
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: Dimensions.width10,
-                                  vertical: Dimensions.height10 / 2,
+                                SizedBox(height: Dimensions.height10),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Appcolors.surfaceLight,
+                                    borderRadius: BorderRadius.circular(
+                                      Dimensions.radius15 / 2,
+                                    ),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: Dimensions.width10,
+                                    vertical: Dimensions.height10 / 2,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      _buildRadioOption(
+                                        'Goods',
+                                        Icons.inventory_2_outlined,
+                                      ),
+                                      _buildRadioOption(
+                                        'Service',
+                                        Icons.home_repair_service_outlined,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                child: Column(
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: Dimensions.width15),
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Item Image',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    fontWeight: FontWeight.w700,
+                                    color: Appcolors.textPrimary,
+                                  ),
+                                ),
+                                SizedBox(height: Dimensions.height10),
+                                // ---- Live image preview / picker ----
+                                Stack(
                                   children: [
-                                    _buildRadioOption(
-                                      'Goods',
-                                      Icons.inventory_2_outlined,
+                                    GestureDetector(
+                                      onTap: _showImageSourceSheet,
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: Dimensions.height45 * 2.5,
+                                        decoration: BoxDecoration(
+                                          color: Appcolors.surfaceLight,
+                                          border: Border.all(
+                                            color: Appcolors.primary.withValues(
+                                              alpha: 0.3,
+                                            ),
+                                            width: 2,
+                                            style: BorderStyle.solid,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            Dimensions.radius15,
+                                          ),
+                                        ),
+                                        clipBehavior: Clip.antiAlias,
+                                        child: _itemImage != null
+                                            ? Image.file(
+                                                File(_itemImage!.path),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    padding: EdgeInsets.all(
+                                                      Dimensions.width10,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      color: Appcolors.primary
+                                                          .withValues(
+                                                            alpha: 0.1,
+                                                          ),
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: Icon(
+                                                      Icons
+                                                          .add_photo_alternate_outlined,
+                                                      size:
+                                                          Dimensions.iconSize24,
+                                                      color: Appcolors.primary,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height:
+                                                        Dimensions.height10 / 2,
+                                                  ),
+                                                  Text(
+                                                    'Add Photo',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize:
+                                                          Dimensions.font16 *
+                                                          0.75,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Appcolors.primary,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                      ),
                                     ),
-                                    _buildRadioOption(
-                                      'Service',
-                                      Icons.home_repair_service_outlined,
-                                    ),
+                                    // Remove button — only shown when an image is selected
+                                    if (_itemImage != null)
+                                      Positioned(
+                                        top: 6,
+                                        right: 6,
+                                        child: GestureDetector(
+                                          onTap: () =>
+                                              setState(() => _itemImage = null),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(4),
+                                            decoration: const BoxDecoration(
+                                              color: Colors.black54,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.close,
+                                              color: Colors.white,
+                                              size: 14,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                   ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(width: Dimensions.width15),
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            children: [
-                              Text(
-                                'Item Image',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.9,
-                                  fontWeight: FontWeight.w700,
-                                  color: Appcolors.textPrimary,
-                                ),
-                              ),
-                              SizedBox(height: Dimensions.height10),
-                              // ---- Live image preview / picker ----
-                              Stack(
-                                children: [
-                                  GestureDetector(
-                                    onTap: _showImageSourceSheet,
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: Dimensions.height45 * 2.5,
-                                      decoration: BoxDecoration(
-                                        color: Appcolors.surfaceLight,
-                                        border: Border.all(
-                                          color: Appcolors.primary.withValues(
-                                            alpha: 0.3,
-                                          ),
-                                          width: 2,
-                                          style: BorderStyle.solid,
-                                        ),
-                                        borderRadius: BorderRadius.circular(
-                                          Dimensions.radius15,
-                                        ),
-                                      ),
-                                      clipBehavior: Clip.antiAlias,
-                                      child: _itemImage != null
-                                          ? Image.file(
-                                              File(_itemImage!.path),
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                  padding: EdgeInsets.all(
-                                                    Dimensions.width10,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: Appcolors.primary
-                                                        .withValues(alpha: 0.1),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: Icon(
-                                                    Icons
-                                                        .add_photo_alternate_outlined,
-                                                    size: Dimensions.iconSize24,
-                                                    color: Appcolors.primary,
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height:
-                                                      Dimensions.height10 / 2,
-                                                ),
-                                                Text(
-                                                  'Add Photo',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize:
-                                                        Dimensions.font16 *
-                                                        0.75,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Appcolors.primary,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                    ),
-                                  ),
-                                  // Remove button — only shown when an image is selected
-                                  if (_itemImage != null)
-                                    Positioned(
-                                      top: 6,
-                                      right: 6,
-                                      child: GestureDetector(
-                                        onTap: () =>
-                                            setState(() => _itemImage = null),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: const BoxDecoration(
-                                            color: Colors.black54,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.white,
-                                            size: 14,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ],
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      Divider(height: 1, color: Appcolors.border),
+                      SizedBox(height: Dimensions.height20),
+                      _buildTextField(
+                        'Item Name',
+                        _itemNameController,
+                        isRequired: true,
+                        icon: Icons.inventory_outlined,
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildTextField(
+                              'SKU',
+                              _skuController,
+                              hasInfo: true,
+                              hasScan: true,
+                              icon: Icons.qr_code_2_outlined,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    Divider(height: 1, color: Appcolors.border),
-                    SizedBox(height: Dimensions.height20),
-                    _buildTextField(
-                      'Item Name',
-                      _itemNameController,
-                      isRequired: true,
-                      icon: Icons.inventory_outlined,
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildTextField(
-                            'SKU',
-                            _skuController,
-                            hasInfo: true,
-                            hasScan: true,
-                            icon: Icons.qr_code_2_outlined,
+                          SizedBox(width: Dimensions.width15),
+                          Expanded(
+                            child: _buildTextField(
+                              'Unit',
+                              _unitController,
+                              hint: 'e.g., pcs, kg, box',
+                              icon: Icons.straighten_outlined,
+                            ),
                           ),
-                        ),
-                        SizedBox(width: Dimensions.width15),
-                        Expanded(
-                          child: _buildTextField(
-                            'Unit',
-                            _unitController,
-                            hint: 'e.g., pcs, kg, box',
-                            icon: Icons.straighten_outlined,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height15),
-                    _buildCheckbox(
-                      'It is an excise product',
-                      _isExciseProduct,
-                      (value) {
-                        setState(() => _isExciseProduct = value ?? false);
-                      },
-                    ),
-                  ]),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height15),
+                      _buildCheckbox(
+                        'It is an excise product',
+                        _isExciseProduct,
+                        (value) {
+                          setState(() => _isExciseProduct = value ?? false);
+                        },
+                      ),
+                    ],
+                  ),
 
                   SizedBox(height: Dimensions.height15),
 
                   // Sales Information Card
-                  _buildToggleCard(
+                  _ItemToggleSection(
                     'Sales Information',
                     Icons.point_of_sale_outlined,
                     _salesInformation,
@@ -464,7 +471,7 @@ class _AddItemPageState extends State<AddItemPage> {
                   SizedBox(height: Dimensions.height15),
 
                   // Purchase Information Card
-                  _buildToggleCard(
+                  _ItemToggleSection(
                     'Purchase Information',
                     Icons.shopping_cart_outlined,
                     _purchaseInformation,
@@ -514,7 +521,7 @@ class _AddItemPageState extends State<AddItemPage> {
                   SizedBox(height: Dimensions.height15),
 
                   // Track Inventory Card
-                  _buildToggleCard(
+                  _ItemToggleSection(
                     'Track Inventory',
                     Icons.inventory_outlined,
                     _trackInventory,
@@ -570,105 +577,6 @@ class _AddItemPageState extends State<AddItemPage> {
     );
   }
 
-  Widget _buildCard(List<Widget> children) {
-    return Container(
-      padding: EdgeInsets.all(Dimensions.width20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
-      ),
-    );
-  }
-
-  Widget _buildToggleCard(
-    String title,
-    IconData icon,
-    bool value,
-    Function(bool) onChanged,
-    List<Widget> children,
-  ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: Dimensions.width20,
-              vertical: Dimensions.height15,
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(Dimensions.width10 * 0.7),
-                  decoration: BoxDecoration(
-                    color: Appcolors.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(
-                      Dimensions.radius15 / 2,
-                    ),
-                  ),
-                  child: Icon(
-                    icon,
-                    size: Dimensions.iconSize16 * 1.2,
-                    color: Appcolors.primary,
-                  ),
-                ),
-                SizedBox(width: Dimensions.width10),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.95,
-                      fontWeight: FontWeight.w700,
-                      color: Appcolors.textPrimary,
-                    ),
-                  ),
-                ),
-                Switch(
-                  value: value,
-                  onChanged: onChanged,
-                  activeThumbColor: Appcolors.primary,
-                ),
-              ],
-            ),
-          ),
-          if (value) ...[
-            Divider(height: 1, color: Appcolors.border),
-            Padding(
-              padding: EdgeInsets.all(Dimensions.width20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: children,
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
   Widget _buildRadioOption(String label, IconData icon) {
     final isSelected = _itemType == label;
     return GestureDetector(
@@ -686,7 +594,9 @@ class _AddItemPageState extends State<AddItemPage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? Appcolors.primary : Appcolors.textTertiary,
+                  color: isSelected
+                      ? Appcolors.primary
+                      : Appcolors.textTertiary,
                   width: 2,
                 ),
               ),
@@ -914,6 +824,96 @@ class _AddItemPageState extends State<AddItemPage> {
             color: Appcolors.textPrimary,
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _ItemOverviewSection extends StatelessWidget {
+  final List<Widget> children;
+
+  const _ItemOverviewSection({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return FormCard(
+      borderRadius: Dimensions.radius20,
+      showShadow: true,
+      children: children,
+    );
+  }
+}
+
+class _ItemToggleSection extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final List<Widget> children;
+
+  const _ItemToggleSection(
+    this.title,
+    this.icon,
+    this.value,
+    this.onChanged,
+    this.children,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return FormCard(
+      borderRadius: Dimensions.radius20,
+      showShadow: true,
+      padding: EdgeInsets.zero,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.width20,
+            vertical: Dimensions.height15,
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(Dimensions.width10 * 0.7),
+                decoration: BoxDecoration(
+                  color: Appcolors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
+                ),
+                child: Icon(
+                  icon,
+                  size: Dimensions.iconSize16 * 1.2,
+                  color: Appcolors.primary,
+                ),
+              ),
+              SizedBox(width: Dimensions.width10),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.95,
+                    fontWeight: FontWeight.w700,
+                    color: Appcolors.textPrimary,
+                  ),
+                ),
+              ),
+              Switch(
+                value: value,
+                onChanged: onChanged,
+                activeThumbColor: Appcolors.primary,
+              ),
+            ],
+          ),
+        ),
+        if (value) ...[
+          Divider(height: 1, color: Appcolors.border),
+          Padding(
+            padding: EdgeInsets.all(Dimensions.width20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: children,
+            ),
+          ),
+        ],
       ],
     );
   }

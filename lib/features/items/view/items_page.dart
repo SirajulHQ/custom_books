@@ -5,6 +5,7 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/view/custom_drawer.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:custom_books/features/items/widgets/item_card_widget.dart';
+import 'package:custom_books/features/items/widgets/items_filter_sheet.dart';
 import 'package:custom_books/features/items/view/add_item_page.dart';
 import 'package:flutter/material.dart';
 
@@ -95,153 +96,23 @@ class _ItemsPageState extends State<ItemsPage> {
 
   void _showFilterBottomSheet() {
     appLog('📋 Opening filter bottom sheet', name: 'ItemsPage');
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(Dimensions.radius20),
-              topRight: Radius.circular(Dimensions.radius20),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.width20,
-                  vertical: Dimensions.height15,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: Appcolors.border, width: 1),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Filter',
-                      style: TextStyle(
-                        fontSize: Dimensions.font20,
-                        fontWeight: FontWeight.bold,
-                        color: Appcolors.textPrimary,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        appLog('❌ Filter sheet closed', name: 'ItemsPage');
-                        Navigator.pop(context);
-                      },
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: Dimensions.iconSize24,
-                        color: Appcolors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Default Filters Label
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.fromLTRB(
-                  Dimensions.width20,
-                  Dimensions.height20,
-                  Dimensions.width20,
-                  Dimensions.height10,
-                ),
-                child: Text(
-                  'DEFAULT FILTERS',
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.7,
-                    fontWeight: FontWeight.w600,
-                    color: Appcolors.textTertiary,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
-
-              // Filter options
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.width20,
-                  vertical: Dimensions.height10,
-                ),
-                itemCount: _allFilterOptions.length,
-                itemBuilder: (context, index) {
-                  final filter = _allFilterOptions[index];
-                  final isSelected = filter == _selectedFilter;
-
-                  return GestureDetector(
-                    onTap: () {
-                      appLog('✅ Filter selected: $filter', name: 'ItemsPage');
-                      setState(() {
-                        _selectedFilter = filter;
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: Dimensions.height10),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width15,
-                        vertical: Dimensions.height15,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? Appcolors.primary.withValues(alpha: 0.05)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                        border: Border.all(
-                          color: isSelected
-                              ? Appcolors.primary
-                              : Appcolors.border,
-                          width: isSelected ? 2 : 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            filter,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16,
-                              fontWeight: isSelected
-                                  ? FontWeight.w600
-                                  : FontWeight.w500,
-                              color: isSelected
-                                  ? Appcolors.primary
-                                  : Appcolors.textPrimary,
-                            ),
-                          ),
-                          if (isSelected)
-                            Icon(
-                              Icons.check_circle,
-                              color: Appcolors.primary,
-                              size: Dimensions.iconSize24,
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-
-              SizedBox(height: Dimensions.height20),
-            ],
-          ),
-        );
-      },
+      builder: (sheetContext) => ItemsFilterSheet(
+        options: _allFilterOptions,
+        selectedFilter: _selectedFilter,
+        onClose: () {
+          appLog('❌ Filter sheet closed', name: 'ItemsPage');
+          Navigator.pop(sheetContext);
+        },
+        onSelected: (filter) {
+          appLog('✅ Filter selected: $filter', name: 'ItemsPage');
+          setState(() => _selectedFilter = filter);
+          Navigator.pop(sheetContext);
+        },
+      ),
     );
   }
 

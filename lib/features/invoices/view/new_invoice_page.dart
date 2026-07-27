@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
 import 'package:custom_books/features/invoices/view/add_invoice_line_item_page.dart';
@@ -27,14 +28,14 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
   final TextEditingController _termsController = TextEditingController();
 
   // Form data
-  String _selectedTaxTreatment = 'VAT Registered';
+  final String _selectedTaxTreatment = 'VAT Registered';
   String _selectedPlaceOfSupply = 'Dubai';
-  String _invoiceNumber = 'INV-000039';
+  final String _invoiceNumber = 'INV-000039';
   DateTime _invoiceDate = DateTime.now();
   String _selectedTerms = 'Due on Receipt';
   DateTime _dueDate = DateTime.now();
   bool _isTaxInclusive = false;
-  List<String> _emailCommunications = [];
+  final List<String> _emailCommunications = [];
   bool _paymentReceived = false;
 
   @override
@@ -107,145 +108,170 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   // Customer Information Card
-                  _buildCard([
-                    _buildCustomerNameField(),
-                    SizedBox(height: Dimensions.height15),
-                    _buildLinkRow([
-                      _buildLink('Address', () {
-                        appLog('📍 Address tapped', name: 'NewInvoicePage');
-                      }),
-                      _buildLink('Customer Details', () {
-                        appLog(
-                          '👤 Customer Details tapped',
-                          name: 'NewInvoicePage',
-                        );
-                      }),
-                    ]),
-                    SizedBox(height: Dimensions.height20),
-                    _buildTaxTreatmentRow(),
-                    SizedBox(height: Dimensions.height20),
-                    _buildDropdown(
-                      'Place Of Supply',
-                      _selectedPlaceOfSupply,
-                      ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman'],
-                      isRequired: true,
-                      onChanged: (value) {
-                        setState(() => _selectedPlaceOfSupply = value!);
-                      },
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildInvoiceNumberField(),
-                    SizedBox(height: Dimensions.height20),
-                    _buildTextField('Order Number', _orderNumberController),
-                    SizedBox(height: Dimensions.height20),
-                    _buildDateField(
-                      'Invoice Date',
-                      _invoiceDate,
-                      isRequired: true,
-                      onTap: () async {
-                        final date = await _selectDate(context, _invoiceDate);
-                        if (date != null) {
-                          setState(() => _invoiceDate = date);
-                        }
-                      },
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildDropdown(
-                      'Terms',
-                      _selectedTerms,
-                      [
-                        'Due on Receipt',
-                        'Net 15',
-                        'Net 30',
-                        'Net 45',
-                        'Net 60',
+                  _CustomerInvoiceSection(
+                    customer: _CustomerSection(
+                      children: [
+                        _buildCustomerNameField(),
+                        SizedBox(height: Dimensions.height15),
+                        _buildLinkRow([
+                          _buildLink('Address', () {
+                            appLog('📍 Address tapped', name: 'NewInvoicePage');
+                          }),
+                          _buildLink('Customer Details', () {
+                            appLog(
+                              '👤 Customer Details tapped',
+                              name: 'NewInvoicePage',
+                            );
+                          }),
+                        ]),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTaxTreatmentRow(),
+                        SizedBox(height: Dimensions.height20),
+                        _buildDropdown(
+                          'Place Of Supply',
+                          _selectedPlaceOfSupply,
+                          ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman'],
+                          isRequired: true,
+                          onChanged: (value) {
+                            setState(() => _selectedPlaceOfSupply = value!);
+                          },
+                        ),
                       ],
-                      isRequired: true,
-                      onChanged: (value) {
-                        setState(() => _selectedTerms = value!);
-                      },
                     ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildDateField(
-                      'Due Date',
-                      _dueDate,
-                      onTap: () async {
-                        final date = await _selectDate(context, _dueDate);
-                        if (date != null) {
-                          setState(() => _dueDate = date);
-                        }
-                      },
+                    invoiceDetails: _InvoiceDetailsSection(
+                      children: [
+                        _buildInvoiceNumberField(),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTextField('Order Number', _orderNumberController),
+                        SizedBox(height: Dimensions.height20),
+                        _buildDateField(
+                          'Invoice Date',
+                          _invoiceDate,
+                          isRequired: true,
+                          onTap: () async {
+                            final date = await _selectDate(
+                              context,
+                              _invoiceDate,
+                            );
+                            if (date != null) {
+                              setState(() => _invoiceDate = date);
+                            }
+                          },
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildDropdown(
+                          'Terms',
+                          _selectedTerms,
+                          [
+                            'Due on Receipt',
+                            'Net 15',
+                            'Net 30',
+                            'Net 45',
+                            'Net 60',
+                          ],
+                          isRequired: true,
+                          onChanged: (value) {
+                            setState(() => _selectedTerms = value!);
+                          },
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildDateField(
+                          'Due Date',
+                          _dueDate,
+                          onTap: () async {
+                            final date = await _selectDate(context, _dueDate);
+                            if (date != null) {
+                              setState(() => _dueDate = date);
+                            }
+                          },
+                        ),
+                      ],
                     ),
-                  ]),
+                  ),
 
                   SizedBox(height: Dimensions.height15),
 
                   // Salesperson & Subject Card
-                  _buildCard([
-                    _buildTextField(
-                      'Salesperson',
-                      _salespersonController,
-                      placeholder: 'Select or Add Salesperson',
-                      suffixIcon: Icons.keyboard_arrow_down_rounded,
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildTextField(
-                      'Subject',
-                      _subjectController,
-                      placeholder: 'What is this invoice for?',
-                      hasInfo: true,
-                    ),
-                  ]),
+                  _InvoiceDetailsCard(
+                    children: [
+                      _buildTextField(
+                        'Salesperson',
+                        _salespersonController,
+                        placeholder: 'Select or Add Salesperson',
+                        suffixIcon: Icons.keyboard_arrow_down_rounded,
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      _buildTextField(
+                        'Subject',
+                        _subjectController,
+                        placeholder: 'What is this invoice for?',
+                        hasInfo: true,
+                      ),
+                    ],
+                  ),
 
                   SizedBox(height: Dimensions.height15),
 
-                  // Tax Type Card
-                  _buildCard([_buildTaxTypeSelector()]),
-
-                  SizedBox(height: Dimensions.height15),
-
-                  // Add Line Item Button
-                  _buildAddLineItemButton(),
+                  _LineItemsTaxSection(
+                    taxSelector: _buildTaxTypeSelector(),
+                    addLineItemButton: _buildAddLineItemButton(),
+                  ),
 
                   SizedBox(height: Dimensions.height15),
 
                   // Customer Notes Card
-                  _buildCard([
-                    _buildSectionHeader('Customer Notes'),
-                    SizedBox(height: Dimensions.height10),
-                    _buildMultilineText(_customerNotesController.text),
-                    SizedBox(height: Dimensions.height15),
-                    _buildSectionHeader('Terms & Conditions'),
-                  ]),
+                  _InvoiceNotesSection(
+                    children: [
+                      _buildSectionHeader('Customer Notes'),
+                      SizedBox(height: Dimensions.height10),
+                      _buildMultilineText(_customerNotesController.text),
+                      SizedBox(height: Dimensions.height15),
+                      _buildSectionHeader('Terms & Conditions'),
+                    ],
+                  ),
 
                   SizedBox(height: Dimensions.height15),
 
                   // Email Communications Card
-                  _buildEmailCommunicationsCard(),
+                  _EmailCommunicationsSection(
+                    emails: _emailCommunications,
+                    onClear: () {
+                      setState(() => _emailCommunications.clear());
+                      appLog('🗑️ Clear emails tapped', name: 'NewInvoicePage');
+                    },
+                    onAdd: () {
+                      appLog('➕ Add New Email tapped', name: 'NewInvoicePage');
+                      // TODO: Show email input dialog
+                    },
+                  ),
 
                   SizedBox(height: Dimensions.height15),
 
                   // Payment Details Card
-                  _buildCard([
-                    _buildSectionHeader('Payment Details'),
-                    SizedBox(height: Dimensions.height15),
-                    _buildCheckbox(
-                      'I have received the payment',
-                      _paymentReceived,
-                      (value) {
-                        setState(() => _paymentReceived = value ?? false);
-                      },
-                    ),
-                  ]),
+                  _PaymentDetailsSection(
+                    children: [
+                      _buildSectionHeader('Payment Details'),
+                      SizedBox(height: Dimensions.height15),
+                      _buildCheckbox(
+                        'I have received the payment',
+                        _paymentReceived,
+                        (value) {
+                          setState(() => _paymentReceived = value ?? false);
+                        },
+                      ),
+                    ],
+                  ),
 
                   SizedBox(height: Dimensions.height15),
 
                   // Attachments Card
-                  _buildCard([
-                    _buildSectionHeader('Attachments'),
-                    SizedBox(height: Dimensions.height15),
-                    _buildUploadFileButton(),
-                  ]),
+                  _AttachmentsSection(
+                    header: _buildSectionHeader('Attachments'),
+                    onUpload: () {
+                      appLog('📎 Upload File tapped', name: 'NewInvoicePage');
+                      // TODO: Show file picker
+                    },
+                  ),
 
                   SizedBox(height: Dimensions.height30),
                 ]),
@@ -258,28 +284,6 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
   }
 
   // Helper Methods
-  Widget _buildCard(List<Widget> children) {
-    return Container(
-      padding: EdgeInsets.all(Dimensions.width20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
-      ),
-    );
-  }
-
   Widget _buildSectionHeader(String label, {bool hasInfo = false}) {
     return Row(
       children: [
@@ -882,110 +886,6 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
     );
   }
 
-  Widget _buildEmailCommunicationsCard() {
-    return _buildCard([
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              _buildSectionHeader('Email Communications', hasInfo: true),
-            ],
-          ),
-          GestureDetector(
-            onTap: () {
-              setState(() => _emailCommunications.clear());
-              appLog('🗑️ Clear emails tapped', name: 'NewInvoicePage');
-            },
-            child: Text(
-              'Clear',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.85,
-                color: Colors.red,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-      if (_emailCommunications.isNotEmpty) ...[
-        SizedBox(height: Dimensions.height15),
-        ..._emailCommunications.map((email) => _buildEmailItem(email)),
-      ],
-      SizedBox(height: Dimensions.height15),
-      _buildAddNewButton(),
-    ]);
-  }
-
-  Widget _buildEmailItem(String email) {
-    return Container(
-      margin: EdgeInsets.only(bottom: Dimensions.height10),
-      padding: EdgeInsets.all(Dimensions.width15),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE3F2FD),
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.check_box,
-            color: Appcolors.primary,
-            size: Dimensions.iconSize24,
-          ),
-          SizedBox(width: Dimensions.width10),
-          Expanded(
-            child: Text(
-              email,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.85,
-                color: Appcolors.textPrimary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAddNewButton() {
-    return GestureDetector(
-      onTap: () {
-        appLog('➕ Add New Email tapped', name: 'NewInvoicePage');
-        // TODO: Show email input dialog
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width15,
-          vertical: Dimensions.height15,
-        ),
-        decoration: BoxDecoration(
-          color: const Color(0xFFE3F2FD),
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.add,
-              color: Appcolors.primary,
-              size: Dimensions.iconSize24,
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              'Add New',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.85,
-                color: Appcolors.primary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildCheckbox(String label, bool value, Function(bool?) onChanged) {
     return GestureDetector(
       onTap: () => onChanged(!value),
@@ -1022,48 +922,6 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildUploadFileButton() {
-    return GestureDetector(
-      onTap: () {
-        appLog('📎 Upload File tapped', name: 'NewInvoicePage');
-        // TODO: Show file picker
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width20,
-          vertical: Dimensions.height20,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(
-            color: Appcolors.border,
-            width: 2,
-            style: BorderStyle.solid,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.image_outlined,
-              color: Appcolors.textSecondary,
-              size: Dimensions.iconSize24,
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              'Upload File',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.85,
-                color: Appcolors.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -1110,5 +968,308 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
       'Dec',
     ];
     return months[month - 1];
+  }
+}
+
+class _CustomerInvoiceSection extends StatelessWidget {
+  final Widget customer;
+  final Widget invoiceDetails;
+
+  const _CustomerInvoiceSection({
+    required this.customer,
+    required this.invoiceDetails,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FormCard(
+      borderRadius: Dimensions.radius20,
+      showShadow: true,
+      children: [
+        customer,
+        SizedBox(height: Dimensions.height20),
+        invoiceDetails,
+      ],
+    );
+  }
+}
+
+class _CustomerSection extends StatelessWidget {
+  final List<Widget> children;
+
+  const _CustomerSection({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
+  }
+}
+
+class _InvoiceDetailsSection extends StatelessWidget {
+  final List<Widget> children;
+
+  const _InvoiceDetailsSection({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
+  }
+}
+
+class _InvoiceDetailsCard extends StatelessWidget {
+  final List<Widget> children;
+
+  const _InvoiceDetailsCard({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return FormCard(
+      borderRadius: Dimensions.radius20,
+      showShadow: true,
+      children: children,
+    );
+  }
+}
+
+class _LineItemsTaxSection extends StatelessWidget {
+  final Widget taxSelector;
+  final Widget addLineItemButton;
+
+  const _LineItemsTaxSection({
+    required this.taxSelector,
+    required this.addLineItemButton,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        FormCard(
+          borderRadius: Dimensions.radius20,
+          showShadow: true,
+          children: [taxSelector],
+        ),
+        SizedBox(height: Dimensions.height15),
+        addLineItemButton,
+      ],
+    );
+  }
+}
+
+class _InvoiceNotesSection extends StatelessWidget {
+  final List<Widget> children;
+
+  const _InvoiceNotesSection({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return FormCard(
+      borderRadius: Dimensions.radius20,
+      showShadow: true,
+      children: children,
+    );
+  }
+}
+
+class _EmailCommunicationsSection extends StatelessWidget {
+  final List<String> emails;
+  final VoidCallback onClear;
+  final VoidCallback onAdd;
+
+  const _EmailCommunicationsSection({
+    required this.emails,
+    required this.onClear,
+    required this.onAdd,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FormCard(
+      borderRadius: Dimensions.radius20,
+      showShadow: true,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Email Communications',
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.85,
+                    fontWeight: FontWeight.w600,
+                    color: Appcolors.primary,
+                  ),
+                ),
+                SizedBox(width: Dimensions.width10 / 2),
+                Icon(
+                  Icons.info_outline,
+                  size: Dimensions.iconSize16,
+                  color: Appcolors.textTertiary,
+                ),
+              ],
+            ),
+            GestureDetector(
+              onTap: onClear,
+              child: Text(
+                'Clear',
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.85,
+                  color: Colors.red,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (emails.isNotEmpty) ...[
+          SizedBox(height: Dimensions.height15),
+          ...emails.map((email) => _EmailItem(email: email)),
+        ],
+        SizedBox(height: Dimensions.height15),
+        GestureDetector(
+          onTap: onAdd,
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: Dimensions.width15,
+              vertical: Dimensions.height15,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFE3F2FD),
+              borderRadius: BorderRadius.circular(Dimensions.radius15),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.add,
+                  color: Appcolors.primary,
+                  size: Dimensions.iconSize24,
+                ),
+                SizedBox(width: Dimensions.width10),
+                Text(
+                  'Add New',
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.85,
+                    color: Appcolors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EmailItem extends StatelessWidget {
+  final String email;
+
+  const _EmailItem({required this.email});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: Dimensions.height10),
+      padding: EdgeInsets.all(Dimensions.width15),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE3F2FD),
+        borderRadius: BorderRadius.circular(Dimensions.radius15),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.check_box,
+            color: Appcolors.primary,
+            size: Dimensions.iconSize24,
+          ),
+          SizedBox(width: Dimensions.width10),
+          Expanded(
+            child: Text(
+              email,
+              style: TextStyle(
+                fontSize: Dimensions.font16 * 0.85,
+                color: Appcolors.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PaymentDetailsSection extends StatelessWidget {
+  final List<Widget> children;
+
+  const _PaymentDetailsSection({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return FormCard(
+      borderRadius: Dimensions.radius20,
+      showShadow: true,
+      children: children,
+    );
+  }
+}
+
+class _AttachmentsSection extends StatelessWidget {
+  final Widget header;
+  final VoidCallback onUpload;
+
+  const _AttachmentsSection({required this.header, required this.onUpload});
+
+  @override
+  Widget build(BuildContext context) {
+    return FormCard(
+      borderRadius: Dimensions.radius20,
+      showShadow: true,
+      children: [
+        header,
+        SizedBox(height: Dimensions.height15),
+        GestureDetector(
+          onTap: onUpload,
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: Dimensions.width20,
+              vertical: Dimensions.height20,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(Dimensions.radius15),
+              border: Border.all(color: Appcolors.border, width: 2),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.image_outlined,
+                  color: Appcolors.textSecondary,
+                  size: Dimensions.iconSize24,
+                ),
+                SizedBox(width: Dimensions.width10),
+                Text(
+                  'Upload File',
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.85,
+                    color: Appcolors.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
