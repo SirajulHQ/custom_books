@@ -12,6 +12,7 @@ import 'package:custom_books/features/home/widgets/overview_contents/quick_actio
 import 'package:custom_books/features/home/widgets/support_content_widget.dart';
 import 'package:custom_books/features/home/widgets/update_content_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,40 +22,245 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedSegment = 0;
+
+  Future<bool> _showExitDialog() async {
+    final result = await showGeneralDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: 'Exit',
+      barrierColor: Colors.black.withValues(alpha: 0.45),
+      transitionDuration: const Duration(milliseconds: 220),
+      transitionBuilder: (ctx, anim, ignored, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.12),
+            end: Offset.zero,
+          ).animate(CurvedAnimation(parent: anim, curve: Curves.easeOutCubic)),
+          child: FadeTransition(opacity: anim, child: child),
+        );
+      },
+      pageBuilder: (ctx, anim1, anim2) {
+        return Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: Dimensions.width20 * 1.2),
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(Dimensions.radius20),
+                  border: Border.all(color: Appcolors.border),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // ── Header strip ──────────────────────────────────
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Dimensions.width20,
+                        vertical: Dimensions.height20,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Appcolors.primary.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(Dimensions.radius20),
+                          topRight: Radius.circular(Dimensions.radius20),
+                        ),
+                        border: Border(
+                          bottom: BorderSide(color: Appcolors.border),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(Dimensions.width10 * 0.8),
+                            decoration: BoxDecoration(
+                              color: Appcolors.primary.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius15 / 2,
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.exit_to_app_rounded,
+                              color: Appcolors.primary,
+                              size: Dimensions.iconSize24,
+                            ),
+                          ),
+                          SizedBox(width: Dimensions.width10),
+                          Text(
+                            'Exit App',
+                            style: TextStyle(
+                              fontSize: Dimensions.font20,
+                              fontWeight: FontWeight.w700,
+                              color: Appcolors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // ── Body ──────────────────────────────────────────
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        Dimensions.width20,
+                        Dimensions.height20,
+                        Dimensions.width20,
+                        Dimensions.height10,
+                      ),
+                      child: Text(
+                        'Are you sure you want to exit the app?',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.95,
+                          color: Appcolors.textSecondary,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+
+                    // ── Actions ───────────────────────────────────────
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        Dimensions.width20,
+                        Dimensions.height10,
+                        Dimensions.width20,
+                        Dimensions.height20,
+                      ),
+                      child: Row(
+                        children: [
+                          // Cancel
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => Navigator.of(ctx).pop(false),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: Dimensions.height15,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Appcolors.surfaceLight,
+                                  borderRadius: BorderRadius.circular(
+                                    Dimensions.radius15 / 2,
+                                  ),
+                                  border: Border.all(color: Appcolors.border),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    fontWeight: FontWeight.w600,
+                                    color: Appcolors.textSecondary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: Dimensions.width10),
+                          // Exit
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => Navigator.of(ctx).pop(true),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: Dimensions.height15,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Appcolors.primary,
+                                  borderRadius: BorderRadius.circular(
+                                    Dimensions.radius15 / 2,
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.logout_rounded,
+                                      color: Colors.white,
+                                      size: Dimensions.iconSize16,
+                                    ),
+                                    SizedBox(width: Dimensions.width10 / 2),
+                                    Text(
+                                      'Exit',
+                                      style: TextStyle(
+                                        fontSize: Dimensions.font16 * 0.9,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+    return result ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: Appcolors.background,
-      drawer: const DrawerView(currentRoute: 'home'),
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: 'Business Overview',
-              subtitle: 'Snapshot for this fiscal year',
-              leadingType: AppBarLeadingType.menu,
-              actions: [
-                AppBarIconButton(
-                  icon: Icons.tune_rounded,
-                  color: Appcolors.primary,
-                ),
-                SizedBox(width: Dimensions.width10),
-                AppBarIconButton(
-                  icon: Icons.notifications_none_rounded,
-                  color: Appcolors.accent,
-                  showBadge: true,
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(child: _buildSegmentedControl()),
-            _buildSelectedContent(),
-          ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
+          _scaffoldKey.currentState?.closeDrawer();
+          return;
+        }
+        final shouldExit = await _showExitDialog();
+        if (shouldExit) SystemNavigator.pop();
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        backgroundColor: Appcolors.background,
+        drawer: const DrawerView(currentRoute: 'home'),
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'Business Overview',
+                subtitle: 'Snapshot for this fiscal year',
+                leadingType: AppBarLeadingType.menu,
+                actions: [
+                  AppBarIconButton(
+                    icon: Icons.tune_rounded,
+                    color: Appcolors.primary,
+                  ),
+                  SizedBox(width: Dimensions.width10),
+                  AppBarIconButton(
+                    icon: Icons.notifications_none_rounded,
+                    color: Appcolors.accent,
+                    showBadge: true,
+                  ),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
+              SliverToBoxAdapter(child: _buildSegmentedControl()),
+              _buildSelectedContent(),
+            ],
+          ),
         ),
       ),
     );
@@ -157,7 +363,9 @@ class _HomePageState extends State<HomePage> {
                       fontSize: Dimensions.font16 * 0.8,
                       fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
                       letterSpacing: 0.3,
-                      color: selected ? Appcolors.primary : Appcolors.textSecondary,
+                      color: selected
+                          ? Appcolors.primary
+                          : Appcolors.textSecondary,
                     ),
                   ),
                 ),

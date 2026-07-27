@@ -6,7 +6,6 @@ import 'package:custom_books/features/drawer/widgets/expandable_menu_item.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/drawer/widgets/footer_button.dart';
 import 'package:custom_books/features/items/view/items_page.dart';
-import 'package:custom_books/features/home/view/home_page.dart';
 import 'package:custom_books/features/inventory_adjustments/view/inventory_adjustments_page.dart';
 import 'package:custom_books/features/banking/view/banking_page.dart';
 import 'package:custom_books/features/customers/view/customers_page.dart';
@@ -32,6 +31,21 @@ class _DrawerViewState extends State<DrawerView> {
     'Accountant': false,
     'Documents': false,
   };
+
+  void _navigateToTopLevel(Widget page) {
+    final navigator = Navigator.of(context);
+    navigator.pop();
+    navigator.pushAndRemoveUntil<void>(
+      MaterialPageRoute<void>(builder: (_) => page),
+      (route) => route.isFirst,
+    );
+  }
+
+  void _navigateToHome() {
+    final navigator = Navigator.of(context);
+    navigator.pop();
+    navigator.popUntil((route) => route.isFirst);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,23 +170,11 @@ class _DrawerViewState extends State<DrawerView> {
                       return;
                     }
 
-                    Navigator.pop(context);
                     appLog(
                       '📍 Navigating to HomePage...',
                       name: 'DrawerNavigation',
                     );
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          appLog(
-                            '✅ HomePage builder called',
-                            name: 'DrawerNavigation',
-                          );
-                          return const HomePage();
-                        },
-                      ),
-                    );
+                    _navigateToHome();
                   },
                 ),
 
@@ -196,23 +198,11 @@ class _DrawerViewState extends State<DrawerView> {
                       return;
                     }
 
-                    Navigator.pop(context);
                     appLog(
                       '📍 Navigating to ItemsPage...',
                       name: 'DrawerNavigation',
                     );
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          appLog(
-                            '✅ ItemsPage builder called',
-                            name: 'DrawerNavigation',
-                          );
-                          return const ItemsPage();
-                        },
-                      ),
-                    );
+                    _navigateToTopLevel(const ItemsPage());
                   },
                 ),
 
@@ -246,23 +236,11 @@ class _DrawerViewState extends State<DrawerView> {
                         return;
                       }
 
-                      Navigator.pop(context);
                       appLog(
                         '📍 Navigating to InventoryAdjustmentsPage...',
                         name: 'DrawerNavigation',
                       );
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            appLog(
-                              '✅ InventoryAdjustmentsPage builder called',
-                              name: 'DrawerNavigation',
-                            );
-                            return const InventoryAdjustmentsPage();
-                          },
-                        ),
-                      );
+                      _navigateToTopLevel(const InventoryAdjustmentsPage());
                     }
                   },
                 ),
@@ -290,23 +268,11 @@ class _DrawerViewState extends State<DrawerView> {
                       return;
                     }
 
-                    Navigator.pop(context);
                     appLog(
                       '📍 Navigating to BankingPage...',
                       name: 'DrawerNavigation',
                     );
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          appLog(
-                            '✅ BankingPage builder called',
-                            name: 'DrawerNavigation',
-                          );
-                          return const BankingPage();
-                        },
-                      ),
-                    );
+                    _navigateToTopLevel(const BankingPage());
                   },
                 ),
 
@@ -346,40 +312,22 @@ class _DrawerViewState extends State<DrawerView> {
                         return;
                       }
 
-                      Navigator.pop(context);
                       appLog(
                         '📍 Navigating to CustomersPage...',
                         name: 'DrawerNavigation',
                       );
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            appLog(
-                              '✅ CustomersPage builder called',
-                              name: 'DrawerNavigation',
-                            );
-                            return const CustomersPage();
-                          },
-                        ),
-                      );
+                      _navigateToTopLevel(const CustomersPage());
                     } else if (subItem == 'Quotes') {
                       if (widget.currentRoute == 'quotes') {
                         Navigator.pop(context);
                         return;
                       }
 
-                      Navigator.pop(context);
                       appLog(
                         '📍 Navigating to QuotesPage...',
                         name: 'DrawerNavigation',
                       );
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const QuotesPage(),
-                        ),
-                      );
+                      _navigateToTopLevel(const QuotesPage());
                     }
                   },
                 ),
