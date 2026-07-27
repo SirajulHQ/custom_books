@@ -10,6 +10,7 @@ import 'package:custom_books/features/home/view/home_page.dart';
 import 'package:custom_books/features/inventory_adjustments/view/inventory_adjustments_page.dart';
 import 'package:custom_books/features/banking/view/banking_page.dart';
 import 'package:custom_books/features/customers/view/customers_page.dart';
+import 'package:custom_books/features/quotes/view/quotes_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerView extends StatefulWidget {
@@ -360,6 +361,23 @@ class _DrawerViewState extends State<DrawerView> {
                             );
                             return const CustomersPage();
                           },
+                        ),
+                      );
+                    } else if (subItem == 'Quotes') {
+                      if (widget.currentRoute == 'quotes') {
+                        Navigator.pop(context);
+                        return;
+                      }
+
+                      Navigator.pop(context);
+                      appLog(
+                        '📍 Navigating to QuotesPage...',
+                        name: 'DrawerNavigation',
+                      );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const QuotesPage(),
                         ),
                       );
                     }
