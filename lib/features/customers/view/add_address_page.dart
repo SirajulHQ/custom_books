@@ -91,7 +91,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
     Dimensions.init(context);
 
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -208,9 +208,9 @@ class _AddAddressPageState extends State<AddAddressPage> {
     return Container(
       padding: EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -227,7 +227,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.95,
               fontWeight: FontWeight.w700,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
           SizedBox(height: Dimensions.height20),
@@ -263,27 +263,27 @@ class _AddAddressPageState extends State<AddAddressPage> {
       controller: controller,
       style: TextStyle(
         fontSize: Dimensions.font16 * 0.85,
-        color: Appcolors.textPrimary,
+        color: context.colors.textPrimary,
       ),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(
-          color: Appcolors.textTertiary,
+          color: context.colors.textTertiary,
           fontSize: Dimensions.font16 * 0.85,
         ),
         filled: true,
-        fillColor: Appcolors.surfaceLight,
+        fillColor: context.colors.surfaceLight,
         contentPadding: EdgeInsets.symmetric(
           horizontal: Dimensions.width15,
           vertical: Dimensions.height15,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          borderSide: BorderSide(color: Appcolors.border),
+          borderSide: BorderSide(color: context.colors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          borderSide: BorderSide(color: Appcolors.border),
+          borderSide: BorderSide(color: context.colors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -307,9 +307,9 @@ class _AddAddressPageState extends State<AddAddressPage> {
             vertical: Dimensions.height15,
           ),
           decoration: BoxDecoration(
-            color: Appcolors.surfaceLight,
+            color: context.colors.surfaceLight,
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            border: Border.all(color: Appcolors.border),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -319,14 +319,14 @@ class _AddAddressPageState extends State<AddAddressPage> {
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.85,
                   fontWeight: FontWeight.w600,
-                  color: Appcolors.textPrimary,
+                  color: context.colors.textPrimary,
                 ),
               ),
               SizedBox(width: Dimensions.width10 / 2),
               Icon(
                 Icons.keyboard_arrow_down_rounded,
                 size: Dimensions.iconSize16 * 1.2,
-                color: Appcolors.textSecondary,
+                color: context.colors.textSecondary,
               ),
             ],
           ),
@@ -338,27 +338,27 @@ class _AddAddressPageState extends State<AddAddressPage> {
             keyboardType: TextInputType.phone,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.85,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
             ),
             decoration: InputDecoration(
               hintText: label,
               hintStyle: TextStyle(
-                color: Appcolors.textTertiary,
+                color: context.colors.textTertiary,
                 fontSize: Dimensions.font16 * 0.85,
               ),
               filled: true,
-              fillColor: Appcolors.surfaceLight,
+              fillColor: context.colors.surfaceLight,
               contentPadding: EdgeInsets.symmetric(
                 horizontal: Dimensions.width15,
                 vertical: Dimensions.height15,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
-                borderSide: BorderSide(color: Appcolors.border),
+                borderSide: BorderSide(color: context.colors.border),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
-                borderSide: BorderSide(color: Appcolors.border),
+                borderSide: BorderSide(color: context.colors.border),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15),

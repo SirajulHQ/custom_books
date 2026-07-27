@@ -118,13 +118,13 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: Appcolors.background,
-        surfaceTintColor: Appcolors.background,
+        backgroundColor: context.colors.background,
+        surfaceTintColor: context.colors.background,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: Appcolors.textPrimary),
+          icon: Icon(Icons.arrow_back_rounded, color: context.colors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -132,7 +132,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
           style: TextStyle(
             fontSize: Dimensions.font26 * 0.7,
             fontWeight: FontWeight.w800,
-            color: Appcolors.textPrimary,
+            color: context.colors.textPrimary,
           ),
         ),
       ),
@@ -178,14 +178,14 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
                                 style: TextStyle(
                                   fontSize: Dimensions.font16 * 0.85,
                                   fontWeight: FontWeight.w700,
-                                  color: Appcolors.textPrimary,
+                                  color: context.colors.textPrimary,
                                 ),
                               ),
                               Text(
                                 'AED${_catalog[name]!.toStringAsFixed(2)}',
                                 style: TextStyle(
                                   fontSize: Dimensions.font16 * 0.72,
-                                  color: Appcolors.textSecondary,
+                                  color: context.colors.textSecondary,
                                 ),
                               ),
                             ],
@@ -202,10 +202,10 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
                 Text('Description', style: FormTextStyles.label()),
                 TextField(
                   controller: _description,
-                  style: FormTextStyles.value(),
-                  decoration: const InputDecoration(
+                  style: FormTextStyles.value(context),
+                  decoration: InputDecoration(
                     hintText: 'Add a description for your item',
-                    hintStyle: TextStyle(color: Colors.black26),
+                    hintStyle: TextStyle(color: context.colors.textTertiary),
                     border: InputBorder.none,
                     isDense: true,
                   ),
@@ -268,9 +268,9 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
         Container(
           padding: const EdgeInsets.all(3),
           decoration: BoxDecoration(
-            color: Appcolors.surfaceLight,
+            color: context.colors.surfaceLight,
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            border: Border.all(color: Appcolors.border),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -304,7 +304,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.7,
             fontWeight: FontWeight.w700,
-            color: selected ? Colors.white : Appcolors.textSecondary,
+            color: selected ? Colors.white : context.colors.textSecondary,
           ),
         ),
       ),
@@ -322,10 +322,10 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
             child: DropdownButton<double>(
               value: _taxRate,
               isExpanded: true,
-              style: FormTextStyles.value(),
-              icon: const Icon(
+              style: FormTextStyles.value(context),
+              icon: Icon(
                 Icons.keyboard_arrow_down_rounded,
-                color: Colors.black45,
+                color: context.colors.textSecondary,
               ),
               items: const [
                 DropdownMenuItem(value: 0, child: Text('No Tax')),
@@ -368,7 +368,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
         style: TextStyle(
           fontSize: Dimensions.font16 * 0.8,
           fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
-          color: Appcolors.textSecondary,
+          color: context.colors.textSecondary,
         ),
       ),
       Text(
@@ -376,7 +376,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
         style: TextStyle(
           fontSize: Dimensions.font16 * 0.85,
           fontWeight: FontWeight.w700,
-          color: Appcolors.textPrimary,
+          color: context.colors.textPrimary,
         ),
       ),
     ],
@@ -385,7 +385,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
   Widget _bottomActions() {
     return SafeArea(
       child: Container(
-        color: Colors.white,
+        color: context.colors.card,
         padding: EdgeInsets.fromLTRB(
           Dimensions.width20,
           Dimensions.height10,
@@ -399,7 +399,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
                 onPressed: _saveAndNew,
                 style: OutlinedButton.styleFrom(
                   minimumSize: Size(0, Dimensions.height45 * 1.15),
-                  side: const BorderSide(color: Appcolors.primary),
+                  side: BorderSide(color: Appcolors.primary),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
                   ),

@@ -58,9 +58,9 @@ class BalanceTile extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Dimensions.width15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,14 +83,14 @@ class BalanceTile extends StatelessWidget {
             style: TextStyle(
               fontSize: Dimensions.font20,
               fontWeight: FontWeight.w800,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
           Text(
             data.label,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.75,
-              color: Colors.black54,
+              color: context.colors.textSecondary,
               fontWeight: FontWeight.w600,
             ),
           ),

@@ -8,7 +8,7 @@ Future<void> showSortBySheet(
   required AdjustmentSortField selectedField,
   required SortDirection selectedDirection,
   required void Function(AdjustmentSortField field, SortDirection direction)
-      onApply,
+  onApply,
 }) {
   return showModalBottomSheet(
     context: context,
@@ -53,9 +53,11 @@ class _SortBySheetState extends State<_SortBySheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      decoration: BoxDecoration(
+        color: context.colors.card,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(
@@ -66,7 +68,7 @@ class _SortBySheetState extends State<_SortBySheet> {
             height: 4,
             margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
             decoration: BoxDecoration(
-              color: Colors.black12,
+              color: context.colors.border,
               borderRadius: BorderRadius.circular(Dimensions.radius30),
             ),
           ),
@@ -80,7 +82,7 @@ class _SortBySheetState extends State<_SortBySheet> {
                   style: TextStyle(
                     fontSize: Dimensions.font20,
                     fontWeight: FontWeight.w800,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 InkWell(
@@ -132,12 +134,14 @@ class _SortBySheetState extends State<_SortBySheet> {
                       decoration: BoxDecoration(
                         color: selected
                             ? Appcolors.primary.withValues(alpha: 0.06)
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(Dimensions.radius15),
+                            : context.colors.card,
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15,
+                        ),
                         border: Border.all(
                           color: selected
                               ? Appcolors.primary
-                              : const Color(0xFFE2E8F0),
+                              : context.colors.border,
                           width: selected ? 1.5 : 1,
                         ),
                       ),
@@ -148,7 +152,9 @@ class _SortBySheetState extends State<_SortBySheet> {
                                 ? Icons.radio_button_checked_rounded
                                 : Icons.radio_button_off_rounded,
                             size: Dimensions.iconSize24 - 4,
-                            color: selected ? Appcolors.primary : Colors.black26,
+                            color: selected
+                                ? Appcolors.primary
+                                : context.colors.textTertiary,
                           ),
                           SizedBox(width: Dimensions.width10),
                           Expanded(
@@ -156,9 +162,10 @@ class _SortBySheetState extends State<_SortBySheet> {
                               field.label,
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.9,
-                                fontWeight:
-                                    selected ? FontWeight.w700 : FontWeight.w500,
-                                color: Appcolors.textPrimary,
+                                fontWeight: selected
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                color: context.colors.textPrimary,
                               ),
                             ),
                           ),
@@ -215,7 +222,7 @@ class _SortBySheetState extends State<_SortBySheet> {
                       'Tap a selection again to switch between ascending and descending order.',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.7,
-                        color: Colors.black54,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ),
@@ -231,8 +238,8 @@ class _SortBySheetState extends State<_SortBySheet> {
               Dimensions.width20,
               Dimensions.height20,
             ),
-            decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
+            decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: context.colors.border)),
             ),
             child: Row(
               children: [
@@ -255,7 +262,7 @@ class _SortBySheetState extends State<_SortBySheet> {
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.85,
                           fontWeight: FontWeight.w700,
-                          color: Appcolors.textPrimary,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                     ],

@@ -27,9 +27,9 @@ class ActiveAccountItem extends StatelessWidget {
       margin: EdgeInsets.only(bottom: Dimensions.height15),
       padding: EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,14 +39,14 @@ class ActiveAccountItem extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(Dimensions.width10),
                 decoration: BoxDecoration(
-                  color: Appcolors.textSecondary.withValues(alpha: 0.08),
+                  color: context.colors.textSecondary.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(
                     Dimensions.radius15 * 0.7,
                   ),
                 ),
                 child: Icon(
                   _getIconData(account.icon),
-                  color: Appcolors.textPrimary,
+                  color: context.colors.textPrimary,
                   size: Dimensions.iconSize24,
                 ),
               ),
@@ -55,7 +55,7 @@ class ActiveAccountItem extends StatelessWidget {
                 account.name,
                 style: TextStyle(
                   fontSize: Dimensions.font20 * 0.85,
-                  color: Appcolors.textPrimary,
+                  color: context.colors.textPrimary,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -72,7 +72,7 @@ class ActiveAccountItem extends StatelessWidget {
                       'Amount In Zoho Books',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.7,
-                        color: Appcolors.textSecondary,
+                        color: context.colors.textSecondary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -81,7 +81,7 @@ class ActiveAccountItem extends StatelessWidget {
                       '₹${account.amountInZohoBooks.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontSize: Dimensions.font20 * 0.85,
-                        color: Appcolors.textPrimary,
+                        color: context.colors.textPrimary,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -97,7 +97,7 @@ class ActiveAccountItem extends StatelessWidget {
                       'Amount In Bank',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.7,
-                        color: Appcolors.textSecondary,
+                        color: context.colors.textSecondary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -106,7 +106,7 @@ class ActiveAccountItem extends StatelessWidget {
                       '₹${account.amountInBank.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontSize: Dimensions.font20 * 0.85,
-                        color: Appcolors.textPrimary,
+                        color: context.colors.textPrimary,
                         fontWeight: FontWeight.w700,
                       ),
                     ),

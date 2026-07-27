@@ -81,33 +81,33 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
       onSubmitted: widget.onSubmitted,
       style: TextStyle(
         fontSize: Dimensions.font16 * 0.9,
-        color: Appcolors.textPrimary,
+        color: context.colors.textPrimary,
       ),
       decoration: InputDecoration(
         hintText: widget.hint,
         hintStyle: TextStyle(
-          color: Appcolors.textTertiary,
+          color: context.colors.textTertiary,
           fontSize: Dimensions.font16 * 0.9,
         ),
         prefixIcon:
             widget.prefixIcon ??
             Icon(
               Icons.search_rounded,
-              color: Appcolors.textSecondary,
+              color: context.colors.textSecondary,
               size: Dimensions.iconSize24,
             ),
         suffixIcon: _hasText && widget.showClearButton
             ? IconButton(
                 icon: Icon(
                   Icons.close_rounded,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                   size: Dimensions.iconSize24 * 0.9,
                 ),
                 onPressed: _clearText,
               )
             : widget.suffixIcon,
         filled: true,
-        fillColor: widget.fillColor ?? Appcolors.surfaceLight,
+        fillColor: widget.fillColor ?? context.colors.surfaceLight,
         contentPadding:
             widget.contentPadding ??
             EdgeInsets.symmetric(
@@ -118,13 +118,13 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
           borderRadius: BorderRadius.circular(
             widget.borderRadius ?? Dimensions.radius15,
           ),
-          borderSide: BorderSide(color: widget.borderColor ?? Appcolors.border),
+          borderSide: BorderSide(color: widget.borderColor ?? context.colors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(
             widget.borderRadius ?? Dimensions.radius15,
           ),
-          borderSide: BorderSide(color: widget.borderColor ?? Appcolors.border),
+          borderSide: BorderSide(color: widget.borderColor ?? context.colors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(

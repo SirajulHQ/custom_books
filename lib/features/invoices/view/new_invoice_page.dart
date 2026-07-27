@@ -68,7 +68,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
     Dimensions.init(context);
 
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -92,7 +92,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
                 SizedBox(width: Dimensions.width10),
                 AppBarIconButton(
                   icon: Icons.more_vert_rounded,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                   onPressed: () {
                     appLog('⋮ More options pressed', name: 'NewInvoicePage');
                     // TODO: Show more options
@@ -300,7 +300,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
           Icon(
             Icons.info_outline,
             size: Dimensions.iconSize16,
-            color: Appcolors.textTertiary,
+            color: context.colors.textTertiary,
           ),
         ],
       ],
@@ -342,9 +342,9 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
                   vertical: Dimensions.height15,
                 ),
                 decoration: BoxDecoration(
-                  color: Appcolors.surfaceLight,
+                  color: context.colors.surfaceLight,
                   borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  border: Border.all(color: Appcolors.border),
+                  border: Border.all(color: context.colors.border),
                 ),
                 child: Text(
                   _customerNameController.text.isEmpty
@@ -353,8 +353,8 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.85,
                     color: _customerNameController.text.isEmpty
-                        ? Appcolors.textTertiary
-                        : Appcolors.textPrimary,
+                        ? context.colors.textTertiary
+                        : context.colors.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -371,7 +371,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
                 child: Icon(
                   Icons.close_rounded,
                   size: Dimensions.iconSize24,
-                  color: Appcolors.textTertiary,
+                  color: context.colors.textTertiary,
                 ),
               ),
             ),
@@ -388,7 +388,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
           if (i > 0) ...[
             Container(
               margin: EdgeInsets.symmetric(horizontal: Dimensions.width10),
-              child: Text('|', style: TextStyle(color: Appcolors.textTertiary)),
+              child: Text('|', style: TextStyle(color: context.colors.textTertiary)),
             ),
           ],
           links[i],
@@ -422,7 +422,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
                 fontWeight: FontWeight.w600,
-                color: Appcolors.textSecondary,
+                color: context.colors.textSecondary,
               ),
             ),
             SizedBox(width: Dimensions.width10),
@@ -433,7 +433,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
               child: Icon(
                 Icons.edit_outlined,
                 size: Dimensions.iconSize16,
-                color: Appcolors.textSecondary,
+                color: context.colors.textSecondary,
               ),
             ),
           ],
@@ -444,7 +444,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.85,
             fontWeight: FontWeight.w600,
-            color: Appcolors.textPrimary,
+            color: context.colors.textPrimary,
           ),
         ),
       ],
@@ -486,15 +486,15 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
                   vertical: Dimensions.height15,
                 ),
                 decoration: BoxDecoration(
-                  color: Appcolors.surfaceLight,
+                  color: context.colors.surfaceLight,
                   borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  border: Border.all(color: Appcolors.border),
+                  border: Border.all(color: context.colors.border),
                 ),
                 child: Text(
                   _invoiceNumber,
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.85,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -508,14 +508,14 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
               child: Container(
                 padding: EdgeInsets.all(Dimensions.width10),
                 decoration: BoxDecoration(
-                  color: Appcolors.surfaceLight,
+                  color: context.colors.surfaceLight,
                   borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  border: Border.all(color: Appcolors.border),
+                  border: Border.all(color: context.colors.border),
                 ),
                 child: Icon(
                   Icons.settings_outlined,
                   size: Dimensions.iconSize24,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
               ),
             ),
@@ -563,7 +563,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
                 Icon(
                   Icons.info_outline,
                   size: Dimensions.iconSize16,
-                  color: Appcolors.textTertiary,
+                  color: context.colors.textTertiary,
                 ),
               ],
             ],
@@ -574,30 +574,30 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
           controller: controller,
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.85,
-            color: Appcolors.textPrimary,
+            color: context.colors.textPrimary,
           ),
           decoration: InputDecoration(
             hintText: placeholder,
             hintStyle: TextStyle(
-              color: Appcolors.textTertiary,
+              color: context.colors.textTertiary,
               fontSize: Dimensions.font16 * 0.85,
             ),
             suffixIcon: suffixIcon != null
-                ? Icon(suffixIcon, color: Appcolors.textSecondary)
+                ? Icon(suffixIcon, color: context.colors.textSecondary)
                 : null,
             filled: true,
-            fillColor: Appcolors.surfaceLight,
+            fillColor: context.colors.surfaceLight,
             contentPadding: EdgeInsets.symmetric(
               horizontal: Dimensions.width15,
               vertical: Dimensions.height15,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: Appcolors.border),
+              borderSide: BorderSide(color: context.colors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: Appcolors.border),
+              borderSide: BorderSide(color: context.colors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -653,9 +653,9 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
               vertical: Dimensions.height15,
             ),
             decoration: BoxDecoration(
-              color: Appcolors.surfaceLight,
+              color: context.colors.surfaceLight,
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              border: Border.all(color: Appcolors.border),
+              border: Border.all(color: context.colors.border),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -665,7 +665,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
                     value,
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.85,
-                      color: Appcolors.textPrimary,
+                      color: context.colors.textPrimary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -673,7 +673,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
                 Icon(
                   Icons.keyboard_arrow_down_rounded,
                   size: Dimensions.iconSize24,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
               ],
             ),
@@ -724,9 +724,9 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
               vertical: Dimensions.height15,
             ),
             decoration: BoxDecoration(
-              color: Appcolors.surfaceLight,
+              color: context.colors.surfaceLight,
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              border: Border.all(color: Appcolors.border),
+              border: Border.all(color: context.colors.border),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -735,14 +735,14 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
                   '${date.day} ${_getMonthName(date.month)} ${date.year}',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.85,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Icon(
                   Icons.calendar_today_rounded,
                   size: Dimensions.iconSize16,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
               ],
             ),
@@ -760,7 +760,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.85,
             fontWeight: FontWeight.w600,
-            color: Appcolors.textSecondary,
+            color: context.colors.textSecondary,
           ),
         ),
         SizedBox(width: Dimensions.width20),
@@ -791,7 +791,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: isSelected ? Appcolors.primary : Appcolors.border,
+                color: isSelected ? Appcolors.primary : context.colors.border,
                 width: 2,
               ),
             ),
@@ -815,8 +815,8 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
               fontSize: Dimensions.font16 * 0.85,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               color: isSelected
-                  ? Appcolors.textPrimary
-                  : Appcolors.textSecondary,
+                  ? context.colors.textPrimary
+                  : context.colors.textSecondary,
             ),
           ),
         ],
@@ -848,7 +848,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
           vertical: Dimensions.height20,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colors.card,
           borderRadius: BorderRadius.circular(Dimensions.radius20),
           border: Border.all(color: Appcolors.primary, width: 2),
         ),
@@ -880,7 +880,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
       text,
       style: TextStyle(
         fontSize: Dimensions.font16 * 0.85,
-        color: Appcolors.textSecondary,
+        color: context.colors.textSecondary,
         height: 1.5,
       ),
     );
@@ -897,7 +897,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Dimensions.radius15 / 3),
               border: Border.all(
-                color: value ? Appcolors.primary : Appcolors.border,
+                color: value ? Appcolors.primary : context.colors.border,
                 width: 2,
               ),
               color: value ? Appcolors.primary : Colors.transparent,
@@ -916,7 +916,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
               label,
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
-                color: Appcolors.textPrimary,
+                color: context.colors.textPrimary,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -942,7 +942,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
               primary: Appcolors.primary,
               onPrimary: Colors.white,
               surface: Colors.white,
-              onSurface: Appcolors.textPrimary,
+              onSurface: context.colors.textPrimary,
             ),
           ),
           child: child!,
@@ -1111,7 +1111,7 @@ class _EmailCommunicationsSection extends StatelessWidget {
                 Icon(
                   Icons.info_outline,
                   size: Dimensions.iconSize16,
-                  color: Appcolors.textTertiary,
+                  color: context.colors.textTertiary,
                 ),
               ],
             ),
@@ -1197,7 +1197,7 @@ class _EmailItem extends StatelessWidget {
               email,
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
-                color: Appcolors.textPrimary,
+                color: context.colors.textPrimary,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -1246,14 +1246,14 @@ class _AttachmentsSection extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              border: Border.all(color: Appcolors.border, width: 2),
+              border: Border.all(color: context.colors.border, width: 2),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.image_outlined,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                   size: Dimensions.iconSize24,
                 ),
                 SizedBox(width: Dimensions.width10),
@@ -1261,7 +1261,7 @@ class _AttachmentsSection extends StatelessWidget {
                   'Upload File',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.85,
-                    color: Appcolors.textSecondary,
+                    color: context.colors.textSecondary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

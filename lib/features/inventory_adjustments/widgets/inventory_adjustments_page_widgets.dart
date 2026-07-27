@@ -62,18 +62,18 @@ class AdjustmentsSearchField extends StatelessWidget {
         style: TextStyle(fontSize: Dimensions.font16 * 0.85),
         decoration: InputDecoration(
           hintText: 'Search by reason or person',
-          hintStyle: const TextStyle(color: Colors.black26),
-          prefixIcon: const Icon(Icons.search_rounded, color: Colors.black38),
+          hintStyle: TextStyle(color: context.colors.textTertiary),
+          prefixIcon: Icon(Icons.search_rounded, color: context.colors.textTertiary),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: context.colors.card,
           contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+            borderSide: BorderSide(color: context.colors.border),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+            borderSide: BorderSide(color: context.colors.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -119,7 +119,7 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: const Color(0xFFF1F3F5),
+                color: context.colors.surfaceLight,
                 borderRadius: BorderRadius.circular(Dimensions.radius30),
               ),
               child: Row(
@@ -134,9 +134,7 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
                           vertical: Dimensions.height10,
                         ),
                         decoration: BoxDecoration(
-                          color: selected
-                              ? Colors.white
-                              : Colors.transparent,
+                          color: selected ? context.colors.card : Colors.transparent,
                           borderRadius: BorderRadius.circular(
                             Dimensions.radius30,
                           ),
@@ -169,7 +167,7 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
                             letterSpacing: 0.3,
                             color: selected
                                 ? Appcolors.primary
-                                : Appcolors.textSecondary,
+                                : context.colors.textSecondary,
                           ),
                         ),
                       ),
@@ -229,7 +227,7 @@ class AdjustmentsEmptyState extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16,
                 fontWeight: FontWeight.w700,
-                color: Appcolors.textPrimary,
+                color: context.colors.textPrimary,
               ),
             ),
             SizedBox(height: Dimensions.height10 / 2),
@@ -238,7 +236,7 @@ class AdjustmentsEmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.75,
-                color: Colors.black45,
+                color: context.colors.textSecondary,
               ),
             ),
           ],

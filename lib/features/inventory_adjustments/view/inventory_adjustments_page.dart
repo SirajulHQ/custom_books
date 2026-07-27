@@ -124,7 +124,7 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
     final items = _filteredAdjustments;
 
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'inventory_adjustments'),
       floatingActionButton: Container(
         decoration: BoxDecoration(

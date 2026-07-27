@@ -18,7 +18,7 @@ class CostPriceEditor extends StatelessWidget {
     return showModalBottomSheet<double>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: context.colors.card,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(Dimensions.radius15),
@@ -52,7 +52,7 @@ class CostPriceEditor extends StatelessWidget {
               height: 4,
               margin: EdgeInsets.only(bottom: Dimensions.height15),
               decoration: BoxDecoration(
-                color: const Color(0xFFE2E8F0),
+                color: context.colors.border,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -67,7 +67,7 @@ class CostPriceEditor extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: Dimensions.font16 * 1.05,
-                  color: Appcolors.textPrimary,
+                  color: context.colors.textPrimary,
                 ),
               ),
               ElevatedButton(
@@ -135,7 +135,7 @@ class CostPriceEditor extends StatelessWidget {
                     vertical: Dimensions.height10,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF1F5F9),
+                    color: context.colors.surfaceLight,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(Dimensions.radius15 - 4),
                       bottomLeft: Radius.circular(Dimensions.radius15 - 4),
@@ -144,7 +144,7 @@ class CostPriceEditor extends StatelessWidget {
                   child: Text(
                     'AED',
                     style: TextStyle(
-                      color: Colors.black54,
+                      color: context.colors.textSecondary,
                       fontWeight: FontWeight.w600,
                       fontSize: Dimensions.font16 * 0.85,
                     ),
@@ -165,7 +165,7 @@ class CostPriceEditor extends StatelessWidget {
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.9,
                       fontWeight: FontWeight.w500,
-                      color: Appcolors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                     decoration: InputDecoration(
                       border: InputBorder.none,

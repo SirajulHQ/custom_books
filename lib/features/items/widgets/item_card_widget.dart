@@ -14,9 +14,9 @@ class ItemCardWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Dimensions.width15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
+        border: Border.all(color: context.colors.border, width: 1),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +26,7 @@ class ItemCardWidget extends StatelessWidget {
             width: Dimensions.height45 * 1.6,
             height: Dimensions.height45 * 1.6,
             decoration: BoxDecoration(
-              color: Appcolors.surfaceLight,
+              color: context.colors.surfaceLight,
               borderRadius: BorderRadius.circular(Dimensions.radius15),
             ),
             child: item.imageUrl != null
@@ -35,10 +35,10 @@ class ItemCardWidget extends StatelessWidget {
                     child: ImageHelper.buildImage(
                       item.imageUrl!,
                       fit: BoxFit.cover,
-                      errorWidget: _buildPlaceholderIcon(),
+                      errorWidget: _buildPlaceholderIcon(context),
                     ),
                   )
-                : _buildPlaceholderIcon(),
+                : _buildPlaceholderIcon(context),
           ),
 
           SizedBox(width: Dimensions.width15),
@@ -54,7 +54,7 @@ class ItemCardWidget extends StatelessWidget {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 1.1,
                     fontWeight: FontWeight.w800,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                   ),
                 ),
 
@@ -91,6 +91,7 @@ class ItemCardWidget extends StatelessWidget {
                     // Sales Price
                     Expanded(
                       child: _buildPriceBox(
+                        context,
                         'Sales',
                         'AED${item.salesPrice.toStringAsFixed(2)}',
                         Appcolors.ok,
@@ -101,6 +102,7 @@ class ItemCardWidget extends StatelessWidget {
                     // Purchase Price
                     Expanded(
                       child: _buildPriceBox(
+                        context,
                         'Purchase',
                         'AED${item.purchasePrice.toStringAsFixed(2)}',
                         Appcolors.primary,
@@ -160,15 +162,16 @@ class ItemCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildPlaceholderIcon() {
+  Widget _buildPlaceholderIcon(BuildContext context) {
     return Icon(
       Icons.image_outlined,
       size: Dimensions.iconSize24 * 1.5,
-      color: Appcolors.textTertiary,
+      color: context.colors.textTertiary,
     );
   }
 
   Widget _buildPriceBox(
+    BuildContext context,
     String label,
     String value,
     Color color,
@@ -204,7 +207,7 @@ class ItemCardWidget extends StatelessWidget {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.85,
               fontWeight: FontWeight.w700,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
         ],

@@ -83,10 +83,10 @@ class AnnouncementCardWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius20),
         border: Border.all(
-          color: const Color(0xFFE2E8F0),
+          color: context.colors.border,
         ),
         boxShadow: [
           BoxShadow(
@@ -124,7 +124,7 @@ class AnnouncementCardWidget extends StatelessWidget {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 1.05,
                     fontWeight: FontWeight.w700,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 SizedBox(height: Dimensions.height10 / 2),
@@ -132,7 +132,7 @@ class AnnouncementCardWidget extends StatelessWidget {
                   description,
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.9,
-                    color: Colors.black54,
+                    color: context.colors.textSecondary,
                     height: 1.5,
                   ),
                 ),
@@ -142,14 +142,14 @@ class AnnouncementCardWidget extends StatelessWidget {
                     Icon(
                       Icons.access_time_rounded,
                       size: Dimensions.iconSize16 * 0.9,
-                      color: Colors.black38,
+                      color: context.colors.textTertiary,
                     ),
                     SizedBox(width: Dimensions.width10 / 2),
                     Text(
                       time,
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.75,
-                        color: Colors.black38,
+                        color: context.colors.textTertiary,
                       ),
                     ),
                   ],

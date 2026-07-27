@@ -2,36 +2,36 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-
 class FooterButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isDanger;
+  final VoidCallback? onTap;
 
   const FooterButton({
     super.key,
     required this.icon,
     required this.label,
     required this.isDanger,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final Color neutral = context.colors.textSecondary;
     return GestureDetector(
-      onTap: () {
-        // Handle action
-      },
+      onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
         decoration: BoxDecoration(
           color: isDanger
               ? Appcolors.warn.withValues(alpha: 0.1)
-              : Colors.black.withValues(alpha: 0.05),
+              : neutral.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: Border.all(
             color: isDanger
                 ? Appcolors.warn.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.1),
+                : context.colors.border,
           ),
         ),
         child: Column(
@@ -39,7 +39,7 @@ class FooterButton extends StatelessWidget {
             Icon(
               icon,
               size: Dimensions.iconSize24 * 0.85,
-              color: isDanger ? Appcolors.warn : Colors.black54,
+              color: isDanger ? Appcolors.warn : neutral,
             ),
             SizedBox(height: Dimensions.height10 / 2),
             Text(
@@ -47,7 +47,7 @@ class FooterButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.7,
                 fontWeight: FontWeight.w600,
-                color: isDanger ? Appcolors.warn : Colors.black54,
+                color: isDanger ? Appcolors.warn : neutral,
               ),
             ),
           ],

@@ -58,13 +58,13 @@ class CustomSliverAppBar extends StatelessWidget {
     return SliverAppBar(
       pinned: pinned,
       floating: floating,
-      backgroundColor: backgroundColor ?? Appcolors.background,
-      surfaceTintColor: backgroundColor ?? Appcolors.background,
+      backgroundColor: backgroundColor ?? context.colors.background,
+      surfaceTintColor: backgroundColor ?? context.colors.background,
       elevation: 0,
       toolbarHeight: toolbarHeight ?? (Dimensions.height45 * 1.6),
       titleSpacing: Dimensions.width20,
       leading: _buildLeading(context),
-      title: customTitle ?? _buildTitle(),
+      title: customTitle ?? _buildTitle(context),
       actions: actions,
     );
   }
@@ -118,7 +118,7 @@ class CustomSliverAppBar extends StatelessWidget {
     }
   }
 
-  Widget _buildTitle() {
+  Widget _buildTitle(BuildContext context) {
     if (subtitle != null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,14 +129,14 @@ class CustomSliverAppBar extends StatelessWidget {
             style: TextStyle(
               fontSize: Dimensions.font26 * 0.85,
               fontWeight: FontWeight.w800,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
           Text(
             subtitle!,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.7,
-              color: Colors.black45,
+              color: context.colors.textSecondary,
             ),
           ),
         ],
@@ -148,7 +148,7 @@ class CustomSliverAppBar extends StatelessWidget {
       style: TextStyle(
         fontSize: Dimensions.font26 * 0.85,
         fontWeight: FontWeight.w800,
-        color: Appcolors.textPrimary,
+        color: context.colors.textPrimary,
       ),
     );
   }

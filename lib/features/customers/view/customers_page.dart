@@ -131,7 +131,7 @@ class _CustomersPageState extends State<CustomersPage> {
       builder: (context) {
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.colors.card,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(Dimensions.radius20),
               topRight: Radius.circular(Dimensions.radius20),
@@ -148,7 +148,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 ),
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(color: Appcolors.border, width: 1),
+                    bottom: BorderSide(color: context.colors.border, width: 1),
                   ),
                 ),
                 child: Row(
@@ -159,7 +159,7 @@ class _CustomersPageState extends State<CustomersPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font20,
                         fontWeight: FontWeight.bold,
-                        color: Appcolors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     GestureDetector(
@@ -170,7 +170,7 @@ class _CustomersPageState extends State<CustomersPage> {
                       child: Icon(
                         Icons.close_rounded,
                         size: Dimensions.iconSize24,
-                        color: Appcolors.textSecondary,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ],
@@ -191,7 +191,7 @@ class _CustomersPageState extends State<CustomersPage> {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.7,
                     fontWeight: FontWeight.w600,
-                    color: Appcolors.textTertiary,
+                    color: context.colors.textTertiary,
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -237,7 +237,7 @@ class _CustomersPageState extends State<CustomersPage> {
                         border: Border.all(
                           color: isSelected
                               ? Appcolors.primary
-                              : Appcolors.border,
+                              : context.colors.border,
                           width: isSelected ? 2 : 1,
                         ),
                       ),
@@ -253,7 +253,7 @@ class _CustomersPageState extends State<CustomersPage> {
                                   : FontWeight.w500,
                               color: isSelected
                                   ? Appcolors.primary
-                                  : Appcolors.textPrimary,
+                                  : context.colors.textPrimary,
                             ),
                           ),
                           if (isSelected)
@@ -283,7 +283,7 @@ class _CustomersPageState extends State<CustomersPage> {
     Dimensions.init(context);
 
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'customers'),
       body: SafeArea(
         child: CustomScrollView(
@@ -311,7 +311,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 SizedBox(width: Dimensions.width10),
                 AppBarIconButton(
                   icon: Icons.more_vert_rounded,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                   onPressed: () {
                     appLog('⋮ More options tapped', name: 'CustomersPage');
                   },
@@ -383,18 +383,21 @@ class _CustomersPageState extends State<CustomersPage> {
         style: TextStyle(fontSize: Dimensions.font16 * 0.85),
         decoration: InputDecoration(
           hintText: 'Search by name or email',
-          hintStyle: const TextStyle(color: Colors.black26),
-          prefixIcon: const Icon(Icons.search_rounded, color: Colors.black38),
+          hintStyle: TextStyle(color: context.colors.textTertiary),
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            color: context.colors.textTertiary,
+          ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: context.colors.card,
           contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+            borderSide: BorderSide(color: context.colors.border),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+            borderSide: BorderSide(color: context.colors.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -419,7 +422,7 @@ class _CustomersPageState extends State<CustomersPage> {
       child: Container(
         padding: EdgeInsets.all(Dimensions.width10 / 2),
         decoration: BoxDecoration(
-          color: const Color(0xFFF1F3F5),
+          color: context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius30),
         ),
         child: Row(
@@ -434,7 +437,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: context.colors.card,
                     borderRadius: BorderRadius.circular(Dimensions.radius30),
                     border: Border.all(
                       color: Appcolors.primary.withValues(alpha: 0.3),
@@ -492,7 +495,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 child: Icon(
                   Icons.sort_rounded,
                   size: Dimensions.iconSize24 - 4,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
               ),
             ),
@@ -527,7 +530,7 @@ class _CustomersPageState extends State<CustomersPage> {
               style: TextStyle(
                 fontSize: Dimensions.font20,
                 fontWeight: FontWeight.w700,
-                color: Appcolors.textPrimary,
+                color: context.colors.textPrimary,
               ),
             ),
             SizedBox(height: Dimensions.height10),
@@ -535,7 +538,7 @@ class _CustomersPageState extends State<CustomersPage> {
               'Tap the + button to add your first customer',
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
-                color: Appcolors.textTertiary,
+                color: context.colors.textTertiary,
               ),
               textAlign: TextAlign.center,
             ),

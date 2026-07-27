@@ -216,13 +216,13 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
       name: 'AddLineItem',
     );
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: Appcolors.background,
-        surfaceTintColor: Appcolors.background,
+        backgroundColor: context.colors.background,
+        surfaceTintColor: context.colors.background,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: Appcolors.textPrimary),
+          icon: Icon(Icons.arrow_back_rounded, color: context.colors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -230,7 +230,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
           style: TextStyle(
             fontSize: Dimensions.font26 * 0.7,
             fontWeight: FontWeight.w800,
-            color: Appcolors.textPrimary,
+            color: context.colors.textPrimary,
           ),
         ),
         actions: [
@@ -286,7 +286,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: Dimensions.font16 * 0.85,
-                                  color: Appcolors.textPrimary,
+                                  color: context.colors.textPrimary,
                                 ),
                               ),
                               SizedBox(height: Dimensions.height10 / 4),
@@ -294,7 +294,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                                 TextSpan(
                                   text: 'Stock on Hand: ',
                                   style: TextStyle(
-                                    color: Colors.black54,
+                                    color: context.colors.textSecondary,
                                     fontSize: Dimensions.font16 * 0.75,
                                   ),
                                   children: [
@@ -324,10 +324,10 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                 Text('Description', style: FormTextStyles.label()),
                 TextField(
                   controller: _descriptionController,
-                  style: FormTextStyles.value(),
-                  decoration: const InputDecoration(
+                  style: FormTextStyles.value(context),
+                  decoration: InputDecoration(
                     hintText: 'Add a description for your item',
-                    hintStyle: TextStyle(color: Colors.black26),
+                    hintStyle: TextStyle(color: context.colors.textTertiary),
                     border: InputBorder.none,
                     isDense: true,
                   ),
@@ -345,7 +345,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                         fontWeight: FontWeight.w700,
                         color: _selectedItem!.stockOnHand < 0
                             ? Colors.red.shade600
-                            : Appcolors.textPrimary,
+                            : context.colors.textPrimary,
                       ),
                     ),
                   ],
@@ -385,7 +385,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                       'Cost Price: ',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.85,
-                        color: Colors.black54,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                     Text(
@@ -393,7 +393,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.85,
                         fontWeight: FontWeight.w700,
-                        color: Appcolors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     SizedBox(width: Dimensions.width10 / 2),

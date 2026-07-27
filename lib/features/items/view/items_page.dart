@@ -122,7 +122,7 @@ class _ItemsPageState extends State<ItemsPage> {
     Dimensions.init(context);
 
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'items'),
       body: SafeArea(
         child: CustomScrollView(
@@ -220,18 +220,21 @@ class _ItemsPageState extends State<ItemsPage> {
         style: TextStyle(fontSize: Dimensions.font16 * 0.85),
         decoration: InputDecoration(
           hintText: 'Search by name or SKU',
-          hintStyle: const TextStyle(color: Colors.black26),
-          prefixIcon: const Icon(Icons.search_rounded, color: Colors.black38),
+          hintStyle: TextStyle(color: context.colors.textTertiary),
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            color: context.colors.textTertiary,
+          ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: context.colors.card,
           contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+            borderSide: BorderSide(color: context.colors.border),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+            borderSide: BorderSide(color: context.colors.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -256,7 +259,7 @@ class _ItemsPageState extends State<ItemsPage> {
       child: Container(
         padding: EdgeInsets.all(Dimensions.width10 / 2),
         decoration: BoxDecoration(
-          color: const Color(0xFFF1F3F5),
+          color: context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius30),
         ),
         child: Row(
@@ -271,7 +274,7 @@ class _ItemsPageState extends State<ItemsPage> {
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: context.colors.card,
                     borderRadius: BorderRadius.circular(Dimensions.radius30),
                     border: Border.all(
                       color: Appcolors.primary.withValues(alpha: 0.3),
@@ -335,7 +338,7 @@ class _ItemsPageState extends State<ItemsPage> {
                 child: Icon(
                   Icons.sort_rounded,
                   size: Dimensions.iconSize24 - 4,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
               ),
             ),
@@ -370,7 +373,7 @@ class _ItemsPageState extends State<ItemsPage> {
               style: TextStyle(
                 fontSize: Dimensions.font20,
                 fontWeight: FontWeight.w700,
-                color: Appcolors.textPrimary,
+                color: context.colors.textPrimary,
               ),
             ),
             SizedBox(height: Dimensions.height10),
@@ -378,7 +381,7 @@ class _ItemsPageState extends State<ItemsPage> {
               'Tap the + button to add your first item',
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
-                color: Appcolors.textTertiary,
+                color: context.colors.textTertiary,
               ),
               textAlign: TextAlign.center,
             ),

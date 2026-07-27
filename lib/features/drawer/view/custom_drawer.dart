@@ -1,4 +1,5 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/apptheme/theme_controller.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/features/drawer/models/drawer_item.dart';
 import 'package:custom_books/features/drawer/widgets/drawer_menu_item.dart';
@@ -50,7 +51,7 @@ class _DrawerViewState extends State<DrawerView> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.white,
+      backgroundColor: context.colors.card,
       child: Column(
         children: [
           Container(
@@ -437,36 +438,58 @@ class _DrawerViewState extends State<DrawerView> {
             padding: EdgeInsets.all(Dimensions.width20),
             decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(color: const Color(0xFFE2E8F0), width: 1),
+                top: BorderSide(color: context.colors.border, width: 1),
               ),
             ),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: FooterButton(
-                        icon: Icons.dark_mode_rounded,
-                        label: 'Dark Mode',
-                        isDanger: false,
-                      ),
-                    ),
-                    SizedBox(width: Dimensions.width10),
-                    Expanded(
-                      child: FooterButton(
-                        icon: Icons.logout_rounded,
-                        label: 'Logout',
-                        isDanger: true,
-                      ),
-                    ),
-                  ],
+                ValueListenableBuilder<ThemeMode>(
+                  valueListenable: ThemeController.instance.mode,
+                  builder: (context, mode, _) {
+                    final bool isDark = mode == ThemeMode.dark;
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: FooterButton(
+                            icon: isDark
+                                ? Icons.light_mode_rounded
+                                : Icons.dark_mode_rounded,
+                            label: isDark ? 'Light Mode' : 'Dark Mode',
+                            isDanger: false,
+                            onTap: () {
+                              appLog(
+                                '🌗 Theme toggled -> ${isDark ? 'light' : 'dark'}',
+                                name: 'DrawerNavigation',
+                              );
+                              ThemeController.instance.toggle();
+                            },
+                          ),
+                        ),
+                        SizedBox(width: Dimensions.width10),
+                        Expanded(
+                          child: FooterButton(
+                            icon: Icons.logout_rounded,
+                            label: 'Logout',
+                            isDanger: true,
+                            onTap: () {
+                              appLog(
+                                '🚪 Logout button tapped',
+                                name: 'DrawerNavigation',
+                              );
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
                 SizedBox(height: Dimensions.height15),
                 Text(
                   'Version 1.0.0',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.7,
-                    color: Colors.black38,
+                    color: context.colors.textTertiary,
                   ),
                 ),
               ],

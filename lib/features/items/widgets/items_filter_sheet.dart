@@ -20,7 +20,7 @@ class ItemsFilterSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(Dimensions.radius20),
           topRight: Radius.circular(Dimensions.radius20),
@@ -43,7 +43,7 @@ class ItemsFilterSheet extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.7,
                 fontWeight: FontWeight.w600,
-                color: Appcolors.textTertiary,
+                color: context.colors.textTertiary,
                 letterSpacing: 0.5,
               ),
             ),
@@ -85,7 +85,7 @@ class _FilterHeader extends StatelessWidget {
         vertical: Dimensions.height15,
       ),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Appcolors.border)),
+        border: Border(bottom: BorderSide(color: context.colors.border)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,7 +95,7 @@ class _FilterHeader extends StatelessWidget {
             style: TextStyle(
               fontSize: Dimensions.font20,
               fontWeight: FontWeight.bold,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
           GestureDetector(
@@ -103,7 +103,7 @@ class _FilterHeader extends StatelessWidget {
             child: Icon(
               Icons.close_rounded,
               size: Dimensions.iconSize24,
-              color: Appcolors.textSecondary,
+              color: context.colors.textSecondary,
             ),
           ),
         ],
@@ -139,7 +139,7 @@ class _FilterOption extends StatelessWidget {
               : Colors.transparent,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: Border.all(
-            color: isSelected ? Appcolors.primary : Appcolors.border,
+            color: isSelected ? Appcolors.primary : context.colors.border,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -151,7 +151,7 @@ class _FilterOption extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? Appcolors.primary : Appcolors.textPrimary,
+                color: isSelected ? Appcolors.primary : context.colors.textPrimary,
               ),
             ),
             if (isSelected)

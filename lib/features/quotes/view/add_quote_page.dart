@@ -204,27 +204,27 @@ class _AddQuotePageState extends State<AddQuotePage> {
   InputDecoration _decoration(String hint, {Widget? suffix}) => InputDecoration(
     hintText: hint,
     hintStyle: TextStyle(
-      color: Appcolors.textTertiary,
+      color: context.colors.textTertiary,
       fontSize: Dimensions.font16 * 0.82,
     ),
     suffixIcon: suffix,
     filled: true,
-    fillColor: Appcolors.surfaceLight,
+    fillColor: context.colors.surfaceLight,
     contentPadding: EdgeInsets.symmetric(
       horizontal: Dimensions.width15,
       vertical: Dimensions.height15,
     ),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(Dimensions.radius15),
-      borderSide: const BorderSide(color: Appcolors.border),
+      borderSide: BorderSide(color: context.colors.border),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(Dimensions.radius15),
-      borderSide: const BorderSide(color: Appcolors.border),
+      borderSide: BorderSide(color: context.colors.border),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(Dimensions.radius15),
-      borderSide: const BorderSide(color: Appcolors.primary, width: 1.5),
+      borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
     ),
   );
 
@@ -245,7 +245,7 @@ class _AddQuotePageState extends State<AddQuotePage> {
                 child: Icon(
                   Icons.info_outline_rounded,
                   size: Dimensions.iconSize24 - 7,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
               ),
           ],
@@ -266,13 +266,13 @@ class _AddQuotePageState extends State<AddQuotePage> {
     Dimensions.init(context);
     final format = DateFormat('dd MMM yyyy');
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: Appcolors.background,
-        surfaceTintColor: Appcolors.background,
+        backgroundColor: context.colors.background,
+        surfaceTintColor: context.colors.background,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: Appcolors.textPrimary),
+          icon: Icon(Icons.arrow_back_rounded, color: context.colors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -280,7 +280,7 @@ class _AddQuotePageState extends State<AddQuotePage> {
           style: TextStyle(
             fontSize: Dimensions.font26 * 0.7,
             fontWeight: FontWeight.w800,
-            color: Appcolors.textPrimary,
+            color: context.colors.textPrimary,
           ),
         ),
         actions: [
@@ -298,7 +298,7 @@ class _AddQuotePageState extends State<AddQuotePage> {
           PopupMenuButton<String>(
             icon: Icon(
               Icons.more_vert_rounded,
-              color: Appcolors.textSecondary,
+              color: context.colors.textSecondary,
               size: Dimensions.iconSize24 - 4,
             ),
             onSelected: (value) {
@@ -448,9 +448,9 @@ class _AddQuotePageState extends State<AddQuotePage> {
                 Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: Appcolors.surfaceLight,
+                    color: context.colors.surfaceLight,
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    border: Border.all(color: Appcolors.border),
+                    border: Border.all(color: context.colors.border),
                   ),
                   child: Row(
                     children: [
@@ -587,7 +587,7 @@ class _AddQuotePageState extends State<AddQuotePage> {
                   (entry) => Container(
                     margin: EdgeInsets.only(top: Dimensions.height10),
                     decoration: BoxDecoration(
-                      color: Appcolors.surfaceLight,
+                      color: context.colors.surfaceLight,
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                     ),
                     child: ListTile(
@@ -630,7 +630,7 @@ class _AddQuotePageState extends State<AddQuotePage> {
           duration: const Duration(milliseconds: 160),
           padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
           decoration: BoxDecoration(
-            color: selected ? Colors.white : Colors.transparent,
+            color: selected ? context.colors.card : Colors.transparent,
             borderRadius: BorderRadius.circular(Dimensions.radius15 - 3),
             border: selected
                 ? Border.all(color: Appcolors.primary.withValues(alpha: 0.3))
@@ -651,7 +651,7 @@ class _AddQuotePageState extends State<AddQuotePage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.8,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-              color: selected ? Appcolors.primary : Appcolors.textSecondary,
+              color: selected ? Appcolors.primary : context.colors.textSecondary,
             ),
           ),
         ),
@@ -664,9 +664,9 @@ class _AddQuotePageState extends State<AddQuotePage> {
       margin: EdgeInsets.only(bottom: Dimensions.height10),
       padding: EdgeInsets.all(Dimensions.width15),
       decoration: BoxDecoration(
-        color: Appcolors.surfaceLight,
+        color: context.colors.surfaceLight,
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: Appcolors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         children: [
@@ -681,7 +681,7 @@ class _AddQuotePageState extends State<AddQuotePage> {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.85,
                     fontWeight: FontWeight.w700,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 SizedBox(height: Dimensions.height10 / 4),
@@ -689,7 +689,7 @@ class _AddQuotePageState extends State<AddQuotePage> {
                   '${item.quantity.toStringAsFixed(2)} × AED ${item.rate.toStringAsFixed(2)}  •  AED ${item.net.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.68,
-                    color: Appcolors.textSecondary,
+                    color: context.colors.textSecondary,
                   ),
                 ),
               ],
@@ -699,7 +699,7 @@ class _AddQuotePageState extends State<AddQuotePage> {
             icon: Icon(
               Icons.close_rounded,
               size: Dimensions.iconSize24 - 6,
-              color: Appcolors.textTertiary,
+              color: context.colors.textTertiary,
             ),
             onPressed: () => setState(() => _lineItems.removeAt(index)),
           ),
@@ -718,7 +718,7 @@ class _AddQuotePageState extends State<AddQuotePage> {
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.82,
             fontWeight: bold ? FontWeight.w800 : FontWeight.w500,
-            color: bold ? Appcolors.textPrimary : Appcolors.textSecondary,
+            color: bold ? context.colors.textPrimary : context.colors.textSecondary,
           ),
         ),
         Text(
@@ -726,7 +726,7 @@ class _AddQuotePageState extends State<AddQuotePage> {
           style: TextStyle(
             fontSize: Dimensions.font16 * (bold ? 0.95 : 0.82),
             fontWeight: FontWeight.w700,
-            color: bold ? Appcolors.primary : Appcolors.textPrimary,
+            color: bold ? Appcolors.primary : context.colors.textPrimary,
           ),
         ),
       ],

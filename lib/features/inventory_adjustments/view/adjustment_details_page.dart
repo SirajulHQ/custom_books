@@ -58,7 +58,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
       barrierDismissible: true,
       builder: (dialogCtx) {
         return Dialog(
-          backgroundColor: Colors.white,
+          backgroundColor: context.colors.card,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius20),
           ),
@@ -80,7 +80,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                         style: TextStyle(
                           fontSize: Dimensions.font20 * 0.95,
                           fontWeight: FontWeight.w800,
-                          color: Appcolors.textPrimary,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                     ),
@@ -91,13 +91,13 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                       icon: Icon(
                         Icons.close_rounded,
                         size: Dimensions.iconSize24,
-                        color: Appcolors.textSecondary,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ],
                 ),
               ),
-              Divider(height: 1, color: Appcolors.border),
+              Divider(height: 1, color: context.colors.border),
 
               // Attachment preview
               if (_attachments.isNotEmpty)
@@ -105,9 +105,9 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                   child: Container(
                     margin: EdgeInsets.all(Dimensions.width20),
                     decoration: BoxDecoration(
-                      color: Appcolors.surfaceLight,
+                      color: context.colors.surfaceLight,
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      border: Border.all(color: Appcolors.border),
+                      border: Border.all(color: context.colors.border),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -116,7 +116,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                         fit: BoxFit.contain,
                         errorBuilder: (_, _, _) => Container(
                           height: 300,
-                          color: Appcolors.surfaceLight,
+                          color: context.colors.surfaceLight,
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -124,14 +124,14 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                                 Icon(
                                   Icons.insert_drive_file_outlined,
                                   size: Dimensions.iconSize24 * 2,
-                                  color: Appcolors.textSecondary,
+                                  color: context.colors.textSecondary,
                                 ),
                                 SizedBox(height: Dimensions.height10),
                                 Text(
                                   _attachments.first.name,
                                   style: TextStyle(
                                     fontSize: Dimensions.font16 * 0.85,
-                                    color: Appcolors.textSecondary,
+                                    color: context.colors.textSecondary,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -200,14 +200,14 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
       child: Container(
         padding: EdgeInsets.all(Dimensions.width15),
         decoration: BoxDecoration(
-          color: Appcolors.surfaceLight,
+          color: context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: Appcolors.border),
+          border: Border.all(color: context.colors.border),
         ),
         child: Icon(
           icon,
           size: Dimensions.iconSize24,
-          color: Appcolors.textPrimary,
+          color: context.colors.textPrimary,
         ),
       ),
     );
@@ -240,11 +240,11 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
+        backgroundColor: context.colors.card,
+        surfaceTintColor: context.colors.card,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: Appcolors.textPrimary),
+          icon: Icon(Icons.arrow_back_rounded, color: context.colors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -252,14 +252,14 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
           style: TextStyle(
             fontSize: Dimensions.font26 * 0.7,
             fontWeight: FontWeight.w800,
-            color: Appcolors.textPrimary,
+            color: context.colors.textPrimary,
           ),
         ),
         actions: [
           IconButton(
             icon: Icon(
               Icons.edit_rounded,
-              color: Colors.black54,
+              color: context.colors.textSecondary,
               size: Dimensions.iconSize24 - 2,
             ),
             onPressed: () {
@@ -269,7 +269,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
           IconButton(
             icon: Icon(
               Icons.save_alt_rounded,
-              color: Colors.black54,
+              color: context.colors.textSecondary,
               size: Dimensions.iconSize24 - 2,
             ),
             onPressed: () {
@@ -279,14 +279,14 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
           PopupMenuButton<String>(
             icon: Icon(
               Icons.more_vert_rounded,
-              color: Colors.black54,
+              color: context.colors.textSecondary,
               size: Dimensions.iconSize24 - 2,
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
             ),
-            surfaceTintColor: Colors.white,
-            color: Colors.white,
+            surfaceTintColor: context.colors.card,
+            color: context.colors.card,
             elevation: 8,
             onSelected: (value) {
               if (value == 'convert') {
@@ -312,7 +312,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                   SnackBar(
                     content: const Text('Print functionality coming soon'),
                     duration: const Duration(seconds: 2),
-                    backgroundColor: Appcolors.textSecondary,
+                    backgroundColor: context.colors.textSecondary,
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -324,7 +324,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    backgroundColor: Colors.white,
+                    backgroundColor: context.colors.card,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius20),
                     ),
@@ -338,7 +338,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                     content: Text(
                       'Are you sure you want to delete this adjustment? This action cannot be undone.',
                       style: TextStyle(
-                        color: Appcolors.textSecondary,
+                        color: context.colors.textSecondary,
                         fontSize: Dimensions.font16 * 0.9,
                       ),
                     ),
@@ -348,7 +348,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                         child: Text(
                           'Cancel',
                           style: TextStyle(
-                            color: Appcolors.textSecondary,
+                            color: context.colors.textSecondary,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -388,7 +388,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.85,
                           fontWeight: FontWeight.w600,
-                          color: Appcolors.textPrimary,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                     ],
@@ -401,7 +401,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                     Icon(
                       Icons.print_rounded,
                       size: Dimensions.iconSize16 + 4,
-                      color: Appcolors.textSecondary,
+                      color: context.colors.textSecondary,
                     ),
                     SizedBox(width: Dimensions.width10),
                     Text(
@@ -409,7 +409,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.85,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                   ],
@@ -448,8 +448,8 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(Dimensions.width20),
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: context.colors.card,
                 boxShadow: [
                   BoxShadow(
                     color: Color(0x08000000),
@@ -468,7 +468,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                         'Date',
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
-                          color: Appcolors.textSecondary,
+                          color: context.colors.textSecondary,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -502,7 +502,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                     style: TextStyle(
                       fontSize: Dimensions.font20 * 0.95,
                       fontWeight: FontWeight.w800,
-                      color: Appcolors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   SizedBox(height: Dimensions.height20),
@@ -518,7 +518,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                               'Reason',
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.7,
-                                color: Appcolors.textSecondary,
+                                color: context.colors.textSecondary,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -528,7 +528,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                               style: TextStyle(
                                 fontSize: Dimensions.font20 * 0.95,
                                 fontWeight: FontWeight.w800,
-                                color: Appcolors.textPrimary,
+                                color: context.colors.textPrimary,
                               ),
                             ),
                           ],
@@ -578,13 +578,13 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
             Container(
               margin: EdgeInsets.symmetric(horizontal: Dimensions.width20),
               decoration: BoxDecoration(
-                color: const Color(0xFFF1F3F5),
+                color: context.colors.surfaceLight,
                 borderRadius: BorderRadius.circular(Dimensions.radius30),
               ),
               child: TabBar(
                 controller: _tabController,
                 indicator: BoxDecoration(
-                  color: Colors.white,
+                  color: context.colors.card,
                   borderRadius: BorderRadius.circular(Dimensions.radius30),
                   border: Border.all(
                     color: Appcolors.primary.withValues(alpha: 0.3),
@@ -600,7 +600,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
                 labelColor: Appcolors.primary,
-                unselectedLabelColor: Appcolors.textSecondary,
+                unselectedLabelColor: context.colors.textSecondary,
                 labelStyle: TextStyle(
                   fontSize: Dimensions.font16 * 0.72,
                   fontWeight: FontWeight.w800,
@@ -644,7 +644,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
         Container(
           padding: EdgeInsets.all(Dimensions.width20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.colors.card,
             borderRadius: BorderRadius.circular(Dimensions.radius15),
             boxShadow: [
               BoxShadow(
@@ -673,7 +673,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
         Container(
           padding: EdgeInsets.all(Dimensions.width20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.colors.card,
             borderRadius: BorderRadius.circular(Dimensions.radius15),
             boxShadow: [
               BoxShadow(
@@ -691,7 +691,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.95,
                   fontWeight: FontWeight.w800,
-                  color: Appcolors.textPrimary,
+                  color: context.colors.textPrimary,
                 ),
               ),
               SizedBox(height: Dimensions.height15),
@@ -733,7 +733,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.9,
                                 fontWeight: FontWeight.w700,
-                                color: Appcolors.textPrimary,
+                                color: context.colors.textPrimary,
                               ),
                             ),
                             if (item.description != null)
@@ -741,7 +741,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                                 item.description!,
                                 style: TextStyle(
                                   fontSize: Dimensions.font16 * 0.72,
-                                  color: Appcolors.textSecondary,
+                                  color: context.colors.textSecondary,
                                 ),
                               ),
                           ],
@@ -753,7 +753,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                           vertical: Dimensions.height10 / 1.5,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: context.colors.card,
                           borderRadius: BorderRadius.circular(
                             Dimensions.radius15 / 2,
                           ),
@@ -787,7 +787,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
         Container(
           padding: EdgeInsets.all(Dimensions.width20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.colors.card,
             borderRadius: BorderRadius.circular(Dimensions.radius15),
             boxShadow: [
               BoxShadow(
@@ -805,7 +805,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.95,
                   fontWeight: FontWeight.w800,
-                  color: Appcolors.textPrimary,
+                  color: context.colors.textPrimary,
                 ),
               ),
               SizedBox(height: Dimensions.height15),
@@ -813,7 +813,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                 'Description',
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.72,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -822,7 +822,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                 'Jjj',
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.88,
-                  color: Appcolors.textPrimary,
+                  color: context.colors.textPrimary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -859,7 +859,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.95,
                 fontWeight: FontWeight.w700,
-                color: Appcolors.textPrimary,
+                color: context.colors.textPrimary,
               ),
             ),
             SizedBox(height: Dimensions.height10),
@@ -868,7 +868,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.8,
-                color: Appcolors.textSecondary,
+                color: context.colors.textSecondary,
                 height: 1.5,
               ),
             ),
@@ -886,7 +886,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
           label,
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.78,
-            color: Appcolors.textSecondary,
+            color: context.colors.textSecondary,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -897,7 +897,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.88,
               fontWeight: FontWeight.w700,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
         ),

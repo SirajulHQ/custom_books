@@ -93,7 +93,7 @@ class _BankingPageState extends State<BankingPage> {
     Dimensions.init(context);
 
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'banking'),
       body: SafeArea(
         child: CustomScrollView(
@@ -177,7 +177,7 @@ class _BankingPageState extends State<BankingPage> {
       child: Container(
         padding: EdgeInsets.all(Dimensions.width10 / 2),
         decoration: BoxDecoration(
-          color: const Color(0xFFF1F3F5),
+          color: context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius30),
         ),
         child: Row(
@@ -229,7 +229,7 @@ class _BankingPageState extends State<BankingPage> {
               Icon(
                 icon,
                 size: Dimensions.iconSize16,
-                color: Appcolors.textSecondary,
+                color: context.colors.textSecondary,
               ),
               SizedBox(width: Dimensions.width10 / 2),
             ],
@@ -239,7 +239,7 @@ class _BankingPageState extends State<BankingPage> {
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.75,
                   fontWeight: FontWeight.w500,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -248,7 +248,7 @@ class _BankingPageState extends State<BankingPage> {
             Icon(
               Icons.keyboard_arrow_down_rounded,
               size: Dimensions.iconSize16,
-              color: Appcolors.textSecondary,
+              color: context.colors.textSecondary,
             ),
           ],
         ),
@@ -264,7 +264,7 @@ class _BankingPageState extends State<BankingPage> {
       builder: (context) {
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.colors.card,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(Dimensions.radius20),
               topRight: Radius.circular(Dimensions.radius20),
@@ -281,7 +281,7 @@ class _BankingPageState extends State<BankingPage> {
                 ),
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(color: Appcolors.border, width: 1),
+                    bottom: BorderSide(color: context.colors.border, width: 1),
                   ),
                 ),
                 child: Row(
@@ -292,7 +292,7 @@ class _BankingPageState extends State<BankingPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font20,
                         fontWeight: FontWeight.w700,
-                        color: Appcolors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     GestureDetector(
@@ -300,7 +300,7 @@ class _BankingPageState extends State<BankingPage> {
                       child: Icon(
                         Icons.close_rounded,
                         size: Dimensions.iconSize24,
-                        color: Appcolors.textSecondary,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ],
@@ -340,7 +340,7 @@ class _BankingPageState extends State<BankingPage> {
                         border: Border.all(
                           color: isSelected
                               ? Appcolors.primary
-                              : Appcolors.border,
+                              : context.colors.border,
                           width: isSelected ? 2 : 1,
                         ),
                       ),
@@ -356,7 +356,7 @@ class _BankingPageState extends State<BankingPage> {
                                   : FontWeight.w500,
                               color: isSelected
                                   ? Appcolors.primary
-                                  : Appcolors.textPrimary,
+                                  : context.colors.textPrimary,
                             ),
                           ),
                           if (isSelected)
@@ -388,7 +388,7 @@ class _BankingPageState extends State<BankingPage> {
       builder: (context) {
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.colors.card,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(Dimensions.radius20),
               topRight: Radius.circular(Dimensions.radius20),
@@ -405,7 +405,7 @@ class _BankingPageState extends State<BankingPage> {
                 ),
                 decoration: BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(color: Appcolors.border, width: 1),
+                    bottom: BorderSide(color: context.colors.border, width: 1),
                   ),
                 ),
                 child: Row(
@@ -416,7 +416,7 @@ class _BankingPageState extends State<BankingPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font20,
                         fontWeight: FontWeight.w700,
-                        color: Appcolors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     GestureDetector(
@@ -424,7 +424,7 @@ class _BankingPageState extends State<BankingPage> {
                       child: Icon(
                         Icons.close_rounded,
                         size: Dimensions.iconSize24,
-                        color: Appcolors.textSecondary,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ],
@@ -464,7 +464,7 @@ class _BankingPageState extends State<BankingPage> {
                         border: Border.all(
                           color: isSelected
                               ? Appcolors.primary
-                              : Appcolors.border,
+                              : context.colors.border,
                           width: isSelected ? 2 : 1,
                         ),
                       ),
@@ -480,7 +480,7 @@ class _BankingPageState extends State<BankingPage> {
                                   : FontWeight.w500,
                               color: isSelected
                                   ? Appcolors.primary
-                                  : Appcolors.textPrimary,
+                                  : context.colors.textPrimary,
                             ),
                           ),
                           if (isSelected)
@@ -540,9 +540,9 @@ class _BankingPageState extends State<BankingPage> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: Dimensions.width20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         children: [
@@ -556,7 +556,7 @@ class _BankingPageState extends State<BankingPage> {
                   'Banking Summary',
                   style: TextStyle(
                     fontSize: Dimensions.font20 * 0.95,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -632,7 +632,7 @@ class _BankingPageState extends State<BankingPage> {
             'Active Accounts',
             style: TextStyle(
               fontSize: Dimensions.font20 * 0.95,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -640,7 +640,7 @@ class _BankingPageState extends State<BankingPage> {
             '${accounts.length} accounts',
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.75,
-              color: Appcolors.textSecondary,
+              color: context.colors.textSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),

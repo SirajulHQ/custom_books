@@ -83,18 +83,18 @@ class ItemSearchField<T> extends StatelessWidget {
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.85,
                   fontWeight: FontWeight.w600,
-                  color: Appcolors.textPrimary,
+                  color: context.colors.textPrimary,
                 ),
                 decoration: InputDecoration(
                   hintText: 'Start typing to select an Item',
-                  hintStyle: const TextStyle(color: Colors.black26),
+                  hintStyle: TextStyle(color: context.colors.textTertiary),
                   border: InputBorder.none,
                   isDense: true,
                   suffixIcon: isItemSelected
                       ? IconButton(
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.close_rounded,
-                            color: Colors.black38,
+                            color: context.colors.textTertiary,
                           ),
                           onPressed: onClear,
                         )
@@ -102,7 +102,7 @@ class ItemSearchField<T> extends StatelessWidget {
                       ? IconButton(
                           icon: Icon(
                             Icons.qr_code_scanner_rounded,
-                            color: Colors.black45,
+                            color: context.colors.textSecondary,
                             size: Dimensions.iconSize24 - 4,
                           ),
                           onPressed: onBarcodeScan,
@@ -118,7 +118,7 @@ class ItemSearchField<T> extends StatelessWidget {
           ],
         ),
         if (suggestions.isNotEmpty) ...[
-          Divider(color: Appcolors.border, height: Dimensions.height20),
+          Divider(color: context.colors.border, height: Dimensions.height20),
           ...suggestions.map((item) => suggestionBuilder(item)),
         ],
       ],

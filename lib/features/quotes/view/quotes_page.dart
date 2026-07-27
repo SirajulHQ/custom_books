@@ -303,11 +303,11 @@ class _QuotesPageState extends State<QuotesPage> {
     Dimensions.init(context);
     final quotes = _visibleQuotes;
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'quotes'),
       appBar: AppBar(
-        backgroundColor: Appcolors.background,
-        surfaceTintColor: Appcolors.background,
+        backgroundColor: context.colors.background,
+        surfaceTintColor: context.colors.background,
         elevation: 0,
         leading: Builder(
           builder: (context) => IconButton(
@@ -335,14 +335,14 @@ class _QuotesPageState extends State<QuotesPage> {
               style: TextStyle(
                 fontSize: Dimensions.font26 * 0.85,
                 fontWeight: FontWeight.w800,
-                color: Appcolors.textPrimary,
+                color: context.colors.textPrimary,
               ),
             ),
             Text(
               '${quotes.length} quote${quotes.length == 1 ? '' : 's'}',
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.7,
-                color: Appcolors.textSecondary,
+                color: context.colors.textSecondary,
               ),
             ),
           ],
@@ -402,23 +402,23 @@ class _QuotesPageState extends State<QuotesPage> {
                 style: TextStyle(fontSize: Dimensions.font16 * 0.85),
                 decoration: InputDecoration(
                   hintText: 'Search by customer, quote or reference',
-                  hintStyle: const TextStyle(color: Colors.black26),
-                  prefixIcon: const Icon(
+                  hintStyle: TextStyle(color: context.colors.textTertiary),
+                  prefixIcon: Icon(
                     Icons.search_rounded,
-                    color: Colors.black38,
+                    color: context.colors.textTertiary,
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: context.colors.card,
                   contentPadding: EdgeInsets.symmetric(
                     vertical: Dimensions.height10,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: const BorderSide(color: Appcolors.border),
+                    borderSide: BorderSide(color: context.colors.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: const BorderSide(color: Appcolors.border),
+                    borderSide: BorderSide(color: context.colors.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -443,7 +443,7 @@ class _QuotesPageState extends State<QuotesPage> {
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF1F3F5),
+                      color: context.colors.surfaceLight,
                       borderRadius: BorderRadius.circular(Dimensions.radius30),
                     ),
                     child: Row(
@@ -548,7 +548,7 @@ class _QuotesPageState extends State<QuotesPage> {
                             style: TextStyle(
                               fontSize: Dimensions.font16,
                               fontWeight: FontWeight.w700,
-                              color: Appcolors.textPrimary,
+                              color: context.colors.textPrimary,
                             ),
                           ),
                           SizedBox(height: Dimensions.height10 / 2),
@@ -557,7 +557,7 @@ class _QuotesPageState extends State<QuotesPage> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: Dimensions.font16 * 0.75,
-                              color: Appcolors.textSecondary,
+                              color: context.colors.textSecondary,
                             ),
                           ),
                         ],
@@ -596,7 +596,7 @@ class _QuotesPageState extends State<QuotesPage> {
           duration: const Duration(milliseconds: 180),
           padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
           decoration: BoxDecoration(
-            color: selected ? Colors.white : Colors.transparent,
+            color: selected ? context.colors.card : Colors.transparent,
             borderRadius: BorderRadius.circular(Dimensions.radius30),
             border: selected
                 ? Border.all(
@@ -620,7 +620,9 @@ class _QuotesPageState extends State<QuotesPage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.72,
               fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
-              color: selected ? Appcolors.primary : Appcolors.textSecondary,
+              color: selected
+                  ? Appcolors.primary
+                  : context.colors.textSecondary,
             ),
           ),
         ),
@@ -651,9 +653,9 @@ class _QuotesPageState extends State<QuotesPage> {
       margin: EdgeInsets.only(bottom: Dimensions.height10),
       padding: EdgeInsets.all(Dimensions.width15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: Appcolors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -681,7 +683,7 @@ class _QuotesPageState extends State<QuotesPage> {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.95,
                     fontWeight: FontWeight.w700,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 SizedBox(height: Dimensions.height10 / 2),
@@ -690,21 +692,21 @@ class _QuotesPageState extends State<QuotesPage> {
                     Icon(
                       Icons.calendar_today_rounded,
                       size: Dimensions.iconSize16 - 2,
-                      color: Appcolors.textTertiary,
+                      color: context.colors.textTertiary,
                     ),
                     SizedBox(width: Dimensions.width10 / 2),
                     Text(
                       DateFormat('dd MMM yyyy').format(quote.quoteDate),
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.7,
-                        color: Appcolors.textSecondary,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                     Text(
                       '  •  ',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.7,
-                        color: Appcolors.textTertiary,
+                        color: context.colors.textTertiary,
                       ),
                     ),
                     Flexible(
@@ -713,7 +715,7 @@ class _QuotesPageState extends State<QuotesPage> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
-                          color: Appcolors.textSecondary,
+                          color: context.colors.textSecondary,
                         ),
                       ),
                     ),
@@ -774,8 +776,8 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
         constraints: BoxConstraints(
           maxHeight: MediaQuery.sizeOf(context).height * 0.9,
         ),
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration: BoxDecoration(
+          color: context.colors.card,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(
@@ -786,7 +788,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
               height: 4,
               margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
               decoration: BoxDecoration(
-                color: Colors.black12,
+                color: context.colors.border,
                 borderRadius: BorderRadius.circular(Dimensions.radius30),
               ),
             ),
@@ -800,7 +802,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                     style: TextStyle(
                       fontSize: Dimensions.font20,
                       fontWeight: FontWeight.w800,
-                      color: Appcolors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   InkWell(
@@ -854,7 +856,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                               'Tap a selection again to switch between ascending and descending order.',
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.7,
-                                color: Colors.black54,
+                                color: context.colors.textSecondary,
                               ),
                             ),
                           ),
@@ -873,9 +875,9 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                 Dimensions.width20,
                 Dimensions.height20,
               ),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                border: Border(top: BorderSide(color: Appcolors.border)),
+              decoration: BoxDecoration(
+                color: context.colors.card,
+                border: Border(top: BorderSide(color: context.colors.border)),
               ),
               child: Row(
                 children: [
@@ -899,7 +901,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.85,
                             fontWeight: FontWeight.w700,
-                            color: Appcolors.textPrimary,
+                            color: context.colors.textPrimary,
                           ),
                         ),
                       ],
@@ -966,10 +968,10 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
           decoration: BoxDecoration(
             color: selected
                 ? Appcolors.primary.withValues(alpha: 0.06)
-                : Colors.white,
+                : context.colors.card,
             borderRadius: BorderRadius.circular(Dimensions.radius15),
             border: Border.all(
-              color: selected ? Appcolors.primary : Appcolors.border,
+              color: selected ? Appcolors.primary : context.colors.border,
               width: selected ? 1.5 : 1,
             ),
           ),
@@ -980,7 +982,9 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                     ? Icons.radio_button_checked_rounded
                     : Icons.radio_button_off_rounded,
                 size: Dimensions.iconSize24 - 4,
-                color: selected ? Appcolors.primary : Colors.black26,
+                color: selected
+                    ? Appcolors.primary
+                    : context.colors.textTertiary,
               ),
               SizedBox(width: Dimensions.width10),
               Expanded(
@@ -989,7 +993,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.9,
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ),

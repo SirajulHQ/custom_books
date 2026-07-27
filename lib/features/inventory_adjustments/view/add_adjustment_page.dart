@@ -59,7 +59,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
         return StatefulBuilder(
           builder: (dialogCtx, setDialogState) {
             return Dialog(
-              backgroundColor: Colors.white,
+              backgroundColor: context.colors.card,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius20),
               ),
@@ -81,7 +81,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                             style: TextStyle(
                               fontSize: Dimensions.font20 * 0.95,
                               fontWeight: FontWeight.w800,
-                              color: Appcolors.textPrimary,
+                              color: context.colors.textPrimary,
                             ),
                           ),
                         ),
@@ -90,21 +90,21 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                           icon: Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: Appcolors.surfaceLight,
+                              color: context.colors.surfaceLight,
                               shape: BoxShape.circle,
-                              border: Border.all(color: Appcolors.border),
+                              border: Border.all(color: context.colors.border),
                             ),
                             child: Icon(
                               Icons.close_rounded,
                               size: Dimensions.iconSize16,
-                              color: Appcolors.textSecondary,
+                              color: context.colors.textSecondary,
                             ),
                           ),
                         ),
                       ],
                     ),
                     SizedBox(height: Dimensions.height10),
-                    Divider(height: 1, color: Appcolors.border),
+                    Divider(height: 1, color: context.colors.border),
                     SizedBox(height: Dimensions.height10),
 
                     // ── Attachment list / empty state ────────────────────────
@@ -135,7 +135,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.95,
                                 fontWeight: FontWeight.w700,
-                                color: Appcolors.textPrimary,
+                                color: context.colors.textPrimary,
                               ),
                             ),
                             SizedBox(height: Dimensions.height10 / 2),
@@ -144,7 +144,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.8,
-                                color: Appcolors.textSecondary,
+                                color: context.colors.textSecondary,
                                 height: 1.5,
                               ),
                             ),
@@ -167,11 +167,11 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                 vertical: Dimensions.height10,
                               ),
                               decoration: BoxDecoration(
-                                color: Appcolors.surfaceLight,
+                                color: context.colors.surfaceLight,
                                 borderRadius: BorderRadius.circular(
                                   Dimensions.radius15 / 2,
                                 ),
-                                border: Border.all(color: Appcolors.border),
+                                border: Border.all(color: context.colors.border),
                               ),
                               child: Row(
                                 children: [
@@ -204,7 +204,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                           style: TextStyle(
                                             fontSize: Dimensions.font16 * 0.85,
                                             fontWeight: FontWeight.w600,
-                                            color: Appcolors.textPrimary,
+                                            color: context.colors.textPrimary,
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
@@ -215,7 +215,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                             style: TextStyle(
                                               fontSize:
                                                   Dimensions.font16 * 0.72,
-                                              color: Appcolors.textSecondary,
+                                              color: context.colors.textSecondary,
                                             ),
                                           ),
                                       ],
@@ -227,7 +227,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                     icon: Icon(
                                       Icons.close_rounded,
                                       size: Dimensions.iconSize16 + 2,
-                                      color: Appcolors.textSecondary,
+                                      color: context.colors.textSecondary,
                                     ),
                                     onPressed: () {
                                       setState(() => _attachments.removeAt(i));
@@ -251,7 +251,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                           '${_attachments.length}/$_maxAttachments attachments · max 10 MB each',
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.75,
-                            color: Appcolors.textSecondary,
+                            color: context.colors.textSecondary,
                           ),
                         ),
                       ),
@@ -306,7 +306,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
   void _showSourcePicker(BuildContext dialogCtx, StateSetter setDialogState) {
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: context.colors.card,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(Dimensions.radius20),
@@ -327,7 +327,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                 style: TextStyle(
                   fontSize: Dimensions.font20 * 0.85,
                   fontWeight: FontWeight.w800,
-                  color: Appcolors.textPrimary,
+                  color: context.colors.textPrimary,
                 ),
               ),
               SizedBox(height: Dimensions.height20),
@@ -443,9 +443,9 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
       child: Container(
         padding: EdgeInsets.all(Dimensions.width15),
         decoration: BoxDecoration(
-          color: Appcolors.surfaceLight,
+          color: context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: Appcolors.border),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           children: [
@@ -471,14 +471,14 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.9,
                       fontWeight: FontWeight.w700,
-                      color: Appcolors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   Text(
                     subtitle,
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.75,
-                      color: Appcolors.textSecondary,
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ],
@@ -486,7 +486,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
             ),
             Icon(
               Icons.chevron_right_rounded,
-              color: Appcolors.textSecondary,
+              color: context.colors.textSecondary,
               size: Dimensions.iconSize24 - 4,
             ),
           ],
@@ -625,13 +625,13 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: Appcolors.background,
-        surfaceTintColor: Appcolors.background,
+        backgroundColor: context.colors.background,
+        surfaceTintColor: context.colors.background,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: Appcolors.textPrimary),
+          icon: Icon(Icons.arrow_back_rounded, color: context.colors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -639,7 +639,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
           style: TextStyle(
             fontSize: Dimensions.font26 * 0.7,
             fontWeight: FontWeight.w800,
-            color: Appcolors.textPrimary,
+            color: context.colors.textPrimary,
           ),
         ),
         actions: [
@@ -657,7 +657,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
           PopupMenuButton<String>(
             icon: Icon(
               Icons.more_vert_rounded,
-              color: Colors.black54,
+              color: context.colors.textSecondary,
               size: Dimensions.iconSize24 - 4,
             ),
             shape: RoundedRectangleBorder(
@@ -710,7 +710,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                 Text('Reference#', style: FormTextStyles.label()),
                 TextField(
                   controller: _referenceController,
-                  style: FormTextStyles.value(),
+                  style: FormTextStyles.value(context),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     isDense: true,
@@ -725,11 +725,11 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(_formatDate(_date), style: FormTextStyles.value()),
+                      Text(_formatDate(_date), style: FormTextStyles.value(context)),
                       Icon(
                         Icons.calendar_today_outlined,
                         size: Dimensions.iconSize24 - 6,
-                        color: Colors.black45,
+                        color: context.colors.textSecondary,
                       ),
                     ],
                   ),
@@ -742,10 +742,10 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                   child: DropdownButton<String>(
                     value: _account,
                     isExpanded: true,
-                    style: FormTextStyles.value(),
-                    icon: const Icon(
+                    style: FormTextStyles.value(context),
+                    icon: Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      color: Colors.black45,
+                      color: context.colors.textSecondary,
                     ),
                     items: _accounts
                         .map((a) => DropdownMenuItem(value: a, child: Text(a)))
@@ -764,14 +764,14 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                     hint: Text(
                       'Select a reason',
                       style: TextStyle(
-                        color: Colors.black26,
+                        color: context.colors.textTertiary,
                         fontSize: Dimensions.font16 * 0.85,
                       ),
                     ),
-                    style: FormTextStyles.value(),
-                    icon: const Icon(
+                    style: FormTextStyles.value(context),
+                    icon: Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      color: Colors.black45,
+                      color: context.colors.textSecondary,
                     ),
                     items: _reasons
                         .map((r) => DropdownMenuItem(value: r, child: Text(r)))
@@ -786,10 +786,10 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                   controller: _descriptionController,
                   maxLength: 500,
                   maxLines: 3,
-                  style: FormTextStyles.value(),
-                  decoration: const InputDecoration(
+                  style: FormTextStyles.value(context),
+                  decoration: InputDecoration(
                     hintText: 'Max 500 Characters',
-                    hintStyle: TextStyle(color: Colors.black26),
+                    hintStyle: TextStyle(color: context.colors.textTertiary),
                     border: InputBorder.none,
                     isDense: true,
                     counterText: '',

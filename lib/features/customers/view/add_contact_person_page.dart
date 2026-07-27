@@ -50,7 +50,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
     Dimensions.init(context);
 
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -66,7 +66,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
               actions: [
                 AppBarIconButton(
                   icon: Icons.contacts_outlined,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                   onPressed: () {
                     appLog(
                       '📱 Contacts button tapped',
@@ -99,9 +99,9 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
                   Container(
                     padding: EdgeInsets.all(Dimensions.width20),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.colors.card,
                       borderRadius: BorderRadius.circular(Dimensions.radius20),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      border: Border.all(color: context.colors.border),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.02),
@@ -118,7 +118,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.95,
                             fontWeight: FontWeight.w700,
-                            color: Appcolors.textPrimary,
+                            color: context.colors.textPrimary,
                           ),
                         ),
                         SizedBox(height: Dimensions.height20),
@@ -221,11 +221,11 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
           vertical: Dimensions.height15,
         ),
         decoration: BoxDecoration(
-          color: Appcolors.surfaceLight,
+          color: context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: Border.all(
             color: _selectedSalutation.isEmpty
-                ? Appcolors.border
+                ? context.colors.border
                 : Appcolors.primary,
             width: _selectedSalutation.isEmpty ? 1 : 2,
           ),
@@ -243,7 +243,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
                   fontSize: Dimensions.font16 * 0.85,
                   color: _selectedSalutation.isEmpty
                       ? Appcolors.primary
-                      : Appcolors.textPrimary,
+                      : context.colors.textPrimary,
                   fontWeight: _selectedSalutation.isEmpty
                       ? FontWeight.w500
                       : FontWeight.w600,
@@ -253,7 +253,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
             Icon(
               Icons.keyboard_arrow_down_rounded,
               size: Dimensions.iconSize16 * 1.2,
-              color: Appcolors.textSecondary,
+              color: context.colors.textSecondary,
             ),
           ],
         ),
@@ -264,7 +264,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
   void _showSalutationBottomSheet() {
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: context.colors.card,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(Dimensions.radius20),
@@ -282,7 +282,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
               ),
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(color: Appcolors.border, width: 1),
+                  bottom: BorderSide(color: context.colors.border, width: 1),
                 ),
               ),
               child: Row(
@@ -293,7 +293,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
                     style: TextStyle(
                       fontSize: Dimensions.font20 * 0.85,
                       fontWeight: FontWeight.w800,
-                      color: Appcolors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   GestureDetector(
@@ -301,7 +301,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
                     child: Icon(
                       Icons.close_rounded,
                       size: Dimensions.iconSize24,
-                      color: Appcolors.textSecondary,
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ],
@@ -340,7 +340,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
                       border: Border.all(
                         color: isSelected
                             ? Appcolors.primary
-                            : Appcolors.border,
+                            : context.colors.border,
                         width: isSelected ? 2 : 1,
                       ),
                     ),
@@ -356,7 +356,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
                                 : FontWeight.w500,
                             color: isSelected
                                 ? Appcolors.primary
-                                : Appcolors.textPrimary,
+                                : context.colors.textPrimary,
                           ),
                         ),
                         if (isSelected)
@@ -388,7 +388,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
       keyboardType: keyboardType,
       style: TextStyle(
         fontSize: Dimensions.font16 * 0.85,
-        color: Appcolors.textPrimary,
+        color: context.colors.textPrimary,
       ),
       decoration: InputDecoration(
         hintText: hint,
@@ -397,18 +397,18 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
           fontSize: Dimensions.font16 * 0.85,
         ),
         filled: true,
-        fillColor: Appcolors.surfaceLight,
+        fillColor: context.colors.surfaceLight,
         contentPadding: EdgeInsets.symmetric(
           horizontal: Dimensions.width15,
           vertical: Dimensions.height15,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          borderSide: BorderSide(color: Appcolors.border),
+          borderSide: BorderSide(color: context.colors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          borderSide: BorderSide(color: Appcolors.border),
+          borderSide: BorderSide(color: context.colors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -432,9 +432,9 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
             vertical: Dimensions.height15,
           ),
           decoration: BoxDecoration(
-            color: Appcolors.surfaceLight,
+            color: context.colors.surfaceLight,
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            border: Border.all(color: Appcolors.border),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -444,14 +444,14 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.85,
                   fontWeight: FontWeight.w600,
-                  color: Appcolors.textPrimary,
+                  color: context.colors.textPrimary,
                 ),
               ),
               SizedBox(width: Dimensions.width10 / 2),
               Icon(
                 Icons.keyboard_arrow_down_rounded,
                 size: Dimensions.iconSize16 * 1.2,
-                color: Appcolors.textSecondary,
+                color: context.colors.textSecondary,
               ),
             ],
           ),
@@ -463,27 +463,27 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
             keyboardType: TextInputType.phone,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.85,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
             ),
             decoration: InputDecoration(
               hintText: label,
               hintStyle: TextStyle(
-                color: Appcolors.textTertiary,
+                color: context.colors.textTertiary,
                 fontSize: Dimensions.font16 * 0.85,
               ),
               filled: true,
-              fillColor: Appcolors.surfaceLight,
+              fillColor: context.colors.surfaceLight,
               contentPadding: EdgeInsets.symmetric(
                 horizontal: Dimensions.width15,
                 vertical: Dimensions.height15,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
-                borderSide: BorderSide(color: Appcolors.border),
+                borderSide: BorderSide(color: context.colors.border),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
-                borderSide: BorderSide(color: Appcolors.border),
+                borderSide: BorderSide(color: context.colors.border),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15),

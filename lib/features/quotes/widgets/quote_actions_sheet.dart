@@ -21,7 +21,7 @@ class QuoteActionsSheet extends StatelessWidget {
       top: false,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colors.card,
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(Dimensions.radius20),
           ),
@@ -43,7 +43,7 @@ class QuoteActionsSheet extends StatelessWidget {
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.7,
                   fontWeight: FontWeight.w600,
-                  color: Appcolors.textTertiary,
+                  color: context.colors.textTertiary,
                   letterSpacing: 0.5,
                 ),
               ),
@@ -88,8 +88,8 @@ class _ActionsHeader extends StatelessWidget {
         horizontal: Dimensions.width20,
         vertical: Dimensions.height15,
       ),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Appcolors.border)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: context.colors.border)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,7 +99,7 @@ class _ActionsHeader extends StatelessWidget {
             style: TextStyle(
               fontSize: Dimensions.font20,
               fontWeight: FontWeight.bold,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
           GestureDetector(
@@ -107,7 +107,7 @@ class _ActionsHeader extends StatelessWidget {
             child: Icon(
               Icons.close_rounded,
               size: Dimensions.iconSize24,
-              color: Appcolors.textSecondary,
+              color: context.colors.textSecondary,
             ),
           ),
         ],
@@ -137,9 +137,9 @@ class _ActionOption extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(Dimensions.width15),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colors.card,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: Appcolors.border),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           children: [
@@ -166,7 +166,7 @@ class _ActionOption extends StatelessWidget {
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.9,
                       fontWeight: FontWeight.w700,
-                      color: Appcolors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   SizedBox(height: Dimensions.height10 / 4),
@@ -174,7 +174,7 @@ class _ActionOption extends StatelessWidget {
                     subtitle,
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.7,
-                      color: Appcolors.textSecondary,
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ],
@@ -183,7 +183,7 @@ class _ActionOption extends StatelessWidget {
             Icon(
               Icons.chevron_right_rounded,
               size: Dimensions.iconSize24 - 4,
-              color: Appcolors.textTertiary,
+              color: context.colors.textTertiary,
             ),
           ],
         ),

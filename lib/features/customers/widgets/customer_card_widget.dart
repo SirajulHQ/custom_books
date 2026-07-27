@@ -37,9 +37,9 @@ class CustomerCardWidget extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(Dimensions.width20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colors.card,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: Appcolors.border),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           children: [
@@ -76,7 +76,7 @@ class CustomerCardWidget extends StatelessWidget {
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.95,
                       fontWeight: FontWeight.w700,
-                      color: Appcolors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -89,7 +89,7 @@ class CustomerCardWidget extends StatelessWidget {
                       customer.email!,
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.75,
-                        color: Appcolors.textTertiary,
+                        color: context.colors.textTertiary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -110,7 +110,7 @@ class CustomerCardWidget extends StatelessWidget {
                               'Receivables',
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.7,
-                                color: Appcolors.textTertiary,
+                                color: context.colors.textTertiary,
                               ),
                             ),
                             SizedBox(height: Dimensions.height10 / 3),
@@ -119,7 +119,7 @@ class CustomerCardWidget extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.85,
                                 fontWeight: FontWeight.w700,
-                                color: Appcolors.textPrimary,
+                                color: context.colors.textPrimary,
                               ),
                             ),
                           ],
@@ -135,7 +135,7 @@ class CustomerCardWidget extends StatelessWidget {
                               'Unused Credits',
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.7,
-                                color: Appcolors.textTertiary,
+                                color: context.colors.textTertiary,
                               ),
                             ),
                             SizedBox(height: Dimensions.height10 / 3),
@@ -144,7 +144,7 @@ class CustomerCardWidget extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.85,
                                 fontWeight: FontWeight.w700,
-                                color: Appcolors.textPrimary,
+                                color: context.colors.textPrimary,
                               ),
                             ),
                           ],

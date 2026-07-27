@@ -17,9 +17,9 @@ class QuickActionsGridWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Dimensions.width15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

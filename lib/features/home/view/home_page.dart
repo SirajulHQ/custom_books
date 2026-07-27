@@ -49,9 +49,9 @@ class _HomePageState extends State<HomePage> {
               color: Colors.transparent,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.colors.card,
                   borderRadius: BorderRadius.circular(Dimensions.radius20),
-                  border: Border.all(color: Appcolors.border),
+                  border: Border.all(color: context.colors.border),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.08),
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                           topRight: Radius.circular(Dimensions.radius20),
                         ),
                         border: Border(
-                          bottom: BorderSide(color: Appcolors.border),
+                          bottom: BorderSide(color: context.colors.border),
                         ),
                       ),
                       child: Row(
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               fontSize: Dimensions.font20,
                               fontWeight: FontWeight.w700,
-                              color: Appcolors.textPrimary,
+                              color: context.colors.textPrimary,
                             ),
                           ),
                         ],
@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                         'Are you sure you want to exit the app?',
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.95,
-                          color: Appcolors.textSecondary,
+                          color: context.colors.textSecondary,
                           height: 1.5,
                         ),
                       ),
@@ -146,11 +146,13 @@ class _HomePageState extends State<HomePage> {
                                   vertical: Dimensions.height15,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Appcolors.surfaceLight,
+                                  color: context.colors.surfaceLight,
                                   borderRadius: BorderRadius.circular(
                                     Dimensions.radius15 / 2,
                                   ),
-                                  border: Border.all(color: Appcolors.border),
+                                  border: Border.all(
+                                    color: context.colors.border,
+                                  ),
                                 ),
                                 alignment: Alignment.center,
                                 child: Text(
@@ -158,7 +160,7 @@ class _HomePageState extends State<HomePage> {
                                   style: TextStyle(
                                     fontSize: Dimensions.font16 * 0.9,
                                     fontWeight: FontWeight.w600,
-                                    color: Appcolors.textSecondary,
+                                    color: context.colors.textSecondary,
                                   ),
                                 ),
                               ),
@@ -233,7 +235,7 @@ class _HomePageState extends State<HomePage> {
       },
       child: Scaffold(
         key: _scaffoldKey,
-        backgroundColor: Appcolors.background,
+        backgroundColor: context.colors.background,
         drawer: const DrawerView(currentRoute: 'home'),
         body: SafeArea(
           child: CustomScrollView(
@@ -325,7 +327,7 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         padding: EdgeInsets.all(Dimensions.width10 / 2),
         decoration: BoxDecoration(
-          color: const Color(0xFFF1F3F5),
+          color: context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius30),
         ),
         child: Row(
@@ -338,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                   duration: const Duration(milliseconds: 180),
                   padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
                   decoration: BoxDecoration(
-                    color: selected ? Colors.white : Colors.transparent,
+                    color: selected ? context.colors.card : Colors.transparent,
                     borderRadius: BorderRadius.circular(Dimensions.radius30),
                     border: selected
                         ? Border.all(
@@ -365,7 +367,7 @@ class _HomePageState extends State<HomePage> {
                       letterSpacing: 0.3,
                       color: selected
                           ? Appcolors.primary
-                          : Appcolors.textSecondary,
+                          : context.colors.textSecondary,
                     ),
                   ),
                 ),

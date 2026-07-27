@@ -20,9 +20,9 @@ class CashFlowCardWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Dimensions.width15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,25 +48,33 @@ class CashFlowCardWidget extends StatelessWidget {
                     e.month,
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.65,
-                      color: Colors.black38,
+                      color: context.colors.textTertiary,
                     ),
                   ),
                 )
                 .toList(),
           ),
-          Divider(height: Dimensions.height30, color: const Color(0xFFE2E8F0)),
-          _statLine('Opening (01 Jan 2026)', 'AED0.00', Colors.black54),
+          Divider(height: Dimensions.height30, color: context.colors.border),
           _statLine(
+            context,
+            'Opening (01 Jan 2026)',
+            'AED0.00',
+            context.colors.textSecondary,
+          ),
+          _statLine(
+            context,
             'Money In',
             'AED${totalIncoming.toStringAsFixed(2)}',
             Appcolors.ok,
           ),
           _statLine(
+            context,
             'Money Out',
             'AED${totalOutgoing.toStringAsFixed(2)}',
             Appcolors.warn,
           ),
           _statLine(
+            context,
             'Closing (31 Dec 2026)',
             'AED${last.ending.toStringAsFixed(2)}',
             Appcolors.accent,
@@ -78,6 +86,7 @@ class CashFlowCardWidget extends StatelessWidget {
   }
 
   Widget _statLine(
+    BuildContext context,
     String label,
     String value,
     Color color, {
@@ -92,7 +101,7 @@ class CashFlowCardWidget extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.85,
-              color: Colors.black54,
+              color: context.colors.textSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),

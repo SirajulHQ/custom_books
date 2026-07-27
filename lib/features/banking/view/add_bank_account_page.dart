@@ -66,7 +66,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
     Dimensions.init(context);
 
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -95,13 +95,13 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.9,
                         fontWeight: FontWeight.w700,
-                        color: Appcolors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10),
                     Container(
                       decoration: BoxDecoration(
-                        color: Appcolors.surfaceLight,
+                        color: context.colors.surfaceLight,
                         borderRadius: BorderRadius.circular(
                           Dimensions.radius15 / 2,
                         ),
@@ -124,7 +124,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                       ),
                     ),
                     SizedBox(height: Dimensions.height20),
-                    Divider(height: 1, color: Appcolors.border),
+                    Divider(height: 1, color: context.colors.border),
                     SizedBox(height: Dimensions.height20),
 
                     // Account Name
@@ -176,7 +176,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.95,
                             fontWeight: FontWeight.w700,
-                            color: Appcolors.textPrimary,
+                            color: context.colors.textPrimary,
                           ),
                         ),
                       ],
@@ -236,7 +236,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.95,
                             fontWeight: FontWeight.w700,
-                            color: Appcolors.textPrimary,
+                            color: context.colors.textPrimary,
                           ),
                         ),
                       ],
@@ -275,9 +275,9 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
     return Container(
       padding: EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -309,7 +309,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? Appcolors.primary : Appcolors.textTertiary,
+                  color: isSelected ? Appcolors.primary : context.colors.textTertiary,
                   width: 2,
                 ),
               ),
@@ -332,7 +332,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
             size: Dimensions.iconSize16,
             color: isSelected
                 ? Appcolors.primary
-                : Appcolors.textSecondary,
+                : context.colors.textSecondary,
           ),
           SizedBox(width: Dimensions.width10 / 2),
           Text(
@@ -344,7 +344,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                   : FontWeight.w500,
               color: isSelected
                   ? Appcolors.primary
-                  : Appcolors.textPrimary,
+                  : context.colors.textPrimary,
             ),
           ),
         ],
@@ -369,7 +369,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
               Icon(
                 icon,
                 size: Dimensions.iconSize16,
-                color: Appcolors.textSecondary,
+                color: context.colors.textSecondary,
               ),
               SizedBox(width: Dimensions.width10 / 2),
             ],
@@ -378,7 +378,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
                 fontWeight: FontWeight.w600,
-                color: Appcolors.textPrimary,
+                color: context.colors.textPrimary,
               ),
             ),
             if (isRequired)
@@ -397,27 +397,27 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
           maxLines: maxLines,
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.85,
-            color: Appcolors.textPrimary,
+            color: context.colors.textPrimary,
           ),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
               fontSize: Dimensions.font16 * 0.8,
-              color: Appcolors.textTertiary,
+              color: context.colors.textTertiary,
             ),
             filled: true,
-            fillColor: Appcolors.surfaceLight,
+            fillColor: context.colors.surfaceLight,
             contentPadding: EdgeInsets.symmetric(
               horizontal: Dimensions.width15,
               vertical: Dimensions.height15,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
-              borderSide: BorderSide(color: Appcolors.border),
+              borderSide: BorderSide(color: context.colors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
-              borderSide: BorderSide(color: Appcolors.border),
+              borderSide: BorderSide(color: context.colors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
@@ -438,7 +438,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
             Icon(
               Icons.currency_exchange_outlined,
               size: Dimensions.iconSize16,
-              color: Appcolors.textSecondary,
+              color: context.colors.textSecondary,
             ),
             SizedBox(width: Dimensions.width10 / 2),
             Text(
@@ -446,7 +446,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
                 fontWeight: FontWeight.w600,
-                color: Appcolors.textPrimary,
+                color: context.colors.textPrimary,
               ),
             ),
             if (isRequired)
@@ -468,9 +468,9 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
               vertical: Dimensions.height15,
             ),
             decoration: BoxDecoration(
-              color: Appcolors.surfaceLight,
+              color: context.colors.surfaceLight,
               borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
-              border: Border.all(color: Appcolors.border),
+              border: Border.all(color: context.colors.border),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -479,13 +479,13 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                   _selectedCurrency,
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.85,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 Icon(
                   Icons.keyboard_arrow_down_rounded,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
               ],
             ),
@@ -507,7 +507,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
             return Container(
               height: MediaQuery.of(context).size.height * 0.75,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.colors.card,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(Dimensions.radius20),
                   topRight: Radius.circular(Dimensions.radius20),
@@ -523,7 +523,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                     ),
                     decoration: BoxDecoration(
                       border: Border(
-                        bottom: BorderSide(color: Appcolors.border, width: 1),
+                        bottom: BorderSide(color: context.colors.border, width: 1),
                       ),
                     ),
                     child: Row(
@@ -534,7 +534,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                           style: TextStyle(
                             fontSize: Dimensions.font20,
                             fontWeight: FontWeight.w700,
-                            color: Appcolors.textPrimary,
+                            color: context.colors.textPrimary,
                           ),
                         ),
                       ],
@@ -551,20 +551,20 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                       },
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.85,
-                        color: Appcolors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                       decoration: InputDecoration(
                         hintText: 'Search',
                         hintStyle: TextStyle(
                           fontSize: Dimensions.font16 * 0.85,
-                          color: Appcolors.textTertiary,
+                          color: context.colors.textTertiary,
                         ),
                         prefixIcon: Icon(
                           Icons.search,
-                          color: Appcolors.textSecondary,
+                          color: context.colors.textSecondary,
                         ),
                         filled: true,
-                        fillColor: Appcolors.surfaceLight,
+                        fillColor: context.colors.surfaceLight,
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: Dimensions.width15,
                           vertical: Dimensions.height10,
@@ -573,13 +573,13 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                           borderRadius: BorderRadius.circular(
                             Dimensions.radius15 / 2,
                           ),
-                          borderSide: BorderSide(color: Appcolors.border),
+                          borderSide: BorderSide(color: context.colors.border),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(
                             Dimensions.radius15 / 2,
                           ),
-                          borderSide: BorderSide(color: Appcolors.border),
+                          borderSide: BorderSide(color: context.colors.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(
@@ -630,7 +630,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                               border: Border.all(
                                 color: isSelected
                                     ? Appcolors.primary
-                                    : Appcolors.border,
+                                    : context.colors.border,
                                 width: isSelected ? 2 : 1,
                               ),
                             ),
@@ -646,7 +646,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                                         : FontWeight.w500,
                                     color: isSelected
                                         ? Appcolors.primary
-                                        : Appcolors.textPrimary,
+                                        : context.colors.textPrimary,
                                   ),
                                 ),
                                 if (isSelected)
@@ -693,7 +693,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
             label,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.85,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
               fontWeight: FontWeight.w500,
             ),
           ),

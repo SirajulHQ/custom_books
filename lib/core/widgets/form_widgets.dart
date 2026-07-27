@@ -23,11 +23,11 @@ class FormCard extends StatelessWidget {
       width: double.infinity,
       padding: padding ?? EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(
           borderRadius ?? Dimensions.radius15,
         ),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
         boxShadow: showShadow
             ? [
                 BoxShadow(
@@ -75,7 +75,7 @@ class FormDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: Dimensions.height10 / 2),
-      child: const Divider(height: 1, color: Color(0xFFE2E8F0)),
+      child: Divider(height: 1, color: context.colors.border),
     );
   }
 }
@@ -87,10 +87,10 @@ class FormTextStyles {
     color: Appcolors.primary,
   );
 
-  static TextStyle value() => TextStyle(
+  static TextStyle value(BuildContext context) => TextStyle(
     fontSize: Dimensions.font16 * 0.9,
     fontWeight: FontWeight.w500,
-    color: Appcolors.textPrimary,
+    color: context.colors.textPrimary,
   );
 }
 
@@ -137,24 +137,24 @@ class FormNumberField extends StatelessWidget {
             signed ? RegExp(r'^-?\d*\.?\d*') : RegExp(r'^\d*\.?\d*'),
           ),
         ],
-        style: FormTextStyles.value(),
+        style: FormTextStyles.value(context),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: const TextStyle(color: Colors.black26),
+          hintStyle: TextStyle(color: context.colors.textTertiary),
           prefixText: prefix == null ? null : '$prefix ',
           suffixText: suffix,
           prefixStyle: TextStyle(
-            color: Appcolors.textSecondary,
+            color: context.colors.textSecondary,
             fontWeight: FontWeight.w600,
           ),
           suffixStyle: TextStyle(
-            color: Appcolors.textSecondary,
+            color: context.colors.textSecondary,
             fontWeight: FontWeight.w600,
           ),
           filled: !enabled,
-          fillColor: const Color(0xFFF1F5F9),
-          border: _border(Appcolors.border),
-          enabledBorder: _border(Appcolors.border),
+          fillColor: context.colors.surfaceLight,
+          border: _border(context.colors.border),
+          enabledBorder: _border(context.colors.border),
           focusedBorder: _border(Appcolors.primary, width: 2),
           contentPadding: EdgeInsets.symmetric(
             horizontal: Dimensions.width15,

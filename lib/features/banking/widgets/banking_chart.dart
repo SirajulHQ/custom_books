@@ -38,13 +38,10 @@ class _BankingChartState extends State<BankingChart> {
           lineTouchData: LineTouchData(
             enabled: true,
             touchTooltipData: LineTouchTooltipData(
-              getTooltipColor: (touchedSpot) => Colors.white,
+              getTooltipColor: (touchedSpot) => context.colors.card,
               tooltipRoundedRadius: Dimensions.radius15 * 0.7,
               tooltipPadding: EdgeInsets.all(Dimensions.width15 * 0.7),
-              tooltipBorder: const BorderSide(
-                color: Color(0xFFE2E8F0),
-                width: 1,
-              ),
+              tooltipBorder: BorderSide(color: context.colors.border, width: 1),
               getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
                 return touchedBarSpots.map((barSpot) {
                   final date = DateTime(
@@ -55,7 +52,7 @@ class _BankingChartState extends State<BankingChart> {
                   return LineTooltipItem(
                     '${DateFormat('dd MMM').format(date)}\n',
                     TextStyle(
-                      color: Appcolors.textPrimary,
+                      color: context.colors.textPrimary,
                       fontSize: Dimensions.font16 * 0.7,
                       fontWeight: FontWeight.w700,
                     ),
@@ -63,7 +60,7 @@ class _BankingChartState extends State<BankingChart> {
                       TextSpan(
                         text: 'Cash In Hand\n',
                         style: TextStyle(
-                          color: Appcolors.textSecondary,
+                          color: context.colors.textSecondary,
                           fontSize: Dimensions.font16 * 0.65,
                           fontWeight: FontWeight.w500,
                         ),
@@ -71,7 +68,7 @@ class _BankingChartState extends State<BankingChart> {
                       TextSpan(
                         text: '₹${widget.cashInHand.toStringAsFixed(2)}\n',
                         style: TextStyle(
-                          color: Appcolors.textPrimary,
+                          color: context.colors.textPrimary,
                           fontSize: Dimensions.font16 * 0.7,
                           fontWeight: FontWeight.w700,
                         ),
@@ -105,7 +102,7 @@ class _BankingChartState extends State<BankingChart> {
             horizontalInterval: 1000,
             getDrawingHorizontalLine: (value) {
               return FlLine(
-                color: const Color(0xFFE2E8F0).withValues(alpha: 0.5),
+                color: context.colors.border.withValues(alpha: 0.5),
                 strokeWidth: 1,
               );
             },
@@ -134,7 +131,7 @@ class _BankingChartState extends State<BankingChart> {
                     child: Text(
                       DateFormat('dd MMM').format(date),
                       style: TextStyle(
-                        color: Appcolors.textSecondary,
+                        color: context.colors.textSecondary,
                         fontWeight: FontWeight.w500,
                         fontSize: Dimensions.font16 * 0.65,
                       ),
@@ -153,7 +150,7 @@ class _BankingChartState extends State<BankingChart> {
                     child: Text(
                       '${(value / 1000).toStringAsFixed(0)}K',
                       style: TextStyle(
-                        color: Appcolors.textSecondary,
+                        color: context.colors.textSecondary,
                         fontWeight: FontWeight.w500,
                         fontSize: Dimensions.font16 * 0.65,
                       ),
@@ -174,7 +171,10 @@ class _BankingChartState extends State<BankingChart> {
               spots: widget.dataPoints,
               isCurved: true,
               gradient: LinearGradient(
-                colors: [Appcolors.success.withValues(alpha: 0.9), Appcolors.success],
+                colors: [
+                  Appcolors.success.withValues(alpha: 0.9),
+                  Appcolors.success,
+                ],
               ),
               barWidth: 3,
               isStrokeCapRound: true,

@@ -28,9 +28,9 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
     return Container(
       padding: EdgeInsets.all(Dimensions.width15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +108,7 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
                     e.month,
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.65,
-                      color: Colors.black38,
+                      color: context.colors.textTertiary,
                     ),
                   ),
                 )
@@ -155,7 +155,7 @@ class MiniStat extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.7,
-                    color: Colors.black54,
+                    color: context.colors.textSecondary,
                   ),
                 ),
                 Text(

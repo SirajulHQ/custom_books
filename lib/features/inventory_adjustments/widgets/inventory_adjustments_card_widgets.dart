@@ -31,9 +31,9 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
         margin: EdgeInsets.only(bottom: Dimensions.height10),
         padding: EdgeInsets.all(Dimensions.width15),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colors.card,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +64,7 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.95,
                       fontWeight: FontWeight.w700,
-                      color: Appcolors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   SizedBox(height: Dimensions.height10 / 2),
@@ -73,27 +73,27 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
                       Icon(
                         Icons.calendar_today_rounded,
                         size: Dimensions.iconSize16 - 2,
-                        color: Colors.black38,
+                        color: context.colors.textTertiary,
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
                         _formatDate(adjustment.date),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
-                          color: Colors.black45,
+                          color: context.colors.textSecondary,
                         ),
                       ),
                       Text(
                         '  •  ',
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
-                          color: Colors.black26,
+                          color: context.colors.textTertiary,
                         ),
                       ),
                       Icon(
                         Icons.person_outline_rounded,
                         size: Dimensions.iconSize16 - 2,
-                        color: Colors.black38,
+                        color: context.colors.textTertiary,
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Flexible(
@@ -102,7 +102,7 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.7,
-                            color: Colors.black45,
+                            color: context.colors.textSecondary,
                           ),
                         ),
                       ),
@@ -152,7 +152,7 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
                     _formatValue(adjustment.value),
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.65,
-                      color: Colors.black38,
+                      color: context.colors.textTertiary,
                     ),
                   ),
                 ],

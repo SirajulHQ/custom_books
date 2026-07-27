@@ -1,3 +1,4 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,7 @@ class ExpandableMenuItem extends StatelessWidget {
             child: Icon(
               icon,
               size: Dimensions.iconSize24 * 0.9,
-              color: Colors.black54,
+              color: context.colors.textSecondary,
             ),
           ),
           title: Text(
@@ -42,7 +43,7 @@ class ExpandableMenuItem extends StatelessWidget {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.9,
               fontWeight: FontWeight.w500,
-              color: Colors.black87,
+              color: context.colors.textPrimary,
             ),
           ),
           trailing: Icon(
@@ -50,7 +51,7 @@ class ExpandableMenuItem extends StatelessWidget {
                 ? Icons.keyboard_arrow_up_rounded
                 : Icons.keyboard_arrow_down_rounded,
             size: Dimensions.iconSize24,
-            color: Colors.black54,
+            color: context.colors.textSecondary,
           ),
           contentPadding: EdgeInsets.symmetric(
             horizontal: Dimensions.width20,
@@ -69,7 +70,7 @@ class ExpandableMenuItem extends StatelessWidget {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.85,
                     fontWeight: FontWeight.w400,
-                    color: Colors.black87,
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ),

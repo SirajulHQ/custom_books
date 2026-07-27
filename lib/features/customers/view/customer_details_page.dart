@@ -49,7 +49,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
     Dimensions.init(context);
 
     return Scaffold(
-      backgroundColor: Appcolors.background,
+      backgroundColor: context.colors.background,
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -83,7 +83,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                 SizedBox(width: Dimensions.width10),
                 AppBarIconButton(
                   icon: Icons.attach_file_rounded,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                   onPressed: () {
                     appLog(
                       '📎 Attachment button pressed',
@@ -95,7 +95,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                 SizedBox(width: Dimensions.width10),
                 AppBarIconButton(
                   icon: Icons.more_vert_rounded,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                   onPressed: () {
                     appLog(
                       '⋮ More options pressed',
@@ -169,8 +169,8 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
       width: double.infinity,
       padding: EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Appcolors.border, width: 1)),
+        color: context.colors.card,
+        border: Border(bottom: BorderSide(color: context.colors.border, width: 1)),
       ),
       child: Row(
         children: [
@@ -183,7 +183,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                   'Receivables',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.75,
-                    color: Appcolors.textTertiary,
+                    color: context.colors.textTertiary,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.5,
                   ),
@@ -194,7 +194,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                   style: TextStyle(
                     fontSize: Dimensions.font26,
                     fontWeight: FontWeight.w800,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ],
@@ -204,7 +204,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
           Container(
             height: Dimensions.height45,
             width: 1,
-            color: Appcolors.border,
+            color: context.colors.border,
           ),
 
           SizedBox(width: Dimensions.width20),
@@ -218,7 +218,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                   'Unused Credits',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.75,
-                    color: Appcolors.textTertiary,
+                    color: context.colors.textTertiary,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.5,
                   ),
@@ -229,7 +229,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                   style: TextStyle(
                     fontSize: Dimensions.font26,
                     fontWeight: FontWeight.w800,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ],
@@ -243,13 +243,13 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
   Widget _buildTabBar() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Appcolors.border, width: 1)),
+        color: context.colors.card,
+        border: Border(bottom: BorderSide(color: context.colors.border, width: 1)),
       ),
       child: TabBar(
         controller: _tabController,
         labelColor: Appcolors.primary,
-        unselectedLabelColor: Appcolors.textSecondary,
+        unselectedLabelColor: context.colors.textSecondary,
         labelStyle: TextStyle(
           fontSize: Dimensions.font16 * 0.8,
           fontWeight: FontWeight.w800,
@@ -300,9 +300,9 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
       margin: EdgeInsets.symmetric(horizontal: Dimensions.width20),
       padding: EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: Appcolors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,7 +313,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.7,
               fontWeight: FontWeight.w700,
-              color: Appcolors.textTertiary,
+              color: context.colors.textTertiary,
               letterSpacing: 1.2,
             ),
           ),
@@ -403,7 +403,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.9,
                     fontWeight: FontWeight.w700,
-                    color: Appcolors.textPrimary,
+                    color: context.colors.textPrimary,
                   ),
                 ),
                 SizedBox(height: Dimensions.height10 / 3),
@@ -412,8 +412,8 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.8,
                     color: hasValue
-                        ? Appcolors.textSecondary
-                        : Appcolors.textTertiary,
+                        ? context.colors.textSecondary
+                        : context.colors.textTertiary,
                     fontWeight: hasValue ? FontWeight.w500 : FontWeight.w400,
                   ),
                 ),
@@ -434,9 +434,9 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
         0,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: Appcolors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         children: [
@@ -469,7 +469,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                         style: TextStyle(
                           fontSize: Dimensions.font16,
                           fontWeight: FontWeight.w700,
-                          color: Appcolors.textPrimary,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                     ),
@@ -478,7 +478,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                           ? Icons.keyboard_arrow_up_rounded
                           : Icons.keyboard_arrow_down_rounded,
                       size: Dimensions.iconSize24,
-                      color: Appcolors.textSecondary,
+                      color: context.colors.textSecondary,
                     ),
                   ],
                 ),
@@ -486,7 +486,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
             ),
           ),
           if (_isReceivablesExpanded) ...[
-            Divider(height: 1, color: Appcolors.border),
+            Divider(height: 1, color: context.colors.border),
             Padding(
               padding: EdgeInsets.all(Dimensions.width20),
               child: Column(
@@ -500,7 +500,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.9,
                           fontWeight: FontWeight.w700,
-                          color: Appcolors.textPrimary,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                       SizedBox(width: Dimensions.width10),
@@ -539,7 +539,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                               'Receivables',
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.8,
-                                color: Appcolors.textTertiary,
+                                color: context.colors.textTertiary,
                               ),
                             ),
                             SizedBox(height: Dimensions.height10 / 2),
@@ -548,7 +548,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.9,
                                 fontWeight: FontWeight.w700,
-                                color: Appcolors.textPrimary,
+                                color: context.colors.textPrimary,
                               ),
                             ),
                           ],
@@ -562,7 +562,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                               'Unused Credits',
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.8,
-                                color: Appcolors.textTertiary,
+                                color: context.colors.textTertiary,
                               ),
                             ),
                             SizedBox(height: Dimensions.height10 / 2),
@@ -571,7 +571,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.9,
                                 fontWeight: FontWeight.w700,
-                                color: Appcolors.textPrimary,
+                                color: context.colors.textPrimary,
                               ),
                             ),
                           ],
@@ -617,9 +617,9 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
         0,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: Appcolors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         children: [
@@ -652,7 +652,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                         style: TextStyle(
                           fontSize: Dimensions.font16,
                           fontWeight: FontWeight.w700,
-                          color: Appcolors.textPrimary,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                     ),
@@ -661,7 +661,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                           ? Icons.keyboard_arrow_up_rounded
                           : Icons.keyboard_arrow_down_rounded,
                       size: Dimensions.iconSize24,
-                      color: Appcolors.textSecondary,
+                      color: context.colors.textSecondary,
                     ),
                   ],
                 ),
@@ -669,7 +669,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
             ),
           ),
           if (_isMoreInfoExpanded) ...[
-            Divider(height: 1, color: Appcolors.border),
+            Divider(height: 1, color: context.colors.border),
             Padding(
               padding: EdgeInsets.all(Dimensions.width20),
               child: Column(
@@ -693,7 +693,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
             label,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.8,
-              color: Appcolors.textTertiary,
+              color: context.colors.textTertiary,
             ),
           ),
           SizedBox(height: Dimensions.height10 / 3),
@@ -702,7 +702,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.9,
               fontWeight: FontWeight.w600,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
         ],
@@ -719,9 +719,9 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
         0,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: Appcolors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         children: [
@@ -754,7 +754,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                         style: TextStyle(
                           fontSize: Dimensions.font16,
                           fontWeight: FontWeight.w700,
-                          color: Appcolors.textPrimary,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                     ),
@@ -763,7 +763,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                           ? Icons.keyboard_arrow_up_rounded
                           : Icons.keyboard_arrow_down_rounded,
                       size: Dimensions.iconSize24,
-                      color: Appcolors.textSecondary,
+                      color: context.colors.textSecondary,
                     ),
                   ],
                 ),
@@ -771,7 +771,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
             ),
           ),
           if (_isContactPersonsExpanded) ...[
-            Divider(height: 1, color: Appcolors.border),
+            Divider(height: 1, color: context.colors.border),
             Padding(
               padding: EdgeInsets.all(Dimensions.width20),
               child: Column(
@@ -781,7 +781,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                     'You haven\'t added any contact persons for this contact yet.',
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.85,
-                      color: Appcolors.textTertiary,
+                      color: context.colors.textTertiary,
                       height: 1.5,
                     ),
                   ),
@@ -829,9 +829,9 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
         Container(
           padding: EdgeInsets.all(Dimensions.width20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.colors.card,
             border: Border(
-              bottom: BorderSide(color: Appcolors.border, width: 1),
+              bottom: BorderSide(color: context.colors.border, width: 1),
             ),
           ),
           child: Row(
@@ -843,7 +843,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                     vertical: Dimensions.height10,
                   ),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Appcolors.border),
+                    border: Border.all(color: context.colors.border),
                     borderRadius: BorderRadius.circular(
                       Dimensions.radius15 / 1.5,
                     ),
@@ -856,13 +856,13 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.85,
                           fontWeight: FontWeight.w600,
-                          color: Appcolors.textPrimary,
+                          color: context.colors.textPrimary,
                         ),
                       ),
                       Icon(
                         Icons.keyboard_arrow_down_rounded,
                         size: Dimensions.iconSize24,
-                        color: Appcolors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ],
                   ),
@@ -873,7 +873,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                 icon: Icon(
                   Icons.filter_list_rounded,
                   size: Dimensions.iconSize24,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
                 onPressed: () {
                   appLog(
@@ -887,7 +887,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                 icon: Icon(
                   Icons.sort_rounded,
                   size: Dimensions.iconSize24,
-                  color: Appcolors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
                 onPressed: () {
                   appLog('🔀 Sort button pressed', name: 'CustomerDetailsPage');
@@ -932,7 +932,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                 'No Invoices created so far.',
                 style: TextStyle(
                   fontSize: Dimensions.font16,
-                  color: Appcolors.textTertiary,
+                  color: context.colors.textTertiary,
                 ),
               ),
             ],
@@ -952,7 +952,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
               'No comments yet.',
               style: TextStyle(
                 fontSize: Dimensions.font16,
-                color: Appcolors.textTertiary,
+                color: context.colors.textTertiary,
               ),
             ),
           ),
@@ -962,8 +962,8 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
         Container(
           padding: EdgeInsets.all(Dimensions.width20),
           decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border(top: BorderSide(color: Appcolors.border, width: 1)),
+            color: context.colors.card,
+            border: Border(top: BorderSide(color: context.colors.border, width: 1)),
           ),
           child: Row(
             children: [
@@ -973,16 +973,16 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                   decoration: InputDecoration(
                     hintText: 'Type to add a comment',
                     hintStyle: TextStyle(
-                      color: Appcolors.textTertiary,
+                      color: context.colors.textTertiary,
                       fontSize: Dimensions.font16 * 0.85,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius30),
-                      borderSide: BorderSide(color: Appcolors.border),
+                      borderSide: BorderSide(color: context.colors.border),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius30),
-                      borderSide: BorderSide(color: Appcolors.border),
+                      borderSide: BorderSide(color: context.colors.border),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius30),

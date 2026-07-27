@@ -24,7 +24,7 @@ class DrawerMenuItem extends StatelessWidget {
         child: Icon(
           item.icon,
           size: Dimensions.iconSize24 * 0.9,
-          color: item.isSelected ? Appcolors.primary : Colors.black54,
+          color: item.isSelected ? Appcolors.primary : context.colors.textSecondary,
         ),
       ),
       title: Text(
@@ -32,7 +32,7 @@ class DrawerMenuItem extends StatelessWidget {
         style: TextStyle(
           fontSize: Dimensions.font16 * 0.9,
           fontWeight: item.isSelected ? FontWeight.w700 : FontWeight.w500,
-          color: item.isSelected ? Appcolors.primary : Colors.black87,
+          color: item.isSelected ? Appcolors.primary : context.colors.textPrimary,
         ),
       ),
       selected: item.isSelected,

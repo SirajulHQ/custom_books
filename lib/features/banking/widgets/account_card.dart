@@ -21,9 +21,9 @@ class AccountCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +41,7 @@ class AccountCard extends StatelessWidget {
             title,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.75,
-              color: Appcolors.textSecondary,
+              color: context.colors.textSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -50,7 +50,7 @@ class AccountCard extends StatelessWidget {
             amount,
             style: TextStyle(
               fontSize: Dimensions.font20 * 0.95,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
               fontWeight: FontWeight.w700,
             ),
           ),

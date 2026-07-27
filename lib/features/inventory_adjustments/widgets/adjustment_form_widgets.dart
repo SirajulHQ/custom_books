@@ -32,7 +32,7 @@ class AdjustmentRadioOption extends StatelessWidget {
             selected
                 ? Icons.radio_button_checked_rounded
                 : Icons.radio_button_off_rounded,
-            color: selected ? Appcolors.primary : Colors.black26,
+            color: selected ? Appcolors.primary : context.colors.textTertiary,
             size: Dimensions.iconSize24 - 2,
           ),
           SizedBox(width: Dimensions.width10 / 2),
@@ -40,7 +40,7 @@ class AdjustmentRadioOption extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.85,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
         ],
@@ -76,9 +76,9 @@ class AdjustmentLineItemCard extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.all(Dimensions.width20 * 0.8),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.colors.card,
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             children: [
@@ -96,7 +96,7 @@ class AdjustmentLineItemCard extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: Dimensions.font16 * 0.85,
-                        color: Appcolors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10 / 4),
@@ -115,7 +115,7 @@ class AdjustmentLineItemCard extends StatelessWidget {
                 icon: Icon(
                   Icons.close_rounded,
                   size: Dimensions.iconSize24 - 6,
-                  color: Colors.black38,
+                  color: context.colors.textTertiary,
                 ),
                 onPressed: onRemove,
               ),
@@ -142,7 +142,7 @@ class AddLineItemButton extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: Dimensions.height15),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colors.card,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: Border.all(color: Appcolors.primary.withValues(alpha: 0.4)),
         ),

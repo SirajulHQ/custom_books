@@ -20,7 +20,7 @@ class SupportContentWidget extends StatelessWidget {
               fontSize: Dimensions.font26,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.5,
-              color: Appcolors.textPrimary,
+              color: context.colors.textPrimary,
             ),
           ),
 
@@ -30,7 +30,7 @@ class SupportContentWidget extends StatelessWidget {
             'Find answers to common questions or contact support',
             style: TextStyle(
               fontSize: Dimensions.font16,
-              color: Colors.black54,
+              color: context.colors.textSecondary,
             ),
           ),
 
@@ -115,9 +115,9 @@ class HelpCategoryCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.colors.border),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -150,7 +150,7 @@ class HelpCategoryCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: Dimensions.font20 * 0.9,
                         fontWeight: FontWeight.w800,
-                        color: Appcolors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10 / 2),
@@ -158,7 +158,7 @@ class HelpCategoryCard extends StatelessWidget {
                       description,
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.85,
-                        color: Colors.black54,
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ],
@@ -183,7 +183,7 @@ class HelpCategoryCard extends StatelessWidget {
                       topic,
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.9,
-                        color: Colors.black87,
+                        color: context.colors.textPrimary,
                       ),
                     ),
                   ),
@@ -233,7 +233,7 @@ class ContactSupportCard extends StatelessWidget {
             'Contact our support team',
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.9,
-              color: Colors.black54,
+              color: context.colors.textSecondary,
             ),
           ),
           SizedBox(height: Dimensions.height20),
