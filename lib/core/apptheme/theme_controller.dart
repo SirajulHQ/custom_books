@@ -1,15 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Global controller that drives the app's light/dark theme.
-///
-/// It is a lightweight [ChangeNotifier]-free singleton built on top of a
-/// [ValueNotifier] so any widget (e.g. the root [MaterialApp]) can rebuild
-/// reactively when the theme mode changes. The [ValueNotifier] is what makes
-/// the dark-mode toggle feel instant across the whole app.
-///
-/// The selected mode is persisted with [SharedPreferences] so it survives
-/// app restarts. Call [load] once before `runApp` to restore it.
 class ThemeController {
   ThemeController._();
 

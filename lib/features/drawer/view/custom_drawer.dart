@@ -11,6 +11,7 @@ import 'package:custom_books/features/inventory_adjustments/view/inventory_adjus
 import 'package:custom_books/features/banking/view/banking_page.dart';
 import 'package:custom_books/features/customers/view/customers_page.dart';
 import 'package:custom_books/features/quotes/view/quotes_page.dart';
+import 'package:custom_books/features/sales_orders/view/sales_orders_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerView extends StatefulWidget {
@@ -329,6 +330,17 @@ class _DrawerViewState extends State<DrawerView> {
                         name: 'DrawerNavigation',
                       );
                       _navigateToTopLevel(const QuotesPage());
+                    } else if (subItem == 'Sales Orders') {
+                      if (widget.currentRoute == 'sales_orders') {
+                        Navigator.pop(context);
+                        return;
+                      }
+
+                      appLog(
+                        '📍 Navigating to SalesOrdersPage...',
+                        name: 'DrawerNavigation',
+                      );
+                      _navigateToTopLevel(const SalesOrdersPage());
                     }
                   },
                 ),
