@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/banking/models/bank_account.dart';
 import 'package:custom_books/features/banking/view/add_bank_account_page.dart';
@@ -108,11 +109,13 @@ class _BankingPageState extends State<BankingPage> {
                 AppBarIconButton(
                   icon: Icons.filter_list_rounded,
                   color: Appcolors.primary,
+                  onPressed: _showAccountFilterSheet,
                 ),
                 SizedBox(width: Dimensions.width10),
                 AppBarIconButton(
                   icon: Icons.more_vert_rounded,
                   color: Appcolors.accent,
+                  onPressed: _showMoreOptions,
                 ),
                 SizedBox(width: Dimensions.width20),
               ],
@@ -253,6 +256,66 @@ class _BankingPageState extends State<BankingPage> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showMoreOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        Widget tile(IconData icon, String label, VoidCallback onTap) {
+          return ListTile(
+            leading: Icon(icon, color: Appcolors.primary),
+            title: Text(
+              label,
+              style: TextStyle(
+                fontSize: Dimensions.font16 * 0.9,
+                fontWeight: FontWeight.w600,
+                color: context.colors.textPrimary,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(ctx);
+              onTap();
+            },
+          );
+        }
+
+        return Container(
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                decoration: BoxDecoration(
+                  color: context.colors.border,
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
+                ),
+              ),
+              tile(Icons.refresh_rounded, 'Refresh', () {
+                setState(() {});
+                ToastificationHelper.showSuccess(context, 'Banking refreshed.');
+              }),
+              tile(
+                Icons.file_download_outlined,
+                'Export statement',
+                () => ToastificationHelper.showInfo(
+                  context,
+                  'Exporting statements is coming soon.',
+                ),
+              ),
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
+        );
+      },
     );
   }
 

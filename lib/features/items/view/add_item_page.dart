@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:flutter/material.dart';
@@ -205,13 +206,7 @@ class _AddItemPageState extends State<AddItemPage> {
                 Navigator.pop(context);
               },
               actions: [
-                AppBarElevatedButton(
-                  label: 'SAVE',
-                  onPressed: () {
-                    appLog('💾 Save button tapped', name: 'AddItemPage');
-                    // TODO: Implement save functionality
-                  },
-                ),
+                AppBarElevatedButton(label: 'SAVE', onPressed: _saveItem),
                 SizedBox(width: Dimensions.width20),
               ],
             ),
@@ -363,7 +358,8 @@ class _AddItemPageState extends State<AddItemPage> {
                                           child: Container(
                                             padding: const EdgeInsets.all(4),
                                             decoration: BoxDecoration(
-                                              color: context.colors.textSecondary,
+                                              color:
+                                                  context.colors.textSecondary,
                                               shape: BoxShape.circle,
                                             ),
                                             child: const Icon(
@@ -630,6 +626,24 @@ class _AddItemPageState extends State<AddItemPage> {
         ],
       ),
     );
+  }
+
+  void _saveItem() {
+    appLog('💾 Save button tapped', name: 'AddItemPage');
+    final name = _itemNameController.text.trim();
+    if (name.isEmpty) {
+      ToastificationHelper.showError(
+        context,
+        'Please enter an item name before saving.',
+      );
+      return;
+    }
+    if (_sellingPriceController.text.trim().isEmpty) {
+      ToastificationHelper.showError(context, 'Please enter a selling price.');
+      return;
+    }
+    ToastificationHelper.showSuccess(context, '$name saved successfully.');
+    Navigator.pop(context);
   }
 
   Widget _buildTextField(

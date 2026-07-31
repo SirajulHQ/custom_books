@@ -12,6 +12,24 @@ import 'package:custom_books/features/banking/view/banking_page.dart';
 import 'package:custom_books/features/customers/view/customers_page.dart';
 import 'package:custom_books/features/quotes/view/quotes_page.dart';
 import 'package:custom_books/features/sales_orders/view/sales_orders_page.dart';
+import 'package:custom_books/features/delivery_challans/view/delivery_challans_page.dart';
+import 'package:custom_books/features/invoices/view/invoices_page.dart';
+import 'package:custom_books/features/payments_received/view/payments_received_page.dart';
+import 'package:custom_books/features/recurring_invoices/view/recurring_invoices_page.dart';
+import 'package:custom_books/features/credit_notes/view/credit_notes_page.dart';
+import 'package:custom_books/features/vendors/view/vendors_page.dart';
+import 'package:custom_books/features/expenses/view/expenses_page.dart';
+import 'package:custom_books/features/purchase_orders/view/purchase_orders_page.dart';
+import 'package:custom_books/features/bills/view/bills_page.dart';
+import 'package:custom_books/features/payments_made/view/payments_made_page.dart';
+import 'package:custom_books/features/vendor_credits/view/vendor_credits_page.dart';
+import 'package:custom_books/features/projects/view/projects_page.dart';
+import 'package:custom_books/features/time_entries/view/time_entries_page.dart';
+import 'package:custom_books/features/timer/view/timer_page.dart';
+import 'package:custom_books/features/manual_journals/view/manual_journals_page.dart';
+import 'package:custom_books/features/documents/view/documents_inbox_page.dart';
+import 'package:custom_books/features/documents/view/all_files_page.dart';
+import 'package:custom_books/features/documents/view/folders_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerView extends StatefulWidget {
@@ -47,6 +65,21 @@ class _DrawerViewState extends State<DrawerView> {
     final navigator = Navigator.of(context);
     navigator.pop();
     navigator.popUntil((route) => route.isFirst);
+  }
+
+  /// Navigates to a top-level sub-item page, or just closes the drawer if the
+  /// user is already on that page.
+  void _navigateToSub(String route, Widget page) {
+    if (widget.currentRoute == route) {
+      appLog(
+        '⚠️ Already on $route page, just closing drawer',
+        name: 'DrawerNavigation',
+      );
+      Navigator.pop(context);
+      return;
+    }
+    appLog('📍 Navigating to $route...', name: 'DrawerNavigation');
+    _navigateToTopLevel(page);
   }
 
   @override
@@ -341,6 +374,25 @@ class _DrawerViewState extends State<DrawerView> {
                         name: 'DrawerNavigation',
                       );
                       _navigateToTopLevel(const SalesOrdersPage());
+                    } else if (subItem == 'Delivery Challans') {
+                      _navigateToSub(
+                        'delivery_challans',
+                        const DeliveryChallansPage(),
+                      );
+                    } else if (subItem == 'Invoices') {
+                      _navigateToSub('invoices', const InvoicesPage());
+                    } else if (subItem == 'Payments Received') {
+                      _navigateToSub(
+                        'payments_received',
+                        const PaymentsReceivedPage(),
+                      );
+                    } else if (subItem == 'Recurring Invoices') {
+                      _navigateToSub(
+                        'recurring_invoices',
+                        const RecurringInvoicesPage(),
+                      );
+                    } else if (subItem == 'Credit Notes') {
+                      _navigateToSub('credit_notes', const CreditNotesPage());
                     }
                   },
                 ),
@@ -365,6 +417,32 @@ class _DrawerViewState extends State<DrawerView> {
                     );
                     _toggleSection('Purchases');
                   },
+                  onSubItemTap: (subItem) {
+                    appLog(
+                      '🧺 Purchases subitem tapped: $subItem',
+                      name: 'DrawerNavigation',
+                    );
+
+                    if (subItem == 'Vendors') {
+                      _navigateToSub('vendors', const VendorsPage());
+                    } else if (subItem == 'Expenses') {
+                      _navigateToSub('expenses', const ExpensesPage());
+                    } else if (subItem == 'Purchase Orders') {
+                      _navigateToSub(
+                        'purchase_orders',
+                        const PurchaseOrdersPage(),
+                      );
+                    } else if (subItem == 'Bills') {
+                      _navigateToSub('bills', const BillsPage());
+                    } else if (subItem == 'Payments Made') {
+                      _navigateToSub('payments_made', const PaymentsMadePage());
+                    } else if (subItem == 'Vendor Credits') {
+                      _navigateToSub(
+                        'vendor_credits',
+                        const VendorCreditsPage(),
+                      );
+                    }
+                  },
                 ),
 
                 // Time Tracking (Expandable)
@@ -379,6 +457,20 @@ class _DrawerViewState extends State<DrawerView> {
                       name: 'DrawerNavigation',
                     );
                     _toggleSection('Time Tracking');
+                  },
+                  onSubItemTap: (subItem) {
+                    appLog(
+                      '⏰ Time Tracking subitem tapped: $subItem',
+                      name: 'DrawerNavigation',
+                    );
+
+                    if (subItem == 'Projects') {
+                      _navigateToSub('projects', const ProjectsPage());
+                    } else if (subItem == 'Time Entries') {
+                      _navigateToSub('time_entries', const TimeEntriesPage());
+                    } else if (subItem == 'Timer') {
+                      _navigateToSub('timer', const TimerPage());
+                    }
                   },
                 ),
 
@@ -395,6 +487,19 @@ class _DrawerViewState extends State<DrawerView> {
                     );
                     _toggleSection('Accountant');
                   },
+                  onSubItemTap: (subItem) {
+                    appLog(
+                      '👤 Accountant subitem tapped: $subItem',
+                      name: 'DrawerNavigation',
+                    );
+
+                    if (subItem == 'Manual Journals') {
+                      _navigateToSub(
+                        'manual_journals',
+                        const ManualJournalsPage(),
+                      );
+                    }
+                  },
                 ),
 
                 // Documents (Expandable)
@@ -409,6 +514,23 @@ class _DrawerViewState extends State<DrawerView> {
                       name: 'DrawerNavigation',
                     );
                     _toggleSection('Documents');
+                  },
+                  onSubItemTap: (subItem) {
+                    appLog(
+                      '📁 Documents subitem tapped: $subItem',
+                      name: 'DrawerNavigation',
+                    );
+
+                    if (subItem == 'Inbox') {
+                      _navigateToSub(
+                        'documents_inbox',
+                        const DocumentsInboxPage(),
+                      );
+                    } else if (subItem == 'All Files') {
+                      _navigateToSub('all_files', const AllFilesPage());
+                    } else if (subItem == 'Folders') {
+                      _navigateToSub('folders', const FoldersPage());
+                    }
                   },
                 ),
 

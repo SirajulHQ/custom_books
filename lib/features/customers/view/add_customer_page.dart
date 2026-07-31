@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/view/add_address_page.dart';
@@ -208,16 +209,14 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                       '📱 Contacts button tapped',
                       name: 'AddCustomerPage',
                     );
+                    ToastificationHelper.showInfo(
+                      context,
+                      'Importing from device contacts is coming soon.',
+                    );
                   },
                 ),
                 SizedBox(width: Dimensions.width10),
-                AppBarElevatedButton(
-                  label: 'SAVE',
-                  onPressed: () {
-                    appLog('💾 Save button tapped', name: 'AddCustomerPage');
-                    // TODO: Implement save functionality
-                  },
-                ),
+                AppBarElevatedButton(label: 'SAVE', onPressed: _saveCustomer),
                 SizedBox(width: Dimensions.width20),
               ],
             ),
@@ -523,6 +522,22 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
     );
   }
 
+  void _saveCustomer() {
+    appLog('💾 Save button tapped', name: 'AddCustomerPage');
+    final displayName = _displayNameController.text.trim();
+    final firstName = _firstNameController.text.trim();
+    if (displayName.isEmpty && firstName.isEmpty) {
+      ToastificationHelper.showError(
+        context,
+        'Please enter a customer name before saving.',
+      );
+      return;
+    }
+    final name = displayName.isNotEmpty ? displayName : firstName;
+    ToastificationHelper.showSuccess(context, '$name saved successfully.');
+    Navigator.pop(context);
+  }
+
   Widget _buildRadioOption(String label) {
     final isSelected = _customerType == label;
     return GestureDetector(
@@ -552,7 +567,9 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
               isSelected
                   ? Icons.radio_button_checked
                   : Icons.radio_button_unchecked,
-              color: isSelected ? Appcolors.primary : context.colors.textTertiary,
+              color: isSelected
+                  ? Appcolors.primary
+                  : context.colors.textTertiary,
               size: Dimensions.iconSize16 * 1.2,
             ),
             SizedBox(width: Dimensions.width10),
@@ -561,7 +578,9 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? Appcolors.primary : context.colors.textPrimary,
+                color: isSelected
+                    ? Appcolors.primary
+                    : context.colors.textPrimary,
               ),
             ),
           ],

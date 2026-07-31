@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/view/custom_drawer.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
@@ -19,6 +20,9 @@ class _CustomersPageState extends State<CustomersPage> {
   String _selectedFilter = 'Active Customers';
   bool _searchOpen = false;
   final _searchController = TextEditingController();
+
+  String _sortField = 'Name';
+  bool _sortAsc = true;
 
   final List<String> _allFilterOptions = [
     'All Customers',
@@ -119,7 +123,185 @@ class _CustomersPageState extends State<CustomersPage> {
       }).toList();
     }
 
+    // Apply sort
+    list = [...list];
+    list.sort((a, b) {
+      int cmp;
+      switch (_sortField) {
+        case 'Receivables':
+          cmp = a.receivables.compareTo(b.receivables);
+          break;
+        case 'Unused Credits':
+          cmp = a.unusedCredits.compareTo(b.unusedCredits);
+          break;
+        case 'Name':
+        default:
+          cmp = a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      }
+      return _sortAsc ? cmp : -cmp;
+    });
+
     return list;
+  }
+
+  void _showMoreOptions() {
+    appLog('⋮ More options tapped', name: 'CustomersPage');
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        Widget tile(IconData icon, String label, VoidCallback onTap) {
+          return ListTile(
+            leading: Icon(icon, color: Appcolors.primary),
+            title: Text(
+              label,
+              style: TextStyle(
+                fontSize: Dimensions.font16 * 0.9,
+                fontWeight: FontWeight.w600,
+                color: context.colors.textPrimary,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(ctx);
+              onTap();
+            },
+          );
+        }
+
+        return Container(
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                decoration: BoxDecoration(
+                  color: context.colors.border,
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
+                ),
+              ),
+              tile(Icons.refresh_rounded, 'Refresh', () {
+                setState(() {});
+                ToastificationHelper.showSuccess(
+                  context,
+                  'Customers refreshed.',
+                );
+              }),
+              tile(
+                Icons.upload_file_outlined,
+                'Import customers',
+                () => ToastificationHelper.showInfo(
+                  context,
+                  'Importing customers is coming soon.',
+                ),
+              ),
+              tile(
+                Icons.file_download_outlined,
+                'Export customers',
+                () => ToastificationHelper.showInfo(
+                  context,
+                  'Exporting customers is coming soon.',
+                ),
+              ),
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showSortSheet() {
+    appLog('🔀 Opening sort sheet', name: 'CustomersPage');
+    const fields = ['Name', 'Receivables', 'Unused Credits'];
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                decoration: BoxDecoration(
+                  color: context.colors.border,
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Sort by',
+                    style: TextStyle(
+                      fontSize: Dimensions.font20,
+                      fontWeight: FontWeight.w800,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: Dimensions.height10),
+              ...fields.map((f) {
+                final selected = f == _sortField;
+                return ListTile(
+                  leading: Icon(
+                    selected
+                        ? Icons.radio_button_checked_rounded
+                        : Icons.radio_button_off_rounded,
+                    color: selected
+                        ? Appcolors.primary
+                        : context.colors.textSecondary,
+                  ),
+                  title: Text(
+                    f,
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 0.9,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                  trailing: selected
+                      ? Icon(
+                          _sortAsc
+                              ? Icons.arrow_upward_rounded
+                              : Icons.arrow_downward_rounded,
+                          color: Appcolors.primary,
+                          size: Dimensions.iconSize16,
+                        )
+                      : null,
+                  onTap: () {
+                    setState(() {
+                      if (_sortField == f) {
+                        _sortAsc = !_sortAsc;
+                      } else {
+                        _sortField = f;
+                        _sortAsc = true;
+                      }
+                    });
+                    Navigator.pop(ctx);
+                  },
+                );
+              }),
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _showFilterBottomSheet() {
@@ -312,9 +494,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 AppBarIconButton(
                   icon: Icons.more_vert_rounded,
                   color: context.colors.textSecondary,
-                  onPressed: () {
-                    appLog('⋮ More options tapped', name: 'CustomersPage');
-                  },
+                  onPressed: _showMoreOptions,
                 ),
                 SizedBox(width: Dimensions.width20),
               ],
@@ -479,10 +659,7 @@ class _CustomersPageState extends State<CustomersPage> {
 
             // Sort button
             GestureDetector(
-              onTap: () {
-                appLog('🔀 Sort button tapped', name: 'CustomersPage');
-                // TODO: Implement sort functionality
-              },
+              onTap: _showSortSheet,
               child: Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: Dimensions.width15,

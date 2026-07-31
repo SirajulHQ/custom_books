@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:flutter/material.dart';
 
@@ -72,6 +73,10 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
                       '📱 Contacts button tapped',
                       name: 'AddContactPersonPage',
                     );
+                    ToastificationHelper.showInfo(
+                      context,
+                      'Importing from device contacts is coming soon.',
+                    );
                   },
                 ),
                 SizedBox(width: Dimensions.width10),
@@ -82,7 +87,10 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
                       '💾 Save button tapped',
                       name: 'AddContactPersonPage',
                     );
-                    // TODO: Implement save functionality
+                    ToastificationHelper.showSuccess(
+                      context,
+                      'Contact person saved.',
+                    );
                     Navigator.pop(context);
                   },
                 ),

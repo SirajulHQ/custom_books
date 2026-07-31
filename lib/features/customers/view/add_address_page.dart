@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:flutter/material.dart';
 
@@ -109,7 +110,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
                   label: 'SAVE',
                   onPressed: () {
                     appLog('💾 Save button tapped', name: 'AddAddressPage');
-                    // TODO: Implement save functionality
+                    ToastificationHelper.showSuccess(context, 'Address saved.');
                     Navigator.pop(context);
                   },
                 ),

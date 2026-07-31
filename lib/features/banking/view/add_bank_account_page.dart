@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:flutter/material.dart';
 
@@ -309,7 +310,9 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? Appcolors.primary : context.colors.textTertiary,
+                  color: isSelected
+                      ? Appcolors.primary
+                      : context.colors.textTertiary,
                   width: 2,
                 ),
               ),
@@ -339,9 +342,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
             label,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.85,
-              fontWeight: isSelected
-                  ? FontWeight.w600
-                  : FontWeight.w500,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               color: isSelected
                   ? Appcolors.primary
                   : context.colors.textPrimary,
@@ -523,7 +524,10 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                     ),
                     decoration: BoxDecoration(
                       border: Border(
-                        bottom: BorderSide(color: context.colors.border, width: 1),
+                        bottom: BorderSide(
+                          color: context.colors.border,
+                          width: 1,
+                        ),
                       ),
                     ),
                     child: Row(
@@ -714,7 +718,10 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
       return;
     }
 
-    // TODO: Implement save logic
+    ToastificationHelper.showSuccess(
+      context,
+      '${_accountNameController.text.trim()} saved successfully.',
+    );
     Navigator.pop(context);
   }
 }

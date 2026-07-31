@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/view/custom_drawer.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
@@ -20,6 +21,9 @@ class _ItemsPageState extends State<ItemsPage> {
   String _selectedFilter = 'Active Items';
   bool _searchOpen = false;
   final _searchController = TextEditingController();
+
+  String _sortField = 'Name';
+  bool _sortAsc = true;
 
   final List<String> _allFilterOptions = [
     'All Items',
@@ -91,7 +95,113 @@ class _ItemsPageState extends State<ItemsPage> {
       }).toList();
     }
 
+    // Apply sort
+    list = [...list];
+    list.sort((a, b) {
+      int cmp;
+      switch (_sortField) {
+        case 'Sales Price':
+          cmp = a.salesPrice.compareTo(b.salesPrice);
+          break;
+        case 'Purchase Price':
+          cmp = a.purchasePrice.compareTo(b.purchasePrice);
+          break;
+        case 'Name':
+        default:
+          cmp = a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      }
+      return _sortAsc ? cmp : -cmp;
+    });
+
     return list;
+  }
+
+  void _showSortSheet() {
+    appLog('🔀 Opening sort sheet', name: 'ItemsPage');
+    const fields = ['Name', 'Sales Price', 'Purchase Price'];
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                decoration: BoxDecoration(
+                  color: context.colors.border,
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Sort by',
+                    style: TextStyle(
+                      fontSize: Dimensions.font20,
+                      fontWeight: FontWeight.w800,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: Dimensions.height10),
+              ...fields.map((f) {
+                final selected = f == _sortField;
+                return ListTile(
+                  leading: Icon(
+                    selected
+                        ? Icons.radio_button_checked_rounded
+                        : Icons.radio_button_off_rounded,
+                    color: selected
+                        ? Appcolors.primary
+                        : context.colors.textSecondary,
+                  ),
+                  title: Text(
+                    f,
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 0.9,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                  trailing: selected
+                      ? Icon(
+                          _sortAsc
+                              ? Icons.arrow_upward_rounded
+                              : Icons.arrow_downward_rounded,
+                          color: Appcolors.primary,
+                          size: Dimensions.iconSize16,
+                        )
+                      : null,
+                  onTap: () {
+                    setState(() {
+                      if (_sortField == f) {
+                        _sortAsc = !_sortAsc;
+                      } else {
+                        _sortField = f;
+                        _sortAsc = true;
+                      }
+                    });
+                    Navigator.pop(ctx);
+                  },
+                );
+              }),
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _showFilterBottomSheet() {
@@ -153,6 +263,10 @@ class _ItemsPageState extends State<ItemsPage> {
                   color: Appcolors.accent,
                   onPressed: () {
                     appLog('📷 QR Scanner tapped', name: 'ItemsPage');
+                    ToastificationHelper.showInfo(
+                      context,
+                      'Barcode scanning is coming soon.',
+                    );
                   },
                 ),
                 SizedBox(width: Dimensions.width20),
@@ -322,10 +436,7 @@ class _ItemsPageState extends State<ItemsPage> {
 
             // Sort button
             GestureDetector(
-              onTap: () {
-                appLog('🔀 Sort button tapped', name: 'ItemsPage');
-                // TODO: Implement sort functionality
-              },
+              onTap: _showSortSheet,
               child: Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: Dimensions.width15,

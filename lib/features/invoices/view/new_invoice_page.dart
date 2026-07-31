@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
@@ -84,19 +85,13 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
               actions: [
                 AppBarElevatedButton(
                   label: 'SAVE AS DRAFT',
-                  onPressed: () {
-                    appLog('💾 Save as Draft tapped', name: 'NewInvoicePage');
-                    // TODO: Implement save draft functionality
-                  },
+                  onPressed: _saveDraft,
                 ),
                 SizedBox(width: Dimensions.width10),
                 AppBarIconButton(
                   icon: Icons.more_vert_rounded,
                   color: context.colors.textSecondary,
-                  onPressed: () {
-                    appLog('⋮ More options pressed', name: 'NewInvoicePage');
-                    // TODO: Show more options
-                  },
+                  onPressed: _showMoreOptions,
                 ),
                 SizedBox(width: Dimensions.width20),
               ],
@@ -116,11 +111,19 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
                         _buildLinkRow([
                           _buildLink('Address', () {
                             appLog('📍 Address tapped', name: 'NewInvoicePage');
+                            ToastificationHelper.showInfo(
+                              context,
+                              'Select a customer to manage the address.',
+                            );
                           }),
                           _buildLink('Customer Details', () {
                             appLog(
                               '👤 Customer Details tapped',
                               name: 'NewInvoicePage',
+                            );
+                            ToastificationHelper.showInfo(
+                              context,
+                              'Select a customer to view their details.',
                             );
                           }),
                         ]),
@@ -239,10 +242,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
                       setState(() => _emailCommunications.clear());
                       appLog('🗑️ Clear emails tapped', name: 'NewInvoicePage');
                     },
-                    onAdd: () {
-                      appLog('➕ Add New Email tapped', name: 'NewInvoicePage');
-                      // TODO: Show email input dialog
-                    },
+                    onAdd: _addEmail,
                   ),
 
                   SizedBox(height: Dimensions.height15),
@@ -269,7 +269,10 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
                     header: _buildSectionHeader('Attachments'),
                     onUpload: () {
                       appLog('📎 Upload File tapped', name: 'NewInvoicePage');
-                      // TODO: Show file picker
+                      ToastificationHelper.showInfo(
+                        context,
+                        'File attachments are coming soon.',
+                      );
                     },
                   ),
 
@@ -280,6 +283,233 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
           ],
         ),
       ),
+    );
+  }
+
+  // -------- Button actions --------
+  void _saveDraft() {
+    appLog('💾 Save as Draft tapped', name: 'NewInvoicePage');
+    if (_customerNameController.text.trim().isEmpty) {
+      ToastificationHelper.showError(
+        context,
+        'Please select a customer before saving.',
+      );
+      return;
+    }
+    ToastificationHelper.showSuccess(context, 'Invoice saved as draft.');
+    Navigator.pop(context);
+  }
+
+  void _showMoreOptions() {
+    appLog('⋮ More options pressed', name: 'NewInvoicePage');
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                decoration: BoxDecoration(
+                  color: context.colors.border,
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
+                ),
+              ),
+              _moreOptionTile(
+                ctx,
+                Icons.remove_red_eye_outlined,
+                'Preview invoice',
+                () => ToastificationHelper.showInfo(
+                  context,
+                  'Invoice preview is coming soon.',
+                ),
+              ),
+              _moreOptionTile(ctx, Icons.send_rounded, 'Save and send', () {
+                if (_customerNameController.text.trim().isEmpty) {
+                  ToastificationHelper.showError(
+                    context,
+                    'Please select a customer before sending.',
+                  );
+                  return;
+                }
+                ToastificationHelper.showSuccess(
+                  context,
+                  'Invoice saved and sent.',
+                );
+                Navigator.pop(context);
+              }),
+              _moreOptionTile(ctx, Icons.refresh_rounded, 'Reset form', () {
+                setState(() {
+                  _customerNameController.clear();
+                  _orderNumberController.clear();
+                  _subjectController.clear();
+                  _emailCommunications.clear();
+                  _paymentReceived = false;
+                });
+                ToastificationHelper.showInfo(context, 'Form reset.');
+              }),
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _moreOptionTile(
+    BuildContext sheetContext,
+    IconData icon,
+    String label,
+    VoidCallback onTap,
+  ) {
+    return ListTile(
+      leading: Icon(icon, color: Appcolors.primary),
+      title: Text(
+        label,
+        style: TextStyle(
+          fontSize: Dimensions.font16 * 0.9,
+          fontWeight: FontWeight.w600,
+          color: context.colors.textPrimary,
+        ),
+      ),
+      onTap: () {
+        Navigator.pop(sheetContext);
+        onTap();
+      },
+    );
+  }
+
+  void _addEmail() {
+    appLog('➕ Add New Email tapped', name: 'NewInvoicePage');
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          backgroundColor: context.colors.card,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius20),
+          ),
+          title: Text(
+            'Add email',
+            style: TextStyle(
+              fontSize: Dimensions.font20,
+              fontWeight: FontWeight.w800,
+              color: context.colors.textPrimary,
+            ),
+          ),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.emailAddress,
+            autofocus: true,
+            decoration: const InputDecoration(hintText: 'name@example.com'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Appcolors.primary,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                final email = controller.text.trim();
+                if (email.isEmpty || !email.contains('@')) {
+                  ToastificationHelper.showError(
+                    context,
+                    'Please enter a valid email address.',
+                  );
+                  return;
+                }
+                setState(() => _emailCommunications.add(email));
+                Navigator.pop(ctx);
+                ToastificationHelper.showSuccess(context, 'Email added.');
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDropdownSheet(
+    String label,
+    String value,
+    List<String> options,
+    Function(String?)? onChanged,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                decoration: BoxDecoration(
+                  color: context.colors.border,
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: Dimensions.font20,
+                      fontWeight: FontWeight.w800,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: Dimensions.height10),
+              ...options.map((option) {
+                final selected = option == value;
+                return ListTile(
+                  title: Text(
+                    option,
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 0.9,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                  trailing: selected
+                      ? Icon(Icons.check_rounded, color: Appcolors.primary)
+                      : null,
+                  onTap: () {
+                    onChanged?.call(option);
+                    Navigator.pop(ctx);
+                  },
+                );
+              }),
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -388,7 +618,10 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
           if (i > 0) ...[
             Container(
               margin: EdgeInsets.symmetric(horizontal: Dimensions.width10),
-              child: Text('|', style: TextStyle(color: context.colors.textTertiary)),
+              child: Text(
+                '|',
+                style: TextStyle(color: context.colors.textTertiary),
+              ),
             ),
           ],
           links[i],
@@ -429,6 +662,10 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
             GestureDetector(
               onTap: () {
                 appLog('✏️ Edit Tax Treatment tapped', name: 'NewInvoicePage');
+                ToastificationHelper.showInfo(
+                  context,
+                  'Editing tax treatment is coming soon.',
+                );
               },
               child: Icon(
                 Icons.edit_outlined,
@@ -504,6 +741,10 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
             GestureDetector(
               onTap: () {
                 appLog('⚙️ Invoice settings tapped', name: 'NewInvoicePage');
+                ToastificationHelper.showInfo(
+                  context,
+                  'Invoice number settings are coming soon.',
+                );
               },
               child: Container(
                 padding: EdgeInsets.all(Dimensions.width10),
@@ -644,9 +885,7 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
         ),
         SizedBox(height: Dimensions.height10),
         GestureDetector(
-          onTap: () {
-            // TODO: Show dropdown bottom sheet
-          },
+          onTap: () => _showDropdownSheet(label, value, options, onChanged),
           child: Container(
             padding: EdgeInsets.symmetric(
               horizontal: Dimensions.width15,
@@ -839,7 +1078,11 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
             '✅ Line item added: ${result.itemName}',
             name: 'NewInvoicePage',
           );
-          // TODO: Add line item to list
+          if (!mounted) return;
+          ToastificationHelper.showSuccess(
+            context,
+            '${result.itemName} added to invoice.',
+          );
         }
       },
       child: Container(

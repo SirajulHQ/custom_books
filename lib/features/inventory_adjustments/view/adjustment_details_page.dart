@@ -1,7 +1,9 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/features/inventory_adjustments/model/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/model/line_item_model.dart';
+import 'package:custom_books/features/inventory_adjustments/view/add_adjustment_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -153,13 +155,19 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                     _actionButton(
                       icon: Icons.download_rounded,
                       onTap: () {
-                        // TODO: Download attachment
+                        ToastificationHelper.showInfo(
+                          context,
+                          'Downloading attachment is coming soon.',
+                        );
                       },
                     ),
                     _actionButton(
                       icon: Icons.delete_outline_rounded,
                       onTap: () {
-                        // TODO: Delete attachment
+                        ToastificationHelper.showInfo(
+                          context,
+                          'Removing attachments is coming soon.',
+                        );
                       },
                     ),
                   ],
@@ -175,8 +183,16 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                 child: Align(
                   alignment: Alignment.bottomRight,
                   child: FloatingActionButton(
-                    onPressed: () {
-                      // TODO: Add attachment
+                    onPressed: () async {
+                      final result = await FilePicker.platform.pickFiles();
+                      if (result == null || result.files.isEmpty) return;
+                      setState(() => _attachments.addAll(result.files));
+                      if (dialogCtx.mounted) Navigator.pop(dialogCtx);
+                      if (!mounted) return;
+                      ToastificationHelper.showSuccess(
+                        context,
+                        '${result.files.length} attachment(s) added.',
+                      );
                     },
                     backgroundColor: Appcolors.primary,
                     child: const Icon(
@@ -244,7 +260,10 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
         surfaceTintColor: context.colors.card,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: context.colors.textPrimary),
+          icon: Icon(
+            Icons.arrow_back_rounded,
+            color: context.colors.textPrimary,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -263,7 +282,10 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
               size: Dimensions.iconSize24 - 2,
             ),
             onPressed: () {
-              // TODO: Navigate to edit page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const NewAdjustmentPage()),
+              );
             },
           ),
           IconButton(
@@ -273,7 +295,10 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
               size: Dimensions.iconSize24 - 2,
             ),
             onPressed: () {
-              // TODO: Save/Export action
+              ToastificationHelper.showInfo(
+                context,
+                'Exporting adjustment as PDF is coming soon.',
+              );
             },
           ),
           PopupMenuButton<String>(

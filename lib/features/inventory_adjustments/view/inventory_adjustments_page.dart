@@ -202,7 +202,29 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
                   ),
-                  onSelected: (_) {},
+                  onSelected: (value) {
+                    switch (value) {
+                      case 'export':
+                        ToastificationHelper.showInfo(
+                          context,
+                          'Exporting adjustments is coming soon.',
+                        );
+                        break;
+                      case 'print':
+                        ToastificationHelper.showInfo(
+                          context,
+                          'Printing adjustments is coming soon.',
+                        );
+                        break;
+                      case 'refresh':
+                        setState(() {});
+                        ToastificationHelper.showSuccess(
+                          context,
+                          'Adjustments refreshed.',
+                        );
+                        break;
+                    }
+                  },
                   itemBuilder: (context) => const [
                     PopupMenuItem(value: 'export', child: Text('Export')),
                     PopupMenuItem(value: 'print', child: Text('Print')),

@@ -24,6 +24,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedSegment = 0;
+  String _period = 'This Fiscal Year';
 
   Future<bool> _showExitDialog() async {
     final result = await showGeneralDialog<bool>(
@@ -243,18 +244,20 @@ class _HomePageState extends State<HomePage> {
             slivers: [
               CustomSliverAppBar(
                 title: 'Business Overview',
-                subtitle: 'Snapshot for this fiscal year',
+                subtitle: 'Snapshot • $_period',
                 leadingType: AppBarLeadingType.menu,
                 actions: [
                   AppBarIconButton(
                     icon: Icons.tune_rounded,
                     color: Appcolors.primary,
+                    onPressed: _showPeriodSheet,
                   ),
                   SizedBox(width: Dimensions.width10),
                   AppBarIconButton(
                     icon: Icons.notifications_none_rounded,
                     color: Appcolors.accent,
                     showBadge: true,
+                    onPressed: _showNotificationsSheet,
                   ),
                   SizedBox(width: Dimensions.width20),
                 ],
@@ -265,6 +268,207 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  // -------- Period filter (tune button) --------
+  void _showPeriodSheet() {
+    const periods = [
+      'This Month',
+      'This Quarter',
+      'This Fiscal Year',
+      'Last Fiscal Year',
+      'All Time',
+    ];
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                decoration: BoxDecoration(
+                  color: context.colors.border,
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.tune_rounded,
+                      color: Appcolors.primary,
+                      size: Dimensions.iconSize24 - 4,
+                    ),
+                    SizedBox(width: Dimensions.width10),
+                    Text(
+                      'Reporting Period',
+                      style: TextStyle(
+                        fontSize: Dimensions.font20,
+                        fontWeight: FontWeight.w800,
+                        color: context.colors.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: Dimensions.height15),
+              ...periods.map((p) {
+                final selected = p == _period;
+                return Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    Dimensions.width20,
+                    0,
+                    Dimensions.width20,
+                    Dimensions.height10,
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    onTap: () {
+                      setState(() => _period = p);
+                      Navigator.pop(ctx);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Dimensions.width15,
+                        vertical: Dimensions.height15 * 0.75,
+                      ),
+                      decoration: BoxDecoration(
+                        color: selected
+                            ? Appcolors.primary.withValues(alpha: 0.06)
+                            : context.colors.card,
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15,
+                        ),
+                        border: Border.all(
+                          color: selected
+                              ? Appcolors.primary
+                              : context.colors.border,
+                          width: selected ? 1.5 : 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            selected
+                                ? Icons.radio_button_checked_rounded
+                                : Icons.radio_button_off_rounded,
+                            size: Dimensions.iconSize24 - 4,
+                            color: selected
+                                ? Appcolors.primary
+                                : context.colors.textSecondary,
+                          ),
+                          SizedBox(width: Dimensions.width10),
+                          Text(
+                            p,
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.9,
+                              fontWeight: selected
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              color: context.colors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }),
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // -------- Notifications (bell button) --------
+  void _showNotificationsSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                decoration: BoxDecoration(
+                  color: context.colors.border,
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.notifications_none_rounded,
+                      color: Appcolors.accent,
+                      size: Dimensions.iconSize24 - 4,
+                    ),
+                    SizedBox(width: Dimensions.width10),
+                    Text(
+                      'Notifications',
+                      style: TextStyle(
+                        fontSize: Dimensions.font20,
+                        fontWeight: FontWeight.w800,
+                        color: context.colors.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: Dimensions.height30),
+              Icon(
+                Icons.notifications_off_outlined,
+                size: Dimensions.iconSize24 * 2,
+                color: context.colors.textSecondary,
+              ),
+              SizedBox(height: Dimensions.height15),
+              Text(
+                'You\'re all caught up',
+                style: TextStyle(
+                  fontSize: Dimensions.font16,
+                  fontWeight: FontWeight.w700,
+                  color: context.colors.textPrimary,
+                ),
+              ),
+              SizedBox(height: Dimensions.height10 / 2),
+              Text(
+                'New alerts about invoices, payments and\nreminders will show up here.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.8,
+                  color: context.colors.textSecondary,
+                  height: 1.4,
+                ),
+              ),
+              SizedBox(height: Dimensions.height30),
+            ],
+          ),
+        );
+      },
     );
   }
 

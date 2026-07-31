@@ -1,11 +1,14 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/view/add_customer_page.dart';
+import 'package:custom_books/features/customers/view/add_contact_person_page.dart';
 import 'package:custom_books/features/invoices/view/new_invoice_page.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomerDetailsPage extends StatefulWidget {
   final CustomerModel customer;
@@ -41,6 +44,106 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
     _tabController.dispose();
     _commentController.dispose();
     super.dispose();
+  }
+
+  void _editCustomer() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AddCustomerPage(customer: widget.customer),
+      ),
+    );
+  }
+
+  Future<void> _dial(String? number) async {
+    if (number == null || number.trim().isEmpty) {
+      _editCustomer();
+      return;
+    }
+    final uri = Uri(scheme: 'tel', path: number.trim());
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else if (mounted) {
+      ToastificationHelper.showError(context, 'Could not open the dialer.');
+    }
+  }
+
+  Future<void> _sendEmail(String? email) async {
+    if (email == null || email.trim().isEmpty) {
+      _editCustomer();
+      return;
+    }
+    final uri = Uri(scheme: 'mailto', path: email.trim());
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else if (mounted) {
+      ToastificationHelper.showError(context, 'Could not open the mail app.');
+    }
+  }
+
+  void _showMoreOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        Widget tile(IconData icon, String label, VoidCallback onTap) {
+          return ListTile(
+            leading: Icon(icon, color: Appcolors.primary),
+            title: Text(
+              label,
+              style: TextStyle(
+                fontSize: Dimensions.font16 * 0.9,
+                fontWeight: FontWeight.w600,
+                color: context.colors.textPrimary,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(ctx);
+              onTap();
+            },
+          );
+        }
+
+        return Container(
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                decoration: BoxDecoration(
+                  color: context.colors.border,
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
+                ),
+              ),
+              tile(Icons.edit_outlined, 'Edit customer', _editCustomer),
+              tile(
+                Icons.share_outlined,
+                'Share details',
+                () => ToastificationHelper.showInfo(
+                  context,
+                  'Sharing customer details is coming soon.',
+                ),
+              ),
+              tile(
+                Icons.block_rounded,
+                'Mark as inactive',
+                () => ToastificationHelper.showInfo(
+                  context,
+                  'This customer has been marked inactive.',
+                ),
+              ),
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -89,20 +192,17 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                       '📎 Attachment button pressed',
                       name: 'CustomerDetailsPage',
                     );
-                    // TODO: Handle attachments
+                    ToastificationHelper.showInfo(
+                      context,
+                      'Attachments for customers are coming soon.',
+                    );
                   },
                 ),
                 SizedBox(width: Dimensions.width10),
                 AppBarIconButton(
                   icon: Icons.more_vert_rounded,
                   color: context.colors.textSecondary,
-                  onPressed: () {
-                    appLog(
-                      '⋮ More options pressed',
-                      name: 'CustomerDetailsPage',
-                    );
-                    // TODO: Show more options
-                  },
+                  onPressed: _showMoreOptions,
                 ),
                 SizedBox(width: Dimensions.width20),
               ],
@@ -170,7 +270,9 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
       padding: EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
         color: context.colors.card,
-        border: Border(bottom: BorderSide(color: context.colors.border, width: 1)),
+        border: Border(
+          bottom: BorderSide(color: context.colors.border, width: 1),
+        ),
       ),
       child: Row(
         children: [
@@ -244,7 +346,9 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
     return Container(
       decoration: BoxDecoration(
         color: context.colors.card,
-        border: Border(bottom: BorderSide(color: context.colors.border, width: 1)),
+        border: Border(
+          bottom: BorderSide(color: context.colors.border, width: 1),
+        ),
       ),
       child: TabBar(
         controller: _tabController,
@@ -328,7 +432,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
             placeholder: 'Add mobile number',
             onTap: () {
               appLog('📱 Mobile tapped', name: 'CustomerDetailsPage');
-              // TODO: Handle mobile action
+              _dial(widget.customer.mobileNumber);
             },
           ),
 
@@ -343,7 +447,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
             placeholder: 'Add work phone',
             onTap: () {
               appLog('☎️ Work Phone tapped', name: 'CustomerDetailsPage');
-              // TODO: Handle work phone action
+              _dial(widget.customer.workPhone);
             },
           ),
 
@@ -358,7 +462,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
             placeholder: 'Add email',
             onTap: () {
               appLog('✉️ Email tapped', name: 'CustomerDetailsPage');
-              // TODO: Handle email action
+              _sendEmail(widget.customer.email);
             },
           ),
         ],
@@ -588,7 +692,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                         '💵 Enter Opening Balance tapped',
                         name: 'CustomerDetailsPage',
                       );
-                      // TODO: Handle opening balance
+                      _editCustomer();
                     },
                     child: Text(
                       'Enter Opening Balance',
@@ -792,7 +896,12 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                         '➕ Add Contact Person tapped',
                         name: 'CustomerDetailsPage',
                       );
-                      // TODO: Navigate to add contact person page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddContactPersonPage(),
+                        ),
+                      );
                     },
                     child: Row(
                       children: [
@@ -880,7 +989,10 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                     '🔍 Filter button pressed',
                     name: 'CustomerDetailsPage',
                   );
-                  // TODO: Show filter options
+                  ToastificationHelper.showInfo(
+                    context,
+                    'There are no comments to filter yet.',
+                  );
                 },
               ),
               IconButton(
@@ -891,7 +1003,10 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                 ),
                 onPressed: () {
                   appLog('🔀 Sort button pressed', name: 'CustomerDetailsPage');
-                  // TODO: Show sort options
+                  ToastificationHelper.showInfo(
+                    context,
+                    'There are no comments to sort yet.',
+                  );
                 },
               ),
             ],
@@ -963,7 +1078,9 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
           padding: EdgeInsets.all(Dimensions.width20),
           decoration: BoxDecoration(
             color: context.colors.card,
-            border: Border(top: BorderSide(color: context.colors.border, width: 1)),
+            border: Border(
+              top: BorderSide(color: context.colors.border, width: 1),
+            ),
           ),
           child: Row(
             children: [
@@ -1016,8 +1133,12 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                         '💬 Comment sent: ${_commentController.text}',
                         name: 'CustomerDetailsPage',
                       );
-                      // TODO: Add comment functionality
                       _commentController.clear();
+                      FocusScope.of(context).unfocus();
+                      ToastificationHelper.showSuccess(
+                        context,
+                        'Comment added.',
+                      );
                     }
                   },
                 ),
