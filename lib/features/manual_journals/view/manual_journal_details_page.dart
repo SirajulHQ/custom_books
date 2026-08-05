@@ -1,8 +1,9 @@
-import 'package:custom_books/core/apptheme/apptheme.dart';
+﻿import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/manual_journals/models/manual_journal_model.dart';
 import 'package:custom_books/features/manual_journals/view/add_manual_journal_page.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:intl/intl.dart';
 
 class ManualJournalDetailsPage extends StatefulWidget {
@@ -48,25 +49,9 @@ class _ManualJournalDetailsPageState extends State<ManualJournalDetailsPage>
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      appBar: AppBar(
+      appBar: CustomBackAppBar(
+        title: 'Journal Details',
         backgroundColor: context.colors.card,
-        surfaceTintColor: context.colors.card,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            color: context.colors.textPrimary,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Journal Details',
-          style: TextStyle(
-            fontSize: Dimensions.font26 * 0.7,
-            fontWeight: FontWeight.w800,
-            color: context.colors.textPrimary,
-          ),
-        ),
         actions: [
           IconButton(
             icon: Icon(

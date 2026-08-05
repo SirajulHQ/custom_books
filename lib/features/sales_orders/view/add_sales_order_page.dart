@@ -1,6 +1,7 @@
-import 'package:custom_books/core/apptheme/apptheme.dart';
+﻿import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/dashed_border.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/customers/view/add_customer_page.dart';
@@ -356,21 +357,9 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage> {
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      appBar: AppBar(
+      appBar: CustomBackAppBar(
+        title: 'New Sales Order',
         backgroundColor: context.colors.card,
-        elevation: 0.5,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: context.colors.textPrimary),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'New Sales Order',
-          style: TextStyle(
-            color: context.colors.textPrimary,
-            fontSize: Dimensions.font20 * 0.9,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
         actions: [
           TextButton(
             onPressed: () => _saveOrder(status: SalesOrderStatus.draft),

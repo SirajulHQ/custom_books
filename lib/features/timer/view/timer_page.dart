@@ -154,60 +154,26 @@ class _TimerPageState extends State<TimerPage> {
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'timer'),
-      appBar: AppBar(
-        backgroundColor: context.colors.background,
-        surfaceTintColor: context.colors.background,
-        elevation: 0,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: Container(
-              width: Dimensions.height45 * 0.9,
-              height: Dimensions.height45 * 0.9,
-              decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
+      body: NestedScrollView(
+        physics: const BouncingScrollPhysics(),
+        headerSliverBuilder: (context, _) => [
+          CustomSliverAppBar(
+            title: 'Timer',
+            subtitle: 'Track your time',
+            leadingType: AppBarLeadingType.menu,
+            actions: [
+              AppBarIconButton(
+                icon: Icons.history_rounded,
+                onPressed: () => ToastificationHelper.showSuccess(
+                  context,
+                  'History coming soon',
+                ),
               ),
-              child: Icon(
-                Icons.menu_rounded,
-                size: Dimensions.iconSize24 - 4,
-                color: Appcolors.primary,
-              ),
-            ),
-            onPressed: () => Scaffold.of(context).openDrawer(),
+              SizedBox(width: Dimensions.width20),
+            ],
           ),
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Timer',
-              style: TextStyle(
-                fontSize: Dimensions.font26 * 0.85,
-                fontWeight: FontWeight.w800,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            Text(
-              'Track your time',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.7,
-                color: context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          AppBarIconButton(
-            icon: Icons.history_rounded,
-            onPressed: () => ToastificationHelper.showSuccess(
-              context,
-              'History coming soon',
-            ),
-          ),
-          SizedBox(width: Dimensions.width20),
         ],
-      ),
-      body: SingleChildScrollView(
+        body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(
           horizontal: Dimensions.width20,
@@ -402,6 +368,7 @@ class _TimerPageState extends State<TimerPage> {
             SizedBox(height: Dimensions.height20),
           ],
         ),
+      ),
       ),
     );
   }

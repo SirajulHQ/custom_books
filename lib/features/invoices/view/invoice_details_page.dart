@@ -1,8 +1,9 @@
-import 'package:custom_books/core/apptheme/apptheme.dart';
+﻿import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
 import 'package:custom_books/features/invoices/view/new_invoice_page.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 
 class InvoiceDetailsPage extends StatefulWidget {
   final InvoiceModel invoice;
@@ -77,25 +78,9 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage>
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      appBar: AppBar(
+      appBar: CustomBackAppBar(
+        title: 'Invoice Details',
         backgroundColor: context.colors.card,
-        surfaceTintColor: context.colors.card,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            color: context.colors.textPrimary,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Invoice Details',
-          style: TextStyle(
-            fontSize: Dimensions.font26 * 0.7,
-            fontWeight: FontWeight.w800,
-            color: context.colors.textPrimary,
-          ),
-        ),
         actions: [
           IconButton(
             icon: Icon(

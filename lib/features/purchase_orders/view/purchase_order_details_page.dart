@@ -1,8 +1,9 @@
-import 'package:custom_books/core/apptheme/apptheme.dart';
+﻿import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/purchase_orders/models/purchase_order_model.dart';
 import 'package:custom_books/features/purchase_orders/view/add_purchase_order_page.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:intl/intl.dart';
 
 class PurchaseOrderDetailsPage extends StatefulWidget {
@@ -54,25 +55,9 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage>
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      appBar: AppBar(
+      appBar: CustomBackAppBar(
+        title: 'Purchase Order Details',
         backgroundColor: context.colors.card,
-        surfaceTintColor: context.colors.card,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            color: context.colors.textPrimary,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Purchase Order Details',
-          style: TextStyle(
-            fontSize: Dimensions.font26 * 0.7,
-            fontWeight: FontWeight.w800,
-            color: context.colors.textPrimary,
-          ),
-        ),
         actions: [
           IconButton(
             icon: Icon(
