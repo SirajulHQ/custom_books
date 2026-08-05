@@ -2,6 +2,8 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/home/models/balance_tile_model.dart';
+import 'package:custom_books/features/home/widgets/payables_sheet.dart';
+import 'package:custom_books/features/home/widgets/receivables_sheet.dart';
 import 'package:flutter/material.dart';
 
 class BalancesGridWidget extends StatelessWidget {
@@ -35,6 +37,15 @@ class BalancesGridWidget extends StatelessWidget {
         Appcolors.ok,
       ),
     ];
+
+    // Tab index: 0 = Receivables, 1 = Payables, null = no sheet
+    final tapHandlers = <VoidCallback?>[
+      () => showReceivablesSheet(context),
+      () => showPayablesSheet(context),
+      null,
+      null,
+    ];
+
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
@@ -42,7 +53,10 @@ class BalancesGridWidget extends StatelessWidget {
       mainAxisSpacing: Dimensions.height15,
       crossAxisSpacing: Dimensions.width15,
       childAspectRatio: 1.5,
-      children: tiles.map((t) => BalanceTile(data: t)).toList(),
+      children: List.generate(
+        tiles.length,
+        (i) => BalanceTile(data: tiles[i], onTap: tapHandlers[i]),
+      ),
     );
   }
 }
@@ -50,51 +64,66 @@ class BalancesGridWidget extends StatelessWidget {
 // -------- Balance Tile Widget --------
 class BalanceTile extends StatelessWidget {
   final BalanceTileModel data;
+  final VoidCallback? onTap;
 
-  const BalanceTile({super.key, required this.data});
+  const BalanceTile({super.key, required this.data, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(Dimensions.width15),
-      decoration: BoxDecoration(
-        color: context.colors.card,
-        borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: context.colors.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            padding: EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: data.color.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(Dimensions.width15),
+        decoration: BoxDecoration(
+          color: context.colors.card,
+          borderRadius: BorderRadius.circular(Dimensions.radius20),
+          border: Border.all(color: context.colors.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: data.color.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    data.icon,
+                    size: Dimensions.iconSize16,
+                    color: data.color,
+                  ),
+                ),
+                if (onTap != null)
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    size: Dimensions.iconSize16,
+                    color: context.colors.textTertiary,
+                  ),
+              ],
             ),
-            child: Icon(
-              data.icon,
-              size: Dimensions.iconSize16,
-              color: data.color,
+            Text(
+              data.value,
+              style: TextStyle(
+                fontSize: Dimensions.font20,
+                fontWeight: FontWeight.w800,
+                color: context.colors.textPrimary,
+              ),
             ),
-          ),
-          Text(
-            data.value,
-            style: TextStyle(
-              fontSize: Dimensions.font20,
-              fontWeight: FontWeight.w800,
-              color: context.colors.textPrimary,
+            Text(
+              data.label,
+              style: TextStyle(
+                fontSize: Dimensions.font16 * 0.75,
+                color: context.colors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          Text(
-            data.label,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.75,
-              color: context.colors.textSecondary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
