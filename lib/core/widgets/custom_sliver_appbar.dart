@@ -206,7 +206,7 @@ class AppBarIconButton extends StatelessWidget {
   }
 }
 
-/// Helper widget to create elevated button actions for the app bar
+/// Helper widget to create outlined button actions for the app bar
 class AppBarElevatedButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -225,14 +225,16 @@ class AppBarElevatedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = foregroundColor ?? backgroundColor ?? Appcolors.primary;
     return Container(
       margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-      child: ElevatedButton(
+      child: OutlinedButton(
         onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? Appcolors.primary,
-          foregroundColor: foregroundColor ?? Colors.white,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: color,
+          side: BorderSide(color: color, width: 1.5),
           elevation: 0,
+          backgroundColor: Colors.transparent,
           padding: EdgeInsets.symmetric(
             horizontal: Dimensions.width20,
             vertical: Dimensions.height10,

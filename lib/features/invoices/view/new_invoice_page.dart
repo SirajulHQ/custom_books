@@ -417,10 +417,11 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
               onPressed: () => Navigator.pop(ctx),
               child: const Text('Cancel'),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Appcolors.primary,
-                foregroundColor: Colors.white,
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Appcolors.primary,
+                side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                backgroundColor: Colors.transparent,
               ),
               onPressed: () {
                 final email = controller.text.trim();

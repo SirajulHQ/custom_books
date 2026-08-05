@@ -1,6 +1,7 @@
-import 'package:custom_books/core/apptheme/apptheme.dart';
+﻿import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/payments_received/models/payment_received_model.dart';
 import 'package:flutter/material.dart';
@@ -206,24 +207,9 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage> {
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      appBar: AppBar(
+      appBar: CustomBackAppBar(
+        title: 'New Payment',
         backgroundColor: context.colors.card,
-        elevation: 0.5,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            color: context.colors.textPrimary,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'New Payment',
-          style: TextStyle(
-            color: context.colors.textPrimary,
-            fontSize: Dimensions.font20 * 0.9,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
         actions: [
           TextButton(
             onPressed: _savePayment,

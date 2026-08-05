@@ -275,14 +275,15 @@ class _SalesOrderSortSheetState extends State<SalesOrderSortSheet> {
                   ),
                 ),
                 SizedBox(width: Dimensions.width15),
-                ElevatedButton(
+                OutlinedButton(
                   onPressed: () {
                     widget.onApply(_field, _direction);
                     Navigator.pop(context);
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Appcolors.primary,
-                    foregroundColor: Colors.white,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Appcolors.primary,
+                    side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                    backgroundColor: Colors.transparent,
                     padding: EdgeInsets.symmetric(
                       horizontal: Dimensions.width20 * 1.2,
                       vertical: Dimensions.height15 * 0.8,

@@ -1,5 +1,6 @@
-import 'package:custom_books/core/apptheme/apptheme.dart';
+﻿import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/features/credit_notes/models/credit_note_model.dart';
 import 'package:custom_books/features/credit_notes/view/add_credit_note_page.dart';
 import 'package:flutter/material.dart';
@@ -64,25 +65,9 @@ class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      appBar: AppBar(
+      appBar: CustomBackAppBar(
+        title: 'Credit Note Details',
         backgroundColor: context.colors.card,
-        surfaceTintColor: context.colors.card,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            color: context.colors.textPrimary,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Credit Note Details',
-          style: TextStyle(
-            fontSize: Dimensions.font26 * 0.7,
-            fontWeight: FontWeight.w800,
-            color: context.colors.textPrimary,
-          ),
-        ),
         actions: [
           IconButton(
             icon: Icon(

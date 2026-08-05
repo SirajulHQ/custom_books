@@ -1,4 +1,4 @@
-import 'package:custom_books/core/apptheme/apptheme.dart';
+﻿import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/features/inventory_adjustments/model/inventory_adjustments_model.dart';
@@ -6,6 +6,7 @@ import 'package:custom_books/features/inventory_adjustments/model/line_item_mode
 import 'package:custom_books/features/inventory_adjustments/view/add_adjustment_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 
 class AdjustmentDetailsPage extends StatefulWidget {
   final InventoryAdjustment adjustment;
@@ -255,25 +256,9 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      appBar: AppBar(
+      appBar: CustomBackAppBar(
+        title: 'Adjustment Details',
         backgroundColor: context.colors.card,
-        surfaceTintColor: context.colors.card,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            color: context.colors.textPrimary,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Adjustment Details',
-          style: TextStyle(
-            fontSize: Dimensions.font26 * 0.7,
-            fontWeight: FontWeight.w800,
-            color: context.colors.textPrimary,
-          ),
-        ),
         actions: [
           IconButton(
             icon: Icon(

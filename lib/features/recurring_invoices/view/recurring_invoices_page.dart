@@ -442,7 +442,7 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
                     ),
                     child: SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
+                      child: OutlinedButton(
                         onPressed: () {
                           setState(() {
                             _sortField = field;
@@ -450,9 +450,10 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
                           });
                           Navigator.pop(context);
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Appcolors.primary,
-                          foregroundColor: Colors.white,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Appcolors.primary,
+                          side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                          backgroundColor: Colors.transparent,
                           padding: EdgeInsets.symmetric(
                             vertical: Dimensions.height15 * 0.9,
                           ),

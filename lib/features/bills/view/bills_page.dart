@@ -322,14 +322,16 @@ class _BillsPageState extends State<BillsPage> {
                 SizedBox(height: Dimensions.height15),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
+                  child: OutlinedButton(
                     onPressed: () {
                       setState(() {});
                       Navigator.pop(context);
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Appcolors.primary,
-                      foregroundColor: Colors.white,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Appcolors.primary,
+                      side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
                       padding: EdgeInsets.symmetric(
                         vertical: Dimensions.height15,
                       ),
@@ -406,65 +408,6 @@ class _BillsPageState extends State<BillsPage> {
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'bills'),
-      appBar: AppBar(
-        backgroundColor: context.colors.background,
-        surfaceTintColor: context.colors.background,
-        elevation: 0,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: Container(
-              width: Dimensions.height45 * 0.9,
-              height: Dimensions.height45 * 0.9,
-              decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-              ),
-              child: Icon(
-                Icons.menu_rounded,
-                size: Dimensions.iconSize24 - 4,
-                color: Appcolors.primary,
-              ),
-            ),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Bills',
-              style: TextStyle(
-                fontSize: Dimensions.font26 * 0.85,
-                fontWeight: FontWeight.w800,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            Text(
-              '${_bills.length} bill${_bills.length == 1 ? '' : 's'}',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.7,
-                color: context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          AppBarIconButton(
-            icon: _searchOpen ? Icons.close_rounded : Icons.search_rounded,
-            onPressed: () => setState(() {
-              _searchOpen = !_searchOpen;
-              if (!_searchOpen) _searchController.clear();
-            }),
-          ),
-          SizedBox(width: Dimensions.width10),
-          AppBarIconButton(
-            icon: Icons.more_vert_rounded,
-            color: Appcolors.accent,
-            onPressed: _openFilterSheet,
-          ),
-          SizedBox(width: Dimensions.width20),
-        ],
-      ),
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -486,8 +429,33 @@ class _BillsPageState extends State<BillsPage> {
           child: const Icon(Icons.add_rounded),
         ),
       ),
-      body: Column(
-        children: [
+      body: NestedScrollView(
+        physics: const BouncingScrollPhysics(),
+        headerSliverBuilder: (context, _) => [
+          CustomSliverAppBar(
+            title: 'Bills',
+            subtitle: '${_bills.length} bill${_bills.length == 1 ? '' : 's'}',
+            leadingType: AppBarLeadingType.menu,
+            actions: [
+              AppBarIconButton(
+                icon: _searchOpen ? Icons.close_rounded : Icons.search_rounded,
+                onPressed: () => setState(() {
+                  _searchOpen = !_searchOpen;
+                  if (!_searchOpen) _searchController.clear();
+                }),
+              ),
+              SizedBox(width: Dimensions.width10),
+              AppBarIconButton(
+                icon: Icons.more_vert_rounded,
+                color: Appcolors.accent,
+                onPressed: _openFilterSheet,
+              ),
+              SizedBox(width: Dimensions.width20),
+            ],
+          ),
+        ],
+        body: Column(
+          children: [
           if (_searchOpen)
             Padding(
               padding: EdgeInsets.fromLTRB(
@@ -682,6 +650,7 @@ class _BillsPageState extends State<BillsPage> {
                   ),
           ),
         ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/dashed_border.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/line_item_form_widgets.dart';
@@ -190,8 +191,13 @@ class _AddQuotePageState extends State<AddQuotePage> {
             onPressed: () => Navigator.pop(context),
             child: const Text('CANCEL'),
           ),
-          FilledButton(
+          OutlinedButton(
             onPressed: () => Navigator.pop(context, controller.text.trim()),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Appcolors.primary,
+              side: const BorderSide(color: Appcolors.primary, width: 1.5),
+              backgroundColor: Colors.transparent,
+            ),
             child: const Text('SAVE'),
           ),
         ],
@@ -267,22 +273,8 @@ class _AddQuotePageState extends State<AddQuotePage> {
     final format = DateFormat('dd MMM yyyy');
     return Scaffold(
       backgroundColor: context.colors.background,
-      appBar: AppBar(
-        backgroundColor: context.colors.background,
-        surfaceTintColor: context.colors.background,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: context.colors.textPrimary),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Add Quote',
-          style: TextStyle(
-            fontSize: Dimensions.font26 * 0.7,
-            fontWeight: FontWeight.w800,
-            color: context.colors.textPrimary,
-          ),
-        ),
+      appBar: CustomBackAppBar(
+        title: 'Add Quote',
         actions: [
           TextButton(
             onPressed: _save,

@@ -70,14 +70,15 @@ class CostPriceEditor extends StatelessWidget {
                   color: context.colors.textPrimary,
                 ),
               ),
-              ElevatedButton(
+              OutlinedButton(
                 onPressed: () => Navigator.pop(
                   context,
                   double.tryParse(controller.text) ?? initialValue,
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Appcolors.primary,
-                  foregroundColor: Colors.white,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Appcolors.primary,
+                  side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                  backgroundColor: Colors.transparent,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),

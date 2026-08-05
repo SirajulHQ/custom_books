@@ -316,14 +316,16 @@ class _VendorsPageState extends State<VendorsPage> {
                 SizedBox(height: Dimensions.height15),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
+                  child: OutlinedButton(
                     onPressed: () {
                       setState(() {});
                       Navigator.pop(context);
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Appcolors.primary,
-                      foregroundColor: Colors.white,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Appcolors.primary,
+                      side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
                       padding: EdgeInsets.symmetric(
                         vertical: Dimensions.height15,
                       ),
