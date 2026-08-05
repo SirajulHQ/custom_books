@@ -614,7 +614,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                           vertical: Dimensions.height10 / 4,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE3F2FD),
+                          color: Appcolors.primary.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(
                             Dimensions.radius15 / 3,
                           ),
@@ -1022,7 +1022,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                 width: Dimensions.height45 * 3,
                 height: Dimensions.height45 * 3,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE8EAF6),
+                  color: context.colors.surfaceLight,
                   borderRadius: BorderRadius.circular(Dimensions.radius20),
                 ),
                 child: Center(

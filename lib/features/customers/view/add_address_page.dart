@@ -214,7 +214,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
         border: Border.all(color: context.colors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: context.colors.border.withValues(alpha: 0.5),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),

@@ -4,6 +4,8 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/home/models/balance_tile_model.dart';
 import 'package:custom_books/features/home/widgets/payables_sheet.dart';
 import 'package:custom_books/features/home/widgets/receivables_sheet.dart';
+import 'package:custom_books/features/invoices/view/invoices_page.dart';
+import 'package:custom_books/features/bills/view/bills_page.dart';
 import 'package:flutter/material.dart';
 
 class BalancesGridWidget extends StatelessWidget {
@@ -42,8 +44,14 @@ class BalancesGridWidget extends StatelessWidget {
     final tapHandlers = <VoidCallback?>[
       () => showReceivablesSheet(context),
       () => showPayablesSheet(context),
-      null,
-      null,
+      () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const InvoicesPage(initialTab: 2)),
+      ),
+      () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const BillsPage(initialTab: 2)),
+      ),
     ];
 
     return GridView.count(

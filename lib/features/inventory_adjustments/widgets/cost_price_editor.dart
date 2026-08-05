@@ -123,7 +123,7 @@ class CostPriceEditor extends StatelessWidget {
           // Input field with AED prefix
           Container(
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFCBD5E1)),
+              border: Border.all(color: context.colors.border),
               borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
             ),
             child: Row(

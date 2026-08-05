@@ -52,170 +52,161 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            // App Bar
-            CustomSliverAppBar(
-              title: 'Add Contact Person',
-              leadingType: AppBarLeadingType.back,
-              onLeadingPressed: () {
-                appLog('⬅️ Back button tapped', name: 'AddContactPersonPage');
-                Navigator.pop(context);
-              },
-              actions: [
-                AppBarIconButton(
-                  icon: Icons.contacts_outlined,
-                  color: context.colors.textSecondary,
-                  onPressed: () {
-                    appLog(
-                      '📱 Contacts button tapped',
-                      name: 'AddContactPersonPage',
-                    );
-                    ToastificationHelper.showInfo(
-                      context,
-                      'Importing from device contacts is coming soon.',
-                    );
-                  },
-                ),
-                SizedBox(width: Dimensions.width10),
-                AppBarElevatedButton(
-                  label: 'SAVE',
-                  onPressed: () {
-                    appLog(
-                      '💾 Save button tapped',
-                      name: 'AddContactPersonPage',
-                    );
-                    ToastificationHelper.showSuccess(
-                      context,
-                      'Contact person saved.',
-                    );
-                    Navigator.pop(context);
-                  },
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-
-            // Content
-            SliverPadding(
-              padding: EdgeInsets.all(Dimensions.width20),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  // Contact Person Card
-                  Container(
-                    padding: EdgeInsets.all(Dimensions.width20),
-                    decoration: BoxDecoration(
-                      color: context.colors.card,
-                      borderRadius: BorderRadius.circular(Dimensions.radius20),
-                      border: Border.all(color: context.colors.border),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.02),
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Contact Person',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.95,
-                            fontWeight: FontWeight.w700,
-                            color: context.colors.textPrimary,
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: _buildSalutationDropdown(),
-                            ),
-                            SizedBox(width: Dimensions.width15),
-                            Expanded(
-                              flex: 2,
-                              child: _buildSimpleTextField(
-                                'First Name',
-                                _firstNameController,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: Dimensions.height15),
-                        _buildSimpleTextField('Last Name', _lastNameController),
-                        SizedBox(height: Dimensions.height15),
-                        _buildSimpleTextField(
-                          'Email',
-                          _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        Text(
-                          'Contact Phone',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.85,
-                            fontWeight: FontWeight.w600,
-                            color: Appcolors.primary,
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height15),
-                        _buildPhoneField(
-                          'Work Phone',
-                          _workPhoneController,
-                          _workPhoneCountryCode,
-                          (value) =>
-                              setState(() => _workPhoneCountryCode = value!),
-                        ),
-                        SizedBox(height: Dimensions.height15),
-                        _buildPhoneField(
-                          'Mobile',
-                          _mobileController,
-                          _mobileCountryCode,
-                          (value) =>
-                              setState(() => _mobileCountryCode = value!),
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        Text(
-                          'Other Details',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.85,
-                            fontWeight: FontWeight.w600,
-                            color: Appcolors.primary,
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height15),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildSimpleTextField(
-                                'Designation',
-                                _designationController,
-                              ),
-                            ),
-                            SizedBox(width: Dimensions.width15),
-                            Expanded(
-                              child: _buildSimpleTextField(
-                                'Department',
-                                _departmentController,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: Dimensions.height30),
-                ]),
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          // App Bar
+          CustomSliverAppBar(
+            title: 'Add Contact Person',
+            leadingType: AppBarLeadingType.back,
+            onLeadingPressed: () {
+              appLog('⬅️ Back button tapped', name: 'AddContactPersonPage');
+              Navigator.pop(context);
+            },
+            actions: [
+              AppBarIconButton(
+                icon: Icons.contacts_outlined,
+                color: context.colors.textSecondary,
+                onPressed: () {
+                  appLog(
+                    '📱 Contacts button tapped',
+                    name: 'AddContactPersonPage',
+                  );
+                  ToastificationHelper.showInfo(
+                    context,
+                    'Importing from device contacts is coming soon.',
+                  );
+                },
               ),
+              SizedBox(width: Dimensions.width10),
+              AppBarElevatedButton(
+                label: 'SAVE',
+                onPressed: () {
+                  appLog('💾 Save button tapped', name: 'AddContactPersonPage');
+                  ToastificationHelper.showSuccess(
+                    context,
+                    'Contact person saved.',
+                  );
+                  Navigator.pop(context);
+                },
+              ),
+              SizedBox(width: Dimensions.width20),
+            ],
+          ),
+
+          // Content
+          SliverPadding(
+            padding: EdgeInsets.all(Dimensions.width20),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                // Contact Person Card
+                Container(
+                  padding: EdgeInsets.all(Dimensions.width20),
+                  decoration: BoxDecoration(
+                    color: context.colors.card,
+                    borderRadius: BorderRadius.circular(Dimensions.radius20),
+                    border: Border.all(color: context.colors.border),
+                    boxShadow: [
+                      BoxShadow(
+                        color: context.colors.border.withValues(alpha: 0.5),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Contact Person',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.95,
+                          fontWeight: FontWeight.w700,
+                          color: context.colors.textPrimary,
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      Row(
+                        children: [
+                          Expanded(flex: 1, child: _buildSalutationDropdown()),
+                          SizedBox(width: Dimensions.width15),
+                          Expanded(
+                            flex: 2,
+                            child: _buildSimpleTextField(
+                              'First Name',
+                              _firstNameController,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height15),
+                      _buildSimpleTextField('Last Name', _lastNameController),
+                      SizedBox(height: Dimensions.height15),
+                      _buildSimpleTextField(
+                        'Email',
+                        _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      Text(
+                        'Contact Phone',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.85,
+                          fontWeight: FontWeight.w600,
+                          color: Appcolors.primary,
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.height15),
+                      _buildPhoneField(
+                        'Work Phone',
+                        _workPhoneController,
+                        _workPhoneCountryCode,
+                        (value) =>
+                            setState(() => _workPhoneCountryCode = value!),
+                      ),
+                      SizedBox(height: Dimensions.height15),
+                      _buildPhoneField(
+                        'Mobile',
+                        _mobileController,
+                        _mobileCountryCode,
+                        (value) => setState(() => _mobileCountryCode = value!),
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      Text(
+                        'Other Details',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.85,
+                          fontWeight: FontWeight.w600,
+                          color: Appcolors.primary,
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.height15),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildSimpleTextField(
+                              'Designation',
+                              _designationController,
+                            ),
+                          ),
+                          SizedBox(width: Dimensions.width15),
+                          Expanded(
+                            child: _buildSimpleTextField(
+                              'Department',
+                              _departmentController,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: Dimensions.height30),
+              ]),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -250,7 +241,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.85,
                   color: _selectedSalutation.isEmpty
-                      ? Appcolors.primary
+                      ? context.colors.textTertiary
                       : context.colors.textPrimary,
                   fontWeight: _selectedSalutation.isEmpty
                       ? FontWeight.w500
@@ -401,7 +392,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(
-          color: Appcolors.primary,
+          color: context.colors.textTertiary,
           fontSize: Dimensions.font16 * 0.85,
         ),
         filled: true,
@@ -432,73 +423,90 @@ class _AddContactPersonPageState extends State<AddContactPersonPage> {
     String countryCode,
     Function(String?) onCountryChanged,
   ) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: Dimensions.width15,
-            vertical: Dimensions.height15,
-          ),
-          decoration: BoxDecoration(
-            color: context.colors.surfaceLight,
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            border: Border.all(color: context.colors.border),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                countryCode,
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.85,
-                  fontWeight: FontWeight.w600,
-                  color: context.colors.textPrimary,
-                ),
-              ),
-              SizedBox(width: Dimensions.width10 / 2),
-              Icon(
-                Icons.keyboard_arrow_down_rounded,
-                size: Dimensions.iconSize16 * 1.2,
-                color: context.colors.textSecondary,
-              ),
-            ],
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: Dimensions.font16 * 0.85,
+            fontWeight: FontWeight.w600,
+            color: Appcolors.primary,
           ),
         ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: TextField(
-            controller: controller,
-            keyboardType: TextInputType.phone,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.85,
-              color: context.colors.textPrimary,
+        SizedBox(height: Dimensions.height10),
+        Row(
+          children: [
+            GestureDetector(
+              onTap: () => onCountryChanged(countryCode),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width15,
+                  vertical: Dimensions.height15,
+                ),
+                decoration: BoxDecoration(
+                  color: context.colors.surfaceLight,
+                  borderRadius: BorderRadius.circular(Dimensions.radius15),
+                  border: Border.all(color: context.colors.border),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      countryCode,
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.85,
+                        fontWeight: FontWeight.w600,
+                        color: context.colors.textPrimary,
+                      ),
+                    ),
+                    SizedBox(width: Dimensions.width10 / 2),
+                    Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: Dimensions.iconSize16 * 1.2,
+                      color: context.colors.textSecondary,
+                    ),
+                  ],
+                ),
+              ),
             ),
-            decoration: InputDecoration(
-              hintText: label,
-              hintStyle: TextStyle(
-                color: context.colors.textTertiary,
-                fontSize: Dimensions.font16 * 0.85,
-              ),
-              filled: true,
-              fillColor: context.colors.surfaceLight,
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width15,
-                vertical: Dimensions.height15,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-                borderSide: BorderSide(color: context.colors.border),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-                borderSide: BorderSide(color: context.colors.border),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-                borderSide: BorderSide(color: Appcolors.primary, width: 2),
+            SizedBox(width: Dimensions.width10),
+            Expanded(
+              child: TextField(
+                controller: controller,
+                keyboardType: TextInputType.phone,
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.85,
+                  color: context.colors.textPrimary,
+                ),
+                decoration: InputDecoration(
+                  hintText: label,
+                  hintStyle: TextStyle(
+                    color: context.colors.textTertiary,
+                    fontSize: Dimensions.font16 * 0.85,
+                  ),
+                  filled: true,
+                  fillColor: context.colors.surfaceLight,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: Dimensions.width15,
+                    vertical: Dimensions.height15,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    borderSide: BorderSide(color: context.colors.border),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    borderSide: BorderSide(color: context.colors.border),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    borderSide: BorderSide(color: Appcolors.primary, width: 2),
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ],
     );

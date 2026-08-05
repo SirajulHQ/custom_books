@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/vendor_credits/models/vendor_credit_model.dart';
 import 'package:custom_books/features/vendor_credits/view/add_vendor_credit_page.dart';
 import 'package:flutter/material.dart';
@@ -54,166 +55,156 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      appBar: AppBar(
-        backgroundColor: context.colors.card,
-        surfaceTintColor: context.colors.card,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            color: context.colors.textPrimary,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Vendor Credit Details',
-          style: TextStyle(
-            fontSize: Dimensions.font26 * 0.7,
-            fontWeight: FontWeight.w800,
-            color: context.colors.textPrimary,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.edit_rounded,
-              color: context.colors.textSecondary,
-              size: Dimensions.iconSize24 - 2,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AddVendorCreditPage()),
-              );
-            },
-          ),
-          PopupMenuButton<String>(
-            icon: Icon(
-              Icons.more_vert_rounded,
-              color: context.colors.textSecondary,
-              size: Dimensions.iconSize24 - 2,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-            ),
-            surfaceTintColor: context.colors.card,
-            color: context.colors.card,
-            elevation: 8,
-            onSelected: (value) {
-              if (value == 'print') {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Print functionality coming soon'),
-                    duration: const Duration(seconds: 2),
-                    backgroundColor: context.colors.textSecondary,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    ),
-                  ),
-                );
-              } else if (value == 'delete') {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    backgroundColor: context.colors.card,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius20),
-                    ),
-                    title: Text(
-                      'Delete Vendor Credit',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: Dimensions.font20,
-                      ),
-                    ),
-                    content: Text(
-                      'Are you sure you want to delete this vendor credit? This action cannot be undone.',
-                      style: TextStyle(
-                        color: context.colors.textSecondary,
-                        fontSize: Dimensions.font16 * 0.9,
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(ctx),
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(
-                            color: context.colors.textSecondary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(ctx);
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'Delete',
-                          style: TextStyle(
-                            color: Appcolors.warn,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'print',
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.print_rounded,
-                      size: Dimensions.iconSize16 + 4,
-                      color: context.colors.textSecondary,
-                    ),
-                    SizedBox(width: Dimensions.width10),
-                    Text(
-                      'Print',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        fontWeight: FontWeight.w600,
-                        color: context.colors.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.delete_outline_rounded,
-                      size: Dimensions.iconSize16 + 4,
-                      color: Appcolors.warn,
-                    ),
-                    SizedBox(width: Dimensions.width10),
-                    Text(
-                      'Delete',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        fontWeight: FontWeight.w600,
-                        color: Appcolors.warn,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(width: Dimensions.width10),
-        ],
-      ),
       body: SafeArea(
         child: Column(
           children: [
+            SizedBox(
+              height: Dimensions.height45 * 1.6,
+              child: CustomScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                slivers: [
+                  CustomSliverAppBar(
+                    title: 'Vendor Credit Details',
+                    leadingType: AppBarLeadingType.back,
+                    actions: [
+                      AppBarIconButton(
+                        icon: Icons.edit_rounded,
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AddVendorCreditPage(),
+                          ),
+                        ),
+                      ),
+                      AppBarIconButton(
+                        icon: Icons.more_vert_rounded,
+                        color: Appcolors.accent,
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            backgroundColor: Colors.transparent,
+                            builder: (ctx) => Container(
+                              decoration: BoxDecoration(
+                                color: context.colors.card,
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(24),
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 4,
+                                    margin: EdgeInsets.symmetric(
+                                      vertical: Dimensions.height10,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: context.colors.border,
+                                      borderRadius: BorderRadius.circular(
+                                        Dimensions.radius30,
+                                      ),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    leading: Icon(
+                                      Icons.print_rounded,
+                                      color: context.colors.textSecondary,
+                                    ),
+                                    title: Text(
+                                      'Print',
+                                      style: TextStyle(
+                                        fontSize: Dimensions.font16 * 0.9,
+                                        fontWeight: FontWeight.w600,
+                                        color: context.colors.textPrimary,
+                                      ),
+                                    ),
+                                    onTap: () => Navigator.pop(ctx),
+                                  ),
+                                  ListTile(
+                                    leading: Icon(
+                                      Icons.delete_outline_rounded,
+                                      color: Appcolors.warn,
+                                    ),
+                                    title: Text(
+                                      'Delete',
+                                      style: TextStyle(
+                                        fontSize: Dimensions.font16 * 0.9,
+                                        fontWeight: FontWeight.w600,
+                                        color: Appcolors.warn,
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      Navigator.pop(ctx);
+                                      showDialog(
+                                        context: context,
+                                        builder: (dlgCtx) => AlertDialog(
+                                          backgroundColor: context.colors.card,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              Dimensions.radius20,
+                                            ),
+                                          ),
+                                          title: Text(
+                                            'Delete Vendor Credit',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: Dimensions.font20,
+                                            ),
+                                          ),
+                                          content: Text(
+                                            'Are you sure you want to delete this vendor credit? This action cannot be undone.',
+                                            style: TextStyle(
+                                              color:
+                                                  context.colors.textSecondary,
+                                              fontSize: Dimensions.font16 * 0.9,
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(dlgCtx),
+                                              child: Text(
+                                                'Cancel',
+                                                style: TextStyle(
+                                                  color: context
+                                                      .colors
+                                                      .textSecondary,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(dlgCtx);
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                'Delete',
+                                                style: TextStyle(
+                                                  color: Appcolors.warn,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: Dimensions.height20),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      SizedBox(width: Dimensions.width10),
+                    ],
+                  ),
+                ],
+              ),
+            ),
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(Dimensions.width20),

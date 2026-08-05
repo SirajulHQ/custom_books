@@ -1181,14 +1181,16 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Appcolors.primary,
+              brightness: Theme.of(context).brightness,
+            ).copyWith(
               primary: Appcolors.primary,
-              onPrimary: Colors.white,
-              surface: Colors.white,
               onSurface: context.colors.textPrimary,
+              surface: context.colors.card,
             ),
           ),
-          child: child!,
+          child: child!
         );
       },
     );
@@ -1384,7 +1386,7 @@ class _EmailCommunicationsSection extends StatelessWidget {
               vertical: Dimensions.height15,
             ),
             decoration: BoxDecoration(
-              color: const Color(0xFFE3F2FD),
+              color: Appcolors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(Dimensions.radius15),
             ),
             child: Row(
@@ -1424,7 +1426,7 @@ class _EmailItem extends StatelessWidget {
       margin: EdgeInsets.only(bottom: Dimensions.height10),
       padding: EdgeInsets.all(Dimensions.width15),
       decoration: BoxDecoration(
-        color: const Color(0xFFE3F2FD),
+        color: Appcolors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(Dimensions.radius15),
       ),
       child: Row(

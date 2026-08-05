@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class BillsPage extends StatefulWidget {
-  const BillsPage({super.key});
+  final int initialTab;
+
+  const BillsPage({super.key, this.initialTab = 0});
 
   @override
   State<BillsPage> createState() => _BillsPageState();
@@ -19,7 +21,7 @@ class BillsPage extends StatefulWidget {
 class _BillsPageState extends State<BillsPage> {
   final TextEditingController _searchController = TextEditingController();
 
-  int _selectedTab = 0; // 0: All, 1: Open, 2: Overdue, 3: Paid
+  late int _selectedTab; // 0: All, 1: Open, 2: Overdue, 3: Paid
   bool _searchOpen = false;
   BillStatus? _statusFilter;
   BillSortField _sortField = BillSortField.createdTime;
@@ -30,6 +32,7 @@ class _BillsPageState extends State<BillsPage> {
   @override
   void initState() {
     super.initState();
+    _selectedTab = widget.initialTab;
     _bills = [
       BillModel(
         id: '1',

@@ -1,7 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
-import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/view/custom_drawer.dart';
 import 'package:custom_books/features/time_entries/models/time_entry_model.dart';
 import 'package:custom_books/features/time_entries/view/add_time_entry_page.dart';
@@ -395,65 +394,6 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'time_entries'),
-      appBar: AppBar(
-        backgroundColor: context.colors.background,
-        surfaceTintColor: context.colors.background,
-        elevation: 0,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: Container(
-              width: Dimensions.height45 * 0.9,
-              height: Dimensions.height45 * 0.9,
-              decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-              ),
-              child: Icon(
-                Icons.menu_rounded,
-                size: Dimensions.iconSize24 - 4,
-                color: Appcolors.primary,
-              ),
-            ),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Time Entries',
-              style: TextStyle(
-                fontSize: Dimensions.font26 * 0.85,
-                fontWeight: FontWeight.w800,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            Text(
-              '${_entries.length} entr${_entries.length == 1 ? 'y' : 'ies'}',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.7,
-                color: context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          AppBarIconButton(
-            icon: _searchOpen ? Icons.close_rounded : Icons.search_rounded,
-            onPressed: () => setState(() {
-              _searchOpen = !_searchOpen;
-              if (!_searchOpen) _searchController.clear();
-            }),
-          ),
-          SizedBox(width: Dimensions.width10),
-          AppBarIconButton(
-            icon: Icons.more_vert_rounded,
-            color: Appcolors.accent,
-            onPressed: _openFilterSheet,
-          ),
-          SizedBox(width: Dimensions.width20),
-        ],
-      ),
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(Dimensions.radius15),

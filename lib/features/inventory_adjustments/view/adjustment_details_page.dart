@@ -254,7 +254,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
     final isDraft = adjustment.status == AdjustmentStatus.draft;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: context.colors.background,
       appBar: AppBar(
         backgroundColor: context.colors.card,
         surfaceTintColor: context.colors.card,

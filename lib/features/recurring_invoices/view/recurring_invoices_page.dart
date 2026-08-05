@@ -490,65 +490,6 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'recurring_invoices'),
-      appBar: AppBar(
-        backgroundColor: context.colors.background,
-        surfaceTintColor: context.colors.background,
-        elevation: 0,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: Container(
-              width: Dimensions.height45 * 0.9,
-              height: Dimensions.height45 * 0.9,
-              decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-              ),
-              child: Icon(
-                Icons.menu_rounded,
-                size: Dimensions.iconSize24 - 4,
-                color: Appcolors.primary,
-              ),
-            ),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Recurring Invoices',
-              style: TextStyle(
-                fontSize: Dimensions.font26 * 0.85,
-                fontWeight: FontWeight.w800,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            Text(
-              '${_profiles.length} profile${_profiles.length == 1 ? '' : 's'}',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.7,
-                color: context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          AppBarIconButton(
-            icon: _searchOpen ? Icons.close_rounded : Icons.search_rounded,
-            onPressed: () => setState(() {
-              _searchOpen = !_searchOpen;
-              if (!_searchOpen) _searchController.clear();
-            }),
-          ),
-          SizedBox(width: Dimensions.width10),
-          AppBarIconButton(
-            icon: Icons.more_vert_rounded,
-            color: Appcolors.accent,
-            onPressed: _openFilterSheet,
-          ),
-          SizedBox(width: Dimensions.width20),
-        ],
-      ),
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -570,141 +511,184 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
           child: const Icon(Icons.add_rounded),
         ),
       ),
-      body: Column(
-        children: [
-          if (_searchOpen)
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                Dimensions.width20,
-                Dimensions.height10,
-                Dimensions.width20,
-                Dimensions.height15,
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          CustomSliverAppBar(
+            title: 'Recurring Invoices',
+            subtitle:
+                '${_profiles.length} profile${_profiles.length == 1 ? '' : 's'}',
+            leadingType: AppBarLeadingType.menu,
+            actions: [
+              AppBarIconButton(
+                icon: _searchOpen ? Icons.close_rounded : Icons.search_rounded,
+                onPressed: () => setState(() {
+                  _searchOpen = !_searchOpen;
+                  if (!_searchOpen) _searchController.clear();
+                }),
               ),
-              child: TextField(
-                controller: _searchController,
-                autofocus: true,
-                onChanged: (_) => setState(() {}),
-                style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-                decoration: InputDecoration(
-                  hintText: 'Search by profile or customer',
-                  hintStyle: TextStyle(color: context.colors.textTertiary),
-                  prefixIcon: Icon(
-                    Icons.search_rounded,
-                    color: context.colors.textTertiary,
-                  ),
-                  filled: true,
-                  fillColor: context.colors.card,
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: Dimensions.height10,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: const BorderSide(
-                      color: Appcolors.primary,
-                      width: 1.5,
+              SizedBox(width: Dimensions.width10),
+              AppBarIconButton(
+                icon: Icons.more_vert_rounded,
+                color: Appcolors.accent,
+                onPressed: _openFilterSheet,
+              ),
+              SizedBox(width: Dimensions.width20),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                if (_searchOpen)
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      Dimensions.width20,
+                      Dimensions.height10,
+                      Dimensions.width20,
+                      Dimensions.height15,
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      autofocus: true,
+                      onChanged: (_) => setState(() {}),
+                      style: TextStyle(fontSize: Dimensions.font16 * 0.85),
+                      decoration: InputDecoration(
+                        hintText: 'Search by profile or customer',
+                        hintStyle: TextStyle(
+                          color: context.colors.textTertiary,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search_rounded,
+                          color: context.colors.textTertiary,
+                        ),
+                        filled: true,
+                        fillColor: context.colors.card,
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: Dimensions.height10,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radius15,
+                          ),
+                          borderSide: BorderSide(color: context.colors.border),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radius15,
+                          ),
+                          borderSide: BorderSide(color: context.colors.border),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radius15,
+                          ),
+                          borderSide: const BorderSide(
+                            color: Appcolors.primary,
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    Dimensions.width20,
+                    Dimensions.height10 / 2,
+                    Dimensions.width20,
+                    Dimensions.height15,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: context.colors.surfaceLight,
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius30,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              _tabButton('All', 0),
+                              _tabButton('Active', 1),
+                              _tabButton('Stopped', 2),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: Dimensions.width10),
+                      InkWell(
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15,
+                        ),
+                        onTap: _openFilterSheet,
+                        child: _controlBadge(
+                          _statusFilter == null
+                              ? Icons.filter_list_rounded
+                              : Icons.filter_alt_rounded,
+                          active: _statusFilter != null,
+                        ),
+                      ),
+                      SizedBox(width: Dimensions.width10 / 2),
+                      InkWell(
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15,
+                        ),
+                        onTap: _openSortSheet,
+                        child: _controlBadge(Icons.swap_vert_rounded),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              Dimensions.width20,
-              Dimensions.height10 / 2,
-              Dimensions.width20,
-              Dimensions.height15,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
+                if (_statusFilter != null)
+                  Container(
+                    margin: EdgeInsets.fromLTRB(
+                      Dimensions.width20,
+                      0,
+                      Dimensions.width20,
+                      Dimensions.height10,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.width15,
+                      vertical: Dimensions.height10 / 2,
+                    ),
                     decoration: BoxDecoration(
-                      color: context.colors.surfaceLight,
-                      borderRadius: BorderRadius.circular(Dimensions.radius30),
+                      color: Appcolors.primary.withValues(alpha: 0.07),
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
                     ),
                     child: Row(
                       children: [
-                        _tabButton('All', 0),
-                        _tabButton('Active', 1),
-                        _tabButton('Stopped', 2),
+                        Icon(
+                          Icons.filter_alt_rounded,
+                          size: Dimensions.iconSize16,
+                          color: Appcolors.primary,
+                        ),
+                        SizedBox(width: Dimensions.width10 / 2),
+                        Text(
+                          'Status: ${_statusFilter!.label}',
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.72,
+                            fontWeight: FontWeight.w600,
+                            color: Appcolors.primary,
+                          ),
+                        ),
+                        const Spacer(),
+                        InkWell(
+                          onTap: () => setState(() => _statusFilter = null),
+                          child: Icon(
+                            Icons.close_rounded,
+                            size: Dimensions.iconSize16,
+                            color: Appcolors.primary,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                ),
-                SizedBox(width: Dimensions.width10),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: _openFilterSheet,
-                  child: _controlBadge(
-                    _statusFilter == null
-                        ? Icons.filter_list_rounded
-                        : Icons.filter_alt_rounded,
-                    active: _statusFilter != null,
-                  ),
-                ),
-                SizedBox(width: Dimensions.width10 / 2),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: _openSortSheet,
-                  child: _controlBadge(Icons.swap_vert_rounded),
-                ),
               ],
             ),
           ),
-          if (_statusFilter != null)
-            Container(
-              margin: EdgeInsets.fromLTRB(
-                Dimensions.width20,
-                0,
-                Dimensions.width20,
-                Dimensions.height10,
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width15,
-                vertical: Dimensions.height10 / 2,
-              ),
-              decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.07),
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.filter_alt_rounded,
-                    size: Dimensions.iconSize16,
-                    color: Appcolors.primary,
-                  ),
-                  SizedBox(width: Dimensions.width10 / 2),
-                  Text(
-                    'Status: ${_statusFilter!.label}',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.72,
-                      fontWeight: FontWeight.w600,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                  const Spacer(),
-                  InkWell(
-                    onTap: () => setState(() => _statusFilter = null),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          Expanded(
+          SliverFillRemaining(
             child: visibleList.isEmpty
                 ? Center(
                     child: Padding(
@@ -718,7 +702,9 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
                             width: Dimensions.height45 * 1.6,
                             height: Dimensions.height45 * 1.6,
                             decoration: BoxDecoration(
-                              color: Appcolors.primary.withValues(alpha: 0.08),
+                              color: Appcolors.primary.withValues(
+                                alpha: 0.08,
+                              ),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(

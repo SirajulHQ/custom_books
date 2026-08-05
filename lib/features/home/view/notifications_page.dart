@@ -213,7 +213,7 @@ class _NotificationCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: context.colors.border.withValues(alpha: 0.5),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),

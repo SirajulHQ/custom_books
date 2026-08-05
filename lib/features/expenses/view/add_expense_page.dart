@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/expenses/models/expense_model.dart';
 import 'package:flutter/material.dart';
@@ -168,110 +169,137 @@ class _AddExpensePageState extends State<AddExpensePage> {
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      appBar: AppBar(
-        backgroundColor: context.colors.card,
-        elevation: 0.5,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            color: context.colors.textPrimary,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'New Expense',
-          style: TextStyle(
-            color: context.colors.textPrimary,
-            fontSize: Dimensions.font20 * 0.9,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => _saveExpense(status: ExpenseStatus.unbilled),
-            child: Text(
-              'SAVE',
-              style: TextStyle(
-                color: Appcolors.primary,
-                fontWeight: FontWeight.w800,
-                fontSize: Dimensions.font16 * 0.75,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
-          PopupMenuButton<String>(
-            icon: Icon(
-              Icons.more_vert_rounded,
-              color: context.colors.textPrimary,
-            ),
-            onSelected: (val) {
-              if (val == 'save_billed') {
-                _saveExpense(status: ExpenseStatus.billed);
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'save_billed',
-                child: Text('Save as Billed'),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(Dimensions.width15),
-        child: Column(
-          children: [
-            FormCard(
-              children: [
-                const RequiredLabel(text: 'Category'),
-                SizedBox(height: Dimensions.height10 / 2),
-                _selectorField(
-                  value: _category,
-                  hint: 'Select a category',
-                  onTap: _selectCategory,
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            CustomSliverAppBar(
+              title: 'New Expense',
+              leadingType: AppBarLeadingType.back,
+              actions: [
+                AppBarElevatedButton(
+                  label: 'SAVE',
+                  onPressed: () => _saveExpense(status: ExpenseStatus.unbilled),
                 ),
-                SizedBox(height: Dimensions.height20),
-
-                Text('Vendor', style: FormTextStyles.label()),
-                SizedBox(height: Dimensions.height10 / 2),
-                _selectorField(
-                  value: _vendorName,
-                  hint: 'Select a vendor',
-                  onTap: _selectVendor,
+                SizedBox(width: Dimensions.width10),
+                AppBarIconButton(
+                  icon: Icons.more_vert_rounded,
+                  color: Appcolors.accent,
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (ctx) => Container(
+                        decoration: BoxDecoration(
+                          color: context.colors.card,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(24),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 4,
+                              margin: EdgeInsets.symmetric(
+                                vertical: Dimensions.height10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: context.colors.border,
+                                borderRadius: BorderRadius.circular(
+                                  Dimensions.radius30,
+                                ),
+                              ),
+                            ),
+                            ListTile(
+                              leading: Icon(
+                                Icons.receipt_rounded,
+                                color: Appcolors.primary,
+                              ),
+                              title: Text(
+                                'Save as Billed',
+                                style: TextStyle(
+                                  fontSize: Dimensions.font16 * 0.9,
+                                  fontWeight: FontWeight.w600,
+                                  color: context.colors.textPrimary,
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.pop(ctx);
+                                _saveExpense(status: ExpenseStatus.billed);
+                              },
+                            ),
+                            SizedBox(height: Dimensions.height20),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                SizedBox(height: Dimensions.height20),
-
-                const RequiredLabel(text: 'Expense Date'),
-                SizedBox(height: Dimensions.height10 / 2),
-                _dateField(dateFormat.format(_expenseDate), _pickDate),
-                SizedBox(height: Dimensions.height20),
-
-                Text('Reference#', style: FormTextStyles.label()),
-                SizedBox(height: Dimensions.height10 / 2),
-                TextField(
-                  controller: _referenceController,
-                  style: FormTextStyles.value(context),
-                  decoration: _underlineDecoration(),
-                ),
+                SizedBox(width: Dimensions.width20),
               ],
             ),
-            SizedBox(height: Dimensions.height15),
-
-            FormCard(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            SliverToBoxAdapter(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(Dimensions.width15),
+                child: Column(
                   children: [
-                    const RequiredLabel(text: 'Amount'),
-                    FormNumberField(
-                      controller: _amountController,
-                      hint: '0.00',
-                      prefix: 'AED',
+                    FormCard(
+                      children: [
+                        const RequiredLabel(text: 'Category'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _selectorField(
+                          value: _category,
+                          hint: 'Select a category',
+                          onTap: _selectCategory,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        Text('Vendor', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _selectorField(
+                          value: _vendorName,
+                          hint: 'Select a vendor',
+                          onTap: _selectVendor,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        const RequiredLabel(text: 'Expense Date'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _dateField(dateFormat.format(_expenseDate), _pickDate),
+                        SizedBox(height: Dimensions.height20),
+
+                        Text('Reference#', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _referenceController,
+                          style: FormTextStyles.value(context),
+                          decoration: _underlineDecoration(),
+                        ),
+                      ],
                     ),
+                    SizedBox(height: Dimensions.height15),
+
+                    FormCard(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const RequiredLabel(text: 'Amount'),
+                            FormNumberField(
+                              controller: _amountController,
+                              hint: '0.00',
+                              prefix: 'AED',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Dimensions.height30),
                   ],
                 ),
-              ],
+              ),
             ),
           ],
         ),

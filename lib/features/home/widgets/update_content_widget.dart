@@ -90,7 +90,7 @@ class AnnouncementCardWidget extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: context.colors.border.withValues(alpha: 0.5),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

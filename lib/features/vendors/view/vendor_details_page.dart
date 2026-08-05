@@ -389,7 +389,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
                 width: Dimensions.height45 * 3,
                 height: Dimensions.height45 * 3,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE8EAF6),
+                  color: context.colors.surfaceLight,
                   borderRadius: BorderRadius.circular(Dimensions.radius20),
                 ),
                 child: Center(

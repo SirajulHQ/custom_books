@@ -1,3 +1,4 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:flutter/material.dart';
 
 class ImageHelper {
@@ -26,13 +27,14 @@ class ImageHelper {
         errorBuilder: errorWidget != null
             ? (context, error, stackTrace) => errorWidget
             : (context, error, stackTrace) {
+                final colors = Theme.of(context).extension<AppColors>()!;
                 return Container(
                   width: width,
                   height: height,
-                  color: Colors.grey.shade300,
-                  child: const Icon(
+                  color: colors.surfaceLight,
+                  child: Icon(
                     Icons.image_not_supported,
-                    color: Colors.grey,
+                    color: colors.textTertiary,
                   ),
                 );
               },
@@ -47,13 +49,14 @@ class ImageHelper {
         errorBuilder: errorWidget != null
             ? (context, error, stackTrace) => errorWidget
             : (context, error, stackTrace) {
+                final colors = Theme.of(context).extension<AppColors>()!;
                 return Container(
                   width: width,
                   height: height,
-                  color: Colors.grey.shade300,
-                  child: const Icon(
+                  color: colors.surfaceLight,
+                  child: Icon(
                     Icons.image_not_supported,
-                    color: Colors.grey,
+                    color: colors.textTertiary,
                   ),
                 );
               },

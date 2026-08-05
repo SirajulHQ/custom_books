@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/time_entries/models/time_entry_model.dart';
 import 'package:custom_books/features/time_entries/view/add_time_entry_page.dart';
 import 'package:flutter/material.dart';
@@ -30,68 +31,60 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final entry = widget.entry;
-    final statusColor = entry.isBillable
-        ? Appcolors.success
-        : context.colors.textTertiary;
-
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      appBar: AppBar(
-        backgroundColor: context.colors.card,
-        surfaceTintColor: context.colors.card,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            color: context.colors.textPrimary,
-          ),
-          onPressed: () => Navigator.pop(context),
+  void _showMoreOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: context.colors.card,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         ),
-        title: Text(
-          'Time Entry Details',
-          style: TextStyle(
-            fontSize: Dimensions.font26 * 0.7,
-            fontWeight: FontWeight.w800,
-            color: context.colors.textPrimary,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.edit_rounded,
-              color: context.colors.textSecondary,
-              size: Dimensions.iconSize24 - 2,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+              decoration: BoxDecoration(
+                color: context.colors.border,
+                borderRadius: BorderRadius.circular(Dimensions.radius30),
+              ),
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AddTimeEntryPage(),
+            ListTile(
+              leading: Icon(
+                Icons.print_rounded,
+                color: context.colors.textSecondary,
+              ),
+              title: Text(
+                'Print',
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.9,
+                  fontWeight: FontWeight.w600,
+                  color: context.colors.textPrimary,
                 ),
-              );
-            },
-          ),
-          PopupMenuButton<String>(
-            icon: Icon(
-              Icons.more_vert_rounded,
-              color: context.colors.textSecondary,
-              size: Dimensions.iconSize24 - 2,
+              ),
+              onTap: () => Navigator.pop(ctx),
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-            ),
-            surfaceTintColor: context.colors.card,
-            color: context.colors.card,
-            elevation: 8,
-            onSelected: (value) {
-              if (value == 'delete') {
+            ListTile(
+              leading: Icon(
+                Icons.delete_outline_rounded,
+                color: Appcolors.warn,
+              ),
+              title: Text(
+                'Delete',
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.9,
+                  fontWeight: FontWeight.w600,
+                  color: Appcolors.warn,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
                 showDialog(
                   context: context,
-                  builder: (ctx) => AlertDialog(
+                  builder: (dlgCtx) => AlertDialog(
                     backgroundColor: context.colors.card,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius20),
@@ -112,7 +105,7 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
                     ),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.pop(ctx),
+                        onPressed: () => Navigator.pop(dlgCtx),
                         child: Text(
                           'Cancel',
                           style: TextStyle(
@@ -123,7 +116,7 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(ctx);
+                          Navigator.pop(dlgCtx);
                           Navigator.pop(context);
                         },
                         child: Text(
@@ -137,59 +130,60 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
                     ],
                   ),
                 );
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'print',
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.print_rounded,
-                      size: Dimensions.iconSize16 + 4,
-                      color: context.colors.textSecondary,
-                    ),
-                    SizedBox(width: Dimensions.width10),
-                    Text(
-                      'Print',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        fontWeight: FontWeight.w600,
-                        color: context.colors.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.delete_outline_rounded,
-                      size: Dimensions.iconSize16 + 4,
-                      color: Appcolors.warn,
-                    ),
-                    SizedBox(width: Dimensions.width10),
-                    Text(
-                      'Delete',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        fontWeight: FontWeight.w600,
-                        color: Appcolors.warn,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(width: Dimensions.width10),
-        ],
+              },
+            ),
+            SizedBox(height: Dimensions.height20),
+          ],
+        ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Dimensions.init(context);
+    final entry = widget.entry;
+    final statusColor = entry.isBillable
+        ? Appcolors.success
+        : context.colors.textTertiary;
+
+    return Scaffold(
+      backgroundColor: context.colors.background,
       body: SafeArea(
         child: Column(
           children: [
+            // App bar via CustomScrollView
+            SizedBox(
+              height: Dimensions.height45 * 1.6,
+              child: CustomScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                slivers: [
+                  CustomSliverAppBar(
+                    title: 'Time Entry Details',
+                    leadingType: AppBarLeadingType.back,
+                    actions: [
+                      AppBarIconButton(
+                        icon: Icons.edit_rounded,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AddTimeEntryPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      AppBarIconButton(
+                        icon: Icons.more_vert_rounded,
+                        color: Appcolors.accent,
+                        onPressed: _showMoreOptions,
+                      ),
+                      SizedBox(width: Dimensions.width10),
+                    ],
+                  ),
+                ],
+              ),
+            ),
             // Header section
             Container(
               width: double.infinity,
@@ -263,7 +257,6 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
               ),
             ),
             SizedBox(height: Dimensions.height15),
-
             // Tabs
             Container(
               margin: EdgeInsets.symmetric(horizontal: Dimensions.width20),
@@ -305,7 +298,6 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
               ),
             ),
             SizedBox(height: Dimensions.height15),
-
             // Tab content
             Expanded(
               child: TabBarView(

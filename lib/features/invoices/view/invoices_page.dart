@@ -40,7 +40,9 @@ extension _InvoiceStatusLabel on InvoiceStatus {
 enum _SortDirection { ascending, descending }
 
 class InvoicesPage extends StatefulWidget {
-  const InvoicesPage({super.key});
+  final int initialTab;
+
+  const InvoicesPage({super.key, this.initialTab = 0});
 
   @override
   State<InvoicesPage> createState() => _InvoicesPageState();
@@ -49,7 +51,7 @@ class InvoicesPage extends StatefulWidget {
 class _InvoicesPageState extends State<InvoicesPage> {
   final TextEditingController _searchController = TextEditingController();
 
-  int _selectedTab = 0; // 0: All, 1: Draft, 2: Overdue, 3: Paid
+  late int _selectedTab; // 0: All, 1: Draft, 2: Overdue, 3: Paid
   bool _searchOpen = false;
   InvoiceStatus? _statusFilter;
   _InvoiceSortField _sortField = _InvoiceSortField.createdTime;
@@ -60,6 +62,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
   @override
   void initState() {
     super.initState();
+    _selectedTab = widget.initialTab;
     _invoices = [
       InvoiceModel(
         id: '1',

@@ -31,7 +31,7 @@ class FormCard extends StatelessWidget {
         boxShadow: showShadow
             ? [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.02),
+                  color: context.colors.border.withValues(alpha: 0.5),
                   blurRadius: 10,
                   offset: const Offset(0, 2),
                 ),

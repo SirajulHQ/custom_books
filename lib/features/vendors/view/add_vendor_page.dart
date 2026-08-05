@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/vendors/models/vendor_model.dart';
 import 'package:flutter/material.dart';
@@ -57,101 +58,85 @@ class _AddVendorPageState extends State<AddVendorPage> {
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      appBar: AppBar(
-        backgroundColor: context.colors.card,
-        elevation: 0.5,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            color: context.colors.textPrimary,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'New Vendor',
-          style: TextStyle(
-            color: context.colors.textPrimary,
-            fontSize: Dimensions.font20 * 0.9,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: _saveVendor,
-            child: Text(
-              'SAVE',
-              style: TextStyle(
-                color: Appcolors.primary,
-                fontWeight: FontWeight.w800,
-                fontSize: Dimensions.font16 * 0.75,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(Dimensions.width15),
-        child: Column(
-          children: [
-            FormCard(
-              children: [
-                const RequiredLabel(text: 'Display Name'),
-                SizedBox(height: Dimensions.height10 / 2),
-                _underlineField(
-                  controller: _displayNameController,
-                  hint: 'Enter display name',
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                Text('Company Name', style: FormTextStyles.label()),
-                SizedBox(height: Dimensions.height10 / 2),
-                _underlineField(
-                  controller: _companyNameController,
-                  hint: 'Enter company name',
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                Text('Email', style: FormTextStyles.label()),
-                SizedBox(height: Dimensions.height10 / 2),
-                _underlineField(
-                  controller: _emailController,
-                  hint: 'name@example.com',
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                Text('Phone', style: FormTextStyles.label()),
-                SizedBox(height: Dimensions.height10 / 2),
-                _underlineField(
-                  controller: _phoneController,
-                  hint: '+971 50 123 4567',
-                  keyboardType: TextInputType.phone,
-                ),
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            CustomSliverAppBar(
+              title: 'New Vendor',
+              leadingType: AppBarLeadingType.back,
+              actions: [
+                AppBarElevatedButton(label: 'SAVE', onPressed: _saveVendor),
+                SizedBox(width: Dimensions.width20),
               ],
             ),
-            SizedBox(height: Dimensions.height15),
-
-            FormCard(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            SliverToBoxAdapter(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(Dimensions.width15),
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Text(
-                        'Opening Balance (Payables)',
-                        style: FormTextStyles.label(),
-                      ),
+                    FormCard(
+                      children: [
+                        const RequiredLabel(text: 'Display Name'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _underlineField(
+                          controller: _displayNameController,
+                          hint: 'Enter display name',
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        Text('Company Name', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _underlineField(
+                          controller: _companyNameController,
+                          hint: 'Enter company name',
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        Text('Email', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _underlineField(
+                          controller: _emailController,
+                          hint: 'name@example.com',
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        Text('Phone', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _underlineField(
+                          controller: _phoneController,
+                          hint: '+971 50 123 4567',
+                          keyboardType: TextInputType.phone,
+                        ),
+                      ],
                     ),
-                    SizedBox(width: Dimensions.width10),
-                    FormNumberField(
-                      controller: _openingBalanceController,
-                      hint: '0.00',
-                      prefix: 'AED',
+                    SizedBox(height: Dimensions.height15),
+
+                    FormCard(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Opening Balance (Payables)',
+                                style: FormTextStyles.label(),
+                              ),
+                            ),
+                            SizedBox(width: Dimensions.width10),
+                            FormNumberField(
+                              controller: _openingBalanceController,
+                              hint: '0.00',
+                              prefix: 'AED',
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ],
         ),
