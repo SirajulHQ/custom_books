@@ -30,6 +30,7 @@ import 'package:custom_books/features/manual_journals/view/manual_journals_page.
 import 'package:custom_books/features/documents/view/documents_inbox_page.dart';
 import 'package:custom_books/features/documents/view/all_files_page.dart';
 import 'package:custom_books/features/documents/view/folders_page.dart';
+import 'package:custom_books/features/settings/view/settings_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerView extends StatefulWidget {
@@ -554,13 +555,29 @@ class _DrawerViewState extends State<DrawerView> {
                   item: DrawerItem(
                     icon: Icons.settings_rounded,
                     title: 'Settings',
+                    isSelected: widget.currentRoute == 'settings',
                   ),
                   onCustomTap: () {
                     appLog(
                       '⚙️ Settings button tapped',
                       name: 'DrawerNavigation',
                     );
-                    Navigator.pop(context);
+
+                    // If already on Settings page, just close the drawer
+                    if (widget.currentRoute == 'settings') {
+                      appLog(
+                        '⚠️ Already on Settings page, just closing drawer',
+                        name: 'DrawerNavigation',
+                      );
+                      Navigator.pop(context);
+                      return;
+                    }
+
+                    appLog(
+                      '📍 Navigating to SettingsPage...',
+                      name: 'DrawerNavigation',
+                    );
+                    _navigateToTopLevel(const SettingsPage());
                   },
                 ),
 
