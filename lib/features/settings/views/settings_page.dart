@@ -3,6 +3,10 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
+import 'package:custom_books/features/settings/views/organization_profile_page.dart';
+import 'package:custom_books/features/settings/views/switch_organization_page.dart';
+import 'package:custom_books/features/settings/views/users_page.dart';
+import 'package:custom_books/features/settings/views/preferences_page.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -64,6 +68,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         '🏢 Organization Profile tapped',
                         name: 'SettingsPage',
                       );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const OrganizationProfilePage(),
+                        ),
+                      );
                     },
                   ),
                   _buildSettingsTile(
@@ -74,6 +84,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         '🔄 Switch Organization tapped',
                         name: 'SettingsPage',
                       );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SwitchOrganizationPage(),
+                        ),
+                      );
                     },
                   ),
                   _buildSettingsTile(
@@ -81,6 +97,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     label: 'Users',
                     onTap: () {
                       appLog('👥 Users tapped', name: 'SettingsPage');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const UsersPage()),
+                      );
                     },
                   ),
                   _buildSettingsTile(
@@ -88,6 +108,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     label: 'Preferences',
                     onTap: () {
                       appLog('🎛️ Preferences tapped', name: 'SettingsPage');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PreferencesPage(),
+                        ),
+                      );
                     },
                   ),
 
