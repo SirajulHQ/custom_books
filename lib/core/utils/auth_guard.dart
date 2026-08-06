@@ -6,7 +6,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 
 // TODO: Implement AuthService when authentication is added
 // import 'package:custom_books/core/service/auth_service.dart';
-// import 'package:custom_books/features/auth/view/login_page.dart';
+// import 'package:custom_books/features/auth/views/login_page.dart';
 
 class AuthGuard {
   /// Check if user is authenticated and redirect to login if not

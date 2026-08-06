@@ -1,6 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
-import 'package:custom_books/features/inventory_adjustments/model/inventory_adjustments_model.dart';
+import 'package:custom_books/features/inventory_adjustments/models/inventory_adjustments_model.dart';
 import 'package:flutter/material.dart';
 
 Future<void> showSortBySheet(

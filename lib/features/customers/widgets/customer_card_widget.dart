@@ -1,7 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
-import 'package:custom_books/features/customers/view/customer_details_page.dart';
+import 'package:custom_books/features/customers/views/customer_details_page.dart';
 import 'package:flutter/material.dart';
 
 class CustomerCardWidget extends StatelessWidget {

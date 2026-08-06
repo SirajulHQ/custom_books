@@ -1,0 +1,727 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/app_logger.dart';
+import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/features/drawer/views/custom_drawer.dart';
+import 'package:custom_books/features/customers/models/customer_model.dart';
+import 'package:custom_books/features/customers/widgets/customer_card_widget.dart';
+import 'package:custom_books/features/customers/views/add_customer_page.dart';
+import 'package:flutter/material.dart';
+
+class CustomersPage extends StatefulWidget {
+  const CustomersPage({super.key});
+
+  @override
+  State<CustomersPage> createState() => _CustomersPageState();
+}
+
+class _CustomersPageState extends State<CustomersPage> {
+  String _selectedFilter = 'Active Customers';
+  bool _searchOpen = false;
+  final _searchController = TextEditingController();
+
+  String _sortField = 'Name';
+  bool _sortAsc = true;
+
+  final List<String> _allFilterOptions = [
+    'All Customers',
+    'Active Customers',
+    'CRM Customers',
+    'Duplicate Customers',
+    'Inactive Customers',
+    'Customer Portal Enabled',
+    'Customer Portal Disabled',
+    'Overdue Customers',
+    'Unpaid Customers',
+    'Associated with Payment Options',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    appLog('🎯 CustomersPage initialized', name: 'CustomersPage');
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  // Dummy data based on the image
+  final List<CustomerModel> _customers = [
+    CustomerModel(
+      id: '1',
+      name: 'Amal',
+      receivables: 315.00,
+      unusedCredits: 0.00,
+      isActive: true,
+    ),
+    CustomerModel(
+      id: '2',
+      name: 'nabeel',
+      email: 'nabeelkari18@gmail.com',
+      receivables: 0.00,
+      unusedCredits: 0.00,
+      isActive: true,
+    ),
+    CustomerModel(
+      id: '3',
+      name: 'Nandhu',
+      receivables: 3430.00,
+      unusedCredits: 1210.00,
+      isActive: true,
+    ),
+    CustomerModel(
+      id: '4',
+      name: 'Parthiv Ajith',
+      receivables: 0.00,
+      unusedCredits: 0.00,
+      isActive: true,
+    ),
+    CustomerModel(
+      id: '5',
+      name: 'Parthiv Ajith',
+      receivables: 0.00,
+      unusedCredits: 1000.00,
+      isActive: true,
+    ),
+    CustomerModel(
+      id: '6',
+      name: 'Parthiv2 Ajith2',
+      receivables: 0.00,
+      unusedCredits: 0.00,
+      isActive: true,
+    ),
+  ];
+
+  List<CustomerModel> get _filteredCustomers {
+    var list = _customers;
+
+    // Apply filter
+    if (_selectedFilter == 'Active Customers') {
+      list = list.where((customer) => customer.isActive).toList();
+    } else if (_selectedFilter == 'Inactive Customers') {
+      list = list.where((customer) => !customer.isActive).toList();
+    }
+    // For other filters, show all customers for now
+    // TODO: Implement specific filter logic for:
+    // - CRM Customers
+    // - Duplicate Customers
+    // - Customer Portal Enabled/Disabled
+    // - Overdue Customers
+    // - Unpaid Customers
+    // - Associated with Payment Options
+
+    // Apply search
+    final query = _searchController.text.trim().toLowerCase();
+    if (query.isNotEmpty) {
+      list = list.where((customer) {
+        return customer.name.toLowerCase().contains(query) ||
+            (customer.email?.toLowerCase().contains(query) ?? false);
+      }).toList();
+    }
+
+    // Apply sort
+    list = [...list];
+    list.sort((a, b) {
+      int cmp;
+      switch (_sortField) {
+        case 'Receivables':
+          cmp = a.receivables.compareTo(b.receivables);
+          break;
+        case 'Unused Credits':
+          cmp = a.unusedCredits.compareTo(b.unusedCredits);
+          break;
+        case 'Name':
+        default:
+          cmp = a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      }
+      return _sortAsc ? cmp : -cmp;
+    });
+
+    return list;
+  }
+
+  void _showMoreOptions() {
+    appLog('⋮ More options tapped', name: 'CustomersPage');
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        Widget tile(IconData icon, String label, VoidCallback onTap) {
+          return ListTile(
+            leading: Icon(icon, color: Appcolors.primary),
+            title: Text(
+              label,
+              style: TextStyle(
+                fontSize: Dimensions.font16 * 0.9,
+                fontWeight: FontWeight.w600,
+                color: context.colors.textPrimary,
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(ctx);
+              onTap();
+            },
+          );
+        }
+
+        return Container(
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                decoration: BoxDecoration(
+                  color: context.colors.border,
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
+                ),
+              ),
+              tile(Icons.refresh_rounded, 'Refresh', () {
+                setState(() {});
+                ToastificationHelper.showSuccess(
+                  context,
+                  'Customers refreshed.',
+                );
+              }),
+              tile(
+                Icons.upload_file_outlined,
+                'Import customers',
+                () => ToastificationHelper.showInfo(
+                  context,
+                  'Importing customers is coming soon.',
+                ),
+              ),
+              tile(
+                Icons.file_download_outlined,
+                'Export customers',
+                () => ToastificationHelper.showInfo(
+                  context,
+                  'Exporting customers is coming soon.',
+                ),
+              ),
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showSortSheet() {
+    appLog('🔀 Opening sort sheet', name: 'CustomersPage');
+    const fields = ['Name', 'Receivables', 'Unused Credits'];
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                decoration: BoxDecoration(
+                  color: context.colors.border,
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Sort by',
+                    style: TextStyle(
+                      fontSize: Dimensions.font20,
+                      fontWeight: FontWeight.w800,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: Dimensions.height10),
+              ...fields.map((f) {
+                final selected = f == _sortField;
+                return ListTile(
+                  leading: Icon(
+                    selected
+                        ? Icons.radio_button_checked_rounded
+                        : Icons.radio_button_off_rounded,
+                    color: selected
+                        ? Appcolors.primary
+                        : context.colors.textSecondary,
+                  ),
+                  title: Text(
+                    f,
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 0.9,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                  trailing: selected
+                      ? Icon(
+                          _sortAsc
+                              ? Icons.arrow_upward_rounded
+                              : Icons.arrow_downward_rounded,
+                          color: Appcolors.primary,
+                          size: Dimensions.iconSize16,
+                        )
+                      : null,
+                  onTap: () {
+                    setState(() {
+                      if (_sortField == f) {
+                        _sortAsc = !_sortAsc;
+                      } else {
+                        _sortField = f;
+                        _sortAsc = true;
+                      }
+                    });
+                    Navigator.pop(ctx);
+                  },
+                );
+              }),
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showFilterBottomSheet() {
+    appLog('📋 Opening filter bottom sheet', name: 'CustomersPage');
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(Dimensions.radius20),
+              topRight: Radius.circular(Dimensions.radius20),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width20,
+                  vertical: Dimensions.height15,
+                ),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: context.colors.border, width: 1),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Filter',
+                      style: TextStyle(
+                        fontSize: Dimensions.font20,
+                        fontWeight: FontWeight.bold,
+                        color: context.colors.textPrimary,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        appLog('❌ Filter sheet closed', name: 'CustomersPage');
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: Dimensions.iconSize24,
+                        color: context.colors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Default Filters Label
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  Dimensions.height20,
+                  Dimensions.width20,
+                  Dimensions.height10,
+                ),
+                child: Text(
+                  'DEFAULT FILTERS',
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.7,
+                    fontWeight: FontWeight.w600,
+                    color: context.colors.textTertiary,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+
+              // Filter options
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width20,
+                  vertical: Dimensions.height10,
+                ),
+                itemCount: _allFilterOptions.length,
+                itemBuilder: (context, index) {
+                  final filter = _allFilterOptions[index];
+                  final isSelected = filter == _selectedFilter;
+
+                  return GestureDetector(
+                    onTap: () {
+                      appLog(
+                        '✅ Filter selected: $filter',
+                        name: 'CustomersPage',
+                      );
+                      setState(() {
+                        _selectedFilter = filter;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: Dimensions.height10),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Dimensions.width15,
+                        vertical: Dimensions.height15,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? Appcolors.primary.withValues(alpha: 0.05)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15,
+                        ),
+                        border: Border.all(
+                          color: isSelected
+                              ? Appcolors.primary
+                              : context.colors.border,
+                          width: isSelected ? 2 : 1,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            filter,
+                            style: TextStyle(
+                              fontSize: Dimensions.font16,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w500,
+                              color: isSelected
+                                  ? Appcolors.primary
+                                  : context.colors.textPrimary,
+                            ),
+                          ),
+                          if (isSelected)
+                            Icon(
+                              Icons.check_circle,
+                              color: Appcolors.primary,
+                              size: Dimensions.iconSize24,
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    appLog('🏗️ Building CustomersPage', name: 'CustomersPage');
+    Dimensions.init(context);
+
+    return Scaffold(
+      backgroundColor: context.colors.background,
+      drawer: const DrawerView(currentRoute: 'customers'),
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // App Bar
+            CustomSliverAppBar(
+              title: 'Customers',
+              subtitle: '${_filteredCustomers.length} customers',
+              leadingType: AppBarLeadingType.menu,
+              actions: [
+                AppBarIconButton(
+                  icon: _searchOpen
+                      ? Icons.close_rounded
+                      : Icons.search_rounded,
+                  color: Appcolors.primary,
+                  onPressed: () {
+                    appLog('🔍 Search tapped', name: 'CustomersPage');
+                    setState(() {
+                      _searchOpen = !_searchOpen;
+                      if (!_searchOpen) _searchController.clear();
+                    });
+                  },
+                ),
+                SizedBox(width: Dimensions.width10),
+                AppBarIconButton(
+                  icon: Icons.more_vert_rounded,
+                  color: context.colors.textSecondary,
+                  onPressed: _showMoreOptions,
+                ),
+                SizedBox(width: Dimensions.width20),
+              ],
+            ),
+
+            // Search Field
+            if (_searchOpen) SliverToBoxAdapter(child: _buildSearchField()),
+
+            // Filter Segment Control
+            SliverToBoxAdapter(child: _buildFilterSegment()),
+
+            // Customers List
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+              sliver: _filteredCustomers.isEmpty
+                  ? SliverToBoxAdapter(child: _buildEmptyState())
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: Dimensions.height15),
+                          child: CustomerCardWidget(
+                            customer: _filteredCustomers[index],
+                          ),
+                        );
+                      }, childCount: _filteredCustomers.length),
+                    ),
+            ),
+
+            SliverToBoxAdapter(child: SizedBox(height: Dimensions.height30)),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          appLog('➕ Add Customer FAB tapped', name: 'CustomersPage');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddCustomerPage()),
+          );
+        },
+        backgroundColor: Appcolors.primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Dimensions.radius20),
+        ),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+          size: Dimensions.iconSize24 * 1.2,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        Dimensions.width20,
+        0,
+        Dimensions.width20,
+        Dimensions.height15,
+      ),
+      child: TextField(
+        controller: _searchController,
+        autofocus: true,
+        onChanged: (_) => setState(() {}),
+        style: TextStyle(fontSize: Dimensions.font16 * 0.85),
+        decoration: InputDecoration(
+          hintText: 'Search by name or email',
+          hintStyle: TextStyle(color: context.colors.textTertiary),
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            color: context.colors.textTertiary,
+          ),
+          filled: true,
+          fillColor: context.colors.card,
+          contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderSide: BorderSide(color: context.colors.border),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderSide: BorderSide(color: context.colors.border),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterSegment() {
+    // Simplify the display text by removing "Customers" suffix if present
+    String displayText = _selectedFilter.replaceAll(' Customers', '');
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        Dimensions.width20,
+        0,
+        Dimensions.width20,
+        Dimensions.height15,
+      ),
+      child: Container(
+        padding: EdgeInsets.all(Dimensions.width10 / 2),
+        decoration: BoxDecoration(
+          color: context.colors.surfaceLight,
+          borderRadius: BorderRadius.circular(Dimensions.radius30),
+        ),
+        child: Row(
+          children: [
+            // Filter dropdown button
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  appLog('🔽 Filter dropdown tapped', name: 'CustomersPage');
+                  _showFilterBottomSheet();
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                  decoration: BoxDecoration(
+                    color: context.colors.card,
+                    borderRadius: BorderRadius.circular(Dimensions.radius30),
+                    border: Border.all(
+                      color: Appcolors.primary.withValues(alpha: 0.3),
+                      width: 1.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Appcolors.primary.withValues(alpha: 0.08),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        displayText,
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.8,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.3,
+                          color: Appcolors.primary,
+                        ),
+                      ),
+                      SizedBox(width: Dimensions.width10 / 2),
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: Dimensions.iconSize16,
+                        color: Appcolors.primary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            SizedBox(width: 8),
+
+            // Sort button
+            GestureDetector(
+              onTap: _showSortSheet,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width15,
+                  vertical: Dimensions.height10,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
+                ),
+                child: Icon(
+                  Icons.sort_rounded,
+                  size: Dimensions.iconSize24 - 4,
+                  color: context.colors.textSecondary,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(Dimensions.width30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(Dimensions.width30),
+              decoration: BoxDecoration(
+                color: Appcolors.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.people_outline_rounded,
+                size: Dimensions.height45 * 1.5,
+                color: Appcolors.primary,
+              ),
+            ),
+            SizedBox(height: Dimensions.height20),
+            Text(
+              'No customers found',
+              style: TextStyle(
+                fontSize: Dimensions.font20,
+                fontWeight: FontWeight.w700,
+                color: context.colors.textPrimary,
+              ),
+            ),
+            SizedBox(height: Dimensions.height10),
+            Text(
+              'Tap the + button to add your first customer',
+              style: TextStyle(
+                fontSize: Dimensions.font16 * 0.85,
+                color: context.colors.textTertiary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -1,7 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/line_item_form_widgets.dart';
-import 'package:custom_books/features/inventory_adjustments/model/line_item_model.dart';
+import 'package:custom_books/features/inventory_adjustments/models/line_item_model.dart';
 import 'package:flutter/material.dart';
 
 /// Radio option widget for selecting mode of adjustment (Quantity or Value)

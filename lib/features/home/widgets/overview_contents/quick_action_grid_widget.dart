@@ -1,10 +1,10 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
-import 'package:custom_books/features/bills/view/add_bill_page.dart';
-import 'package:custom_books/features/customers/view/add_customer_page.dart';
-import 'package:custom_books/features/expenses/view/add_expense_page.dart';
+import 'package:custom_books/features/bills/views/add_bill_page.dart';
+import 'package:custom_books/features/customers/views/add_customer_page.dart';
+import 'package:custom_books/features/expenses/views/add_expense_page.dart';
 import 'package:custom_books/features/home/models/action_item_model.dart';
-import 'package:custom_books/features/invoices/view/new_invoice_page.dart';
+import 'package:custom_books/features/invoices/views/new_invoice_page.dart';
 import 'package:flutter/material.dart';
 
 class QuickActionsGridWidget extends StatelessWidget {

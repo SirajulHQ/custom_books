@@ -1,6 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/apptheme/theme_controller.dart';
-import 'package:custom_books/features/splash/view/splash_page.dart';
+import 'package:custom_books/features/splash/views/splash_page.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {
