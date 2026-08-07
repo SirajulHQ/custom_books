@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
@@ -274,33 +275,17 @@ class _DocumentsInboxPageState extends State<DocumentsInboxPage> {
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'documents_inbox'),
 
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          boxShadow: [
-            BoxShadow(
-              color: Appcolors.primary.withValues(alpha: 0.35),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: FloatingActionButton(
-          onPressed: _upload,
-          backgroundColor: Appcolors.primary,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-          ),
-          child: const Icon(Icons.upload_file_rounded),
-        ),
+      floatingActionButton: CustomAddButton(
+        onPressed: _upload,
+        icon: Icons.upload_file_rounded,
       ),
       body: NestedScrollView(
         physics: const BouncingScrollPhysics(),
         headerSliverBuilder: (context, _) => [
           CustomSliverAppBar(
             title: 'Inbox',
-            subtitle: '${_documents.length} document${_documents.length == 1 ? '' : 's'}',
+            subtitle:
+                '${_documents.length} document${_documents.length == 1 ? '' : 's'}',
             leadingType: AppBarLeadingType.menu,
             actions: [
               AppBarIconButton(
@@ -322,95 +307,95 @@ class _DocumentsInboxPageState extends State<DocumentsInboxPage> {
         ],
         body: Column(
           children: [
-          if (_searchOpen)
+            if (_searchOpen)
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  Dimensions.height10,
+                  Dimensions.width20,
+                  Dimensions.height15,
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  onChanged: (_) => setState(() {}),
+                  style: TextStyle(fontSize: Dimensions.font16 * 0.85),
+                  decoration: InputDecoration(
+                    hintText: 'Search by file name',
+                    hintStyle: TextStyle(color: context.colors.textTertiary),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: context.colors.textTertiary,
+                    ),
+                    filled: true,
+                    fillColor: context.colors.card,
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: Dimensions.height10,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: BorderSide(color: context.colors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: BorderSide(color: context.colors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: const BorderSide(
+                        color: Appcolors.primary,
+                        width: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             Padding(
               padding: EdgeInsets.fromLTRB(
                 Dimensions.width20,
-                Dimensions.height10,
+                Dimensions.height10 / 2,
                 Dimensions.width20,
                 Dimensions.height15,
               ),
-              child: TextField(
-                controller: _searchController,
-                autofocus: true,
-                onChanged: (_) => setState(() {}),
-                style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-                decoration: InputDecoration(
-                  hintText: 'Search by file name',
-                  hintStyle: TextStyle(color: context.colors.textTertiary),
-                  prefixIcon: Icon(
-                    Icons.search_rounded,
-                    color: context.colors.textTertiary,
-                  ),
-                  filled: true,
-                  fillColor: context.colors.card,
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: Dimensions.height10,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: const BorderSide(
-                      color: Appcolors.primary,
-                      width: 1.5,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Recently received',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.8,
+                        fontWeight: FontWeight.w700,
+                        color: context.colors.textPrimary,
+                      ),
                     ),
                   ),
-                ),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    onTap: _openSortSheet,
+                    child: _controlBadge(Icons.swap_vert_rounded),
+                  ),
+                ],
               ),
             ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              Dimensions.width20,
-              Dimensions.height10 / 2,
-              Dimensions.width20,
-              Dimensions.height15,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Recently received',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.8,
-                      fontWeight: FontWeight.w700,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                ),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: _openSortSheet,
-                  child: _controlBadge(Icons.swap_vert_rounded),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: visibleList.isEmpty
-                ? _emptyState()
-                : RefreshIndicator(
-                    onRefresh: () async => setState(() {}),
-                    child: ListView.builder(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
+            Expanded(
+              child: visibleList.isEmpty
+                  ? _emptyState()
+                  : RefreshIndicator(
+                      onRefresh: () async => setState(() {}),
+                      child: ListView.builder(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width20,
+                        ),
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
+                        itemCount: visibleList.length,
+                        itemBuilder: (context, index) =>
+                            _documentTile(visibleList[index]),
                       ),
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
-                      ),
-                      itemCount: visibleList.length,
-                      itemBuilder: (context, index) =>
-                          _documentTile(visibleList[index]),
                     ),
-                  ),
-          ),
-        ],
+            ),
+          ],
         ),
       ),
     );

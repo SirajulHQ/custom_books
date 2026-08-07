@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/purchase_orders/models/purchase_order_model.dart';
@@ -324,7 +325,10 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Appcolors.primary,
-                      side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                      side: const BorderSide(
+                        color: Appcolors.primary,
+                        width: 1.5,
+                      ),
                       backgroundColor: Colors.transparent,
                       elevation: 0,
                       padding: EdgeInsets.symmetric(
@@ -403,33 +407,14 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'purchase_orders'),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          boxShadow: [
-            BoxShadow(
-              color: Appcolors.primary.withValues(alpha: 0.35),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: FloatingActionButton(
-          onPressed: _addNewPurchaseOrder,
-          backgroundColor: Appcolors.primary,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-          ),
-          child: const Icon(Icons.add_rounded),
-        ),
-      ),
+      floatingActionButton: CustomAddButton(onPressed: _addNewPurchaseOrder),
       body: NestedScrollView(
         physics: const BouncingScrollPhysics(),
         headerSliverBuilder: (context, _) => [
           CustomSliverAppBar(
             title: 'Purchase Orders',
-            subtitle: '${_orders.length} purchase order${_orders.length == 1 ? '' : 's'}',
+            subtitle:
+                '${_orders.length} purchase order${_orders.length == 1 ? '' : 's'}',
             leadingType: AppBarLeadingType.menu,
             actions: [
               AppBarIconButton(
@@ -451,199 +436,203 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
         ],
         body: Column(
           children: [
-          if (_searchOpen)
+            if (_searchOpen)
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  Dimensions.height10,
+                  Dimensions.width20,
+                  Dimensions.height15,
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  onChanged: (_) => setState(() {}),
+                  style: TextStyle(fontSize: Dimensions.font16 * 0.85),
+                  decoration: InputDecoration(
+                    hintText: 'Search by vendor, PO or reference',
+                    hintStyle: TextStyle(color: context.colors.textTertiary),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: context.colors.textTertiary,
+                    ),
+                    filled: true,
+                    fillColor: context.colors.card,
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: Dimensions.height10,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: BorderSide(color: context.colors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: BorderSide(color: context.colors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: const BorderSide(
+                        color: Appcolors.primary,
+                        width: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             Padding(
               padding: EdgeInsets.fromLTRB(
                 Dimensions.width20,
-                Dimensions.height10,
+                Dimensions.height10 / 2,
                 Dimensions.width20,
                 Dimensions.height15,
               ),
-              child: TextField(
-                controller: _searchController,
-                autofocus: true,
-                onChanged: (_) => setState(() {}),
-                style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-                decoration: InputDecoration(
-                  hintText: 'Search by vendor, PO or reference',
-                  hintStyle: TextStyle(color: context.colors.textTertiary),
-                  prefixIcon: Icon(
-                    Icons.search_rounded,
-                    color: context.colors.textTertiary,
-                  ),
-                  filled: true,
-                  fillColor: context.colors.card,
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: Dimensions.height10,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: const BorderSide(
-                      color: Appcolors.primary,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              Dimensions.width20,
-              Dimensions.height10 / 2,
-              Dimensions.width20,
-              Dimensions.height15,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: context.colors.surfaceLight,
-                      borderRadius: BorderRadius.circular(Dimensions.radius30),
-                    ),
-                    child: Row(
-                      children: [
-                        _tabButton('All', 0),
-                        _tabButton('Draft', 1),
-                        _tabButton('Issued', 2),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: Dimensions.width10),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: _openFilterSheet,
-                  child: _controlBadge(
-                    _statusFilter == null
-                        ? Icons.filter_list_rounded
-                        : Icons.filter_alt_rounded,
-                    active: _statusFilter != null,
-                  ),
-                ),
-                SizedBox(width: Dimensions.width10 / 2),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: _openSortSheet,
-                  child: _controlBadge(Icons.swap_vert_rounded),
-                ),
-              ],
-            ),
-          ),
-          if (_statusFilter != null)
-            Container(
-              margin: EdgeInsets.fromLTRB(
-                Dimensions.width20,
-                0,
-                Dimensions.width20,
-                Dimensions.height10,
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width15,
-                vertical: Dimensions.height10 / 2,
-              ),
-              decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.07),
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-              ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.filter_alt_rounded,
-                    size: Dimensions.iconSize16,
-                    color: Appcolors.primary,
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: context.colors.surfaceLight,
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius30,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          _tabButton('All', 0),
+                          _tabButton('Draft', 1),
+                          _tabButton('Issued', 2),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: Dimensions.width10),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    onTap: _openFilterSheet,
+                    child: _controlBadge(
+                      _statusFilter == null
+                          ? Icons.filter_list_rounded
+                          : Icons.filter_alt_rounded,
+                      active: _statusFilter != null,
+                    ),
                   ),
                   SizedBox(width: Dimensions.width10 / 2),
-                  Text(
-                    'Status: ${_statusFilter!.label}',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.72,
-                      fontWeight: FontWeight.w600,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                  const Spacer(),
                   InkWell(
-                    onTap: () => setState(() => _statusFilter = null),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
-                    ),
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    onTap: _openSortSheet,
+                    child: _controlBadge(Icons.swap_vert_rounded),
                   ),
                 ],
               ),
             ),
-          Expanded(
-            child: visibleList.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: Dimensions.height45 * 1.6,
-                            height: Dimensions.height45 * 1.6,
-                            decoration: BoxDecoration(
-                              color: Appcolors.primary.withValues(alpha: 0.08),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.assignment_outlined,
-                              size: Dimensions.iconSize24 * 1.3,
-                              color: Appcolors.primary,
-                            ),
-                          ),
-                          SizedBox(height: Dimensions.height15),
-                          Text(
-                            'No purchase orders found',
-                            style: TextStyle(
-                              fontSize: Dimensions.font16,
-                              fontWeight: FontWeight.w700,
-                              color: context.colors.textPrimary,
-                            ),
-                          ),
-                          SizedBox(height: Dimensions.height10 / 2),
-                          Text(
-                            'Tap the + button to create a new purchase order.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.75,
-                              color: context.colors.textSecondary,
-                            ),
-                          ),
-                        ],
+            if (_statusFilter != null)
+              Container(
+                margin: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  0,
+                  Dimensions.width20,
+                  Dimensions.height10,
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width15,
+                  vertical: Dimensions.height10 / 2,
+                ),
+                decoration: BoxDecoration(
+                  color: Appcolors.primary.withValues(alpha: 0.07),
+                  borderRadius: BorderRadius.circular(Dimensions.radius15),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.filter_alt_rounded,
+                      size: Dimensions.iconSize16,
+                      color: Appcolors.primary,
+                    ),
+                    SizedBox(width: Dimensions.width10 / 2),
+                    Text(
+                      'Status: ${_statusFilter!.label}',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.72,
+                        fontWeight: FontWeight.w600,
+                        color: Appcolors.primary,
                       ),
                     ),
-                  )
-                : RefreshIndicator(
-                    onRefresh: () async => setState(() {}),
-                    child: ListView.builder(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
+                    const Spacer(),
+                    InkWell(
+                      onTap: () => setState(() => _statusFilter = null),
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: Dimensions.iconSize16,
+                        color: Appcolors.primary,
                       ),
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
-                      ),
-                      itemCount: visibleList.length,
-                      itemBuilder: (context, index) =>
-                          _purchaseOrderTile(visibleList[index]),
                     ),
-                  ),
-          ),
-        ],
+                  ],
+                ),
+              ),
+            Expanded(
+              child: visibleList.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width20,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: Dimensions.height45 * 1.6,
+                              height: Dimensions.height45 * 1.6,
+                              decoration: BoxDecoration(
+                                color: Appcolors.primary.withValues(
+                                  alpha: 0.08,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.assignment_outlined,
+                                size: Dimensions.iconSize24 * 1.3,
+                                color: Appcolors.primary,
+                              ),
+                            ),
+                            SizedBox(height: Dimensions.height15),
+                            Text(
+                              'No purchase orders found',
+                              style: TextStyle(
+                                fontSize: Dimensions.font16,
+                                fontWeight: FontWeight.w700,
+                                color: context.colors.textPrimary,
+                              ),
+                            ),
+                            SizedBox(height: Dimensions.height10 / 2),
+                            Text(
+                              'Tap the + button to create a new purchase order.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: Dimensions.font16 * 0.75,
+                                color: context.colors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () async => setState(() {}),
+                      child: ListView.builder(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width20,
+                        ),
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
+                        itemCount: visibleList.length,
+                        itemBuilder: (context, index) =>
+                            _purchaseOrderTile(visibleList[index]),
+                      ),
+                    ),
+            ),
+          ],
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
@@ -298,7 +299,7 @@ class _ItemsPageState extends State<ItemsPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: CustomAddButton(
         onPressed: () {
           appLog('➕ Add Item FAB tapped', name: 'ItemsPage');
           Navigator.push(
@@ -306,15 +307,6 @@ class _ItemsPageState extends State<ItemsPage> {
             MaterialPageRoute(builder: (context) => const AddItemPage()),
           );
         },
-        backgroundColor: Appcolors.primary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Dimensions.radius20),
-        ),
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-          size: Dimensions.iconSize24 * 1.2,
-        ),
       ),
     );
   }

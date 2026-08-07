@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
@@ -161,7 +162,10 @@ class _FoldersPageState extends State<FoldersPage> {
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Appcolors.primary,
-                    side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                    side: const BorderSide(
+                      color: Appcolors.primary,
+                      width: 1.5,
+                    ),
                     backgroundColor: Colors.transparent,
                     elevation: 0,
                     padding: EdgeInsets.symmetric(
@@ -196,33 +200,17 @@ class _FoldersPageState extends State<FoldersPage> {
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'folders'),
 
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          boxShadow: [
-            BoxShadow(
-              color: Appcolors.primary.withValues(alpha: 0.35),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: FloatingActionButton(
-          onPressed: _openNewFolderSheet,
-          backgroundColor: Appcolors.primary,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-          ),
-          child: const Icon(Icons.create_new_folder_rounded),
-        ),
+      floatingActionButton: CustomAddButton(
+        onPressed: _openNewFolderSheet,
+        icon: Icons.create_new_folder_rounded,
       ),
       body: NestedScrollView(
         physics: const BouncingScrollPhysics(),
         headerSliverBuilder: (context, _) => [
           CustomSliverAppBar(
             title: 'Folders',
-            subtitle: '${_folders.length} folder${_folders.length == 1 ? '' : 's'}',
+            subtitle:
+                '${_folders.length} folder${_folders.length == 1 ? '' : 's'}',
             leadingType: AppBarLeadingType.menu,
             actions: [
               AppBarIconButton(
@@ -238,72 +226,72 @@ class _FoldersPageState extends State<FoldersPage> {
         ],
         body: Column(
           children: [
-          if (_searchOpen)
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                Dimensions.width20,
-                Dimensions.height10,
-                Dimensions.width20,
-                Dimensions.height15,
-              ),
-              child: TextField(
-                controller: _searchController,
-                autofocus: true,
-                onChanged: (_) => setState(() {}),
-                style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-                decoration: InputDecoration(
-                  hintText: 'Search folders',
-                  hintStyle: TextStyle(color: context.colors.textTertiary),
-                  prefixIcon: Icon(
-                    Icons.search_rounded,
-                    color: context.colors.textTertiary,
-                  ),
-                  filled: true,
-                  fillColor: context.colors.card,
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: Dimensions.height10,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: const BorderSide(
-                      color: Appcolors.primary,
-                      width: 1.5,
+            if (_searchOpen)
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  Dimensions.height10,
+                  Dimensions.width20,
+                  Dimensions.height15,
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  onChanged: (_) => setState(() {}),
+                  style: TextStyle(fontSize: Dimensions.font16 * 0.85),
+                  decoration: InputDecoration(
+                    hintText: 'Search folders',
+                    hintStyle: TextStyle(color: context.colors.textTertiary),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: context.colors.textTertiary,
+                    ),
+                    filled: true,
+                    fillColor: context.colors.card,
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: Dimensions.height10,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: BorderSide(color: context.colors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: BorderSide(color: context.colors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: const BorderSide(
+                        color: Appcolors.primary,
+                        width: 1.5,
+                      ),
                     ),
                   ),
                 ),
               ),
+            Expanded(
+              child: visibleList.isEmpty
+                  ? _emptyState()
+                  : GridView.builder(
+                      padding: EdgeInsets.fromLTRB(
+                        Dimensions.width20,
+                        Dimensions.height15,
+                        Dimensions.width20,
+                        Dimensions.height30 * 2,
+                      ),
+                      physics: const BouncingScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: Dimensions.width15,
+                        mainAxisSpacing: Dimensions.height15,
+                        childAspectRatio: 1.1,
+                      ),
+                      itemCount: visibleList.length,
+                      itemBuilder: (context, index) =>
+                          _folderCard(visibleList[index]),
+                    ),
             ),
-          Expanded(
-            child: visibleList.isEmpty
-                ? _emptyState()
-                : GridView.builder(
-                    padding: EdgeInsets.fromLTRB(
-                      Dimensions.width20,
-                      Dimensions.height15,
-                      Dimensions.width20,
-                      Dimensions.height30 * 2,
-                    ),
-                    physics: const BouncingScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: Dimensions.width15,
-                      mainAxisSpacing: Dimensions.height15,
-                      childAspectRatio: 1.1,
-                    ),
-                    itemCount: visibleList.length,
-                    itemBuilder: (context, index) =>
-                        _folderCard(visibleList[index]),
-                  ),
-          ),
-        ],
+          ],
         ),
       ),
     );

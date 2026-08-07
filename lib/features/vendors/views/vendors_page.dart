@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/vendors/models/vendor_model.dart';
@@ -323,7 +324,10 @@ class _VendorsPageState extends State<VendorsPage> {
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Appcolors.primary,
-                      side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                      side: const BorderSide(
+                        color: Appcolors.primary,
+                        width: 1.5,
+                      ),
                       backgroundColor: Colors.transparent,
                       elevation: 0,
                       padding: EdgeInsets.symmetric(
@@ -402,27 +406,7 @@ class _VendorsPageState extends State<VendorsPage> {
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'vendors'),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          boxShadow: [
-            BoxShadow(
-              color: Appcolors.primary.withValues(alpha: 0.35),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: FloatingActionButton(
-          onPressed: _addNewVendor,
-          backgroundColor: Appcolors.primary,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-          ),
-          child: const Icon(Icons.add_rounded),
-        ),
-      ),
+      floatingActionButton: CustomAddButton(onPressed: _addNewVendor),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [

@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/recurring_invoices/models/recurring_invoice_model.dart';
@@ -452,7 +453,10 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
                         },
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Appcolors.primary,
-                          side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                          side: const BorderSide(
+                            color: Appcolors.primary,
+                            width: 1.5,
+                          ),
                           backgroundColor: Colors.transparent,
                           padding: EdgeInsets.symmetric(
                             vertical: Dimensions.height15 * 0.9,
@@ -491,27 +495,7 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'recurring_invoices'),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          boxShadow: [
-            BoxShadow(
-              color: Appcolors.primary.withValues(alpha: 0.35),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: FloatingActionButton(
-          onPressed: _addNewProfile,
-          backgroundColor: Appcolors.primary,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-          ),
-          child: const Icon(Icons.add_rounded),
-        ),
-      ),
+      floatingActionButton: CustomAddButton(onPressed: _addNewProfile),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -703,9 +687,7 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
                             width: Dimensions.height45 * 1.6,
                             height: Dimensions.height45 * 1.6,
                             decoration: BoxDecoration(
-                              color: Appcolors.primary.withValues(
-                                alpha: 0.08,
-                              ),
+                              color: Appcolors.primary.withValues(alpha: 0.08),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(

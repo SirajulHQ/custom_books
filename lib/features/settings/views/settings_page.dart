@@ -7,6 +7,11 @@ import 'package:custom_books/features/settings/views/organization_profile_page.d
 import 'package:custom_books/features/settings/views/switch_organization_page.dart';
 import 'package:custom_books/features/settings/views/users/users_page.dart';
 import 'package:custom_books/features/settings/views/preferences_page.dart';
+import 'package:custom_books/features/settings/views/currencies/currencies_page.dart';
+import 'package:custom_books/features/settings/views/taxes/taxes_page.dart';
+import 'package:custom_books/features/settings/views/templates/templates_page.dart';
+import 'package:custom_books/features/settings/views/payment_gateways/payment_gateways_page.dart';
+import 'package:custom_books/features/settings/views/email_preferences/sender_email_preferences_page.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -125,6 +130,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     label: 'Currencies',
                     onTap: () {
                       appLog('💱 Currencies tapped', name: 'SettingsPage');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CurrenciesPage(),
+                        ),
+                      );
                     },
                   ),
                   _buildSettingsTile(
@@ -132,6 +143,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     label: 'Taxes',
                     onTap: () {
                       appLog('💰 Taxes tapped', name: 'SettingsPage');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const TaxesPage()),
+                      );
                     },
                   ),
                   _buildSettingsTile(
@@ -141,6 +156,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       appLog(
                         '📄 PDF Template Customization tapped',
                         name: 'SettingsPage',
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const TemplatesPage(),
+                        ),
                       );
                     },
                   ),
@@ -152,6 +173,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         '💳 Online Payment Gateways tapped',
                         name: 'SettingsPage',
                       );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PaymentGatewaysPage(),
+                        ),
+                      );
                     },
                   ),
                   _buildSettingsTile(
@@ -161,6 +188,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       appLog(
                         '✉️ Sender Email Preferences tapped',
                         name: 'SettingsPage',
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SenderEmailPreferencesPage(),
+                        ),
                       );
                     },
                   ),

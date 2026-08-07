@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:flutter/material.dart';
@@ -308,19 +309,13 @@ class _CustomersVendorsPreferencesPageState
         Positioned(
           bottom: Dimensions.height30,
           right: Dimensions.width20,
-          child: FloatingActionButton(
+          child: CustomAddButton(
             onPressed: () {
               appLog(
                 '➕ Add custom field tapped',
                 name: 'CustomersVendorsPreferences',
               );
             },
-            backgroundColor: context.colors.textPrimary,
-            child: Icon(
-              Icons.add,
-              color: context.colors.background,
-              size: Dimensions.iconSize24,
-            ),
           ),
         ),
       ],

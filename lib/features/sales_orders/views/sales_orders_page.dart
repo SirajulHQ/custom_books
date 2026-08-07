@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/sales_orders/models/sales_order_model.dart';
@@ -256,27 +257,7 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'sales_orders'),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          boxShadow: [
-            BoxShadow(
-              color: Appcolors.primary.withValues(alpha: 0.35),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: FloatingActionButton(
-          onPressed: _addNewSalesOrder,
-          backgroundColor: Appcolors.primary,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-          ),
-          child: const Icon(Icons.add_rounded),
-        ),
-      ),
+      floatingActionButton: CustomAddButton(onPressed: _addNewSalesOrder),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [

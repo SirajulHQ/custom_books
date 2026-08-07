@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/settings/views/users/edit_user_page.dart';
 import 'package:custom_books/features/settings/views/users/invite_user_page.dart';
@@ -43,14 +44,10 @@ class _UsersPageState extends State<UsersPage> {
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: CustomAddButton(
         onPressed: _inviteUser,
         backgroundColor: context.colors.textPrimary,
-        child: Icon(
-          Icons.add,
-          color: context.colors.background,
-          size: Dimensions.iconSize24,
-        ),
+        foregroundColor: context.colors.background,
       ),
       body: SafeArea(
         child: CustomScrollView(

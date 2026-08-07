@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/time_entries/models/time_entry_model.dart';
 import 'package:custom_books/features/time_entries/views/add_time_entry_page.dart';
@@ -394,27 +395,7 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'time_entries'),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          boxShadow: [
-            BoxShadow(
-              color: Appcolors.primary.withValues(alpha: 0.35),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: FloatingActionButton(
-          onPressed: _addNewEntry,
-          backgroundColor: Appcolors.primary,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-          ),
-          child: const Icon(Icons.add_rounded),
-        ),
-      ),
+      floatingActionButton: CustomAddButton(onPressed: _addNewEntry),
       body: Column(
         children: [
           if (_searchOpen)
