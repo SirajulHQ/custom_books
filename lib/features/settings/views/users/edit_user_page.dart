@@ -1,0 +1,361 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/app_logger.dart';
+import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:flutter/material.dart';
+
+class EditUserPage extends StatefulWidget {
+  final String name;
+  final String email;
+  final String role;
+
+  const EditUserPage({
+    super.key,
+    required this.name,
+    required this.email,
+    required this.role,
+  });
+
+  @override
+  State<EditUserPage> createState() => _EditUserPageState();
+}
+
+class _EditUserPageState extends State<EditUserPage> {
+  late final TextEditingController _nameController;
+  late final TextEditingController _emailController;
+  late String _selectedRole;
+
+  static const List<Map<String, String>> _roles = [
+    {'name': 'Admin', 'description': 'Unrestricted access to all modules.'},
+    {
+      'name': 'Staff (Assigned Customers Only)',
+      'description':
+          'Access to all modules, transactions and data of assigned '
+          'customers and all vendors except banking, reports, settings '
+          'and accountant.',
+    },
+    {
+      'name': 'Staff (All Customers)',
+      'description':
+          'Access to all modules, transactions and data of all customers '
+          'and vendors except banking, reports, settings and accountant.',
+    },
+    {
+      'name': 'Time Tracking Only',
+      'description': 'Access only to time tracking and project modules.',
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.name);
+    _emailController = TextEditingController(text: widget.email);
+    _selectedRole = widget.role;
+    appLog('✏️ EditUserPage initialized for ${widget.name}', name: 'EditUser');
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    if (_nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Name is required'),
+          backgroundColor: Appcolors.warn,
+        ),
+      );
+      return;
+    }
+    if (_emailController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Email Address is required'),
+          backgroundColor: Appcolors.warn,
+        ),
+      );
+      return;
+    }
+    appLog('💾 Save user: ${_nameController.text}', name: 'EditUser');
+    Navigator.pop(context);
+  }
+
+  Future<void> _selectRole() async {
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      backgroundColor: context.colors.card,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(Dimensions.width15),
+              child: Text(
+                'Select Role',
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 1.1,
+                  fontWeight: FontWeight.w700,
+                  color: context.colors.textPrimary,
+                ),
+              ),
+            ),
+            const Divider(height: 1),
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                children: _roles
+                    .map(
+                      (role) => ListTile(
+                        title: Text(
+                          role['name']!,
+                          style: TextStyle(
+                            color: role['name'] == _selectedRole
+                                ? Appcolors.primary
+                                : context.colors.textPrimary,
+                            fontWeight: role['name'] == _selectedRole
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                        subtitle: Text(
+                          role['description']!,
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.7,
+                            color: context.colors.textSecondary,
+                          ),
+                        ),
+                        trailing: role['name'] == _selectedRole
+                            ? Icon(
+                                Icons.check_rounded,
+                                color: Appcolors.primary,
+                              )
+                            : null,
+                        onTap: () => Navigator.pop(ctx, role['name']),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (selected != null) {
+      setState(() => _selectedRole = selected);
+    }
+  }
+
+  String _getRoleDescription() {
+    final role = _roles.firstWhere(
+      (r) => r['name'] == _selectedRole,
+      orElse: () => _roles.first,
+    );
+    return role['description'] ?? '';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Dimensions.init(context);
+
+    return Scaffold(
+      backgroundColor: context.colors.background,
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            CustomSliverAppBar(
+              title: 'Edit User',
+              leadingType: AppBarLeadingType.back,
+              actions: [
+                AppBarElevatedButton(label: 'SAVE', onPressed: _save),
+                SizedBox(width: Dimensions.width20),
+              ],
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(Dimensions.width15),
+                child: Column(
+                  children: [
+                    // Info Banner
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(Dimensions.width15),
+                      decoration: BoxDecoration(
+                        color: Appcolors.info.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15,
+                        ),
+                        border: Border.all(
+                          color: Appcolors.info.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.info_outline_rounded,
+                            size: Dimensions.iconSize24,
+                            color: Appcolors.info,
+                          ),
+                          SizedBox(width: Dimensions.width10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text.rich(
+                                  TextSpan(
+                                    text:
+                                        'Want to create custom roles with '
+                                        'restricted access? Visit our web '
+                                        'application ',
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.8,
+                                      color: context.colors.textPrimary,
+                                      height: 1.4,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: 'https://www.zoho.com/books',
+                                        style: TextStyle(
+                                          color: Appcolors.primary,
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                      ),
+                                      const TextSpan(
+                                        text:
+                                            ' on a PC or laptop to '
+                                            'explore more options.',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: Dimensions.height10 / 2),
+                                Text(
+                                  'Learn More ›',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.8,
+                                    color: Appcolors.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: Dimensions.height20),
+
+                    // User Form
+                    FormCard(
+                      children: [
+                        const RequiredLabel(text: 'Name'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _nameController,
+                          style: FormTextStyles.value(context),
+                          decoration: _underlineDecoration(),
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        const RequiredLabel(text: 'Email Address'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _emailController,
+                          style: FormTextStyles.value(context),
+                          decoration: _underlineDecoration(),
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        Text('Role', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _selectorField(
+                          value: _selectedRole,
+                          hint: 'Select Role',
+                          onTap: _selectRole,
+                        ),
+                        SizedBox(height: Dimensions.height10),
+                        Text(
+                          _getRoleDescription(),
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.75,
+                            color: context.colors.textSecondary,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  InputDecoration _underlineDecoration() {
+    return InputDecoration(
+      isDense: true,
+      contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: context.colors.border),
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: context.colors.border),
+      ),
+      focusedBorder: const UnderlineInputBorder(
+        borderSide: BorderSide(color: Appcolors.primary),
+      ),
+    );
+  }
+
+  Widget _selectorField({
+    required String? value,
+    required String hint,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: context.colors.border)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                value ?? hint,
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.9,
+                  color: value == null
+                      ? context.colors.textTertiary
+                      : context.colors.textPrimary,
+                  fontWeight: value == null
+                      ? FontWeight.normal
+                      : FontWeight.w500,
+                ),
+              ),
+            ),
+            Icon(
+              Icons.arrow_drop_down_rounded,
+              size: Dimensions.iconSize24,
+              color: context.colors.textSecondary,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -2,9 +2,17 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
-import 'package:custom_books/features/settings/views/general_preferences_page.dart';
-import 'package:custom_books/features/settings/views/customers_vendors_preferences_page.dart';
-import 'package:custom_books/features/settings/views/item_settings_page.dart';
+import 'package:custom_books/features/settings/preferences/general_preferences_page.dart';
+import 'package:custom_books/features/settings/preferences/customers_vendors_preferences_page.dart';
+import 'package:custom_books/features/settings/preferences/item_settings_page.dart';
+import 'package:custom_books/features/settings/preferences/quotes_settings_page.dart';
+import 'package:custom_books/features/settings/preferences/invoice_settings_page.dart';
+import 'package:custom_books/features/settings/preferences/credit_notes_settings_page.dart';
+import 'package:custom_books/features/settings/preferences/sales_orders_settings_page.dart';
+import 'package:custom_books/features/settings/preferences/expense_settings_page.dart';
+import 'package:custom_books/features/settings/preferences/bills_settings_page.dart';
+import 'package:custom_books/features/settings/preferences/purchase_orders_settings_page.dart';
+import 'package:custom_books/features/settings/preferences/vendor_portal_settings_page.dart';
 import 'package:flutter/material.dart';
 
 class PreferencesPage extends StatefulWidget {
@@ -48,8 +56,31 @@ class _PreferencesPageState extends State<PreferencesPage> {
       case 'items':
         page = const ItemSettingsPage();
         break;
+      case 'quotes':
+        page = const QuotesSettingsPage();
+        break;
+      case 'invoices':
+        page = const InvoiceSettingsPage();
+        break;
+      case 'credit_notes':
+        page = const CreditNotesSettingsPage();
+        break;
+      case 'sales_orders':
+        page = const SalesOrdersSettingsPage();
+        break;
+      case 'expenses':
+        page = const ExpenseSettingsPage();
+        break;
+      case 'bills':
+        page = const BillsSettingsPage();
+        break;
+      case 'purchase_orders':
+        page = const PurchaseOrdersSettingsPage();
+        break;
+      case 'vendor_portal':
+        page = const VendorPortalSettingsPage();
+        break;
       default:
-        // TODO: Implement other preference pages
         return;
     }
     Navigator.push(context, MaterialPageRoute(builder: (_) => page!));

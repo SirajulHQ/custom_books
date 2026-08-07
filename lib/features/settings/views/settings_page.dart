@@ -5,7 +5,7 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/settings/views/organization_profile_page.dart';
 import 'package:custom_books/features/settings/views/switch_organization_page.dart';
-import 'package:custom_books/features/settings/views/users_page.dart';
+import 'package:custom_books/features/settings/views/users/users_page.dart';
 import 'package:custom_books/features/settings/views/preferences_page.dart';
 import 'package:flutter/material.dart';
 

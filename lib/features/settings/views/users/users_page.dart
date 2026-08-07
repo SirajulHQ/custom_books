@@ -2,7 +2,8 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
-import 'package:custom_books/features/settings/views/invite_user_page.dart';
+import 'package:custom_books/features/settings/views/users/edit_user_page.dart';
+import 'package:custom_books/features/settings/views/users/invite_user_page.dart';
 import 'package:flutter/material.dart';
 
 class UsersPage extends StatefulWidget {
@@ -15,8 +16,8 @@ class UsersPage extends StatefulWidget {
 class _UsersPageState extends State<UsersPage> {
   final List<_UserItem> _users = [
     _UserItem(
-      name: 'Parthiv p',
-      email: 'miscellaneous4826@gmail.com',
+      name: 'Sirajul Haq',
+      email: 'sirajulhaq344@gmail.com',
       role: 'Admin',
       status: 'ACTIVE',
     ),
@@ -65,6 +66,19 @@ class _UsersPageState extends State<UsersPage> {
                 return Column(
                   children: [
                     ListTile(
+                      onTap: () {
+                        appLog('✏️ Edit user: ${user.name}', name: 'UsersPage');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => EditUserPage(
+                              name: user.name,
+                              email: user.email,
+                              role: user.role,
+                            ),
+                          ),
+                        );
+                      },
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: Dimensions.width20,
                         vertical: Dimensions.height10 / 2,
