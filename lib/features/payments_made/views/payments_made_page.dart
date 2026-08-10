@@ -791,7 +791,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
             ),
             SizedBox(width: Dimensions.width10),
             Text(
-              'AED ${payment.amount.toStringAsFixed(2)}',
+              '₹${payment.amount.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.9,
                 fontWeight: FontWeight.w800,

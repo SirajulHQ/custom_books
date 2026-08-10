@@ -890,7 +890,7 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
             ),
             SizedBox(width: Dimensions.width10),
             Text(
-              'AED ${profile.amount.toStringAsFixed(2)}',
+              '₹${profile.amount.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.9,
                 fontWeight: FontWeight.w800,

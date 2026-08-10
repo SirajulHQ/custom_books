@@ -166,9 +166,9 @@ class _QuotesPageState extends State<QuotesPage> {
                   contentPadding: EdgeInsets.zero,
                   title: Text(item.itemName),
                   subtitle: Text(
-                    '${item.quantity.toStringAsFixed(2)} × AED ${item.rate.toStringAsFixed(2)}',
+                    '${item.quantity.toStringAsFixed(2)} × ₹${item.rate.toStringAsFixed(2)}',
                   ),
-                  trailing: Text('AED ${item.net.toStringAsFixed(2)}'),
+                  trailing: Text('₹${item.net.toStringAsFixed(2)}'),
                 ),
               ),
               const Divider(),
@@ -180,7 +180,7 @@ class _QuotesPageState extends State<QuotesPage> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                   ),
                   Text(
-                    'AED ${quote.total.toStringAsFixed(2)}',
+                    '₹${quote.total.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
@@ -687,7 +687,7 @@ class _QuotesPageState extends State<QuotesPage> {
           ),
           SizedBox(width: Dimensions.width10),
           Text(
-            'AED ${quote.total.toStringAsFixed(2)}',
+            '₹${quote.total.toStringAsFixed(2)}',
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.9,
               fontWeight: FontWeight.w800,

@@ -66,7 +66,7 @@ class ProjectTimerCardWidget extends StatelessWidget {
               ),
               SizedBox(width: Dimensions.width15),
               Expanded(
-                child: StatChip(label: 'Unbilled Expenses', value: 'AED0.00'),
+                child: StatChip(label: 'Unbilled Expenses', value: '₹0.00'),
               ),
             ],
           ),

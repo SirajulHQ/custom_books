@@ -28,7 +28,7 @@ class ExpenseBreakdownCardWidget extends StatelessWidget {
                 icon: Icons.donut_small_rounded,
               ),
               Text(
-                'AED${total.toStringAsFixed(2)}',
+                '₹${total.toStringAsFixed(2)}',
                 style: TextStyle(
                   fontSize: Dimensions.font16,
                   fontWeight: FontWeight.w800,
@@ -58,7 +58,7 @@ class ExpenseBreakdownCardWidget extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'AED${e.amount.toStringAsFixed(2)}',
+                        '₹${e.amount.toStringAsFixed(2)}',
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.85,
                           fontWeight: FontWeight.w700,

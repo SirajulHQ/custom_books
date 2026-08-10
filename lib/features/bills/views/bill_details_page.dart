@@ -359,11 +359,11 @@ class _BillDetailsPageState extends State<BillDetailsPage>
             children: [
               _detailRow('Due Date:', _formatDate(bill.dueDate)),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Total:', 'AED ${bill.total.toStringAsFixed(2)}'),
+              _detailRow('Total:', '₹${bill.total.toStringAsFixed(2)}'),
               SizedBox(height: Dimensions.height15),
               _detailRow(
                 'Balance Due:',
-                'AED ${bill.balanceDue.toStringAsFixed(2)}',
+                '₹${bill.balanceDue.toStringAsFixed(2)}',
               ),
             ],
           ),

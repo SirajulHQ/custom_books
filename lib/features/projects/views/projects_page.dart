@@ -785,7 +785,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  'AED ${project.amount.toStringAsFixed(2)}',
+                  '₹${project.amount.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.9,
                     fontWeight: FontWeight.w800,
@@ -794,7 +794,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                 ),
                 SizedBox(height: Dimensions.height10 / 3),
                 Text(
-                  'AED ${project.rate.toStringAsFixed(2)}',
+                  '₹${project.rate.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.62,
                     color: context.colors.textTertiary,

@@ -104,15 +104,23 @@ class _CustomersPageState extends State<CustomersPage> {
       list = list.where((customer) => customer.isActive).toList();
     } else if (_selectedFilter == 'Inactive Customers') {
       list = list.where((customer) => !customer.isActive).toList();
+    } else if (_selectedFilter == 'Overdue Customers') {
+      // Customers with outstanding receivables
+      list = list.where((customer) => customer.receivables > 0).toList();
+    } else if (_selectedFilter == 'Unpaid Customers') {
+      // Customers with any receivables
+      list = list.where((customer) => customer.receivables > 0).toList();
+    } else if (_selectedFilter == 'Duplicate Customers') {
+      // Find customers with same name (case-insensitive)
+      final nameCount = <String, int>{};
+      for (final c in list) {
+        final key = c.name.trim().toLowerCase();
+        nameCount[key] = (nameCount[key] ?? 0) + 1;
+      }
+      list = list
+          .where((c) => (nameCount[c.name.trim().toLowerCase()] ?? 0) > 1)
+          .toList();
     }
-    // For other filters, show all customers for now
-    // TODO: Implement specific filter logic for:
-    // - CRM Customers
-    // - Duplicate Customers
-    // - Customer Portal Enabled/Disabled
-    // - Overdue Customers
-    // - Unpaid Customers
-    // - Associated with Payment Options
 
     // Apply search
     final query = _searchController.text.trim().toLowerCase();

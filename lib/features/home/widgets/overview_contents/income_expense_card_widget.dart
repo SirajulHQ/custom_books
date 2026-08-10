@@ -159,7 +159,7 @@ class MiniStat extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'AED${value.toStringAsFixed(2)}',
+                  '₹${value.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.95,
                     fontWeight: FontWeight.w800,

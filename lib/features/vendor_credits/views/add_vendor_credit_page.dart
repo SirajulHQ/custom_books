@@ -279,7 +279,7 @@ class _AddVendorCreditPageState extends State<AddVendorCreditPage>
                               FormNumberField(
                                 controller: _amountController,
                                 hint: '0.00',
-                                prefix: 'AED',
+                                prefix: '₹',
                               ),
                             ],
                           ),

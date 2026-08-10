@@ -15,14 +15,14 @@ class CurrenciesPage extends StatefulWidget {
 
 class _CurrenciesPageState extends State<CurrenciesPage> {
   final List<_CurrencyItem> _currencies = [
-    _CurrencyItem(code: 'AED', name: 'UAE Dirham', isBase: true),
+    _CurrencyItem(code: 'INR', name: 'Indian Rupee', isBase: true),
+    _CurrencyItem(code: 'AED', name: 'UAE Dirham'),
     _CurrencyItem(code: 'AUD', name: 'Australian Dollar'),
     _CurrencyItem(code: 'BND', name: 'Brunei Dollar'),
     _CurrencyItem(code: 'CAD', name: 'Canadian Dollar'),
     _CurrencyItem(code: 'CNY', name: 'Yuan Renminbi'),
     _CurrencyItem(code: 'EUR', name: 'Euro'),
     _CurrencyItem(code: 'GBP', name: 'Pound Sterling'),
-    _CurrencyItem(code: 'INR', name: 'Indian Rupee'),
     _CurrencyItem(code: 'JPY', name: 'Japanese Yen'),
     _CurrencyItem(code: 'SAR', name: 'Saudi Riyal'),
     _CurrencyItem(code: 'USD', name: 'United States Dollar'),

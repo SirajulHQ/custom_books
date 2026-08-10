@@ -290,7 +290,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                             FormNumberField(
                               controller: _amountController,
                               hint: '0.00',
-                              prefix: 'AED',
+                              prefix: '₹',
                             ),
                           ],
                         ),

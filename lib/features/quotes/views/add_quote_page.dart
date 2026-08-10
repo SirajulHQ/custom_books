@@ -708,7 +708,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                 ),
                 SizedBox(height: Dimensions.height10 / 4),
                 Text(
-                  '${item.quantity.toStringAsFixed(2)} × AED ${item.rate.toStringAsFixed(2)}  •  AED ${item.net.toStringAsFixed(2)}',
+                  '${item.quantity.toStringAsFixed(2)} × ₹${item.rate.toStringAsFixed(2)}  •  ₹${item.net.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.68,
                     color: context.colors.textSecondary,
@@ -746,7 +746,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
           ),
         ),
         Text(
-          'AED ${value.toStringAsFixed(2)}',
+          '₹${value.toStringAsFixed(2)}',
           style: TextStyle(
             fontSize: Dimensions.font16 * (bold ? 0.95 : 0.82),
             fontWeight: FontWeight.w700,

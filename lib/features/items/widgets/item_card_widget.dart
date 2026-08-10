@@ -93,7 +93,7 @@ class ItemCardWidget extends StatelessWidget {
                       child: _buildPriceBox(
                         context,
                         'Sales',
-                        'AED${item.salesPrice.toStringAsFixed(2)}',
+                        '₹${item.salesPrice.toStringAsFixed(2)}',
                         Appcolors.ok,
                         Icons.call_made_rounded,
                       ),
@@ -104,7 +104,7 @@ class ItemCardWidget extends StatelessWidget {
                       child: _buildPriceBox(
                         context,
                         'Purchase',
-                        'AED${item.purchasePrice.toStringAsFixed(2)}',
+                        '₹${item.purchasePrice.toStringAsFixed(2)}',
                         Appcolors.primary,
                         Icons.call_received_rounded,
                       ),

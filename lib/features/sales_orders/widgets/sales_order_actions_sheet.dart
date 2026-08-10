@@ -19,7 +19,7 @@ class SalesOrderActionsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
-    final currencyFormat = NumberFormat.currency(symbol: 'AED ', decimalDigits: 2);
+    final currencyFormat = NumberFormat.currency(symbol: '₹', decimalDigits: 2);
     final dateFormat = DateFormat('dd MMM yyyy');
 
     return SafeArea(

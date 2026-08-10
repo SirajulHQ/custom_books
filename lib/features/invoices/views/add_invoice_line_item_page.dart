@@ -1,4 +1,4 @@
-﻿import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
@@ -328,7 +328,7 @@ class _InvoiceItemPicker extends StatelessWidget {
                         ),
                         SizedBox(height: Dimensions.height10 / 4),
                         Text(
-                          'AED${item.salesPrice.toStringAsFixed(2)} per ${item.unit}',
+                          '₹${item.salesPrice.toStringAsFixed(2)} per ${item.unit}',
                           style: TextStyle(
                             color: context.colors.textSecondary,
                             fontSize: Dimensions.font16 * 0.75,
@@ -417,7 +417,7 @@ class _InvoicePricingFields extends StatelessWidget {
             controller: rateController,
             focusNode: rateFocusNode,
             hint: 'Eg. 100.00',
-            prefix: 'AED',
+            prefix: '₹',
             onChanged: onChanged,
           ),
         ),
@@ -428,7 +428,7 @@ class _InvoicePricingFields extends StatelessWidget {
             controller: discountController,
             focusNode: discountFocusNode,
             hint: 'Eg. 10.00',
-            prefix: 'AED',
+            prefix: '₹',
             onChanged: onChanged,
           ),
         ),
@@ -508,7 +508,7 @@ class _SummaryRow extends StatelessWidget {
           ),
         ),
         Text(
-          'AED${amount.toStringAsFixed(2)}',
+          '₹${amount.toStringAsFixed(2)}',
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.9,
             fontWeight: FontWeight.w700,

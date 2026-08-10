@@ -26,7 +26,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
   final _descriptionController = TextEditingController();
 
   final List<String> _currencies = [
-    'AED- UAE Dirham',
+    'INR- Indian Rupee',
     'AUD- Australian Dollar',
     'BND- Brunei Dollar',
     'CAD- Canadian Dollar',

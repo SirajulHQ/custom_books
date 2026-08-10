@@ -49,7 +49,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       isRead: false,
     ),
     NotificationItem(
-      title: 'Payment of AED 1,200 received from sara.',
+      title: 'Payment of ₹1,200 received from sara.',
       subtitle: 'Payment received',
       time: '30 Jun 2026 04:15 PM',
       icon: Icons.check_circle_outline_rounded,

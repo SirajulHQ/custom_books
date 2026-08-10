@@ -341,7 +341,7 @@ class _ManualJournalDetailsPageState extends State<ManualJournalDetailsPage>
                 journal.referenceNumber.isEmpty ? '-' : journal.referenceNumber,
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', 'AED ${journal.amount.toStringAsFixed(2)}'),
+              _detailRow('Amount:', '₹${journal.amount.toStringAsFixed(2)}'),
               SizedBox(height: Dimensions.height15),
               _detailRow('Notes:', journal.notes.isEmpty ? '-' : journal.notes),
             ],

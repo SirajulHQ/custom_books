@@ -41,20 +41,9 @@ class _SettingsPageState extends State<SettingsPage> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             // App Bar
-            CustomSliverAppBar(
+            const CustomSliverAppBar(
               title: 'Settings',
               leadingType: AppBarLeadingType.menu,
-              actions: [
-                AppBarIconButton(
-                  icon: Icons.power_settings_new_rounded,
-                  color: Appcolors.warn,
-                  onPressed: () {
-                    appLog('🔴 Power button tapped', name: 'SettingsPage');
-                    // TODO: Logout action
-                  },
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
             ),
 
             // Settings List

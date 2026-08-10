@@ -378,7 +378,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage>
                 expense.referenceNumber.isEmpty ? '—' : expense.referenceNumber,
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', 'AED ${expense.amount.toStringAsFixed(2)}'),
+              _detailRow('Amount:', '₹${expense.amount.toStringAsFixed(2)}'),
             ],
           ),
         ),

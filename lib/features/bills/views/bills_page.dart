@@ -823,7 +823,7 @@ class _BillsPageState extends State<BillsPage> {
             ),
             SizedBox(width: Dimensions.width10),
             Text(
-              'AED ${bill.total.toStringAsFixed(2)}',
+              '₹${bill.total.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.9,
                 fontWeight: FontWeight.w800,

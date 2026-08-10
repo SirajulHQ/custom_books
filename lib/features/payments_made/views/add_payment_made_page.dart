@@ -1,4 +1,4 @@
-﻿import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
@@ -292,7 +292,7 @@ class _AddPaymentMadePageState extends State<AddPaymentMadePage>
                       FormNumberField(
                         controller: _amountController,
                         hint: '0.00',
-                        prefix: 'AED',
+                        prefix: '₹',
                       ),
                     ],
                   ),

@@ -288,7 +288,7 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
                               FormNumberField(
                                 controller: _amountController,
                                 hint: '0.00',
-                                prefix: 'AED',
+                                prefix: '₹',
                               ),
                             ],
                           ),

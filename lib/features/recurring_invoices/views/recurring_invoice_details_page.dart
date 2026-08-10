@@ -382,7 +382,7 @@ class _RecurringInvoiceDetailsPageState
               SizedBox(height: Dimensions.height15),
               _detailRow('Start Date:', _formatDate(profile.startDate)),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', 'AED ${profile.amount.toStringAsFixed(2)}'),
+              _detailRow('Amount:', '₹${profile.amount.toStringAsFixed(2)}'),
             ],
           ),
         ),

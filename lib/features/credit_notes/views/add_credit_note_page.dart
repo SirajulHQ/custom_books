@@ -1,4 +1,4 @@
-﻿import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
@@ -336,15 +336,15 @@ class _AddCreditNotePageState extends State<AddCreditNotePage>
                   ),
                   SizedBox(height: Dimensions.height20),
 
-                  // Amount (AED) *
+                  // Amount (₹) *
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const RequiredLabel(text: 'Amount (AED)'),
+                      const RequiredLabel(text: 'Amount (₹)'),
                       FormNumberField(
                         controller: _amountController,
                         hint: '0.00',
-                        prefix: 'AED',
+                        prefix: '₹',
                       ),
                     ],
                   ),

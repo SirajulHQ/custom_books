@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/apptheme/theme_controller.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
+import 'package:custom_books/features/auth/views/login_page.dart';
 import 'package:custom_books/features/drawer/models/drawer_item.dart';
 import 'package:custom_books/features/drawer/widgets/drawer_menu_item.dart';
 import 'package:custom_books/features/drawer/widgets/expandable_menu_item.dart';
@@ -629,7 +630,13 @@ class _DrawerViewState extends State<DrawerView> {
                                 '🚪 Logout button tapped',
                                 name: 'DrawerNavigation',
                               );
-                              Navigator.pop(context);
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const LoginPage(),
+                                ),
+                                (route) => false,
+                              );
                             },
                           ),
                         ),

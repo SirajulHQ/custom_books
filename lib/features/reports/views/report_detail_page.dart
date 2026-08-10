@@ -411,14 +411,14 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   // ── Customer Balance Summary ───────────────────────────────────────────
   Widget _buildCustomerBalanceSummaryContent() {
     final rows = [
-      ['Amal', 'AED0.00', 'AED0.00', 'AED315.00 Dr'],
-      ['Nandhu', 'AED0.00', 'AED0.00', 'AED2,212.00 Dr'],
-      ['Parthiv Ajith', 'AED0.00', 'AED0.00', 'AED1,000.00 Cr'],
-      ['Sirajul Haq', 'AED0.00', 'AED0.00', 'AED833.00 Cr'],
-      ['Trial Register', 'AED0.00', 'AED0.00', 'AED31.00 Dr'],
-      ['trialuser', 'AED0.00', 'AED0.00', 'AED2,110.00 Dr'],
-      ['YASMIN', 'AED0.00', 'AED0.00', 'AED105.00 Cr'],
-      ['YASMIN P', 'AED0.00', 'AED0.00', 'AED315.00 Cr'],
+      ['Amal', '₹0.00', '₹0.00', '₹315.00 Dr'],
+      ['Nandhu', '₹0.00', '₹0.00', '₹2,212.00 Dr'],
+      ['Parthiv Ajith', '₹0.00', '₹0.00', '₹1,000.00 Cr'],
+      ['Sirajul Haq', '₹0.00', '₹0.00', '₹833.00 Cr'],
+      ['Trial Register', '₹0.00', '₹0.00', '₹31.00 Dr'],
+      ['trialuser', '₹0.00', '₹0.00', '₹2,110.00 Dr'],
+      ['YASMIN', '₹0.00', '₹0.00', '₹105.00 Cr'],
+      ['YASMIN P', '₹0.00', '₹0.00', '₹315.00 Cr'],
     ];
     return _buildHorizontalTableReport(
       columns: [
@@ -430,24 +430,24 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
       rows: rows,
       emptyMessage: 'No data available.',
       linkColumn: 0,
-      totalRow: ['Total', 'AED0.00', 'AED0.00', 'AED2,415.00 Dr'],
+      totalRow: ['Total', '₹0.00', '₹0.00', '₹2,415.00 Dr'],
     );
   }
 
   // ── AR Aging Summary ───────────────────────────────────────────────────
   Widget _buildArAgingSummaryContent() {
     final rows = [
-      ['Amal', 'AED0.00'],
-      ['Nandhu', 'AED0.00'],
-      ['Trial Register', 'AED0.00'],
-      ['trialuser', 'AED0.00'],
+      ['Amal', '₹0.00'],
+      ['Nandhu', '₹0.00'],
+      ['Trial Register', '₹0.00'],
+      ['trialuser', '₹0.00'],
     ];
     return _buildHorizontalTableReport(
       columns: ['CUSTOMER NAME', 'CURRENT'],
       rows: rows,
       emptyMessage: 'No aging data available.',
       linkColumn: 0,
-      totalRow: ['Total', 'AED0.00'],
+      totalRow: ['Total', '₹0.00'],
     );
   }
 
@@ -462,8 +462,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         'Overdue',
         'Trial Register',
         '39 Days',
-        'AED31.00',
-        'AED31.00',
+        '₹31.00',
+        '₹31.00',
       ],
       [
         '30 Jun 2026',
@@ -473,8 +473,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         'Overdue',
         'trialuser',
         '38 Days',
-        'AED2,110.00',
-        'AED2,110.00',
+        '₹2,110.00',
+        '₹2,110.00',
       ],
       [
         '30 Jun 2026',
@@ -484,8 +484,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         'Overdue',
         'Nandhu',
         '38 Days',
-        'AED1,081.00',
-        'AED1,081.00',
+        '₹1,081.00',
+        '₹1,081.00',
       ],
       [
         '30 Jun 2026',
@@ -495,8 +495,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         'Overdue',
         'Nandhu',
         '38 Days',
-        'AED1,081.00',
-        'AED1,081.00',
+        '₹1,081.00',
+        '₹1,081.00',
       ],
       [
         '30 Jun 2026',
@@ -506,8 +506,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         'Overdue',
         'Nandhu',
         '38 Days',
-        'AED187.00',
-        'AED187.00',
+        '₹187.00',
+        '₹187.00',
       ],
       [
         '01 Jul 2026',
@@ -517,8 +517,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         'Overdue',
         'Nandhu',
         '37 Days',
-        'AED1,081.00',
-        'AED1,081.00',
+        '₹1,081.00',
+        '₹1,081.00',
       ],
       [
         '03 Jul 2026',
@@ -528,8 +528,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         'Overdue',
         'Amal',
         '35 Days',
-        'AED157.50',
-        'AED157.50',
+        '₹157.50',
+        '₹157.50',
       ],
       [
         '03 Jul 2026',
@@ -539,8 +539,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         'Overdue',
         'Amal',
         '35 Days',
-        'AED157.50',
-        'AED157.50',
+        '₹157.50',
+        '₹157.50',
       ],
     ];
     return _buildHorizontalTableReport(
@@ -559,7 +559,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
       emptyMessage: 'No aging details available.',
       linkColumn: 2,
       statusColumn: 4,
-      totalRow: ['Total', '', '', '', '', '', '', 'AED5,886.00', 'AED5,886.00'],
+      totalRow: ['Total', '', '', '', '', '', '', '₹5,886.00', '₹5,886.00'],
       sectionHeaders: {'0': '31 - 45 Days'},
     );
   }
@@ -879,7 +879,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
-            'AED',
+            '₹',
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.7,
               fontWeight: FontWeight.w700,

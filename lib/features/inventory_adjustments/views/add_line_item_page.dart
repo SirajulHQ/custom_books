@@ -376,7 +376,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                       ),
                     ),
                     Text(
-                      'AED${_costPrice.toStringAsFixed(2)}',
+                      '₹${_costPrice.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.85,
                         fontWeight: FontWeight.w700,

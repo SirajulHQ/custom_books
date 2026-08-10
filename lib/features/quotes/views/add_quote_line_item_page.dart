@@ -1,4 +1,4 @@
-﻿import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
@@ -194,7 +194,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
                                   ),
                                 ),
                                 Text(
-                                  'AED${_catalog[name]!.toStringAsFixed(2)}',
+                                  '₹${_catalog[name]!.toStringAsFixed(2)}',
                                   style: TextStyle(
                                     fontSize: Dimensions.font16 * 0.72,
                                     color: context.colors.textSecondary,
@@ -226,7 +226,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
                   SizedBox(height: Dimensions.height15),
                   _numberRow('Quantity', _quantity, required: true),
                   SizedBox(height: Dimensions.height15),
-                  _numberRow('Rate', _rate, required: true, prefix: 'AED'),
+                  _numberRow('Rate', _rate, required: true, prefix: '₹'),
                   SizedBox(height: Dimensions.height15),
                   _discountRow(),
                   SizedBox(height: Dimensions.height15),
@@ -289,7 +289,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
             mainAxisSize: MainAxisSize.min,
             children: [
               _discountOption('%', true),
-              _discountOption('AED', false),
+              _discountOption('₹', false),
             ],
           ),
         ),
@@ -385,7 +385,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
         ),
       ),
       Text(
-        'AED${amount.toStringAsFixed(2)}',
+        '₹${amount.toStringAsFixed(2)}',
         style: TextStyle(
           fontSize: Dimensions.font16 * 0.85,
           fontWeight: FontWeight.w700,

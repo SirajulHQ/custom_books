@@ -292,7 +292,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                 ),
                 SizedBox(height: Dimensions.height10 / 2),
                 Text(
-                  'AED${widget.customer.receivables.toStringAsFixed(2)}',
+                  '₹${widget.customer.receivables.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: Dimensions.font26,
                     fontWeight: FontWeight.w800,
@@ -327,7 +327,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                 ),
                 SizedBox(height: Dimensions.height10 / 2),
                 Text(
-                  'AED${widget.customer.unusedCredits.toStringAsFixed(2)}',
+                  '₹${widget.customer.unusedCredits.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: Dimensions.font26,
                     fontWeight: FontWeight.w800,
@@ -620,7 +620,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                           ),
                         ),
                         child: Text(
-                          'AED',
+                          '₹',
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.7,
                             fontWeight: FontWeight.w700,
@@ -648,7 +648,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                             ),
                             SizedBox(height: Dimensions.height10 / 2),
                             Text(
-                              'AED${widget.customer.receivables.toStringAsFixed(2)}',
+                              '₹${widget.customer.receivables.toStringAsFixed(2)}',
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.9,
                                 fontWeight: FontWeight.w700,
@@ -671,7 +671,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                             ),
                             SizedBox(height: Dimensions.height10 / 2),
                             Text(
-                              'AED${widget.customer.unusedCredits.toStringAsFixed(2)}',
+                              '₹${widget.customer.unusedCredits.toStringAsFixed(2)}',
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.9,
                                 fontWeight: FontWeight.w700,

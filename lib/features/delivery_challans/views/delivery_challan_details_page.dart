@@ -367,7 +367,7 @@ class _DeliveryChallanDetailsPageState extends State<DeliveryChallanDetailsPage>
               SizedBox(height: Dimensions.height15),
               _detailRow('Type:', challan.type),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', 'AED ${challan.total.toStringAsFixed(2)}'),
+              _detailRow('Amount:', '₹${challan.total.toStringAsFixed(2)}'),
             ],
           ),
         ),

@@ -787,7 +787,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                             ),
                           ),
                           subtitle: Text(
-                            'Qty: ${item.quantity} x AED ${item.rate.toStringAsFixed(2)} | Tax: ${item.taxRate}%',
+                            'Qty: ${item.quantity} x ₹${item.rate.toStringAsFixed(2)} | Tax: ${item.taxRate}%',
                             style: TextStyle(
                               fontSize: Dimensions.font16 * 0.75,
                               color: context.colors.textSecondary,
@@ -797,7 +797,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                'AED ${item.net.toStringAsFixed(2)}',
+                                '₹${item.net.toStringAsFixed(2)}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: context.colors.textPrimary,

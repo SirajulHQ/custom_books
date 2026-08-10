@@ -778,7 +778,7 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
             ),
             SizedBox(width: Dimensions.width10),
             Text(
-              'AED ${journal.amount.toStringAsFixed(2)}',
+              '₹${journal.amount.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.9,
                 fontWeight: FontWeight.w800,

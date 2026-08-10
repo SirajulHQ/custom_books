@@ -16,13 +16,13 @@ class BalancesGridWidget extends StatelessWidget {
     final tiles = [
       BalanceTileModel(
         'Receivables',
-        'AED5,886.00',
+        '₹5,886.00',
         Icons.call_received_rounded,
         Appcolors.primary,
       ),
       BalanceTileModel(
         'Payables',
-        'AED0.00',
+        '₹0.00',
         Icons.call_made_rounded,
         Appcolors.accent,
       ),

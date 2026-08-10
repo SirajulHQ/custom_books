@@ -367,7 +367,7 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
                 credit.referenceNumber.isEmpty ? '—' : credit.referenceNumber,
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', 'AED ${credit.total.toStringAsFixed(2)}'),
+              _detailRow('Amount:', '₹${credit.total.toStringAsFixed(2)}'),
             ],
           ),
         ),

@@ -121,7 +121,7 @@ class CostPriceEditor extends StatelessWidget {
 
           SizedBox(height: Dimensions.height10 / 2),
 
-          // Input field with AED prefix
+          // Input field with ₹ prefix
           Container(
             decoration: BoxDecoration(
               border: Border.all(color: context.colors.border),
@@ -143,7 +143,7 @@ class CostPriceEditor extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'AED',
+                    '₹',
                     style: TextStyle(
                       color: context.colors.textSecondary,
                       fontWeight: FontWeight.w600,

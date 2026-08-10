@@ -9,8 +9,8 @@ class BankingStripWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final entries = [
-      BankEntryModel('Bank Balance', 'AED306.73', Icons.account_balance_rounded),
-      BankEntryModel('Cash In Hand', 'AED6,135.00', Icons.wallet_rounded),
+      BankEntryModel('Bank Balance', '₹306.73', Icons.account_balance_rounded),
+      BankEntryModel('Cash In Hand', '₹6,135.00', Icons.wallet_rounded),
     ];
     return SizedBox(
       height: Dimensions.height45 * 2.3,

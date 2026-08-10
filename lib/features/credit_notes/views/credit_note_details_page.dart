@@ -362,7 +362,7 @@ class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
                 note.referenceNumber.isEmpty ? '-' : note.referenceNumber,
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', 'AED ${note.total.toStringAsFixed(2)}'),
+              _detailRow('Amount:', '₹${note.total.toStringAsFixed(2)}'),
             ],
           ),
         ),

@@ -74,7 +74,7 @@ class FinancialSummaryCard extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.height10 / 2),
             Text(
-              'AED ${_fmt(data.total)}',
+              '₹${_fmt(data.total)}',
               style: TextStyle(
                 fontSize: Dimensions.font26,
                 fontWeight: FontWeight.w800,
@@ -100,13 +100,13 @@ class FinancialSummaryCard extends StatelessWidget {
               children: [
                 SummaryLabel(
                   label: 'Current',
-                  value: 'AED ${_fmt(data.current)}',
+                  value: '₹${_fmt(data.current)}',
                   color: accentColor,
                 ),
                 SizedBox(width: Dimensions.width30),
                 SummaryLabel(
                   label: 'Overdue',
-                  value: 'AED ${_fmt(data.overdue)}',
+                  value: '₹${_fmt(data.overdue)}',
                   color: Appcolors.warn,
                 ),
               ],
@@ -166,7 +166,7 @@ class OverdueSplitGrid extends StatelessWidget {
               ),
               SizedBox(height: Dimensions.height10 / 3),
               Text(
-                'AED ${split[i].toStringAsFixed(2)}',
+                '₹${split[i].toStringAsFixed(2)}',
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.95,
                   fontWeight: FontWeight.w700,

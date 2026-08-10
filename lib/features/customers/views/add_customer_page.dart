@@ -361,7 +361,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                       _buildTextField(
                         'Opening Balance',
                         _openingBalanceController,
-                        prefix: 'INR',
+                        prefix: '₹',
                         keyboardType: TextInputType.number,
                       ),
                       SizedBox(height: Dimensions.height20),

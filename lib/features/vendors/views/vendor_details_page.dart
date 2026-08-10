@@ -114,7 +114,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
                 ),
                 SizedBox(height: Dimensions.height10 / 2),
                 Text(
-                  'AED ${widget.vendor.payables.toStringAsFixed(2)}',
+                  '₹${widget.vendor.payables.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: Dimensions.font26,
                     fontWeight: FontWeight.w800,
@@ -145,7 +145,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
                 ),
                 SizedBox(height: Dimensions.height10 / 2),
                 Text(
-                  'AED ${widget.vendor.unusedCredits.toStringAsFixed(2)}',
+                  '₹${widget.vendor.unusedCredits.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: Dimensions.font26,
                     fontWeight: FontWeight.w800,

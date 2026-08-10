@@ -368,7 +368,7 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage>
                 ),
               ],
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', 'AED ${order.total.toStringAsFixed(2)}'),
+              _detailRow('Amount:', '₹${order.total.toStringAsFixed(2)}'),
             ],
           ),
         ),

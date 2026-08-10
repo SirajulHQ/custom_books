@@ -365,7 +365,7 @@ class _PaymentReceivedDetailsPageState extends State<PaymentReceivedDetailsPage>
                     : payment.invoiceNumbers.join(', '),
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', 'AED ${payment.amount.toStringAsFixed(2)}'),
+              _detailRow('Amount:', '₹${payment.amount.toStringAsFixed(2)}'),
             ],
           ),
         ),

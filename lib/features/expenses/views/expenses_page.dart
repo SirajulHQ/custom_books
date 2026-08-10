@@ -780,7 +780,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
             ),
             SizedBox(width: Dimensions.width10),
             Text(
-              'AED ${expense.amount.toStringAsFixed(2)}',
+              '₹${expense.amount.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.9,
                 fontWeight: FontWeight.w800,

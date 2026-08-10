@@ -150,7 +150,7 @@ class _AddVendorPageState extends State<AddVendorPage>
                               FormNumberField(
                                 controller: _openingBalanceController,
                                 hint: '0.00',
-                                prefix: 'AED',
+                                prefix: '₹',
                               ),
                             ],
                           ),

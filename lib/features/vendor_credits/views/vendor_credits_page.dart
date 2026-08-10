@@ -799,7 +799,7 @@ class _VendorCreditsPageState extends State<VendorCreditsPage> {
             ),
             SizedBox(width: Dimensions.width10),
             Text(
-              'AED ${credit.total.toStringAsFixed(2)}',
+              '₹${credit.total.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.9,
                 fontWeight: FontWeight.w800,

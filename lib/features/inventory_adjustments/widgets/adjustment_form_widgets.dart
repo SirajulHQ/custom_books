@@ -101,7 +101,7 @@ class AdjustmentLineItemCard extends StatelessWidget {
                     ),
                     SizedBox(height: Dimensions.height10 / 4),
                     Text(
-                      '${item.quantityAdjusted > 0 ? '+' : ''}${item.quantityAdjusted.toStringAsFixed(2)} qty  •  AED ${item.valueChange.toStringAsFixed(2)}',
+                      '${item.quantityAdjusted > 0 ? '+' : ''}${item.quantityAdjusted.toStringAsFixed(2)} qty  •  ₹${item.valueChange.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.7,
                         color: qtyColor,

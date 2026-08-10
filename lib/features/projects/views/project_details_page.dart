@@ -339,7 +339,7 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
               SizedBox(height: Dimensions.height15),
               _detailRow('Billing Method:', project.billingMethod.label),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Rate:', 'AED ${project.rate.toStringAsFixed(2)}'),
+              _detailRow('Rate:', '₹${project.rate.toStringAsFixed(2)}'),
               SizedBox(height: Dimensions.height15),
               _detailRow(
                 'Budget Hours:',

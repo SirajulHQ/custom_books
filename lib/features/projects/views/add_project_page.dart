@@ -328,15 +328,15 @@ class _AddProjectPageState extends State<AddProjectPage>
 
               FormCard(
                 children: [
-                  // Rate (AED)
+                  // Rate (₹)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Rate (AED)', style: FormTextStyles.label()),
+                      Text('Rate (₹)', style: FormTextStyles.label()),
                       FormNumberField(
                         controller: _rateController,
                         hint: '0.00',
-                        prefix: 'AED',
+                        prefix: '₹',
                       ),
                     ],
                   ),

@@ -1,4 +1,4 @@
-﻿import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
@@ -196,7 +196,7 @@ class _AddSalesOrderLineItemPageState extends State<AddSalesOrderLineItemPage>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const RequiredLabel(text: 'Rate (AED)'),
+                            const RequiredLabel(text: 'Rate (₹)'),
                             SizedBox(height: Dimensions.height10 / 2),
                             FormNumberField(
                               controller: _rateController,
@@ -225,7 +225,7 @@ class _AddSalesOrderLineItemPageState extends State<AddSalesOrderLineItemPage>
                                         !_discountIsPercent,
                                   ),
                                   child: Text(
-                                    _discountIsPercent ? '%' : 'AED',
+                                    _discountIsPercent ? '%' : '₹',
                                     style: TextStyle(
                                       color: Appcolors.primary,
                                       fontWeight: FontWeight.bold,
@@ -239,7 +239,7 @@ class _AddSalesOrderLineItemPageState extends State<AddSalesOrderLineItemPage>
                             FormNumberField(
                               controller: _discountController,
                               hint: '0',
-                              suffix: _discountIsPercent ? '%' : 'AED',
+                              suffix: _discountIsPercent ? '%' : '₹',
                               width: double.infinity,
                             ),
                           ],

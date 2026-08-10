@@ -834,7 +834,7 @@ class _VendorsPageState extends State<VendorsPage> {
                 ),
                 SizedBox(height: Dimensions.height10 / 3),
                 Text(
-                  'AED ${vendor.payables.toStringAsFixed(2)}',
+                  '₹${vendor.payables.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.9,
                     fontWeight: FontWeight.w800,

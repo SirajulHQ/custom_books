@@ -305,32 +305,18 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                   // In real app, update via repository/bloc
                   // For now, just rebuild to show the change
                 });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Adjustment marked as completed'),
-                    duration: const Duration(seconds: 2),
-                    backgroundColor: Appcolors.primary,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    ),
-                  ),
+                ToastificationHelper.showSuccess(
+                  context,
+                  'Adjustment marked as completed',
                 );
               } else if (value == 'print') {
-                // TODO: Print functionality
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Print functionality coming soon'),
-                    duration: const Duration(seconds: 2),
-                    backgroundColor: context.colors.textSecondary,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    ),
-                  ),
+                // TODO: Connect to PDF generation API
+                ToastificationHelper.showInfo(
+                  context,
+                  'Generating PDF for print...',
                 );
               } else if (value == 'delete') {
-                // TODO: Delete adjustment
+                // TODO: Call delete API
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(

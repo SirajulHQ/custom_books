@@ -3,10 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
-
-// TODO: Implement AuthService when authentication is added
-// import 'package:custom_books/core/service/auth_service.dart';
-// import 'package:custom_books/features/auth/views/login_page.dart';
+import 'package:custom_books/features/auth/views/login_page.dart';
 
 class AuthGuard {
   /// Check if user is authenticated and redirect to login if not
@@ -18,37 +15,23 @@ class AuthGuard {
       // TODO: Implement when AuthService is ready
       // final authService = AuthService();
       // await authService.initialize();
-
       // if (authService.isAuthenticated) {
       //   appLog('✅ [AuthGuard] User is authenticated');
       //   return true;
-      // } else {
-      //   appLog('❌ [AuthGuard] User is not authenticated, redirecting to login');
-      //   if (context.mounted) {
-      //     Navigator.pushAndRemoveUntil(
-      //       context,
-      //       MaterialPageRoute(builder: (_) => const LoginPage()),
-      //       (route) => false,
-      //     );
-      //   }
-      //   return false;
       // }
 
-      // Temporary: Always return true until auth is implemented
+      // Temporary: Always return true until auth API is connected
       appLog('⚠️ [AuthGuard] Auth not implemented yet, allowing access');
       return true;
     } catch (e) {
       appLog('❌ [AuthGuard] Authentication check failed: $e');
-
-      // TODO: Uncomment when LoginPage is ready
-      // if (context.mounted) {
-      //   Navigator.pushAndRemoveUntil(
-      //     context,
-      //     MaterialPageRoute(builder: (_) => const LoginPage()),
-      //     (route) => false,
-      //   );
-      // }
-
+      if (context.mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const LoginPage()),
+          (route) => false,
+        );
+      }
       return false;
     }
   }
@@ -71,11 +54,7 @@ class AuthGuard {
   static Future<bool> isAuthenticated() async {
     try {
       // TODO: Implement when AuthService is ready
-      // final authService = AuthService();
-      // await authService.initialize();
-      // return authService.isAuthenticated;
-
-      // Temporary: Always return true until auth is implemented
+      // Temporary: Always return true until auth API is connected
       return true;
     } catch (e) {
       appLog('❌ [AuthGuard] Authentication check failed: $e');
@@ -87,11 +66,6 @@ class AuthGuard {
   static Future<String?> getCurrentUserId() async {
     try {
       // TODO: Implement when AuthService is ready
-      // final authService = AuthService();
-      // await authService.initialize();
-      // return authService.currentUserId;
-
-      // Temporary: Return null until auth is implemented
       return null;
     } catch (e) {
       appLog('❌ [AuthGuard] Failed to get user ID: $e');
@@ -103,16 +77,22 @@ class AuthGuard {
   static Future<String?> getCurrentUserEmail() async {
     try {
       // TODO: Implement when AuthService is ready
-      // final authService = AuthService();
-      // await authService.initialize();
-      // return authService.currentUserEmail;
-
-      // Temporary: Return null until auth is implemented
       return null;
     } catch (e) {
       appLog('❌ [AuthGuard] Failed to get user email: $e');
       return null;
     }
+  }
+
+  /// Logout the user and navigate to login page
+  static void logout(BuildContext context) {
+    appLog('🔓 [AuthGuard] Logging out...');
+    // TODO: Clear tokens/session when AuthService is ready
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginPage()),
+      (route) => false,
+    );
   }
 }
 
