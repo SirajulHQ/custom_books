@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/line_item_form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/quotes/models/quote_model.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,8 @@ class AddQuoteLineItemPage extends StatefulWidget {
   State<AddQuoteLineItemPage> createState() => _AddQuoteLineItemPageState();
 }
 
-class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
+class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
+    with UnsavedChangesMixin {
   final _item = TextEditingController();
   final _description = TextEditingController();
   final _quantity = TextEditingController(text: '1.00');
@@ -52,7 +54,22 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
   double get _taxAmount => _net * _taxRate / 100;
 
   @override
+  void initState() {
+    super.initState();
+    _item.addListener(markDirty);
+    _description.addListener(markDirty);
+    _quantity.addListener(markDirty);
+    _rate.addListener(markDirty);
+    _discount.addListener(markDirty);
+  }
+
+  @override
   void dispose() {
+    _item.removeListener(markDirty);
+    _description.removeListener(markDirty);
+    _quantity.removeListener(markDirty);
+    _rate.removeListener(markDirty);
+    _discount.removeListener(markDirty);
     _item.dispose();
     _description.dispose();
     _quantity.dispose();
@@ -103,12 +120,16 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
 
   void _save() {
     final item = _buildItem();
-    if (item != null) Navigator.pop(context, item);
+    if (item != null) {
+      markClean();
+      Navigator.pop(context, item);
+    }
   }
 
   void _saveAndNew() {
     final item = _buildItem();
     if (item == null) return;
+    markClean();
     Navigator.pop(context, <QuoteLineItem>[
       item,
       const QuoteLineItem(id: '', itemName: '', quantity: 0, rate: 0),
@@ -118,102 +139,107 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage> {
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      appBar: CustomBackAppBar(
-        title: 'Add Line Item',
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(
-            Dimensions.width20,
-            Dimensions.height15,
-            Dimensions.width20,
-            Dimensions.height30,
-          ),
-          child: FormCard(
-            children: [
-              const RequiredLabel(text: 'Item'),
-              SizedBox(height: Dimensions.height10 / 2),
-              ItemSearchField<String>(
-                controller: _item,
-                isItemSelected: _selectedItem != null,
-                suggestions: _suggestions,
-                onChanged: (_) => setState(() {}),
-                onClear: _clearItem,
-                onBarcodeScan: () => ToastificationHelper.showInfo(
-                  context,
-                  'Barcode scan coming soon',
-                ),
-                suggestionBuilder: (name) => InkWell(
-                  onTap: () => _selectItem(name),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    child: Row(
-                      children: [
-                        const ItemThumbnail(),
-                        SizedBox(width: Dimensions.width10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                name,
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.85,
-                                  fontWeight: FontWeight.w700,
-                                  color: context.colors.textPrimary,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        appBar: CustomBackAppBar(
+          title: 'Add Line Item',
+          onLeadingPressed: () => onPopInvokedWithResult(false, null),
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(
+              Dimensions.width20,
+              Dimensions.height15,
+              Dimensions.width20,
+              Dimensions.height30,
+            ),
+            child: FormCard(
+              children: [
+                const RequiredLabel(text: 'Item'),
+                SizedBox(height: Dimensions.height10 / 2),
+                ItemSearchField<String>(
+                  controller: _item,
+                  isItemSelected: _selectedItem != null,
+                  suggestions: _suggestions,
+                  onChanged: (_) => setState(() {}),
+                  onClear: _clearItem,
+                  onBarcodeScan: () => ToastificationHelper.showInfo(
+                    context,
+                    'Barcode scan coming soon',
+                  ),
+                  suggestionBuilder: (name) => InkWell(
+                    onTap: () => _selectItem(name),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height10,
+                      ),
+                      child: Row(
+                        children: [
+                          const ItemThumbnail(),
+                          SizedBox(width: Dimensions.width10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  name,
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.85,
+                                    fontWeight: FontWeight.w700,
+                                    color: context.colors.textPrimary,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                'AED${_catalog[name]!.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.72,
-                                  color: context.colors.textSecondary,
+                                Text(
+                                  'AED${_catalog[name]!.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.72,
+                                    color: context.colors.textSecondary,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              if (_selectedItem != null) ...[
-                const FormDivider(),
-                SizedBox(height: Dimensions.height10),
-                Text('Description', style: FormTextStyles.label()),
-                TextField(
-                  controller: _description,
-                  style: FormTextStyles.value(context),
-                  decoration: InputDecoration(
-                    hintText: 'Add a description for your item',
-                    hintStyle: TextStyle(color: context.colors.textTertiary),
-                    border: InputBorder.none,
-                    isDense: true,
+                if (_selectedItem != null) ...[
+                  const FormDivider(),
+                  SizedBox(height: Dimensions.height10),
+                  Text('Description', style: FormTextStyles.label()),
+                  TextField(
+                    controller: _description,
+                    style: FormTextStyles.value(context),
+                    decoration: InputDecoration(
+                      hintText: 'Add a description for your item',
+                      hintStyle: TextStyle(color: context.colors.textTertiary),
+                      border: InputBorder.none,
+                      isDense: true,
+                    ),
                   ),
-                ),
-                const FormDivider(),
-                SizedBox(height: Dimensions.height15),
-                _numberRow('Quantity', _quantity, required: true),
-                SizedBox(height: Dimensions.height15),
-                _numberRow('Rate', _rate, required: true, prefix: 'AED'),
-                SizedBox(height: Dimensions.height15),
-                _discountRow(),
-                SizedBox(height: Dimensions.height15),
-                _taxRow(),
-                SizedBox(height: Dimensions.height20),
-                _amountSummary(),
+                  const FormDivider(),
+                  SizedBox(height: Dimensions.height15),
+                  _numberRow('Quantity', _quantity, required: true),
+                  SizedBox(height: Dimensions.height15),
+                  _numberRow('Rate', _rate, required: true, prefix: 'AED'),
+                  SizedBox(height: Dimensions.height15),
+                  _discountRow(),
+                  SizedBox(height: Dimensions.height15),
+                  _taxRow(),
+                  SizedBox(height: Dimensions.height20),
+                  _amountSummary(),
+                ],
               ],
-            ],
+            ),
           ),
         ),
+        bottomNavigationBar: _bottomActions(),
       ),
-      bottomNavigationBar: _bottomActions(),
     );
   }
 

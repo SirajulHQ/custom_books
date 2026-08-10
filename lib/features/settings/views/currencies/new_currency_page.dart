@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:flutter/material.dart';
 
 class NewCurrencyPage extends StatefulWidget {
@@ -11,7 +12,8 @@ class NewCurrencyPage extends StatefulWidget {
   State<NewCurrencyPage> createState() => _NewCurrencyPageState();
 }
 
-class _NewCurrencyPageState extends State<NewCurrencyPage> {
+class _NewCurrencyPageState extends State<NewCurrencyPage>
+    with UnsavedChangesMixin {
   String? _selectedCode;
   final TextEditingController _symbolController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
@@ -51,11 +53,15 @@ class _NewCurrencyPageState extends State<NewCurrencyPage> {
   @override
   void initState() {
     super.initState();
+    _symbolController.addListener(markDirty);
+    _nameController.addListener(markDirty);
     appLog('💱 NewCurrencyPage initialized', name: 'NewCurrency');
   }
 
   @override
   void dispose() {
+    _symbolController.removeListener(markDirty);
+    _nameController.removeListener(markDirty);
     _symbolController.dispose();
     _nameController.dispose();
     super.dispose();
@@ -75,6 +81,7 @@ class _NewCurrencyPageState extends State<NewCurrencyPage> {
       return;
     }
     appLog('💾 Save new currency: $_selectedCode', name: 'NewCurrency');
+    markClean();
     Navigator.pop(context);
   }
 
@@ -216,78 +223,83 @@ class _NewCurrencyPageState extends State<NewCurrencyPage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      bottomNavigationBar: _buildSaveButton(),
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            const CustomSliverAppBar(
-              title: 'New Currency',
-              leadingType: AppBarLeadingType.back,
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.all(Dimensions.width15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Currency Code
-                    _buildLabel('Currency Code', required: true),
-                    SizedBox(height: Dimensions.height10),
-                    _buildDropdownField(
-                      value: _selectedCode,
-                      hint: 'Select a Currency Code',
-                      onTap: _selectCurrencyCode,
-                    ),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        bottomNavigationBar: _buildSaveButton(),
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'New Currency',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.all(Dimensions.width15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Currency Code
+                      _buildLabel('Currency Code', required: true),
+                      SizedBox(height: Dimensions.height10),
+                      _buildDropdownField(
+                        value: _selectedCode,
+                        hint: 'Select a Currency Code',
+                        onTap: _selectCurrencyCode,
+                      ),
 
-                    SizedBox(height: Dimensions.height20),
+                      SizedBox(height: Dimensions.height20),
 
-                    // Currency Symbol
-                    _buildLabel('Currency Symbol', required: true),
-                    SizedBox(height: Dimensions.height10),
-                    _buildTextField(
-                      controller: _symbolController,
-                      hint: 'Enter a Currency Symbol',
-                    ),
+                      // Currency Symbol
+                      _buildLabel('Currency Symbol', required: true),
+                      SizedBox(height: Dimensions.height10),
+                      _buildTextField(
+                        controller: _symbolController,
+                        hint: 'Enter a Currency Symbol',
+                      ),
 
-                    SizedBox(height: Dimensions.height20),
+                      SizedBox(height: Dimensions.height20),
 
-                    // Currency Name
-                    _buildLabel('Currency Name', required: true),
-                    SizedBox(height: Dimensions.height10),
-                    _buildTextField(
-                      controller: _nameController,
-                      hint: 'Enter a Currency Name',
-                    ),
+                      // Currency Name
+                      _buildLabel('Currency Name', required: true),
+                      SizedBox(height: Dimensions.height10),
+                      _buildTextField(
+                        controller: _nameController,
+                        hint: 'Enter a Currency Name',
+                      ),
 
-                    SizedBox(height: Dimensions.height20),
+                      SizedBox(height: Dimensions.height20),
 
-                    // Decimal Places
-                    _buildLabel('Decimal Places'),
-                    SizedBox(height: Dimensions.height10),
-                    _buildDropdownField(
-                      value: _selectedDecimalPlaces,
-                      hint: 'Select',
-                      onTap: _selectDecimalPlaces,
-                    ),
+                      // Decimal Places
+                      _buildLabel('Decimal Places'),
+                      SizedBox(height: Dimensions.height10),
+                      _buildDropdownField(
+                        value: _selectedDecimalPlaces,
+                        hint: 'Select',
+                        onTap: _selectDecimalPlaces,
+                      ),
 
-                    SizedBox(height: Dimensions.height20),
+                      SizedBox(height: Dimensions.height20),
 
-                    // Format
-                    _buildLabel('Format'),
-                    SizedBox(height: Dimensions.height10),
-                    _buildDropdownField(
-                      value: _selectedFormat,
-                      hint: 'Select a Currency Format',
-                      onTap: _selectFormat,
-                    ),
-                  ],
+                      // Format
+                      _buildLabel('Format'),
+                      SizedBox(height: Dimensions.height10),
+                      _buildDropdownField(
+                        value: _selectedFormat,
+                        hint: 'Select a Currency Format',
+                        onTap: _selectFormat,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

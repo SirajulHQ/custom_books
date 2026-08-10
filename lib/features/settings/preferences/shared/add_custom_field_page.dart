@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:flutter/material.dart';
 
 class AddCustomFieldPage extends StatefulWidget {
@@ -12,7 +13,8 @@ class AddCustomFieldPage extends StatefulWidget {
   State<AddCustomFieldPage> createState() => _AddCustomFieldPageState();
 }
 
-class _AddCustomFieldPageState extends State<AddCustomFieldPage> {
+class _AddCustomFieldPageState extends State<AddCustomFieldPage>
+    with UnsavedChangesMixin {
   final TextEditingController _labelController = TextEditingController();
   final TextEditingController _defaultValueController = TextEditingController();
   String _dataType = 'Number';
@@ -35,10 +37,14 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage> {
   void initState() {
     super.initState();
     appLog('➕ AddCustomFieldPage initialized', name: 'AddCustomField');
+    _labelController.addListener(markDirty);
+    _defaultValueController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _labelController.removeListener(markDirty);
+    _defaultValueController.removeListener(markDirty);
     _labelController.dispose();
     _defaultValueController.dispose();
     super.dispose();
@@ -60,6 +66,7 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage> {
       name: 'AddCustomField',
     );
 
+    markClean();
     Navigator.pop(context, {
       'label': _labelController.text.trim(),
       'dataType': _dataType,
@@ -124,229 +131,242 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: 'Add a new field',
-              leadingType: AppBarLeadingType.back,
-              actions: [
-                AppBarElevatedButton(label: 'SAVE', onPressed: _save),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.all(Dimensions.width15),
-                child: FormCard(
-                  children: [
-                    // Label Name
-                    RequiredLabel(text: 'Label Name'),
-                    TextField(
-                      controller: _labelController,
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.9,
-                        color: context.colors.textPrimary,
-                      ),
-                      decoration: InputDecoration(
-                        border: UnderlineInputBorder(
-                          borderSide: BorderSide(color: context.colors.border),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'Add a new field',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(label: 'SAVE', onPressed: _save),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.all(Dimensions.width15),
+                  child: FormCard(
+                    children: [
+                      // Label Name
+                      RequiredLabel(text: 'Label Name'),
+                      TextField(
+                        controller: _labelController,
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.9,
+                          color: context.colors.textPrimary,
                         ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: context.colors.border),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Appcolors.primary,
-                            width: 2,
+                        decoration: InputDecoration(
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: context.colors.border,
+                            ),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: context.colors.border,
+                            ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Appcolors.primary,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: Dimensions.height10,
                           ),
                         ),
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: Dimensions.height10,
+                      ),
+
+                      SizedBox(height: Dimensions.height20),
+
+                      // Data Type
+                      Text(
+                        'Data Type',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.85,
+                          color: context.colors.textSecondary,
                         ),
                       ),
-                    ),
-
-                    SizedBox(height: Dimensions.height20),
-
-                    // Data Type
-                    Text(
-                      'Data Type',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        color: context.colors.textSecondary,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: _showDataTypePicker,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: Dimensions.height10,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(color: context.colors.border),
+                      InkWell(
+                        onTap: _showDataTypePicker,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: Dimensions.height10,
                           ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              _dataType,
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.9,
-                                color: context.colors.textPrimary,
-                                fontWeight: FontWeight.w500,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: context.colors.border),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _dataType,
+                                style: TextStyle(
+                                  fontSize: Dimensions.font16 * 0.9,
+                                  color: context.colors.textPrimary,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                            Icon(
-                              Icons.keyboard_arrow_down,
-                              color: context.colors.textSecondary,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: Dimensions.height20),
-
-                    // Default Value
-                    Text(
-                      'Default Value',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        color: context.colors.textSecondary,
-                      ),
-                    ),
-                    TextField(
-                      controller: _defaultValueController,
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.9,
-                        color: context.colors.textPrimary,
-                      ),
-                      decoration: InputDecoration(
-                        border: UnderlineInputBorder(
-                          borderSide: BorderSide(color: context.colors.border),
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: context.colors.border),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Appcolors.primary,
-                            width: 2,
+                              Icon(
+                                Icons.keyboard_arrow_down,
+                                color: context.colors.textSecondary,
+                              ),
+                            ],
                           ),
                         ),
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: Dimensions.height10,
+                      ),
+
+                      SizedBox(height: Dimensions.height20),
+
+                      // Default Value
+                      Text(
+                        'Default Value',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.85,
+                          color: context.colors.textSecondary,
                         ),
                       ),
-                    ),
-
-                    SizedBox(height: Dimensions.height30),
-
-                    // PII Section
-                    Text(
-                      'Is this PII ( Personally Identifiable Information ) ?',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        color: context.colors.textSecondary,
+                      TextField(
+                        controller: _defaultValueController,
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.9,
+                          color: context.colors.textPrimary,
+                        ),
+                        decoration: InputDecoration(
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: context.colors.border,
+                            ),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: context.colors.border,
+                            ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Appcolors.primary,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: Dimensions.height10,
+                          ),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: Dimensions.height15),
 
-                    _buildRadioTile(
-                      "Yes it's PII. Encrypt and store it.",
-                      _piiOption == 'pii_encrypt',
-                      () => setState(() => _piiOption = 'pii_encrypt'),
-                    ),
-                    SizedBox(height: Dimensions.height10),
-                    _buildRadioTile(
-                      "Yes it's PII but not sensitive. Store it without encryption",
-                      _piiOption == 'pii_no_encrypt',
-                      () => setState(() => _piiOption = 'pii_no_encrypt'),
-                    ),
-                    SizedBox(height: Dimensions.height10),
-                    _buildRadioTile(
-                      "No it's not PII.",
-                      _piiOption == 'not_pii',
-                      () => setState(() => _piiOption = 'not_pii'),
-                    ),
+                      SizedBox(height: Dimensions.height30),
 
-                    if (_piiOption == 'not_pii') ...[
+                      // PII Section
+                      Text(
+                        'Is this PII ( Personally Identifiable Information ) ?',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.85,
+                          color: context.colors.textSecondary,
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.height15),
+
+                      _buildRadioTile(
+                        "Yes it's PII. Encrypt and store it.",
+                        _piiOption == 'pii_encrypt',
+                        () => setState(() => _piiOption = 'pii_encrypt'),
+                      ),
                       SizedBox(height: Dimensions.height10),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: Dimensions.width30 + Dimensions.width10,
-                        ),
-                        child: Text(
-                          'The data will not be encrypted and all users can view the details. This field can be used to perform advanced searches.',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.75,
-                            color: context.colors.textTertiary,
-                            height: 1.4,
+                      _buildRadioTile(
+                        "Yes it's PII but not sensitive. Store it without encryption",
+                        _piiOption == 'pii_no_encrypt',
+                        () => setState(() => _piiOption = 'pii_no_encrypt'),
+                      ),
+                      SizedBox(height: Dimensions.height10),
+                      _buildRadioTile(
+                        "No it's not PII.",
+                        _piiOption == 'not_pii',
+                        () => setState(() => _piiOption = 'not_pii'),
+                      ),
+
+                      if (_piiOption == 'not_pii') ...[
+                        SizedBox(height: Dimensions.height10),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: Dimensions.width30 + Dimensions.width10,
+                          ),
+                          child: Text(
+                            'The data will not be encrypted and all users can view the details. This field can be used to perform advanced searches.',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.75,
+                              color: context.colors.textTertiary,
+                              height: 1.4,
+                            ),
                           ),
                         ),
+                      ],
+
+                      SizedBox(height: Dimensions.height20),
+
+                      // Is Mandatory
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Is Mandatory',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.9,
+                              color: context.colors.textPrimary,
+                            ),
+                          ),
+                          Switch(
+                            value: _isMandatory,
+                            onChanged: (val) =>
+                                setState(() => _isMandatory = val),
+                            activeColor: Colors.white,
+                            activeTrackColor: Appcolors.primary,
+                            inactiveThumbColor: Colors.white,
+                            inactiveTrackColor: context.colors.border,
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: Dimensions.height10),
+
+                      // Show in all PDF
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Show in all PDF',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.9,
+                              color: context.colors.textPrimary,
+                            ),
+                          ),
+                          Switch(
+                            value: _showInAllPdf,
+                            onChanged: (val) =>
+                                setState(() => _showInAllPdf = val),
+                            activeColor: Colors.white,
+                            activeTrackColor: Appcolors.primary,
+                            inactiveThumbColor: Colors.white,
+                            inactiveTrackColor: context.colors.border,
+                          ),
+                        ],
                       ),
                     ],
-
-                    SizedBox(height: Dimensions.height20),
-
-                    // Is Mandatory
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Is Mandatory',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.9,
-                            color: context.colors.textPrimary,
-                          ),
-                        ),
-                        Switch(
-                          value: _isMandatory,
-                          onChanged: (val) =>
-                              setState(() => _isMandatory = val),
-                          activeColor: Colors.white,
-                          activeTrackColor: Appcolors.primary,
-                          inactiveThumbColor: Colors.white,
-                          inactiveTrackColor: context.colors.border,
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: Dimensions.height10),
-
-                    // Show in all PDF
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Show in all PDF',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.9,
-                            color: context.colors.textPrimary,
-                          ),
-                        ),
-                        Switch(
-                          value: _showInAllPdf,
-                          onChanged: (val) =>
-                              setState(() => _showInAllPdf = val),
-                          activeColor: Colors.white,
-                          activeTrackColor: Appcolors.primary,
-                          inactiveThumbColor: Colors.white,
-                          inactiveTrackColor: context.colors.border,
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

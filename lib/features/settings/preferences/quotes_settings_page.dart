@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/settings/preferences/shared/add_custom_field_page.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,8 @@ class QuotesSettingsPage extends StatefulWidget {
   State<QuotesSettingsPage> createState() => _QuotesSettingsPageState();
 }
 
-class _QuotesSettingsPageState extends State<QuotesSettingsPage> {
+class _QuotesSettingsPageState extends State<QuotesSettingsPage>
+    with UnsavedChangesMixin {
   bool _autoGenerateNumber = true;
   final TextEditingController _prefixController = TextEditingController(
     text: 'QT-',
@@ -36,10 +38,20 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage> {
   void initState() {
     super.initState();
     appLog('📝 QuotesSettingsPage initialized', name: 'QuotesSettings');
+    _prefixController.addListener(markDirty);
+    _nextNumberController.addListener(markDirty);
+    _notesController.addListener(markDirty);
+    _termsController.addListener(markDirty);
+    _defaultCountryCodeController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _prefixController.removeListener(markDirty);
+    _nextNumberController.removeListener(markDirty);
+    _notesController.removeListener(markDirty);
+    _termsController.removeListener(markDirty);
+    _defaultCountryCodeController.removeListener(markDirty);
     _prefixController.dispose();
     _nextNumberController.dispose();
     _notesController.dispose();
@@ -50,6 +62,7 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage> {
 
   void _save() {
     appLog('💾 Save Quotes Settings', name: 'QuotesSettings');
+    markClean();
     Navigator.pop(context);
   }
 
@@ -67,171 +80,178 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: 'Quotes Settings',
-              leadingType: AppBarLeadingType.back,
-              actions: [
-                AppBarElevatedButton(label: 'SAVE', onPressed: _save),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.width15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: Dimensions.height10),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'Quotes Settings',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(label: 'SAVE', onPressed: _save),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimensions.width15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: Dimensions.height10),
 
-                    // Quote Number
-                    _buildSettingRow(
-                      title: 'Quote Number',
-                      subtitle: 'Auto-generate?',
-                      trailing: Checkbox(
-                        value: _autoGenerateNumber,
-                        onChanged: (val) =>
-                            setState(() => _autoGenerateNumber = val ?? false),
-                        activeColor: Appcolors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: Dimensions.height20),
-
-                    // Prefix
-                    _buildTextFieldRow(
-                      label: 'Prefix',
-                      controller: _prefixController,
-                    ),
-
-                    SizedBox(height: Dimensions.height20),
-
-                    // Next Number
-                    _buildTextFieldRow(
-                      label: 'Next Number',
-                      controller: _nextNumberController,
-                    ),
-
-                    SizedBox(height: Dimensions.height20),
-
-                    // Notes
-                    _buildTextFieldRow(
-                      label: 'Notes',
-                      controller: _notesController,
-                      maxLines: 2,
-                    ),
-
-                    SizedBox(height: Dimensions.height20),
-
-                    // Terms & Conditions
-                    _buildTextFieldRow(
-                      label: 'Terms & Conditions',
-                      controller: _termsController,
-                      maxLines: 3,
-                    ),
-
-                    SizedBox(height: Dimensions.height20),
-
-                    // Convert to Invoice
-                    _buildSettingRow(
-                      title: 'Convert to Invoice',
-                      subtitle:
-                          'Automatically convert accepted Quote to Invoice',
-                      trailing: Checkbox(
-                        value: _convertToInvoice,
-                        onChanged: (val) =>
-                            setState(() => _convertToInvoice = val ?? false),
-                        activeColor: Appcolors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
-
-                    _buildDivider(),
-
-                    // Prefill Country Code
-                    Text(
-                      'Prefill Country Code',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16,
-                        fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height10),
-                    _buildSettingRow(
-                      subtitle:
-                          "Automatically prefill the country code when verifying a contact's phone number before sharing via WhatsApp.",
-                      trailing: Checkbox(
-                        value: _prefillCountryCode,
-                        onChanged: (val) =>
-                            setState(() => _prefillCountryCode = val ?? false),
-                        activeColor: Appcolors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: Dimensions.height15),
-
-                    // Default Country Code
-                    _buildTextFieldRow(
-                      label: 'Default Country Code',
-                      controller: _defaultCountryCodeController,
-                      hint: 'Enter country code',
-                    ),
-
-                    _buildDivider(),
-
-                    // Fields Section
-                    Text(
-                      'Fields',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16,
-                        fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height10),
-
-                    // Custom fields list
-                    ..._customFields.map(
-                      (field) => _buildCustomFieldTile(field),
-                    ),
-
-                    // Add new field
-                    InkWell(
-                      onTap: _addNewField,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: Dimensions.height15,
-                        ),
-                        child: Text(
-                          'Add new field',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.9,
-                            color: context.colors.textPrimary,
+                      // Quote Number
+                      _buildSettingRow(
+                        title: 'Quote Number',
+                        subtitle: 'Auto-generate?',
+                        trailing: Checkbox(
+                          value: _autoGenerateNumber,
+                          onChanged: (val) => setState(
+                            () => _autoGenerateNumber = val ?? false,
+                          ),
+                          activeColor: Appcolors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         ),
                       ),
-                    ),
 
-                    SizedBox(height: Dimensions.height30 * 2),
-                  ],
+                      SizedBox(height: Dimensions.height20),
+
+                      // Prefix
+                      _buildTextFieldRow(
+                        label: 'Prefix',
+                        controller: _prefixController,
+                      ),
+
+                      SizedBox(height: Dimensions.height20),
+
+                      // Next Number
+                      _buildTextFieldRow(
+                        label: 'Next Number',
+                        controller: _nextNumberController,
+                      ),
+
+                      SizedBox(height: Dimensions.height20),
+
+                      // Notes
+                      _buildTextFieldRow(
+                        label: 'Notes',
+                        controller: _notesController,
+                        maxLines: 2,
+                      ),
+
+                      SizedBox(height: Dimensions.height20),
+
+                      // Terms & Conditions
+                      _buildTextFieldRow(
+                        label: 'Terms & Conditions',
+                        controller: _termsController,
+                        maxLines: 3,
+                      ),
+
+                      SizedBox(height: Dimensions.height20),
+
+                      // Convert to Invoice
+                      _buildSettingRow(
+                        title: 'Convert to Invoice',
+                        subtitle:
+                            'Automatically convert accepted Quote to Invoice',
+                        trailing: Checkbox(
+                          value: _convertToInvoice,
+                          onChanged: (val) =>
+                              setState(() => _convertToInvoice = val ?? false),
+                          activeColor: Appcolors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+
+                      _buildDivider(),
+
+                      // Prefill Country Code
+                      Text(
+                        'Prefill Country Code',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16,
+                          fontWeight: FontWeight.w600,
+                          color: Appcolors.primary,
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.height10),
+                      _buildSettingRow(
+                        subtitle:
+                            "Automatically prefill the country code when verifying a contact's phone number before sharing via WhatsApp.",
+                        trailing: Checkbox(
+                          value: _prefillCountryCode,
+                          onChanged: (val) => setState(
+                            () => _prefillCountryCode = val ?? false,
+                          ),
+                          activeColor: Appcolors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: Dimensions.height15),
+
+                      // Default Country Code
+                      _buildTextFieldRow(
+                        label: 'Default Country Code',
+                        controller: _defaultCountryCodeController,
+                        hint: 'Enter country code',
+                      ),
+
+                      _buildDivider(),
+
+                      // Fields Section
+                      Text(
+                        'Fields',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16,
+                          fontWeight: FontWeight.w600,
+                          color: Appcolors.primary,
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.height10),
+
+                      // Custom fields list
+                      ..._customFields.map(
+                        (field) => _buildCustomFieldTile(field),
+                      ),
+
+                      // Add new field
+                      InkWell(
+                        onTap: _addNewField,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: Dimensions.height15,
+                          ),
+                          child: Text(
+                            'Add new field',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.9,
+                              color: context.colors.textPrimary,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: Dimensions.height30 * 2),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

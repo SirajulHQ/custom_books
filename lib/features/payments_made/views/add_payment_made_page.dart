@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/payments_made/models/payment_made_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,7 +15,8 @@ class AddPaymentMadePage extends StatefulWidget {
   State<AddPaymentMadePage> createState() => _AddPaymentMadePageState();
 }
 
-class _AddPaymentMadePageState extends State<AddPaymentMadePage> {
+class _AddPaymentMadePageState extends State<AddPaymentMadePage>
+    with UnsavedChangesMixin {
   final _paymentNumController = TextEditingController();
   final _referenceController = TextEditingController();
   final _amountController = TextEditingController();
@@ -34,10 +36,16 @@ class _AddPaymentMadePageState extends State<AddPaymentMadePage> {
   void initState() {
     super.initState();
     _paymentNumController.text = 'PM-00022';
+    _paymentNumController.addListener(markDirty);
+    _referenceController.addListener(markDirty);
+    _amountController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _paymentNumController.removeListener(markDirty);
+    _referenceController.removeListener(markDirty);
+    _amountController.removeListener(markDirty);
     _paymentNumController.dispose();
     _referenceController.dispose();
     _amountController.dispose();
@@ -193,6 +201,7 @@ class _AddPaymentMadePageState extends State<AddPaymentMadePage> {
       updatedAt: DateTime.now(),
     );
 
+    markClean();
     Navigator.pop(context, newPayment);
   }
 
@@ -201,91 +210,96 @@ class _AddPaymentMadePageState extends State<AddPaymentMadePage> {
     Dimensions.init(context);
     final dateFormat = DateFormat('dd MMM yyyy');
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      appBar: CustomBackAppBar(
-        title: 'New Payment',
-        backgroundColor: context.colors.card,
-        actions: [
-          TextButton(
-            onPressed: _savePayment,
-            child: Text(
-              'SAVE',
-              style: TextStyle(
-                color: Appcolors.primary,
-                fontWeight: FontWeight.w800,
-                fontSize: Dimensions.font16 * 0.75,
-                letterSpacing: 0.5,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        appBar: CustomBackAppBar(
+          title: 'New Payment',
+          backgroundColor: context.colors.card,
+          onLeadingPressed: () => onPopInvokedWithResult(false, null),
+          actions: [
+            TextButton(
+              onPressed: _savePayment,
+              child: Text(
+                'SAVE',
+                style: TextStyle(
+                  color: Appcolors.primary,
+                  fontWeight: FontWeight.w800,
+                  fontSize: Dimensions.font16 * 0.75,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(Dimensions.width15),
-        child: Column(
-          children: [
-            FormCard(
-              children: [
-                const RequiredLabel(text: 'Vendor'),
-                SizedBox(height: Dimensions.height10 / 2),
-                _selectorField(
-                  value: _vendorName,
-                  hint: 'Select a vendor',
-                  onTap: _selectVendor,
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                const RequiredLabel(text: 'Payment#'),
-                SizedBox(height: Dimensions.height10 / 2),
-                TextField(
-                  controller: _paymentNumController,
-                  style: FormTextStyles.value(context),
-                  decoration: _underlineDecoration(),
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                const RequiredLabel(text: 'Payment Date'),
-                SizedBox(height: Dimensions.height10 / 2),
-                _dateField(dateFormat.format(_paymentDate), _pickDate),
-                SizedBox(height: Dimensions.height20),
-
-                Text('Payment Mode', style: FormTextStyles.label()),
-                SizedBox(height: Dimensions.height10 / 2),
-                _selectorField(
-                  value: _mode.label,
-                  hint: 'Select payment mode',
-                  onTap: _selectPaymentMode,
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                Text('Reference#', style: FormTextStyles.label()),
-                SizedBox(height: Dimensions.height10 / 2),
-                TextField(
-                  controller: _referenceController,
-                  style: FormTextStyles.value(context),
-                  decoration: _underlineDecoration(),
-                ),
-              ],
-            ),
-            SizedBox(height: Dimensions.height15),
-
-            FormCard(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const RequiredLabel(text: 'Amount'),
-                    FormNumberField(
-                      controller: _amountController,
-                      hint: '0.00',
-                      prefix: 'AED',
-                    ),
-                  ],
-                ),
-              ],
-            ),
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(Dimensions.width15),
+          child: Column(
+            children: [
+              FormCard(
+                children: [
+                  const RequiredLabel(text: 'Vendor'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  _selectorField(
+                    value: _vendorName,
+                    hint: 'Select a vendor',
+                    onTap: _selectVendor,
+                  ),
+                  SizedBox(height: Dimensions.height20),
+
+                  const RequiredLabel(text: 'Payment#'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  TextField(
+                    controller: _paymentNumController,
+                    style: FormTextStyles.value(context),
+                    decoration: _underlineDecoration(),
+                  ),
+                  SizedBox(height: Dimensions.height20),
+
+                  const RequiredLabel(text: 'Payment Date'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  _dateField(dateFormat.format(_paymentDate), _pickDate),
+                  SizedBox(height: Dimensions.height20),
+
+                  Text('Payment Mode', style: FormTextStyles.label()),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  _selectorField(
+                    value: _mode.label,
+                    hint: 'Select payment mode',
+                    onTap: _selectPaymentMode,
+                  ),
+                  SizedBox(height: Dimensions.height20),
+
+                  Text('Reference#', style: FormTextStyles.label()),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  TextField(
+                    controller: _referenceController,
+                    style: FormTextStyles.value(context),
+                    decoration: _underlineDecoration(),
+                  ),
+                ],
+              ),
+              SizedBox(height: Dimensions.height15),
+
+              FormCard(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const RequiredLabel(text: 'Amount'),
+                      FormNumberField(
+                        controller: _amountController,
+                        hint: '0.00',
+                        prefix: 'AED',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

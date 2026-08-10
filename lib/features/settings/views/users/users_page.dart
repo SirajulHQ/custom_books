@@ -44,11 +44,7 @@ class _UsersPageState extends State<UsersPage> {
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      floatingActionButton: CustomAddButton(
-        onPressed: _inviteUser,
-        backgroundColor: context.colors.textPrimary,
-        foregroundColor: context.colors.background,
-      ),
+      floatingActionButton: CustomAddButton(onPressed: _inviteUser),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),

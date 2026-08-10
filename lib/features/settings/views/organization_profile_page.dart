@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:flutter/material.dart';
 
 class OrganizationProfilePage extends StatefulWidget {
@@ -13,7 +14,8 @@ class OrganizationProfilePage extends StatefulWidget {
       _OrganizationProfilePageState();
 }
 
-class _OrganizationProfilePageState extends State<OrganizationProfilePage> {
+class _OrganizationProfilePageState extends State<OrganizationProfilePage>
+    with UnsavedChangesMixin {
   final _orgNameController = TextEditingController();
   final _portalNameController = TextEditingController();
   final _street1Controller = TextEditingController();
@@ -100,6 +102,16 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage> {
   @override
   void initState() {
     super.initState();
+    _orgNameController.addListener(markDirty);
+    _portalNameController.addListener(markDirty);
+    _street1Controller.addListener(markDirty);
+    _street2Controller.addListener(markDirty);
+    _cityController.addListener(markDirty);
+    _zipCodeController.addListener(markDirty);
+    _phoneController.addListener(markDirty);
+    _faxController.addListener(markDirty);
+    _websiteController.addListener(markDirty);
+    _companyIdController.addListener(markDirty);
     appLog(
       '🏢 OrganizationProfilePage initialized',
       name: 'OrganizationProfile',
@@ -119,6 +131,16 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage> {
 
   @override
   void dispose() {
+    _orgNameController.removeListener(markDirty);
+    _portalNameController.removeListener(markDirty);
+    _street1Controller.removeListener(markDirty);
+    _street2Controller.removeListener(markDirty);
+    _cityController.removeListener(markDirty);
+    _zipCodeController.removeListener(markDirty);
+    _phoneController.removeListener(markDirty);
+    _faxController.removeListener(markDirty);
+    _websiteController.removeListener(markDirty);
+    _companyIdController.removeListener(markDirty);
     _orgNameController.dispose();
     _portalNameController.dispose();
     _street1Controller.dispose();
@@ -134,6 +156,7 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage> {
 
   void _save() {
     appLog('💾 Save Organization Profile', name: 'OrganizationProfile');
+    markClean();
     Navigator.pop(context);
   }
 
@@ -201,423 +224,430 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: 'Organization Profile',
-              leadingType: AppBarLeadingType.back,
-              actions: [
-                AppBarElevatedButton(label: 'SAVE', onPressed: _save),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.width15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Organization ID
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                        horizontal: Dimensions.width10,
-                      ),
-                      child: Text(
-                        'Organization ID: 926602888',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.85,
-                          color: context.colors.textSecondary,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'Organization Profile',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(label: 'SAVE', onPressed: _save),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimensions.width15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Organization ID
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: Dimensions.height10,
+                          horizontal: Dimensions.width10,
+                        ),
+                        child: Text(
+                          'Organization ID: 926602888',
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.85,
+                            color: context.colors.textSecondary,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: Dimensions.height10),
+                      SizedBox(height: Dimensions.height10),
 
-                    // Logo & Basic Info Card
-                    FormCard(
-                      children: [
-                        // Logo Upload Area
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(Dimensions.width15),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 100,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: context.colors.textTertiary,
-                                    style: BorderStyle.solid,
+                      // Logo & Basic Info Card
+                      FormCard(
+                        children: [
+                          // Logo Upload Area
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(Dimensions.width15),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 100,
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: context.colors.textTertiary,
+                                      style: BorderStyle.solid,
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                      Dimensions.radius15 / 2,
+                                    ),
                                   ),
-                                  borderRadius: BorderRadius.circular(
-                                    Dimensions.radius15 / 2,
-                                  ),
-                                ),
-                                child: CustomPaint(
-                                  painter: _DashedBorderPainter(
-                                    color: context.colors.textTertiary,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Upload your\nlogo',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: Dimensions.font16 * 0.75,
-                                        color: context.colors.textSecondary,
+                                  child: CustomPaint(
+                                    painter: _DashedBorderPainter(
+                                      color: context.colors.textTertiary,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'Upload your\nlogo',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: Dimensions.font16 * 0.75,
+                                          color: context.colors.textSecondary,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(width: Dimensions.width15),
-                              Expanded(
-                                child: Text(
-                                  'This logo will appear on transactions and email notifications.',
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16 * 0.8,
-                                    color: context.colors.textSecondary,
+                                SizedBox(width: Dimensions.width15),
+                                Expanded(
+                                  child: Text(
+                                    'This logo will appear on transactions and email notifications.',
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.8,
+                                      color: context.colors.textSecondary,
+                                    ),
                                   ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height15),
+
+                          // Organization Name
+                          const RequiredLabel(text: 'Organization Name'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          TextField(
+                            controller: _orgNameController,
+                            style: FormTextStyles.value(context),
+                            decoration: _underlineDecoration(),
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          // Portal Name
+                          Row(
+                            children: [
+                              const RequiredLabel(text: 'Portal Name'),
+                              SizedBox(width: Dimensions.width10 / 2),
+                              GestureDetector(
+                                onTap: () {},
+                                child: Icon(
+                                  Icons.info_outline_rounded,
+                                  size: Dimensions.iconSize16,
+                                  color: context.colors.textTertiary,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        SizedBox(height: Dimensions.height15),
-
-                        // Organization Name
-                        const RequiredLabel(text: 'Organization Name'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        TextField(
-                          controller: _orgNameController,
-                          style: FormTextStyles.value(context),
-                          decoration: _underlineDecoration(),
-                        ),
-                        SizedBox(height: Dimensions.height20),
-
-                        // Portal Name
-                        Row(
-                          children: [
-                            const RequiredLabel(text: 'Portal Name'),
-                            SizedBox(width: Dimensions.width10 / 2),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Icon(
-                                Icons.info_outline_rounded,
-                                size: Dimensions.iconSize16,
-                                color: context.colors.textTertiary,
+                          SizedBox(height: Dimensions.height10 / 2),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _portalNameController,
+                                  style: FormTextStyles.value(context),
+                                  decoration: _underlineDecoration(),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: _portalNameController,
-                                style: FormTextStyles.value(context),
-                                decoration: _underlineDecoration(),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.settings_outlined,
+                                  size: Dimensions.iconSize24,
+                                  color: context.colors.textSecondary,
+                                ),
+                                onPressed: () {},
                               ),
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.settings_outlined,
-                                size: Dimensions.iconSize24,
-                                color: context.colors.textSecondary,
-                              ),
-                              onPressed: () {},
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: Dimensions.height10 / 2,
+                            ],
                           ),
-                          child: Text(
-                            'https://books.zoho.com/portal/store926602888',
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.75,
-                              color: Appcolors.primary,
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: Dimensions.height10 / 2,
                             ),
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height20),
-
-                        // Industry
-                        Row(
-                          children: [
-                            Text('Industry', style: FormTextStyles.label()),
-                            SizedBox(width: Dimensions.width10 / 2),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Icon(
-                                Icons.info_outline_rounded,
-                                size: Dimensions.iconSize16,
-                                color: context.colors.textTertiary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _selectorField(
-                          value: _industry,
-                          hint: 'Select Industry',
-                          onTap: () async {
-                            final selected = await _selectFromSheet(
-                              'Select Industry',
-                              _industries,
-                              _industry,
-                            );
-                            if (selected != null) {
-                              setState(() => _industry = selected);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height15),
-
-                    // Location & Address Card
-                    FormCard(
-                      children: [
-                        const RequiredLabel(text: 'Organization Location'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _selectorField(
-                          value: _organizationLocation,
-                          hint: 'Select Location',
-                          onTap: () async {
-                            final selected = await _selectFromSheet(
-                              'Select Location',
-                              _locations,
-                              _organizationLocation,
-                            );
-                            if (selected != null) {
-                              setState(() => _organizationLocation = selected);
-                            }
-                          },
-                        ),
-                        SizedBox(height: Dimensions.height20),
-
-                        Row(
-                          children: [
-                            Text(
-                              'Organization Address',
-                              style: FormTextStyles.label(),
-                            ),
-                            SizedBox(width: Dimensions.width10 / 2),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Icon(
-                                Icons.info_outline_rounded,
-                                size: Dimensions.iconSize16,
-                                color: context.colors.textTertiary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: Dimensions.height10),
-
-                        // Street 1
-                        TextField(
-                          controller: _street1Controller,
-                          style: FormTextStyles.value(context),
-                          decoration: _underlineDecoration(hint: 'Street 1'),
-                        ),
-                        SizedBox(height: Dimensions.height15),
-
-                        // Street 2
-                        TextField(
-                          controller: _street2Controller,
-                          style: FormTextStyles.value(context),
-                          decoration: _underlineDecoration(hint: 'Street 2'),
-                        ),
-                        SizedBox(height: Dimensions.height15),
-
-                        // City
-                        TextField(
-                          controller: _cityController,
-                          style: FormTextStyles.value(context),
-                          decoration: _underlineDecoration(hint: 'City'),
-                        ),
-                        SizedBox(height: Dimensions.height15),
-
-                        // State
-                        _selectorField(
-                          value: _state,
-                          hint: 'State',
-                          onTap: () async {
-                            final selected = await _selectFromSheet(
-                              'Select State',
-                              _states,
-                              _state,
-                            );
-                            if (selected != null) {
-                              setState(() => _state = selected);
-                            }
-                          },
-                        ),
-                        SizedBox(height: Dimensions.height15),
-
-                        // Zip Code
-                        TextField(
-                          controller: _zipCodeController,
-                          style: FormTextStyles.value(context),
-                          decoration: _underlineDecoration(hint: 'Zip Code'),
-                          keyboardType: TextInputType.number,
-                        ),
-                        SizedBox(height: Dimensions.height15),
-
-                        // Phone
-                        TextField(
-                          controller: _phoneController,
-                          style: FormTextStyles.value(context),
-                          decoration: _underlineDecoration(hint: 'Phone'),
-                          keyboardType: TextInputType.phone,
-                        ),
-                        SizedBox(height: Dimensions.height15),
-
-                        // Fax
-                        TextField(
-                          controller: _faxController,
-                          style: FormTextStyles.value(context),
-                          decoration: _underlineDecoration(hint: 'Fax'),
-                        ),
-                        SizedBox(height: Dimensions.height15),
-
-                        // Website
-                        TextField(
-                          controller: _websiteController,
-                          style: FormTextStyles.value(context),
-                          decoration: _underlineDecoration(hint: 'Website'),
-                          keyboardType: TextInputType.url,
-                        ),
-                        SizedBox(height: Dimensions.height20),
-
-                        // Checkboxes
-                        _buildCheckboxTile(
-                          'Update the address in all previous transactions.',
-                          _updateAddressInTransactions,
-                          (val) => setState(
-                            () => _updateAddressInTransactions = val ?? false,
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height10),
-                        _buildCheckboxTile(
-                          'Would you like to add a different address for payment stubs?',
-                          _addDifferentAddress,
-                          (val) => setState(
-                            () => _addDifferentAddress = val ?? false,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height15),
-
-                    // Fiscal Year & Locale Card
-                    FormCard(
-                      children: [
-                        Text('Fiscal Year', style: FormTextStyles.label()),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _selectorField(
-                          value: _fiscalYear,
-                          hint: 'Select Fiscal Year',
-                          onTap: () async {
-                            final selected = await _selectFromSheet(
-                              'Select Fiscal Year',
-                              _fiscalYears,
-                              _fiscalYear,
-                            );
-                            if (selected != null) {
-                              setState(() => _fiscalYear = selected);
-                            }
-                          },
-                        ),
-                        SizedBox(height: Dimensions.height20),
-
-                        Text('Language', style: FormTextStyles.label()),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _selectorField(
-                          value: _language,
-                          hint: 'Select Language',
-                          onTap: () async {
-                            final selected = await _selectFromSheet(
-                              'Select Language',
-                              _languages,
-                              _language,
-                            );
-                            if (selected != null) {
-                              setState(() => _language = selected);
-                            }
-                          },
-                        ),
-                        SizedBox(height: Dimensions.height20),
-
-                        Text('Time Zone', style: FormTextStyles.label()),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        Text(
-                          _timeZone ?? 'Select Time Zone',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.9,
-                            color: _timeZone == null
-                                ? context.colors.textTertiary
-                                : context.colors.textPrimary,
-                          ),
-                        ),
-                        Divider(color: context.colors.border),
-                        SizedBox(height: Dimensions.height15),
-
-                        Text('Date Format', style: FormTextStyles.label()),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _selectorField(
-                          value: _dateFormat,
-                          hint: 'Select Date Format',
-                          onTap: () async {
-                            final selected = await _selectFromSheet(
-                              'Select Date Format',
-                              _dateFormats,
-                              _dateFormat,
-                            );
-                            if (selected != null) {
-                              setState(() => _dateFormat = selected);
-                            }
-                          },
-                        ),
-                        SizedBox(height: Dimensions.height20),
-
-                        Text('Company ID', style: FormTextStyles.label()),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        Row(
-                          children: [
-                            Text(
-                              'Company ID :',
+                            child: Text(
+                              'https://books.zoho.com/portal/store926602888',
                               style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.9,
-                                color: context.colors.textPrimary,
+                                fontSize: Dimensions.font16 * 0.75,
+                                color: Appcolors.primary,
                               ),
                             ),
-                            SizedBox(width: Dimensions.width10),
-                            Expanded(
-                              child: TextField(
-                                controller: _companyIdController,
-                                style: FormTextStyles.value(context),
-                                decoration: _underlineDecoration(),
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          // Industry
+                          Row(
+                            children: [
+                              Text('Industry', style: FormTextStyles.label()),
+                              SizedBox(width: Dimensions.width10 / 2),
+                              GestureDetector(
+                                onTap: () {},
+                                child: Icon(
+                                  Icons.info_outline_rounded,
+                                  size: Dimensions.iconSize16,
+                                  color: context.colors.textTertiary,
+                                ),
                               ),
+                            ],
+                          ),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _selectorField(
+                            value: _industry,
+                            hint: 'Select Industry',
+                            onTap: () async {
+                              final selected = await _selectFromSheet(
+                                'Select Industry',
+                                _industries,
+                                _industry,
+                              );
+                              if (selected != null) {
+                                setState(() => _industry = selected);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height15),
+
+                      // Location & Address Card
+                      FormCard(
+                        children: [
+                          const RequiredLabel(text: 'Organization Location'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _selectorField(
+                            value: _organizationLocation,
+                            hint: 'Select Location',
+                            onTap: () async {
+                              final selected = await _selectFromSheet(
+                                'Select Location',
+                                _locations,
+                                _organizationLocation,
+                              );
+                              if (selected != null) {
+                                setState(
+                                  () => _organizationLocation = selected,
+                                );
+                              }
+                            },
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          Row(
+                            children: [
+                              Text(
+                                'Organization Address',
+                                style: FormTextStyles.label(),
+                              ),
+                              SizedBox(width: Dimensions.width10 / 2),
+                              GestureDetector(
+                                onTap: () {},
+                                child: Icon(
+                                  Icons.info_outline_rounded,
+                                  size: Dimensions.iconSize16,
+                                  color: context.colors.textTertiary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: Dimensions.height10),
+
+                          // Street 1
+                          TextField(
+                            controller: _street1Controller,
+                            style: FormTextStyles.value(context),
+                            decoration: _underlineDecoration(hint: 'Street 1'),
+                          ),
+                          SizedBox(height: Dimensions.height15),
+
+                          // Street 2
+                          TextField(
+                            controller: _street2Controller,
+                            style: FormTextStyles.value(context),
+                            decoration: _underlineDecoration(hint: 'Street 2'),
+                          ),
+                          SizedBox(height: Dimensions.height15),
+
+                          // City
+                          TextField(
+                            controller: _cityController,
+                            style: FormTextStyles.value(context),
+                            decoration: _underlineDecoration(hint: 'City'),
+                          ),
+                          SizedBox(height: Dimensions.height15),
+
+                          // State
+                          _selectorField(
+                            value: _state,
+                            hint: 'State',
+                            onTap: () async {
+                              final selected = await _selectFromSheet(
+                                'Select State',
+                                _states,
+                                _state,
+                              );
+                              if (selected != null) {
+                                setState(() => _state = selected);
+                              }
+                            },
+                          ),
+                          SizedBox(height: Dimensions.height15),
+
+                          // Zip Code
+                          TextField(
+                            controller: _zipCodeController,
+                            style: FormTextStyles.value(context),
+                            decoration: _underlineDecoration(hint: 'Zip Code'),
+                            keyboardType: TextInputType.number,
+                          ),
+                          SizedBox(height: Dimensions.height15),
+
+                          // Phone
+                          TextField(
+                            controller: _phoneController,
+                            style: FormTextStyles.value(context),
+                            decoration: _underlineDecoration(hint: 'Phone'),
+                            keyboardType: TextInputType.phone,
+                          ),
+                          SizedBox(height: Dimensions.height15),
+
+                          // Fax
+                          TextField(
+                            controller: _faxController,
+                            style: FormTextStyles.value(context),
+                            decoration: _underlineDecoration(hint: 'Fax'),
+                          ),
+                          SizedBox(height: Dimensions.height15),
+
+                          // Website
+                          TextField(
+                            controller: _websiteController,
+                            style: FormTextStyles.value(context),
+                            decoration: _underlineDecoration(hint: 'Website'),
+                            keyboardType: TextInputType.url,
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          // Checkboxes
+                          _buildCheckboxTile(
+                            'Update the address in all previous transactions.',
+                            _updateAddressInTransactions,
+                            (val) => setState(
+                              () => _updateAddressInTransactions = val ?? false,
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height30),
-                  ],
+                          ),
+                          SizedBox(height: Dimensions.height10),
+                          _buildCheckboxTile(
+                            'Would you like to add a different address for payment stubs?',
+                            _addDifferentAddress,
+                            (val) => setState(
+                              () => _addDifferentAddress = val ?? false,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height15),
+
+                      // Fiscal Year & Locale Card
+                      FormCard(
+                        children: [
+                          Text('Fiscal Year', style: FormTextStyles.label()),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _selectorField(
+                            value: _fiscalYear,
+                            hint: 'Select Fiscal Year',
+                            onTap: () async {
+                              final selected = await _selectFromSheet(
+                                'Select Fiscal Year',
+                                _fiscalYears,
+                                _fiscalYear,
+                              );
+                              if (selected != null) {
+                                setState(() => _fiscalYear = selected);
+                              }
+                            },
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          Text('Language', style: FormTextStyles.label()),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _selectorField(
+                            value: _language,
+                            hint: 'Select Language',
+                            onTap: () async {
+                              final selected = await _selectFromSheet(
+                                'Select Language',
+                                _languages,
+                                _language,
+                              );
+                              if (selected != null) {
+                                setState(() => _language = selected);
+                              }
+                            },
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          Text('Time Zone', style: FormTextStyles.label()),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          Text(
+                            _timeZone ?? 'Select Time Zone',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.9,
+                              color: _timeZone == null
+                                  ? context.colors.textTertiary
+                                  : context.colors.textPrimary,
+                            ),
+                          ),
+                          Divider(color: context.colors.border),
+                          SizedBox(height: Dimensions.height15),
+
+                          Text('Date Format', style: FormTextStyles.label()),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _selectorField(
+                            value: _dateFormat,
+                            hint: 'Select Date Format',
+                            onTap: () async {
+                              final selected = await _selectFromSheet(
+                                'Select Date Format',
+                                _dateFormats,
+                                _dateFormat,
+                              );
+                              if (selected != null) {
+                                setState(() => _dateFormat = selected);
+                              }
+                            },
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          Text('Company ID', style: FormTextStyles.label()),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          Row(
+                            children: [
+                              Text(
+                                'Company ID :',
+                                style: TextStyle(
+                                  fontSize: Dimensions.font16 * 0.9,
+                                  color: context.colors.textPrimary,
+                                ),
+                              ),
+                              SizedBox(width: Dimensions.width10),
+                              Expanded(
+                                child: TextField(
+                                  controller: _companyIdController,
+                                  style: FormTextStyles.value(context),
+                                  decoration: _underlineDecoration(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height30),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

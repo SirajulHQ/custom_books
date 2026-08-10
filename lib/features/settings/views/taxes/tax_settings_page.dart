@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:flutter/material.dart';
 
 class TaxSettingsPage extends StatefulWidget {
@@ -12,7 +13,8 @@ class TaxSettingsPage extends StatefulWidget {
   State<TaxSettingsPage> createState() => _TaxSettingsPageState();
 }
 
-class _TaxSettingsPageState extends State<TaxSettingsPage> {
+class _TaxSettingsPageState extends State<TaxSettingsPage>
+    with UnsavedChangesMixin {
   bool _isRegistered = true;
   final TextEditingController _trnController = TextEditingController(
     text: '100123456700003',
@@ -32,16 +34,19 @@ class _TaxSettingsPageState extends State<TaxSettingsPage> {
   void initState() {
     super.initState();
     appLog('⚙️ TaxSettingsPage initialized', name: 'TaxSettings');
+    _trnController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _trnController.removeListener(markDirty);
     _trnController.dispose();
     super.dispose();
   }
 
   void _save() {
     appLog('💾 Save Tax Settings', name: 'TaxSettings');
+    markClean();
     Navigator.pop(context);
   }
 
@@ -131,173 +136,183 @@ class _TaxSettingsPageState extends State<TaxSettingsPage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: 'Tax Settings',
-              leadingType: AppBarLeadingType.back,
-              actions: [
-                AppBarElevatedButton(label: 'SAVE', onPressed: _save),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.all(Dimensions.width15),
-                child: Column(
-                  children: [
-                    // Tax Registration Section
-                    FormCard(
-                      children: [
-                        Text(
-                          'Tax Registration',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16,
-                            fontWeight: FontWeight.w700,
-                            color: context.colors.textPrimary,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'Tax Settings',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(label: 'SAVE', onPressed: _save),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.all(Dimensions.width15),
+                  child: Column(
+                    children: [
+                      // Tax Registration Section
+                      FormCard(
+                        children: [
+                          Text(
+                            'Tax Registration',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16,
+                              fontWeight: FontWeight.w700,
+                              color: context.colors.textPrimary,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: Dimensions.height15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Is your business registered for VAT?',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.9,
-                                  color: context.colors.textPrimary,
-                                ),
-                              ),
-                            ),
-                            Switch(
-                              value: _isRegistered,
-                              onChanged: (val) =>
-                                  setState(() => _isRegistered = val),
-                              activeColor: Appcolors.primary,
-                            ),
-                          ],
-                        ),
-                        if (_isRegistered) ...[
                           SizedBox(height: Dimensions.height15),
-                          const RequiredLabel(text: 'Tax Registration Number'),
-                          SizedBox(height: Dimensions.height10 / 2),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                'TRN',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.9,
-                                  fontWeight: FontWeight.w600,
-                                  color: context.colors.textPrimary,
+                              Expanded(
+                                child: Text(
+                                  'Is your business registered for VAT?',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    color: context.colors.textPrimary,
+                                  ),
                                 ),
                               ),
-                              SizedBox(width: Dimensions.width20),
-                              Expanded(
-                                child: TextField(
-                                  controller: _trnController,
-                                  style: FormTextStyles.value(context),
-                                  keyboardType: TextInputType.number,
-                                  decoration: _underlineDecoration(),
-                                ),
+                              Switch(
+                                value: _isRegistered,
+                                onChanged: (val) =>
+                                    setState(() => _isRegistered = val),
+                                activeColor: Appcolors.primary,
                               ),
                             ],
                           ),
-                        ],
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height15),
-
-                    // International Trade Section
-                    FormCard(
-                      children: [
-                        Text(
-                          'International Trade',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16,
-                            fontWeight: FontWeight.w700,
-                            color: context.colors.textPrimary,
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Enable trade with contacts outside United Arab Emirates',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.9,
-                                  color: context.colors.textPrimary,
-                                ),
-                              ),
+                          if (_isRegistered) ...[
+                            SizedBox(height: Dimensions.height15),
+                            const RequiredLabel(
+                              text: 'Tax Registration Number',
                             ),
-                            Switch(
-                              value: _enableInternationalTrade,
-                              onChanged: (val) => setState(
-                                () => _enableInternationalTrade = val,
-                              ),
-                              activeColor: Appcolors.primary,
+                            SizedBox(height: Dimensions.height10 / 2),
+                            Row(
+                              children: [
+                                Text(
+                                  'TRN',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.colors.textPrimary,
+                                  ),
+                                ),
+                                SizedBox(width: Dimensions.width20),
+                                Expanded(
+                                  child: TextField(
+                                    controller: _trnController,
+                                    style: FormTextStyles.value(context),
+                                    keyboardType: TextInputType.number,
+                                    decoration: _underlineDecoration(),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
-                        ),
-                        SizedBox(height: Dimensions.height10),
-                        Text(
-                          'NOTE: Enable this option, if you are doing business with other GCC / Non-GCC countries, also for reverse charge handling.',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.75,
-                            color: context.colors.textSecondary,
-                            height: 1.4,
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height20),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height15),
 
-                        // VAT Registration Date
-                        const RequiredLabel(text: 'VAT Registration Date'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _buildDateField(
-                          value: _vatRegistrationDate,
-                          onTap: () => _selectDate(
-                            current: _vatRegistrationDate,
-                            onSelected: (date) =>
-                                setState(() => _vatRegistrationDate = date),
+                      // International Trade Section
+                      FormCard(
+                        children: [
+                          Text(
+                            'International Trade',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16,
+                              fontWeight: FontWeight.w700,
+                              color: context.colors.textPrimary,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: Dimensions.height20),
-
-                        // Generate First Tax Return From
-                        const RequiredLabel(
-                          text: 'Generate First Tax Return From',
-                        ),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _buildDateField(
-                          value: _firstTaxReturnDate,
-                          onTap: () => _selectDate(
-                            current: _firstTaxReturnDate,
-                            onSelected: (date) =>
-                                setState(() => _firstTaxReturnDate = date),
+                          SizedBox(height: Dimensions.height15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'Enable trade with contacts outside United Arab Emirates',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    color: context.colors.textPrimary,
+                                  ),
+                                ),
+                              ),
+                              Switch(
+                                value: _enableInternationalTrade,
+                                onChanged: (val) => setState(
+                                  () => _enableInternationalTrade = val,
+                                ),
+                                activeColor: Appcolors.primary,
+                              ),
+                            ],
                           ),
-                        ),
-                        SizedBox(height: Dimensions.height20),
+                          SizedBox(height: Dimensions.height10),
+                          Text(
+                            'NOTE: Enable this option, if you are doing business with other GCC / Non-GCC countries, also for reverse charge handling.',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.75,
+                              color: context.colors.textSecondary,
+                              height: 1.4,
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height20),
 
-                        // Reporting Period
-                        Text('Reporting Period', style: FormTextStyles.label()),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _buildSelectorField(
-                          value: _reportingPeriod,
-                          onTap: _selectReportingPeriod,
-                        ),
-                      ],
-                    ),
-                  ],
+                          // VAT Registration Date
+                          const RequiredLabel(text: 'VAT Registration Date'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _buildDateField(
+                            value: _vatRegistrationDate,
+                            onTap: () => _selectDate(
+                              current: _vatRegistrationDate,
+                              onSelected: (date) =>
+                                  setState(() => _vatRegistrationDate = date),
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          // Generate First Tax Return From
+                          const RequiredLabel(
+                            text: 'Generate First Tax Return From',
+                          ),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _buildDateField(
+                            value: _firstTaxReturnDate,
+                            onTap: () => _selectDate(
+                              current: _firstTaxReturnDate,
+                              onSelected: (date) =>
+                                  setState(() => _firstTaxReturnDate = date),
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          // Reporting Period
+                          Text(
+                            'Reporting Period',
+                            style: FormTextStyles.label(),
+                          ),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _buildSelectorField(
+                            value: _reportingPeriod,
+                            onTap: _selectReportingPeriod,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

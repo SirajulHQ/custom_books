@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:flutter/material.dart';
 
 class NewSenderPage extends StatefulWidget {
@@ -11,7 +12,8 @@ class NewSenderPage extends StatefulWidget {
   State<NewSenderPage> createState() => _NewSenderPageState();
 }
 
-class _NewSenderPageState extends State<NewSenderPage> {
+class _NewSenderPageState extends State<NewSenderPage>
+    with UnsavedChangesMixin {
   final TextEditingController _nameController = TextEditingController();
   String? _selectedEmail;
 
@@ -20,11 +22,13 @@ class _NewSenderPageState extends State<NewSenderPage> {
   @override
   void initState() {
     super.initState();
+    _nameController.addListener(markDirty);
     appLog('📧 NewSenderPage initialized', name: 'NewSender');
   }
 
   @override
   void dispose() {
+    _nameController.removeListener(markDirty);
     _nameController.dispose();
     super.dispose();
   }
@@ -42,6 +46,7 @@ class _NewSenderPageState extends State<NewSenderPage> {
       '💾 Save sender: ${_nameController.text} <$_selectedEmail>',
       name: 'NewSender',
     );
+    markClean();
     Navigator.pop(context);
   }
 
@@ -162,42 +167,47 @@ class _NewSenderPageState extends State<NewSenderPage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      bottomNavigationBar: _buildSaveButton(),
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            const CustomSliverAppBar(
-              title: 'New Sender',
-              leadingType: AppBarLeadingType.back,
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.all(Dimensions.width15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Name Field
-                    _buildLabel('Name', required: true),
-                    SizedBox(height: Dimensions.height10),
-                    _buildTextField(controller: _nameController, hint: ''),
-                    SizedBox(height: Dimensions.height20),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        bottomNavigationBar: _buildSaveButton(),
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'New Sender',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.all(Dimensions.width15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Name Field
+                      _buildLabel('Name', required: true),
+                      SizedBox(height: Dimensions.height10),
+                      _buildTextField(controller: _nameController, hint: ''),
+                      SizedBox(height: Dimensions.height20),
 
-                    // Email Address Field
-                    _buildLabel('Email Address', required: true),
-                    SizedBox(height: Dimensions.height10),
-                    _buildDropdownField(
-                      value: _selectedEmail,
-                      hint: 'Choose sender email address',
-                      onTap: _selectEmail,
-                    ),
-                  ],
+                      // Email Address Field
+                      _buildLabel('Email Address', required: true),
+                      SizedBox(height: Dimensions.height10),
+                      _buildDropdownField(
+                        value: _selectedEmail,
+                        hint: 'Choose sender email address',
+                        onTap: _selectEmail,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

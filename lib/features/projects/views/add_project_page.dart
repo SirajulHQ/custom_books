@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/projects/models/project_model.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,8 @@ class AddProjectPage extends StatefulWidget {
   State<AddProjectPage> createState() => _AddProjectPageState();
 }
 
-class _AddProjectPageState extends State<AddProjectPage> {
+class _AddProjectPageState extends State<AddProjectPage>
+    with UnsavedChangesMixin {
   final _projectNameController = TextEditingController();
   final _customerController = TextEditingController();
   final _rateController = TextEditingController();
@@ -29,7 +31,20 @@ class _AddProjectPageState extends State<AddProjectPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _projectNameController.addListener(markDirty);
+    _customerController.addListener(markDirty);
+    _rateController.addListener(markDirty);
+    _budgetHoursController.addListener(markDirty);
+  }
+
+  @override
   void dispose() {
+    _projectNameController.removeListener(markDirty);
+    _customerController.removeListener(markDirty);
+    _rateController.removeListener(markDirty);
+    _budgetHoursController.removeListener(markDirty);
     _projectNameController.dispose();
     _customerController.dispose();
     _rateController.dispose();
@@ -169,6 +184,7 @@ class _AddProjectPageState extends State<AddProjectPage> {
       updatedAt: DateTime.now(),
     );
 
+    markClean();
     Navigator.pop(context, newProject);
   }
 
@@ -176,166 +192,171 @@ class _AddProjectPageState extends State<AddProjectPage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      appBar: CustomBackAppBar(
-        title: 'New Project',
-        backgroundColor: context.colors.card,
-        actions: [
-          TextButton(
-            onPressed: _saveProject,
-            child: Text(
-              'SAVE',
-              style: TextStyle(
-                color: Appcolors.primary,
-                fontWeight: FontWeight.w800,
-                fontSize: Dimensions.font16 * 0.75,
-                letterSpacing: 0.5,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        appBar: CustomBackAppBar(
+          title: 'New Project',
+          backgroundColor: context.colors.card,
+          onLeadingPressed: () => onPopInvokedWithResult(false, null),
+          actions: [
+            TextButton(
+              onPressed: _saveProject,
+              child: Text(
+                'SAVE',
+                style: TextStyle(
+                  color: Appcolors.primary,
+                  fontWeight: FontWeight.w800,
+                  fontSize: Dimensions.font16 * 0.75,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(Dimensions.width15),
-        child: Column(
-          children: [
-            FormCard(
-              children: [
-                // Project Name *
-                const RequiredLabel(text: 'Project Name'),
-                SizedBox(height: Dimensions.height10 / 2),
-                TextField(
-                  controller: _projectNameController,
-                  style: FormTextStyles.value(context),
-                  decoration: InputDecoration(
-                    hintText: 'Enter project name',
-                    hintStyle: TextStyle(color: context.colors.textTertiary),
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Appcolors.primary),
-                    ),
-                  ),
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                // Customer Name *
-                const RequiredLabel(text: 'Customer Name'),
-                SizedBox(height: Dimensions.height10 / 2),
-                InkWell(
-                  onTap: _selectCustomer,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: context.colors.border),
+          ],
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(Dimensions.width15),
+          child: Column(
+            children: [
+              FormCard(
+                children: [
+                  // Project Name *
+                  const RequiredLabel(text: 'Project Name'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  TextField(
+                    controller: _projectNameController,
+                    style: FormTextStyles.value(context),
+                    decoration: InputDecoration(
+                      hintText: 'Enter project name',
+                      hintStyle: TextStyle(color: context.colors.textTertiary),
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height10,
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Appcolors.primary),
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            _customerController.text.isEmpty
-                                ? 'Select a Customer'
-                                : _customerController.text,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.9,
-                              color: _customerController.text.isEmpty
-                                  ? context.colors.textTertiary
-                                  : context.colors.textPrimary,
-                              fontWeight: _customerController.text.isEmpty
-                                  ? FontWeight.normal
-                                  : FontWeight.w600,
+                  ),
+                  SizedBox(height: Dimensions.height20),
+
+                  // Customer Name *
+                  const RequiredLabel(text: 'Customer Name'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  InkWell(
+                    onTap: _selectCustomer,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height10,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: context.colors.border),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _customerController.text.isEmpty
+                                  ? 'Select a Customer'
+                                  : _customerController.text,
+                              style: TextStyle(
+                                fontSize: Dimensions.font16 * 0.9,
+                                color: _customerController.text.isEmpty
+                                    ? context.colors.textTertiary
+                                    : context.colors.textPrimary,
+                                fontWeight: _customerController.text.isEmpty
+                                    ? FontWeight.normal
+                                    : FontWeight.w600,
+                              ),
                             ),
                           ),
-                        ),
-                        Icon(
-                          Icons.arrow_drop_down_rounded,
-                          size: Dimensions.iconSize24,
-                          color: context.colors.textSecondary,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                // Billing Method
-                Text('Billing Method', style: FormTextStyles.label()),
-                SizedBox(height: Dimensions.height10 / 2),
-                InkWell(
-                  onTap: _selectBillingMethod,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: context.colors.border),
+                          Icon(
+                            Icons.arrow_drop_down_rounded,
+                            size: Dimensions.iconSize24,
+                            color: context.colors.textSecondary,
+                          ),
+                        ],
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          _billingMethod.label,
-                          style: FormTextStyles.value(context),
+                  ),
+                  SizedBox(height: Dimensions.height20),
+
+                  // Billing Method
+                  Text('Billing Method', style: FormTextStyles.label()),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  InkWell(
+                    onTap: _selectBillingMethod,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height10,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: context.colors.border),
                         ),
-                        Icon(
-                          Icons.arrow_drop_down_rounded,
-                          size: Dimensions.iconSize24,
-                          color: context.colors.textSecondary,
-                        ),
-                      ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _billingMethod.label,
+                            style: FormTextStyles.value(context),
+                          ),
+                          Icon(
+                            Icons.arrow_drop_down_rounded,
+                            size: Dimensions.iconSize24,
+                            color: context.colors.textSecondary,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: Dimensions.height15),
+                ],
+              ),
+              SizedBox(height: Dimensions.height15),
 
-            FormCard(
-              children: [
-                // Rate (AED)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Rate (AED)', style: FormTextStyles.label()),
-                    FormNumberField(
-                      controller: _rateController,
-                      hint: '0.00',
-                      prefix: 'AED',
-                    ),
-                  ],
-                ),
-                SizedBox(height: Dimensions.height20),
+              FormCard(
+                children: [
+                  // Rate (AED)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Rate (AED)', style: FormTextStyles.label()),
+                      FormNumberField(
+                        controller: _rateController,
+                        hint: '0.00',
+                        prefix: 'AED',
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: Dimensions.height20),
 
-                // Budget Hours
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Budget Hours', style: FormTextStyles.label()),
-                    FormNumberField(
-                      controller: _budgetHoursController,
-                      hint: '0',
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                  // Budget Hours
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Budget Hours', style: FormTextStyles.label()),
+                      FormNumberField(
+                        controller: _budgetHoursController,
+                        hint: '0',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

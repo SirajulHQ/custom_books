@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/vendor_credits/models/vendor_credit_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,7 +15,8 @@ class AddVendorCreditPage extends StatefulWidget {
   State<AddVendorCreditPage> createState() => _AddVendorCreditPageState();
 }
 
-class _AddVendorCreditPageState extends State<AddVendorCreditPage> {
+class _AddVendorCreditPageState extends State<AddVendorCreditPage>
+    with UnsavedChangesMixin {
   final _creditNoteNumController = TextEditingController();
   final _referenceController = TextEditingController();
   final _amountController = TextEditingController();
@@ -33,10 +35,16 @@ class _AddVendorCreditPageState extends State<AddVendorCreditPage> {
   void initState() {
     super.initState();
     _creditNoteNumController.text = 'VCN-00016';
+    _creditNoteNumController.addListener(markDirty);
+    _referenceController.addListener(markDirty);
+    _amountController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _creditNoteNumController.removeListener(markDirty);
+    _referenceController.removeListener(markDirty);
+    _amountController.removeListener(markDirty);
     _creditNoteNumController.dispose();
     _referenceController.dispose();
     _amountController.dispose();
@@ -138,6 +146,7 @@ class _AddVendorCreditPageState extends State<AddVendorCreditPage> {
       updatedAt: DateTime.now(),
     );
 
+    markClean();
     Navigator.pop(context, newCredit);
   }
 
@@ -146,138 +155,143 @@ class _AddVendorCreditPageState extends State<AddVendorCreditPage> {
     Dimensions.init(context);
     final dateFormat = DateFormat('dd MMM yyyy');
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: 'New Vendor Credit',
-              leadingType: AppBarLeadingType.back,
-              actions: [
-                AppBarElevatedButton(
-                  label: 'SAVE AS DRAFT',
-                  onPressed: () =>
-                      _saveCredit(status: VendorCreditStatus.draft),
-                ),
-                SizedBox(width: Dimensions.width10),
-                AppBarIconButton(
-                  icon: Icons.more_vert_rounded,
-                  color: Appcolors.accent,
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      backgroundColor: Colors.transparent,
-                      builder: (ctx) => Container(
-                        decoration: BoxDecoration(
-                          color: context.colors.card,
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(24),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'New Vendor Credit',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(
+                    label: 'SAVE AS DRAFT',
+                    onPressed: () =>
+                        _saveCredit(status: VendorCreditStatus.draft),
+                  ),
+                  SizedBox(width: Dimensions.width10),
+                  AppBarIconButton(
+                    icon: Icons.more_vert_rounded,
+                    color: Appcolors.accent,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        builder: (ctx) => Container(
+                          decoration: BoxDecoration(
+                            color: context.colors.card,
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(24),
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 4,
+                                margin: EdgeInsets.symmetric(
+                                  vertical: Dimensions.height10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: context.colors.border,
+                                  borderRadius: BorderRadius.circular(
+                                    Dimensions.radius30,
+                                  ),
+                                ),
+                              ),
+                              ListTile(
+                                leading: Icon(
+                                  Icons.save_rounded,
+                                  color: Appcolors.primary,
+                                ),
+                                title: Text(
+                                  'Save as Open',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.colors.textPrimary,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.pop(ctx);
+                                  _saveCredit(status: VendorCreditStatus.open);
+                                },
+                              ),
+                              SizedBox(height: Dimensions.height20),
+                            ],
                           ),
                         ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 4,
-                              margin: EdgeInsets.symmetric(
-                                vertical: Dimensions.height10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: context.colors.border,
-                                borderRadius: BorderRadius.circular(
-                                  Dimensions.radius30,
-                                ),
-                              ),
-                            ),
-                            ListTile(
-                              leading: Icon(
-                                Icons.save_rounded,
-                                color: Appcolors.primary,
-                              ),
-                              title: Text(
-                                'Save as Open',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.9,
-                                  fontWeight: FontWeight.w600,
-                                  color: context.colors.textPrimary,
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.pop(ctx);
-                                _saveCredit(status: VendorCreditStatus.open);
-                              },
-                            ),
-                            SizedBox(height: Dimensions.height20),
-                          ],
-                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(Dimensions.width15),
+                  child: Column(
+                    children: [
+                      FormCard(
+                        children: [
+                          const RequiredLabel(text: 'Vendor'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _selectorField(
+                            value: _vendorName,
+                            hint: 'Select a vendor',
+                            onTap: _selectVendor,
+                          ),
+                          SizedBox(height: Dimensions.height20),
+                          const RequiredLabel(text: 'Credit Note#'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          TextField(
+                            controller: _creditNoteNumController,
+                            style: FormTextStyles.value(context),
+                            decoration: _underlineDecoration(),
+                          ),
+                          SizedBox(height: Dimensions.height20),
+                          Text('Reference#', style: FormTextStyles.label()),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          TextField(
+                            controller: _referenceController,
+                            style: FormTextStyles.value(context),
+                            decoration: _underlineDecoration(),
+                          ),
+                          SizedBox(height: Dimensions.height20),
+                          const RequiredLabel(text: 'Credit Date'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _dateField(dateFormat.format(_creditDate), _pickDate),
+                        ],
                       ),
-                    );
-                  },
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(Dimensions.width15),
-                child: Column(
-                  children: [
-                    FormCard(
-                      children: [
-                        const RequiredLabel(text: 'Vendor'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _selectorField(
-                          value: _vendorName,
-                          hint: 'Select a vendor',
-                          onTap: _selectVendor,
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        const RequiredLabel(text: 'Credit Note#'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        TextField(
-                          controller: _creditNoteNumController,
-                          style: FormTextStyles.value(context),
-                          decoration: _underlineDecoration(),
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        Text('Reference#', style: FormTextStyles.label()),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        TextField(
-                          controller: _referenceController,
-                          style: FormTextStyles.value(context),
-                          decoration: _underlineDecoration(),
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        const RequiredLabel(text: 'Credit Date'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _dateField(dateFormat.format(_creditDate), _pickDate),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height15),
-                    FormCard(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const RequiredLabel(text: 'Amount'),
-                            FormNumberField(
-                              controller: _amountController,
-                              hint: '0.00',
-                              prefix: 'AED',
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height30),
-                  ],
+                      SizedBox(height: Dimensions.height15),
+                      FormCard(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const RequiredLabel(text: 'Amount'),
+                              FormNumberField(
+                                controller: _amountController,
+                                hint: '0.00',
+                                prefix: 'AED',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height30),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/vendors/models/vendor_model.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,8 @@ class AddVendorPage extends StatefulWidget {
   State<AddVendorPage> createState() => _AddVendorPageState();
 }
 
-class _AddVendorPageState extends State<AddVendorPage> {
+class _AddVendorPageState extends State<AddVendorPage>
+    with UnsavedChangesMixin {
   final _displayNameController = TextEditingController();
   final _companyNameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -21,7 +23,22 @@ class _AddVendorPageState extends State<AddVendorPage> {
   final _openingBalanceController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _displayNameController.addListener(markDirty);
+    _companyNameController.addListener(markDirty);
+    _emailController.addListener(markDirty);
+    _phoneController.addListener(markDirty);
+    _openingBalanceController.addListener(markDirty);
+  }
+
+  @override
   void dispose() {
+    _displayNameController.removeListener(markDirty);
+    _companyNameController.removeListener(markDirty);
+    _emailController.removeListener(markDirty);
+    _phoneController.removeListener(markDirty);
+    _openingBalanceController.removeListener(markDirty);
     _displayNameController.dispose();
     _companyNameController.dispose();
     _emailController.dispose();
@@ -49,6 +66,7 @@ class _AddVendorPageState extends State<AddVendorPage> {
       updatedAt: DateTime.now(),
     );
 
+    markClean();
     Navigator.pop(context, newVendor);
   }
 
@@ -56,89 +74,94 @@ class _AddVendorPageState extends State<AddVendorPage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: 'New Vendor',
-              leadingType: AppBarLeadingType.back,
-              actions: [
-                AppBarElevatedButton(label: 'SAVE', onPressed: _saveVendor),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(Dimensions.width15),
-                child: Column(
-                  children: [
-                    FormCard(
-                      children: [
-                        const RequiredLabel(text: 'Display Name'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _underlineField(
-                          controller: _displayNameController,
-                          hint: 'Enter display name',
-                        ),
-                        SizedBox(height: Dimensions.height20),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'New Vendor',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(label: 'SAVE', onPressed: _saveVendor),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(Dimensions.width15),
+                  child: Column(
+                    children: [
+                      FormCard(
+                        children: [
+                          const RequiredLabel(text: 'Display Name'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _underlineField(
+                            controller: _displayNameController,
+                            hint: 'Enter display name',
+                          ),
+                          SizedBox(height: Dimensions.height20),
 
-                        Text('Company Name', style: FormTextStyles.label()),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _underlineField(
-                          controller: _companyNameController,
-                          hint: 'Enter company name',
-                        ),
-                        SizedBox(height: Dimensions.height20),
+                          Text('Company Name', style: FormTextStyles.label()),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _underlineField(
+                            controller: _companyNameController,
+                            hint: 'Enter company name',
+                          ),
+                          SizedBox(height: Dimensions.height20),
 
-                        Text('Email', style: FormTextStyles.label()),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _underlineField(
-                          controller: _emailController,
-                          hint: 'name@example.com',
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        SizedBox(height: Dimensions.height20),
+                          Text('Email', style: FormTextStyles.label()),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _underlineField(
+                            controller: _emailController,
+                            hint: 'name@example.com',
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          SizedBox(height: Dimensions.height20),
 
-                        Text('Phone', style: FormTextStyles.label()),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _underlineField(
-                          controller: _phoneController,
-                          hint: '+971 50 123 4567',
-                          keyboardType: TextInputType.phone,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height15),
+                          Text('Phone', style: FormTextStyles.label()),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _underlineField(
+                            controller: _phoneController,
+                            hint: '+971 50 123 4567',
+                            keyboardType: TextInputType.phone,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height15),
 
-                    FormCard(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Opening Balance (Payables)',
-                                style: FormTextStyles.label(),
+                      FormCard(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'Opening Balance (Payables)',
+                                  style: FormTextStyles.label(),
+                                ),
                               ),
-                            ),
-                            SizedBox(width: Dimensions.width10),
-                            FormNumberField(
-                              controller: _openingBalanceController,
-                              hint: '0.00',
-                              prefix: 'AED',
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                              SizedBox(width: Dimensions.width10),
+                              FormNumberField(
+                                controller: _openingBalanceController,
+                                hint: '0.00',
+                                prefix: 'AED',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

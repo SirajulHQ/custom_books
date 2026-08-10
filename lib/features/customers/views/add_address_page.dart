@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:flutter/material.dart';
 
 class AddAddressPage extends StatefulWidget {
@@ -12,7 +13,8 @@ class AddAddressPage extends StatefulWidget {
   State<AddAddressPage> createState() => _AddAddressPageState();
 }
 
-class _AddAddressPageState extends State<AddAddressPage> {
+class _AddAddressPageState extends State<AddAddressPage>
+    with UnsavedChangesMixin {
   // Billing Address Controllers
   final TextEditingController _billingAttentionController =
       TextEditingController();
@@ -49,7 +51,48 @@ class _AddAddressPageState extends State<AddAddressPage> {
   String _shippingPhoneCountryCode = '+91';
 
   @override
+  void initState() {
+    super.initState();
+    _billingAttentionController.addListener(markDirty);
+    _billingCountryController.addListener(markDirty);
+    _billingStreet1Controller.addListener(markDirty);
+    _billingStreet2Controller.addListener(markDirty);
+    _billingCityController.addListener(markDirty);
+    _billingStateController.addListener(markDirty);
+    _billingZipController.addListener(markDirty);
+    _billingFaxController.addListener(markDirty);
+    _billingPhoneController.addListener(markDirty);
+    _shippingAttentionController.addListener(markDirty);
+    _shippingCountryController.addListener(markDirty);
+    _shippingStreet1Controller.addListener(markDirty);
+    _shippingStreet2Controller.addListener(markDirty);
+    _shippingCityController.addListener(markDirty);
+    _shippingStateController.addListener(markDirty);
+    _shippingZipController.addListener(markDirty);
+    _shippingFaxController.addListener(markDirty);
+    _shippingPhoneController.addListener(markDirty);
+  }
+
+  @override
   void dispose() {
+    _billingAttentionController.removeListener(markDirty);
+    _billingCountryController.removeListener(markDirty);
+    _billingStreet1Controller.removeListener(markDirty);
+    _billingStreet2Controller.removeListener(markDirty);
+    _billingCityController.removeListener(markDirty);
+    _billingStateController.removeListener(markDirty);
+    _billingZipController.removeListener(markDirty);
+    _billingFaxController.removeListener(markDirty);
+    _billingPhoneController.removeListener(markDirty);
+    _shippingAttentionController.removeListener(markDirty);
+    _shippingCountryController.removeListener(markDirty);
+    _shippingStreet1Controller.removeListener(markDirty);
+    _shippingStreet2Controller.removeListener(markDirty);
+    _shippingCityController.removeListener(markDirty);
+    _shippingStateController.removeListener(markDirty);
+    _shippingZipController.removeListener(markDirty);
+    _shippingFaxController.removeListener(markDirty);
+    _shippingPhoneController.removeListener(markDirty);
     _billingAttentionController.dispose();
     _billingCountryController.dispose();
     _billingStreet1Controller.dispose();
@@ -91,102 +134,107 @@ class _AddAddressPageState extends State<AddAddressPage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            // App Bar
-            CustomSliverAppBar(
-              title: 'Address',
-              leadingType: AppBarLeadingType.back,
-              onLeadingPressed: () {
-                appLog('⬅️ Back button tapped', name: 'AddAddressPage');
-                Navigator.pop(context);
-              },
-              actions: [
-                AppBarElevatedButton(
-                  label: 'SAVE',
-                  onPressed: () {
-                    appLog('💾 Save button tapped', name: 'AddAddressPage');
-                    ToastificationHelper.showSuccess(context, 'Address saved.');
-                    Navigator.pop(context);
-                  },
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-
-            // Content
-            SliverPadding(
-              padding: EdgeInsets.all(Dimensions.width20),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  // Billing Address Card
-                  _buildAddressCard(
-                    'Billing Address',
-                    _billingAttentionController,
-                    _billingCountryController,
-                    _billingStreet1Controller,
-                    _billingStreet2Controller,
-                    _billingCityController,
-                    _billingStateController,
-                    _billingZipController,
-                    _billingFaxController,
-                    _billingPhoneController,
-                    _billingPhoneCountryCode,
-                    (value) =>
-                        setState(() => _billingPhoneCountryCode = value!),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              // App Bar
+              CustomSliverAppBar(
+                title: 'Address',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(
+                    label: 'SAVE',
+                    onPressed: () {
+                      appLog('💾 Save button tapped', name: 'AddAddressPage');
+                      ToastificationHelper.showSuccess(
+                        context,
+                        'Address saved.',
+                      );
+                      markClean();
+                      Navigator.pop(context);
+                    },
                   ),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
 
-                  SizedBox(height: Dimensions.height20),
+              // Content
+              SliverPadding(
+                padding: EdgeInsets.all(Dimensions.width20),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    // Billing Address Card
+                    _buildAddressCard(
+                      'Billing Address',
+                      _billingAttentionController,
+                      _billingCountryController,
+                      _billingStreet1Controller,
+                      _billingStreet2Controller,
+                      _billingCityController,
+                      _billingStateController,
+                      _billingZipController,
+                      _billingFaxController,
+                      _billingPhoneController,
+                      _billingPhoneCountryCode,
+                      (value) =>
+                          setState(() => _billingPhoneCountryCode = value!),
+                    ),
 
-                  // Copy Billing Address Button
-                  Center(
-                    child: TextButton(
-                      onPressed: _copyBillingToShipping,
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width20,
-                          vertical: Dimensions.height10,
+                    SizedBox(height: Dimensions.height20),
+
+                    // Copy Billing Address Button
+                    Center(
+                      child: TextButton(
+                        onPressed: _copyBillingToShipping,
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Dimensions.width20,
+                            vertical: Dimensions.height10,
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        'Copy Billing Address',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.9,
-                          fontWeight: FontWeight.w600,
-                          color: Appcolors.primary,
+                        child: Text(
+                          'Copy Billing Address',
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.9,
+                            fontWeight: FontWeight.w600,
+                            color: Appcolors.primary,
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  SizedBox(height: Dimensions.height10),
+                    SizedBox(height: Dimensions.height10),
 
-                  // Shipping Address Card
-                  _buildAddressCard(
-                    'Shipping Address',
-                    _shippingAttentionController,
-                    _shippingCountryController,
-                    _shippingStreet1Controller,
-                    _shippingStreet2Controller,
-                    _shippingCityController,
-                    _shippingStateController,
-                    _shippingZipController,
-                    _shippingFaxController,
-                    _shippingPhoneController,
-                    _shippingPhoneCountryCode,
-                    (value) =>
-                        setState(() => _shippingPhoneCountryCode = value!),
-                  ),
+                    // Shipping Address Card
+                    _buildAddressCard(
+                      'Shipping Address',
+                      _shippingAttentionController,
+                      _shippingCountryController,
+                      _shippingStreet1Controller,
+                      _shippingStreet2Controller,
+                      _shippingCityController,
+                      _shippingStateController,
+                      _shippingZipController,
+                      _shippingFaxController,
+                      _shippingPhoneController,
+                      _shippingPhoneCountryCode,
+                      (value) =>
+                          setState(() => _shippingPhoneCountryCode = value!),
+                    ),
 
-                  SizedBox(height: Dimensions.height30),
-                ]),
+                    SizedBox(height: Dimensions.height30),
+                  ]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -30,6 +30,7 @@ import 'package:custom_books/features/manual_journals/views/manual_journals_page
 import 'package:custom_books/features/documents/views/documents_inbox_page.dart';
 import 'package:custom_books/features/documents/views/all_files_page.dart';
 import 'package:custom_books/features/documents/views/folders_page.dart';
+import 'package:custom_books/features/reports/views/reports_page.dart';
 import 'package:custom_books/features/settings/views/settings_page.dart';
 import 'package:flutter/material.dart';
 
@@ -540,13 +541,14 @@ class _DrawerViewState extends State<DrawerView> {
                   item: DrawerItem(
                     icon: Icons.bar_chart_rounded,
                     title: 'Reports',
+                    isSelected: widget.currentRoute == 'reports',
                   ),
                   onCustomTap: () {
                     appLog(
                       '📊 Reports button tapped',
                       name: 'DrawerNavigation',
                     );
-                    Navigator.pop(context);
+                    _navigateToTopLevel(const ReportsPage());
                   },
                 ),
 

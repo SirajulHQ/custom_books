@@ -20,7 +20,7 @@ class _TaxRatesPageState extends State<TaxRatesPage> {
     _TaxRateItem(name: 'Zero Rate', rate: 0.0, isDefault: false),
   ];
 
-  bool _showFabMenu = false;
+  bool _showAddMenu = false;
 
   @override
   void initState() {
@@ -28,12 +28,12 @@ class _TaxRatesPageState extends State<TaxRatesPage> {
     appLog('📊 TaxRatesPage initialized', name: 'TaxRates');
   }
 
-  void _toggleFabMenu() {
-    setState(() => _showFabMenu = !_showFabMenu);
+  void _toggleAddMenu() {
+    setState(() => _showAddMenu = !_showAddMenu);
   }
 
   void _addNewTax() {
-    setState(() => _showFabMenu = false);
+    setState(() => _showAddMenu = false);
     appLog('➕ New Tax tapped', name: 'TaxRates');
     Navigator.push(
       context,
@@ -42,7 +42,7 @@ class _TaxRatesPageState extends State<TaxRatesPage> {
   }
 
   void _addNewTaxGroup() {
-    setState(() => _showFabMenu = false);
+    setState(() => _showAddMenu = false);
     appLog('➕ New Tax Group tapped', name: 'TaxRates');
     Navigator.push(
       context,
@@ -56,7 +56,7 @@ class _TaxRatesPageState extends State<TaxRatesPage> {
 
     return Scaffold(
       backgroundColor: context.colors.background,
-      floatingActionButton: _buildFab(),
+      floatingActionButton: _buildAddButton(),
       body: SafeArea(
         child: Stack(
           children: [
@@ -134,10 +134,10 @@ class _TaxRatesPageState extends State<TaxRatesPage> {
               ],
             ),
 
-            // FAB Menu Overlay
-            if (_showFabMenu)
+            // Add Menu Overlay
+            if (_showAddMenu)
               GestureDetector(
-                onTap: _toggleFabMenu,
+                onTap: _toggleAddMenu,
                 child: Container(
                   color: Colors.black.withValues(alpha: 0.4),
                   child: Align(
@@ -151,14 +151,14 @@ class _TaxRatesPageState extends State<TaxRatesPage> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          _buildFabMenuItem(
+                          _buildAddMenuItem(
                             label: 'New Tax Group',
                             color: Appcolors.warning,
                             icon: Icons.folder_outlined,
                             onTap: _addNewTaxGroup,
                           ),
                           SizedBox(height: Dimensions.height10),
-                          _buildFabMenuItem(
+                          _buildAddMenuItem(
                             label: 'New Tax',
                             color: Appcolors.ok,
                             icon: Icons.percent_rounded,
@@ -176,14 +176,14 @@ class _TaxRatesPageState extends State<TaxRatesPage> {
     );
   }
 
-  Widget _buildFab() {
+  Widget _buildAddButton() {
     return CustomAddButton(
-      onPressed: _toggleFabMenu,
-      icon: _showFabMenu ? Icons.close : Icons.add_rounded,
+      onPressed: _toggleAddMenu,
+      icon: _showAddMenu ? Icons.close : Icons.add_rounded,
     );
   }
 
-  Widget _buildFabMenuItem({
+  Widget _buildAddMenuItem({
     required String label,
     required Color color,
     required IconData icon,

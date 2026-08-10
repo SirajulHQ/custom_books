@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/credit_notes/models/credit_note_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,7 +15,8 @@ class AddCreditNotePage extends StatefulWidget {
   State<AddCreditNotePage> createState() => _AddCreditNotePageState();
 }
 
-class _AddCreditNotePageState extends State<AddCreditNotePage> {
+class _AddCreditNotePageState extends State<AddCreditNotePage>
+    with UnsavedChangesMixin {
   final _customerController = TextEditingController();
   final _creditNoteNumController = TextEditingController();
   final _referenceController = TextEditingController();
@@ -34,10 +36,18 @@ class _AddCreditNotePageState extends State<AddCreditNotePage> {
   void initState() {
     super.initState();
     _creditNoteNumController.text = 'CN-00016';
+    _customerController.addListener(markDirty);
+    _creditNoteNumController.addListener(markDirty);
+    _referenceController.addListener(markDirty);
+    _amountController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _customerController.removeListener(markDirty);
+    _creditNoteNumController.removeListener(markDirty);
+    _referenceController.removeListener(markDirty);
+    _amountController.removeListener(markDirty);
     _customerController.dispose();
     _creditNoteNumController.dispose();
     _referenceController.dispose();
@@ -145,6 +155,7 @@ class _AddCreditNotePageState extends State<AddCreditNotePage> {
       updatedAt: DateTime.now(),
     );
 
+    markClean();
     Navigator.pop(context, newNote);
   }
 
@@ -153,189 +164,194 @@ class _AddCreditNotePageState extends State<AddCreditNotePage> {
     Dimensions.init(context);
     final dateFormat = DateFormat('dd MMM yyyy');
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      appBar: CustomBackAppBar(
-        title: 'New Credit Note',
-        backgroundColor: context.colors.card,
-        actions: [
-          TextButton(
-            onPressed: () => _saveNote(status: CreditNoteStatus.draft),
-            child: Text(
-              'SAVE AS DRAFT',
-              style: TextStyle(
-                color: Appcolors.primary,
-                fontWeight: FontWeight.w800,
-                fontSize: Dimensions.font16 * 0.75,
-                letterSpacing: 0.5,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        appBar: CustomBackAppBar(
+          title: 'New Credit Note',
+          backgroundColor: context.colors.card,
+          onLeadingPressed: () => onPopInvokedWithResult(false, null),
+          actions: [
+            TextButton(
+              onPressed: () => _saveNote(status: CreditNoteStatus.draft),
+              child: Text(
+                'SAVE AS DRAFT',
+                style: TextStyle(
+                  color: Appcolors.primary,
+                  fontWeight: FontWeight.w800,
+                  fontSize: Dimensions.font16 * 0.75,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
-          ),
-          PopupMenuButton<String>(
-            icon: Icon(
-              Icons.more_vert_rounded,
-              color: context.colors.textPrimary,
-            ),
-            onSelected: (val) {
-              if (val == 'save_open') {
-                _saveNote(status: CreditNoteStatus.open);
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'save_open',
-                child: Text('Save as Open'),
+            PopupMenuButton<String>(
+              icon: Icon(
+                Icons.more_vert_rounded,
+                color: context.colors.textPrimary,
               ),
-            ],
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(Dimensions.width15),
-        child: Column(
-          children: [
-            FormCard(
-              children: [
-                // Customer Name *
-                const RequiredLabel(text: 'Customer Name'),
-                SizedBox(height: Dimensions.height10 / 2),
-                InkWell(
-                  onTap: _selectCustomer,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Dimensions.width10 / 2,
-                      vertical: Dimensions.height10,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: context.colors.border),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            _customerController.text.isEmpty
-                                ? 'Start typing to select a Customer'
-                                : _customerController.text,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.9,
-                              color: _customerController.text.isEmpty
-                                  ? context.colors.textTertiary
-                                  : context.colors.textPrimary,
-                              fontWeight: _customerController.text.isEmpty
-                                  ? FontWeight.normal
-                                  : FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        Icon(
-                          Icons.add_rounded,
-                          size: Dimensions.iconSize24,
-                          color: context.colors.textPrimary,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                // Credit Note# *
-                const RequiredLabel(text: 'Credit Note#'),
-                SizedBox(height: Dimensions.height10 / 2),
-                TextField(
-                  controller: _creditNoteNumController,
-                  style: FormTextStyles.value(context),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Appcolors.primary),
-                    ),
-                  ),
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                // Reference#
-                Text('Reference#', style: FormTextStyles.label()),
-                SizedBox(height: Dimensions.height10 / 2),
-                TextField(
-                  controller: _referenceController,
-                  style: FormTextStyles.value(context),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Appcolors.primary),
-                    ),
-                  ),
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                // Credit Note Date *
-                const RequiredLabel(text: 'Credit Note Date'),
-                SizedBox(height: Dimensions.height10 / 2),
-                InkWell(
-                  onTap: _pickDate,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: context.colors.border),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          dateFormat.format(_creditNoteDate),
-                          style: FormTextStyles.value(context),
-                        ),
-                        Icon(
-                          Icons.calendar_today_outlined,
-                          size: Dimensions.iconSize24 * 0.85,
-                          color: context.colors.textSecondary,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                // Amount (AED) *
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const RequiredLabel(text: 'Amount (AED)'),
-                    FormNumberField(
-                      controller: _amountController,
-                      hint: '0.00',
-                      prefix: 'AED',
-                    ),
-                  ],
+              onSelected: (val) {
+                if (val == 'save_open') {
+                  _saveNote(status: CreditNoteStatus.open);
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'save_open',
+                  child: Text('Save as Open'),
                 ),
               ],
             ),
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(Dimensions.width15),
+          child: Column(
+            children: [
+              FormCard(
+                children: [
+                  // Customer Name *
+                  const RequiredLabel(text: 'Customer Name'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  InkWell(
+                    onTap: _selectCustomer,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Dimensions.width10 / 2,
+                        vertical: Dimensions.height10,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: context.colors.border),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _customerController.text.isEmpty
+                                  ? 'Start typing to select a Customer'
+                                  : _customerController.text,
+                              style: TextStyle(
+                                fontSize: Dimensions.font16 * 0.9,
+                                color: _customerController.text.isEmpty
+                                    ? context.colors.textTertiary
+                                    : context.colors.textPrimary,
+                                fontWeight: _customerController.text.isEmpty
+                                    ? FontWeight.normal
+                                    : FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Icon(
+                            Icons.add_rounded,
+                            size: Dimensions.iconSize24,
+                            color: context.colors.textPrimary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height20),
+
+                  // Credit Note# *
+                  const RequiredLabel(text: 'Credit Note#'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  TextField(
+                    controller: _creditNoteNumController,
+                    style: FormTextStyles.value(context),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height10,
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Appcolors.primary),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height20),
+
+                  // Reference#
+                  Text('Reference#', style: FormTextStyles.label()),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  TextField(
+                    controller: _referenceController,
+                    style: FormTextStyles.value(context),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height10,
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Appcolors.primary),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height20),
+
+                  // Credit Note Date *
+                  const RequiredLabel(text: 'Credit Note Date'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  InkWell(
+                    onTap: _pickDate,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height10,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: context.colors.border),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            dateFormat.format(_creditNoteDate),
+                            style: FormTextStyles.value(context),
+                          ),
+                          Icon(
+                            Icons.calendar_today_outlined,
+                            size: Dimensions.iconSize24 * 0.85,
+                            color: context.colors.textSecondary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height20),
+
+                  // Amount (AED) *
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const RequiredLabel(text: 'Amount (AED)'),
+                      FormNumberField(
+                        controller: _amountController,
+                        hint: '0.00',
+                        prefix: 'AED',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

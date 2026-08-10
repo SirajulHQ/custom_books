@@ -5,6 +5,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/line_item_form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,8 @@ class AddInvoiceLineItemPage extends StatefulWidget {
   State<AddInvoiceLineItemPage> createState() => _AddInvoiceLineItemPageState();
 }
 
-class _AddInvoiceLineItemPageState extends State<AddInvoiceLineItemPage> {
+class _AddInvoiceLineItemPageState extends State<AddInvoiceLineItemPage>
+    with UnsavedChangesMixin {
   final _itemSearchController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _quantityController = TextEditingController();
@@ -94,10 +96,22 @@ class _AddInvoiceLineItemPageState extends State<AddInvoiceLineItemPage> {
     } else {
       _taxRateController.text = '5.00';
     }
+    _itemSearchController.addListener(markDirty);
+    _descriptionController.addListener(markDirty);
+    _quantityController.addListener(markDirty);
+    _rateController.addListener(markDirty);
+    _discountController.addListener(markDirty);
+    _taxRateController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _itemSearchController.removeListener(markDirty);
+    _descriptionController.removeListener(markDirty);
+    _quantityController.removeListener(markDirty);
+    _rateController.removeListener(markDirty);
+    _discountController.removeListener(markDirty);
+    _taxRateController.removeListener(markDirty);
     _itemSearchController.dispose();
     _descriptionController.dispose();
     _quantityController.dispose();
@@ -161,6 +175,7 @@ class _AddInvoiceLineItemPageState extends State<AddInvoiceLineItemPage> {
     final quantity = double.tryParse(_quantityController.text) ?? 1;
     final rate = double.tryParse(_rateController.text) ?? 0;
 
+    markClean();
     Navigator.pop(
       context,
       InvoiceLineItem(
@@ -186,65 +201,70 @@ class _AddInvoiceLineItemPageState extends State<AddInvoiceLineItemPage> {
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      appBar: CustomBackAppBar(
-        title: 'Add Line Item',
-        actions: [
-          TextButton(
-            onPressed: _done,
-            child: Text(
-              'DONE',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                fontWeight: FontWeight.w700,
-                color: Appcolors.primary,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        appBar: CustomBackAppBar(
+          title: 'Add Line Item',
+          onLeadingPressed: () => onPopInvokedWithResult(false, null),
+          actions: [
+            TextButton(
+              onPressed: _done,
+              child: Text(
+                'DONE',
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.8,
+                  fontWeight: FontWeight.w700,
+                  color: Appcolors.primary,
+                ),
               ),
             ),
-          ),
-          SizedBox(width: Dimensions.width10),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(Dimensions.width20),
-          physics: const BouncingScrollPhysics(),
-          child: FormCard(
-            children: [
-              _InvoiceItemPicker(
-                controller: _itemSearchController,
-                selectedItem: _selectedItem,
-                suggestions: _suggestions,
-                onChanged: (_) => setState(() {}),
-                onClear: _clearItem,
-                onSelect: _selectItem,
-                onBarcodeScan: () => ToastificationHelper.showInfo(
-                  context,
-                  'Barcode scan coming soon',
-                ),
-              ),
-              if (_selectedItem != null) ...[
-                const FormDivider(),
-                _InvoiceItemDetails(controller: _descriptionController),
-                const FormDivider(),
-                SizedBox(height: Dimensions.height10),
-                _InvoicePricingFields(
-                  quantityController: _quantityController,
-                  rateController: _rateController,
-                  discountController: _discountController,
-                  taxRateController: _taxRateController,
-                  quantityFocusNode: _quantityFocusNode,
-                  rateFocusNode: _rateFocusNode,
-                  discountFocusNode: _discountFocusNode,
+            SizedBox(width: Dimensions.width10),
+          ],
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(Dimensions.width20),
+            physics: const BouncingScrollPhysics(),
+            child: FormCard(
+              children: [
+                _InvoiceItemPicker(
+                  controller: _itemSearchController,
+                  selectedItem: _selectedItem,
+                  suggestions: _suggestions,
                   onChanged: (_) => setState(() {}),
+                  onClear: _clearItem,
+                  onSelect: _selectItem,
+                  onBarcodeScan: () => ToastificationHelper.showInfo(
+                    context,
+                    'Barcode scan coming soon',
+                  ),
                 ),
-                SizedBox(height: Dimensions.height20),
-                _InvoiceAmountSummary(
-                  amount: _calculatedAmount,
-                  taxAmount: _calculatedTaxAmount,
-                ),
+                if (_selectedItem != null) ...[
+                  const FormDivider(),
+                  _InvoiceItemDetails(controller: _descriptionController),
+                  const FormDivider(),
+                  SizedBox(height: Dimensions.height10),
+                  _InvoicePricingFields(
+                    quantityController: _quantityController,
+                    rateController: _rateController,
+                    discountController: _discountController,
+                    taxRateController: _taxRateController,
+                    quantityFocusNode: _quantityFocusNode,
+                    rateFocusNode: _rateFocusNode,
+                    discountFocusNode: _discountFocusNode,
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  SizedBox(height: Dimensions.height20),
+                  _InvoiceAmountSummary(
+                    amount: _calculatedAmount,
+                    taxAmount: _calculatedTaxAmount,
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:flutter/material.dart';
 
 class NewTaxGroupPage extends StatefulWidget {
@@ -12,7 +13,8 @@ class NewTaxGroupPage extends StatefulWidget {
   State<NewTaxGroupPage> createState() => _NewTaxGroupPageState();
 }
 
-class _NewTaxGroupPageState extends State<NewTaxGroupPage> {
+class _NewTaxGroupPageState extends State<NewTaxGroupPage>
+    with UnsavedChangesMixin {
   final TextEditingController _nameController = TextEditingController();
 
   final List<_TaxOption> _availableTaxes = [
@@ -23,11 +25,13 @@ class _NewTaxGroupPageState extends State<NewTaxGroupPage> {
   @override
   void initState() {
     super.initState();
+    _nameController.addListener(markDirty);
     appLog('📝 NewTaxGroupPage initialized', name: 'NewTaxGroup');
   }
 
   @override
   void dispose() {
+    _nameController.removeListener(markDirty);
     _nameController.dispose();
     super.dispose();
   }
@@ -43,6 +47,7 @@ class _NewTaxGroupPageState extends State<NewTaxGroupPage> {
       return;
     }
     appLog('💾 Save tax group: ${_nameController.text}', name: 'NewTaxGroup');
+    markClean();
     Navigator.pop(context);
   }
 
@@ -56,41 +61,46 @@ class _NewTaxGroupPageState extends State<NewTaxGroupPage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: 'New Tax Group',
-              leadingType: AppBarLeadingType.back,
-              actions: [
-                AppBarElevatedButton(label: 'SAVE', onPressed: _save),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.all(Dimensions.width15),
-                child: FormCard(
-                  children: [
-                    const RequiredLabel(text: 'Tax Group Name'),
-                    SizedBox(height: Dimensions.height10 / 2),
-                    TextField(
-                      controller: _nameController,
-                      style: FormTextStyles.value(context),
-                      decoration: _underlineDecoration(),
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    const RequiredLabel(text: 'Taxes'),
-                    SizedBox(height: Dimensions.height10),
-                    ..._availableTaxes.map((tax) => _buildTaxCheckbox(tax)),
-                  ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'New Tax Group',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(label: 'SAVE', onPressed: _save),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.all(Dimensions.width15),
+                  child: FormCard(
+                    children: [
+                      const RequiredLabel(text: 'Tax Group Name'),
+                      SizedBox(height: Dimensions.height10 / 2),
+                      TextField(
+                        controller: _nameController,
+                        style: FormTextStyles.value(context),
+                        decoration: _underlineDecoration(),
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      const RequiredLabel(text: 'Taxes'),
+                      SizedBox(height: Dimensions.height10),
+                      ..._availableTaxes.map((tax) => _buildTaxCheckbox(tax)),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

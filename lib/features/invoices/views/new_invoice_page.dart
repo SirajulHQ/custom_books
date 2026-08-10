@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
 import 'package:custom_books/features/invoices/views/add_invoice_line_item_page.dart';
@@ -18,7 +19,8 @@ class NewInvoicePage extends StatefulWidget {
   State<NewInvoicePage> createState() => _NewInvoicePageState();
 }
 
-class _NewInvoicePageState extends State<NewInvoicePage> {
+class _NewInvoicePageState extends State<NewInvoicePage>
+    with UnsavedChangesMixin {
   // Controllers
   final TextEditingController _customerNameController = TextEditingController();
   final TextEditingController _orderNumberController = TextEditingController();
@@ -50,11 +52,26 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
       }
     }
     _customerNotesController.text = 'Thanks for your business.';
+
+    // Track changes for unsaved-changes protection
+    _customerNameController.addListener(markDirty);
+    _orderNumberController.addListener(markDirty);
+    _salespersonController.addListener(markDirty);
+    _subjectController.addListener(markDirty);
+    _customerNotesController.addListener(markDirty);
+    _termsController.addListener(markDirty);
+
     appLog('📄 NewInvoicePage initialized', name: 'NewInvoicePage');
   }
 
   @override
   void dispose() {
+    _customerNameController.removeListener(markDirty);
+    _orderNumberController.removeListener(markDirty);
+    _salespersonController.removeListener(markDirty);
+    _subjectController.removeListener(markDirty);
+    _customerNotesController.removeListener(markDirty);
+    _termsController.removeListener(markDirty);
     _customerNameController.dispose();
     _orderNumberController.dispose();
     _salespersonController.dispose();
@@ -68,219 +85,229 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            // App Bar
-            CustomSliverAppBar(
-              title: 'New Invoice',
-              leadingType: AppBarLeadingType.back,
-              onLeadingPressed: () {
-                appLog('⬅️ Back button tapped', name: 'NewInvoicePage');
-                Navigator.pop(context);
-              },
-              actions: [
-                AppBarElevatedButton(
-                  label: 'SAVE AS DRAFT',
-                  onPressed: _saveDraft,
-                ),
-                SizedBox(width: Dimensions.width10),
-                AppBarIconButton(
-                  icon: Icons.more_vert_rounded,
-                  color: context.colors.textSecondary,
-                  onPressed: _showMoreOptions,
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-
-            // Content
-            SliverPadding(
-              padding: EdgeInsets.all(Dimensions.width20),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  // Customer Information Card
-                  _CustomerInvoiceSection(
-                    customer: _CustomerSection(
-                      children: [
-                        _buildCustomerNameField(),
-                        SizedBox(height: Dimensions.height15),
-                        _buildLinkRow([
-                          _buildLink('Address', () {
-                            appLog('📍 Address tapped', name: 'NewInvoicePage');
-                            ToastificationHelper.showInfo(
-                              context,
-                              'Select a customer to manage the address.',
-                            );
-                          }),
-                          _buildLink('Customer Details', () {
-                            appLog(
-                              '👤 Customer Details tapped',
-                              name: 'NewInvoicePage',
-                            );
-                            ToastificationHelper.showInfo(
-                              context,
-                              'Select a customer to view their details.',
-                            );
-                          }),
-                        ]),
-                        SizedBox(height: Dimensions.height20),
-                        _buildTaxTreatmentRow(),
-                        SizedBox(height: Dimensions.height20),
-                        _buildDropdown(
-                          'Place Of Supply',
-                          _selectedPlaceOfSupply,
-                          ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman'],
-                          isRequired: true,
-                          onChanged: (value) {
-                            setState(() => _selectedPlaceOfSupply = value!);
-                          },
-                        ),
-                      ],
-                    ),
-                    invoiceDetails: _InvoiceDetailsSection(
-                      children: [
-                        _buildInvoiceNumberField(),
-                        SizedBox(height: Dimensions.height20),
-                        _buildTextField('Order Number', _orderNumberController),
-                        SizedBox(height: Dimensions.height20),
-                        _buildDateField(
-                          'Invoice Date',
-                          _invoiceDate,
-                          isRequired: true,
-                          onTap: () async {
-                            final date = await _selectDate(
-                              context,
-                              _invoiceDate,
-                            );
-                            if (date != null) {
-                              setState(() => _invoiceDate = date);
-                            }
-                          },
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        _buildDropdown(
-                          'Terms',
-                          _selectedTerms,
-                          [
-                            'Due on Receipt',
-                            'Net 15',
-                            'Net 30',
-                            'Net 45',
-                            'Net 60',
-                          ],
-                          isRequired: true,
-                          onChanged: (value) {
-                            setState(() => _selectedTerms = value!);
-                          },
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        _buildDateField(
-                          'Due Date',
-                          _dueDate,
-                          onTap: () async {
-                            final date = await _selectDate(context, _dueDate);
-                            if (date != null) {
-                              setState(() => _dueDate = date);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              // App Bar
+              CustomSliverAppBar(
+                title: 'New Invoice',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(
+                    label: 'SAVE AS DRAFT',
+                    onPressed: _saveDraft,
                   ),
-
-                  SizedBox(height: Dimensions.height15),
-
-                  // Salesperson & Subject Card
-                  _InvoiceDetailsCard(
-                    children: [
-                      _buildTextField(
-                        'Salesperson',
-                        _salespersonController,
-                        placeholder: 'Select or Add Salesperson',
-                        suffixIcon: Icons.keyboard_arrow_down_rounded,
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildTextField(
-                        'Subject',
-                        _subjectController,
-                        placeholder: 'What is this invoice for?',
-                        hasInfo: true,
-                      ),
-                    ],
+                  SizedBox(width: Dimensions.width10),
+                  AppBarIconButton(
+                    icon: Icons.more_vert_rounded,
+                    color: context.colors.textSecondary,
+                    onPressed: _showMoreOptions,
                   ),
-
-                  SizedBox(height: Dimensions.height15),
-
-                  _LineItemsTaxSection(
-                    taxSelector: _buildTaxTypeSelector(),
-                    addLineItemButton: _buildAddLineItemButton(),
-                  ),
-
-                  SizedBox(height: Dimensions.height15),
-
-                  // Customer Notes Card
-                  _InvoiceNotesSection(
-                    children: [
-                      _buildSectionHeader('Customer Notes'),
-                      SizedBox(height: Dimensions.height10),
-                      _buildMultilineText(_customerNotesController.text),
-                      SizedBox(height: Dimensions.height15),
-                      _buildSectionHeader('Terms & Conditions'),
-                    ],
-                  ),
-
-                  SizedBox(height: Dimensions.height15),
-
-                  // Email Communications Card
-                  _EmailCommunicationsSection(
-                    emails: _emailCommunications,
-                    onClear: () {
-                      setState(() => _emailCommunications.clear());
-                      appLog('🗑️ Clear emails tapped', name: 'NewInvoicePage');
-                    },
-                    onAdd: _addEmail,
-                  ),
-
-                  SizedBox(height: Dimensions.height15),
-
-                  // Payment Details Card
-                  _PaymentDetailsSection(
-                    children: [
-                      _buildSectionHeader('Payment Details'),
-                      SizedBox(height: Dimensions.height15),
-                      _buildCheckbox(
-                        'I have received the payment',
-                        _paymentReceived,
-                        (value) {
-                          setState(() => _paymentReceived = value ?? false);
-                        },
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: Dimensions.height15),
-
-                  // Attachments Card
-                  _AttachmentsSection(
-                    header: _buildSectionHeader('Attachments'),
-                    onUpload: () {
-                      appLog('📎 Upload File tapped', name: 'NewInvoicePage');
-                      ToastificationHelper.showInfo(
-                        context,
-                        'File attachments are coming soon.',
-                      );
-                    },
-                  ),
-
-                  SizedBox(height: Dimensions.height30),
-                ]),
+                  SizedBox(width: Dimensions.width20),
+                ],
               ),
-            ),
-          ],
+
+              // Content
+              SliverPadding(
+                padding: EdgeInsets.all(Dimensions.width20),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    // Customer Information Card
+                    _CustomerInvoiceSection(
+                      customer: _CustomerSection(
+                        children: [
+                          _buildCustomerNameField(),
+                          SizedBox(height: Dimensions.height15),
+                          _buildLinkRow([
+                            _buildLink('Address', () {
+                              appLog(
+                                '📍 Address tapped',
+                                name: 'NewInvoicePage',
+                              );
+                              ToastificationHelper.showInfo(
+                                context,
+                                'Select a customer to manage the address.',
+                              );
+                            }),
+                            _buildLink('Customer Details', () {
+                              appLog(
+                                '👤 Customer Details tapped',
+                                name: 'NewInvoicePage',
+                              );
+                              ToastificationHelper.showInfo(
+                                context,
+                                'Select a customer to view their details.',
+                              );
+                            }),
+                          ]),
+                          SizedBox(height: Dimensions.height20),
+                          _buildTaxTreatmentRow(),
+                          SizedBox(height: Dimensions.height20),
+                          _buildDropdown(
+                            'Place Of Supply',
+                            _selectedPlaceOfSupply,
+                            ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman'],
+                            isRequired: true,
+                            onChanged: (value) {
+                              setState(() => _selectedPlaceOfSupply = value!);
+                            },
+                          ),
+                        ],
+                      ),
+                      invoiceDetails: _InvoiceDetailsSection(
+                        children: [
+                          _buildInvoiceNumberField(),
+                          SizedBox(height: Dimensions.height20),
+                          _buildTextField(
+                            'Order Number',
+                            _orderNumberController,
+                          ),
+                          SizedBox(height: Dimensions.height20),
+                          _buildDateField(
+                            'Invoice Date',
+                            _invoiceDate,
+                            isRequired: true,
+                            onTap: () async {
+                              final date = await _selectDate(
+                                context,
+                                _invoiceDate,
+                              );
+                              if (date != null) {
+                                setState(() => _invoiceDate = date);
+                              }
+                            },
+                          ),
+                          SizedBox(height: Dimensions.height20),
+                          _buildDropdown(
+                            'Terms',
+                            _selectedTerms,
+                            [
+                              'Due on Receipt',
+                              'Net 15',
+                              'Net 30',
+                              'Net 45',
+                              'Net 60',
+                            ],
+                            isRequired: true,
+                            onChanged: (value) {
+                              setState(() => _selectedTerms = value!);
+                            },
+                          ),
+                          SizedBox(height: Dimensions.height20),
+                          _buildDateField(
+                            'Due Date',
+                            _dueDate,
+                            onTap: () async {
+                              final date = await _selectDate(context, _dueDate);
+                              if (date != null) {
+                                setState(() => _dueDate = date);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: Dimensions.height15),
+
+                    // Salesperson & Subject Card
+                    _InvoiceDetailsCard(
+                      children: [
+                        _buildTextField(
+                          'Salesperson',
+                          _salespersonController,
+                          placeholder: 'Select or Add Salesperson',
+                          suffixIcon: Icons.keyboard_arrow_down_rounded,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTextField(
+                          'Subject',
+                          _subjectController,
+                          placeholder: 'What is this invoice for?',
+                          hasInfo: true,
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: Dimensions.height15),
+
+                    _LineItemsTaxSection(
+                      taxSelector: _buildTaxTypeSelector(),
+                      addLineItemButton: _buildAddLineItemButton(),
+                    ),
+
+                    SizedBox(height: Dimensions.height15),
+
+                    // Customer Notes Card
+                    _InvoiceNotesSection(
+                      children: [
+                        _buildSectionHeader('Customer Notes'),
+                        SizedBox(height: Dimensions.height10),
+                        _buildMultilineText(_customerNotesController.text),
+                        SizedBox(height: Dimensions.height15),
+                        _buildSectionHeader('Terms & Conditions'),
+                      ],
+                    ),
+
+                    SizedBox(height: Dimensions.height15),
+
+                    // Email Communications Card
+                    _EmailCommunicationsSection(
+                      emails: _emailCommunications,
+                      onClear: () {
+                        setState(() => _emailCommunications.clear());
+                        appLog(
+                          '🗑️ Clear emails tapped',
+                          name: 'NewInvoicePage',
+                        );
+                      },
+                      onAdd: _addEmail,
+                    ),
+
+                    SizedBox(height: Dimensions.height15),
+
+                    // Payment Details Card
+                    _PaymentDetailsSection(
+                      children: [
+                        _buildSectionHeader('Payment Details'),
+                        SizedBox(height: Dimensions.height15),
+                        _buildCheckbox(
+                          'I have received the payment',
+                          _paymentReceived,
+                          (value) {
+                            setState(() => _paymentReceived = value ?? false);
+                          },
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: Dimensions.height15),
+
+                    // Attachments Card
+                    _AttachmentsSection(
+                      header: _buildSectionHeader('Attachments'),
+                      onUpload: () {
+                        appLog('📎 Upload File tapped', name: 'NewInvoicePage');
+                        ToastificationHelper.showInfo(
+                          context,
+                          'File attachments are coming soon.',
+                        );
+                      },
+                    ),
+
+                    SizedBox(height: Dimensions.height30),
+                  ]),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1182,16 +1209,17 @@ class _NewInvoicePageState extends State<NewInvoicePage> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Appcolors.primary,
-              brightness: Theme.of(context).brightness,
-            ).copyWith(
-              primary: Appcolors.primary,
-              onSurface: context.colors.textPrimary,
-              surface: context.colors.card,
-            ),
+            colorScheme:
+                ColorScheme.fromSeed(
+                  seedColor: Appcolors.primary,
+                  brightness: Theme.of(context).brightness,
+                ).copyWith(
+                  primary: Appcolors.primary,
+                  onSurface: context.colors.textPrimary,
+                  surface: context.colors.card,
+                ),
           ),
-          child: child!
+          child: child!,
         );
       },
     );

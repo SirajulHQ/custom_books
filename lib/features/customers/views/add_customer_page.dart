@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/views/add_address_page.dart';
 import 'package:custom_books/features/customers/views/add_contact_person_page.dart';
@@ -17,7 +18,8 @@ class AddCustomerPage extends StatefulWidget {
   State<AddCustomerPage> createState() => _AddCustomerPageState();
 }
 
-class _AddCustomerPageState extends State<AddCustomerPage> {
+class _AddCustomerPageState extends State<AddCustomerPage>
+    with UnsavedChangesMixin {
   String _customerType = 'Business';
   bool _allowPortalAccess = false;
   bool _showWebsiteSocial = false;
@@ -150,6 +152,18 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
   @override
   void initState() {
     super.initState();
+    _firstNameController.addListener(markDirty);
+    _websiteController.addListener(markDirty);
+    _facebookController.addListener(markDirty);
+    _twitterController.addListener(markDirty);
+    _lastNameController.addListener(markDirty);
+    _companyNameController.addListener(markDirty);
+    _displayNameController.addListener(markDirty);
+    _emailController.addListener(markDirty);
+    _phoneController.addListener(markDirty);
+    _mobileController.addListener(markDirty);
+    _openingBalanceController.addListener(markDirty);
+    _remarksController.addListener(markDirty);
     if (widget.customer != null) {
       // Pre-populate with customer data for editing
       _displayNameController.text = widget.customer!.name;
@@ -167,6 +181,18 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
 
   @override
   void dispose() {
+    _firstNameController.removeListener(markDirty);
+    _websiteController.removeListener(markDirty);
+    _facebookController.removeListener(markDirty);
+    _twitterController.removeListener(markDirty);
+    _lastNameController.removeListener(markDirty);
+    _companyNameController.removeListener(markDirty);
+    _displayNameController.removeListener(markDirty);
+    _emailController.removeListener(markDirty);
+    _phoneController.removeListener(markDirty);
+    _mobileController.removeListener(markDirty);
+    _openingBalanceController.removeListener(markDirty);
+    _remarksController.removeListener(markDirty);
     _firstNameController.dispose();
     _websiteController.dispose();
     _facebookController.dispose();
@@ -186,281 +212,287 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
   Widget build(BuildContext context) {
     Dimensions.init(context);
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            // App Bar
-            CustomSliverAppBar(
-              title: widget.customer != null ? 'Edit Customer' : 'New Customer',
-              leadingType: AppBarLeadingType.back,
-              onLeadingPressed: () {
-                appLog('⬅️ Back button tapped', name: 'AddCustomerPage');
-                Navigator.pop(context);
-              },
-              actions: [
-                AppBarIconButton(
-                  icon: Icons.contacts_outlined,
-                  color: context.colors.textSecondary,
-                  onPressed: () {
-                    appLog(
-                      '📱 Contacts button tapped',
-                      name: 'AddCustomerPage',
-                    );
-                    ToastificationHelper.showInfo(
-                      context,
-                      'Importing from device contacts is coming soon.',
-                    );
-                  },
-                ),
-                SizedBox(width: Dimensions.width10),
-                AppBarElevatedButton(label: 'SAVE', onPressed: _saveCustomer),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              // App Bar
+              CustomSliverAppBar(
+                title: widget.customer != null
+                    ? 'Edit Customer'
+                    : 'New Customer',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarIconButton(
+                    icon: Icons.contacts_outlined,
+                    color: context.colors.textSecondary,
+                    onPressed: () {
+                      appLog(
+                        '📱 Contacts button tapped',
+                        name: 'AddCustomerPage',
+                      );
+                      ToastificationHelper.showInfo(
+                        context,
+                        'Importing from device contacts is coming soon.',
+                      );
+                    },
+                  ),
+                  SizedBox(width: Dimensions.width10),
+                  AppBarElevatedButton(label: 'SAVE', onPressed: _saveCustomer),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
 
-            // Content
-            SliverPadding(
-              padding: EdgeInsets.all(Dimensions.width20),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  // Customer Information Card
-                  _buildCard('Customer Information', [
-                    _buildSectionHeader('Customer Type', hasInfo: true),
-                    SizedBox(height: Dimensions.height10),
-                    Row(
-                      children: [
-                        Expanded(child: _buildRadioOption('Business')),
-                        SizedBox(width: Dimensions.width15),
-                        Expanded(child: _buildRadioOption('Individual')),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    Row(
-                      children: [
-                        Expanded(flex: 1, child: _buildSalutationDropdown()),
-                        SizedBox(width: Dimensions.width15),
-                        Expanded(
-                          flex: 2,
-                          child: _buildTextField(
-                            'First Name',
-                            _firstNameController,
+              // Content
+              SliverPadding(
+                padding: EdgeInsets.all(Dimensions.width20),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    // Customer Information Card
+                    _buildCard('Customer Information', [
+                      _buildSectionHeader('Customer Type', hasInfo: true),
+                      SizedBox(height: Dimensions.height10),
+                      Row(
+                        children: [
+                          Expanded(child: _buildRadioOption('Business')),
+                          SizedBox(width: Dimensions.width15),
+                          Expanded(child: _buildRadioOption('Individual')),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      Row(
+                        children: [
+                          Expanded(flex: 1, child: _buildSalutationDropdown()),
+                          SizedBox(width: Dimensions.width15),
+                          Expanded(
+                            flex: 2,
+                            child: _buildTextField(
+                              'First Name',
+                              _firstNameController,
+                            ),
                           ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      _buildTextField('Last Name', _lastNameController),
+                      SizedBox(height: Dimensions.height20),
+                      _buildTextField('Company Name', _companyNameController),
+                      SizedBox(height: Dimensions.height20),
+                      _buildTextField(
+                        'Display Name',
+                        _displayNameController,
+                        isRequired: true,
+                        hasInfo: true,
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      _buildTextField(
+                        'Email Address',
+                        _emailController,
+                        hasInfo: true,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      _buildPhoneField(
+                        'Phone',
+                        _phoneController,
+                        _phoneCountryCode,
+                        (value) => setState(() => _phoneCountryCode = value!),
+                        hasInfo: true,
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      _buildPhoneField(
+                        'Mobile',
+                        _mobileController,
+                        _mobileCountryCode,
+                        (value) => setState(() => _mobileCountryCode = value!),
+                        hasInfo: true,
+                      ),
+                    ]),
+
+                    SizedBox(height: Dimensions.height15),
+
+                    // Other Details Card
+                    _buildCard('Other Details', [
+                      _buildDropdown(
+                        'Tax Treatment',
+                        _selectedTaxTreatment,
+                        _taxTreatmentOptions,
+                        isRequired: true,
+                        onChanged: (value) {
+                          setState(() => _selectedTaxTreatment = value!);
+                        },
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      _buildDropdown(
+                        'Place Of Supply',
+                        _selectedPlaceOfSupply,
+                        _placeOfSupplyOptions,
+                        isRequired: true,
+                        onChanged: (value) {
+                          setState(() => _selectedPlaceOfSupply = value!);
+                        },
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      _buildDropdown(
+                        'Currency',
+                        _selectedCurrency,
+                        _currencyOptions,
+                        isRequired: true,
+                        onChanged: (value) {
+                          setState(() => _selectedCurrency = value!);
+                        },
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      _buildDropdown(
+                        'Accounts Receivable',
+                        _selectedAccountsReceivable,
+                        _accountsReceivableOptions,
+                        onChanged: (value) {
+                          setState(() => _selectedAccountsReceivable = value!);
+                        },
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      _buildTextField(
+                        'Opening Balance',
+                        _openingBalanceController,
+                        prefix: 'INR',
+                        keyboardType: TextInputType.number,
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      _buildDropdown(
+                        'Payment Terms',
+                        _selectedPaymentTerms,
+                        _paymentTermsOptions,
+                        onChanged: (value) {
+                          setState(() => _selectedPaymentTerms = value!);
+                        },
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      _buildSectionHeader('Enable Portal?', hasInfo: true),
+                      SizedBox(height: Dimensions.height10),
+                      _buildCheckbox(
+                        'Allow portal access for this customer',
+                        _allowPortalAccess,
+                        (value) {
+                          setState(() => _allowPortalAccess = value ?? false);
+                        },
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      _buildDropdown(
+                        'Portal Language',
+                        _selectedPortalLanguage,
+                        _portalLanguageOptions,
+                        hasInfo: true,
+                        onChanged: (value) {
+                          setState(() => _selectedPortalLanguage = value!);
+                        },
+                      ),
+                      SizedBox(height: Dimensions.height20),
+                      if (_showWebsiteSocial) ...[
+                        _buildTextField(
+                          'Website',
+                          _websiteController,
+                          keyboardType: TextInputType.url,
                         ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTextField(
+                          'Facebook',
+                          _facebookController,
+                          hint: 'https://www.facebook.com/',
+                          keyboardType: TextInputType.url,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTextField(
+                          'Twitter',
+                          _twitterController,
+                          hint: 'https://www.twitter.com/',
+                          keyboardType: TextInputType.url,
+                        ),
+                        SizedBox(height: Dimensions.height20),
                       ],
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildTextField('Last Name', _lastNameController),
-                    SizedBox(height: Dimensions.height20),
-                    _buildTextField('Company Name', _companyNameController),
-                    SizedBox(height: Dimensions.height20),
-                    _buildTextField(
-                      'Display Name',
-                      _displayNameController,
-                      isRequired: true,
-                      hasInfo: true,
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildTextField(
-                      'Email Address',
-                      _emailController,
-                      hasInfo: true,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildPhoneField(
-                      'Phone',
-                      _phoneController,
-                      _phoneCountryCode,
-                      (value) => setState(() => _phoneCountryCode = value!),
-                      hasInfo: true,
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildPhoneField(
-                      'Mobile',
-                      _mobileController,
-                      _mobileCountryCode,
-                      (value) => setState(() => _mobileCountryCode = value!),
-                      hasInfo: true,
-                    ),
-                  ]),
+                      _buildActionButton(
+                        _showWebsiteSocial
+                            ? 'Hide Website & Social'
+                            : 'Add Website & Social',
+                        _showWebsiteSocial
+                            ? Icons.remove_circle_outline
+                            : Icons.language_outlined,
+                        onTap: () {
+                          setState(() {
+                            _showWebsiteSocial = !_showWebsiteSocial;
+                          });
+                          appLog(
+                            _showWebsiteSocial
+                                ? '🌐 Website & Social fields shown'
+                                : '🌐 Website & Social fields hidden',
+                            name: 'AddCustomerPage',
+                          );
+                        },
+                      ),
+                    ]),
 
-                  SizedBox(height: Dimensions.height15),
+                    SizedBox(height: Dimensions.height15),
 
-                  // Other Details Card
-                  _buildCard('Other Details', [
-                    _buildDropdown(
-                      'Tax Treatment',
-                      _selectedTaxTreatment,
-                      _taxTreatmentOptions,
-                      isRequired: true,
-                      onChanged: (value) {
-                        setState(() => _selectedTaxTreatment = value!);
-                      },
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildDropdown(
-                      'Place Of Supply',
-                      _selectedPlaceOfSupply,
-                      _placeOfSupplyOptions,
-                      isRequired: true,
-                      onChanged: (value) {
-                        setState(() => _selectedPlaceOfSupply = value!);
-                      },
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildDropdown(
-                      'Currency',
-                      _selectedCurrency,
-                      _currencyOptions,
-                      isRequired: true,
-                      onChanged: (value) {
-                        setState(() => _selectedCurrency = value!);
-                      },
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildDropdown(
-                      'Accounts Receivable',
-                      _selectedAccountsReceivable,
-                      _accountsReceivableOptions,
-                      onChanged: (value) {
-                        setState(() => _selectedAccountsReceivable = value!);
-                      },
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildTextField(
-                      'Opening Balance',
-                      _openingBalanceController,
-                      prefix: 'INR',
-                      keyboardType: TextInputType.number,
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildDropdown(
-                      'Payment Terms',
-                      _selectedPaymentTerms,
-                      _paymentTermsOptions,
-                      onChanged: (value) {
-                        setState(() => _selectedPaymentTerms = value!);
-                      },
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildSectionHeader('Enable Portal?', hasInfo: true),
-                    SizedBox(height: Dimensions.height10),
-                    _buildCheckbox(
-                      'Allow portal access for this customer',
-                      _allowPortalAccess,
-                      (value) {
-                        setState(() => _allowPortalAccess = value ?? false);
-                      },
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    _buildDropdown(
-                      'Portal Language',
-                      _selectedPortalLanguage,
-                      _portalLanguageOptions,
-                      hasInfo: true,
-                      onChanged: (value) {
-                        setState(() => _selectedPortalLanguage = value!);
-                      },
-                    ),
-                    SizedBox(height: Dimensions.height20),
-                    if (_showWebsiteSocial) ...[
-                      _buildTextField(
-                        'Website',
-                        _websiteController,
-                        keyboardType: TextInputType.url,
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildTextField(
-                        'Facebook',
-                        _facebookController,
-                        hint: 'https://www.facebook.com/',
-                        keyboardType: TextInputType.url,
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildTextField(
-                        'Twitter',
-                        _twitterController,
-                        hint: 'https://www.twitter.com/',
-                        keyboardType: TextInputType.url,
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                    ],
-                    _buildActionButton(
-                      _showWebsiteSocial
-                          ? 'Hide Website & Social'
-                          : 'Add Website & Social',
-                      _showWebsiteSocial
-                          ? Icons.remove_circle_outline
-                          : Icons.language_outlined,
+                    // Add Billing & Shipping Address Button
+                    _buildExpandableButton(
+                      'Add Billing & Shipping address',
                       onTap: () {
-                        setState(() {
-                          _showWebsiteSocial = !_showWebsiteSocial;
-                        });
                         appLog(
-                          _showWebsiteSocial
-                              ? '🌐 Website & Social fields shown'
-                              : '🌐 Website & Social fields hidden',
+                          '📍 Add Address tapped',
                           name: 'AddCustomerPage',
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AddAddressPage(),
+                          ),
                         );
                       },
                     ),
-                  ]),
 
-                  SizedBox(height: Dimensions.height15),
+                    SizedBox(height: Dimensions.height15),
 
-                  // Add Billing & Shipping Address Button
-                  _buildExpandableButton(
-                    'Add Billing & Shipping address',
-                    onTap: () {
-                      appLog('📍 Add Address tapped', name: 'AddCustomerPage');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AddAddressPage(),
-                        ),
-                      );
-                    },
-                  ),
-
-                  SizedBox(height: Dimensions.height15),
-
-                  // Add Contact Person Button
-                  _buildExpandableButton(
-                    'Add Contact Person',
-                    onTap: () {
-                      appLog(
-                        '👤 Add Contact Person tapped',
-                        name: 'AddCustomerPage',
-                      );
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AddContactPersonPage(),
-                        ),
-                      );
-                    },
-                  ),
-
-                  SizedBox(height: Dimensions.height15),
-
-                  // Remarks Card
-                  _buildCard('Remarks (For Internal Use)', [
-                    _buildTextField(
-                      '',
-                      _remarksController,
-                      maxLines: 4,
-                      hint: 'Enter internal remarks...',
+                    // Add Contact Person Button
+                    _buildExpandableButton(
+                      'Add Contact Person',
+                      onTap: () {
+                        appLog(
+                          '👤 Add Contact Person tapped',
+                          name: 'AddCustomerPage',
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AddContactPersonPage(),
+                          ),
+                        );
+                      },
                     ),
-                  ]),
 
-                  SizedBox(height: Dimensions.height30),
-                ]),
+                    SizedBox(height: Dimensions.height15),
+
+                    // Remarks Card
+                    _buildCard('Remarks (For Internal Use)', [
+                      _buildTextField(
+                        '',
+                        _remarksController,
+                        maxLines: 4,
+                        hint: 'Enter internal remarks...',
+                      ),
+                    ]),
+
+                    SizedBox(height: Dimensions.height30),
+                  ]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -535,6 +567,7 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
     }
     final name = displayName.isNotEmpty ? displayName : firstName;
     ToastificationHelper.showSuccess(context, '$name saved successfully.');
+    markClean();
     Navigator.pop(context);
   }
 

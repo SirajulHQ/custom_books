@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/bills/models/bill_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,7 +15,7 @@ class AddBillPage extends StatefulWidget {
   State<AddBillPage> createState() => _AddBillPageState();
 }
 
-class _AddBillPageState extends State<AddBillPage> {
+class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
   final _billNumController = TextEditingController();
   final _amountController = TextEditingController();
 
@@ -33,10 +34,14 @@ class _AddBillPageState extends State<AddBillPage> {
   void initState() {
     super.initState();
     _billNumController.text = 'BILL-00043';
+    _billNumController.addListener(markDirty);
+    _amountController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _billNumController.removeListener(markDirty);
+    _amountController.removeListener(markDirty);
     _billNumController.dispose();
     _amountController.dispose();
     super.dispose();
@@ -147,6 +152,7 @@ class _AddBillPageState extends State<AddBillPage> {
       updatedAt: DateTime.now(),
     );
 
+    markClean();
     Navigator.pop(context, newBill);
   }
 
@@ -155,141 +161,146 @@ class _AddBillPageState extends State<AddBillPage> {
     Dimensions.init(context);
     final dateFormat = DateFormat('dd MMM yyyy');
 
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: 'New Bill',
-              leadingType: AppBarLeadingType.back,
-              actions: [
-                AppBarElevatedButton(
-                  label: 'SAVE AS DRAFT',
-                  onPressed: () => _saveBill(status: BillStatus.draft),
-                ),
-                SizedBox(width: Dimensions.width10),
-                AppBarIconButton(
-                  icon: Icons.more_vert_rounded,
-                  color: Appcolors.accent,
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      backgroundColor: Colors.transparent,
-                      builder: (ctx) => Container(
-                        decoration: BoxDecoration(
-                          color: context.colors.card,
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(24),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'New Bill',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(
+                    label: 'SAVE AS DRAFT',
+                    onPressed: () => _saveBill(status: BillStatus.draft),
+                  ),
+                  SizedBox(width: Dimensions.width10),
+                  AppBarIconButton(
+                    icon: Icons.more_vert_rounded,
+                    color: Appcolors.accent,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        builder: (ctx) => Container(
+                          decoration: BoxDecoration(
+                            color: context.colors.card,
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(24),
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 4,
+                                margin: EdgeInsets.symmetric(
+                                  vertical: Dimensions.height10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: context.colors.border,
+                                  borderRadius: BorderRadius.circular(
+                                    Dimensions.radius30,
+                                  ),
+                                ),
+                              ),
+                              ListTile(
+                                leading: Icon(
+                                  Icons.save_rounded,
+                                  color: Appcolors.primary,
+                                ),
+                                title: Text(
+                                  'Save as Open',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.colors.textPrimary,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.pop(ctx);
+                                  _saveBill(status: BillStatus.open);
+                                },
+                              ),
+                              SizedBox(height: Dimensions.height20),
+                            ],
                           ),
                         ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 4,
-                              margin: EdgeInsets.symmetric(
-                                vertical: Dimensions.height10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: context.colors.border,
-                                borderRadius: BorderRadius.circular(
-                                  Dimensions.radius30,
-                                ),
-                              ),
-                            ),
-                            ListTile(
-                              leading: Icon(
-                                Icons.save_rounded,
-                                color: Appcolors.primary,
-                              ),
-                              title: Text(
-                                'Save as Open',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.9,
-                                  fontWeight: FontWeight.w600,
-                                  color: context.colors.textPrimary,
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.pop(ctx);
-                                _saveBill(status: BillStatus.open);
-                              },
-                            ),
-                            SizedBox(height: Dimensions.height20),
-                          ],
-                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(Dimensions.width15),
+                  child: Column(
+                    children: [
+                      FormCard(
+                        children: [
+                          const RequiredLabel(text: 'Vendor'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _selectorField(
+                            value: _vendorName,
+                            hint: 'Select a vendor',
+                            onTap: _selectVendor,
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          const RequiredLabel(text: 'Bill#'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          TextField(
+                            controller: _billNumController,
+                            style: FormTextStyles.value(context),
+                            decoration: _underlineDecoration(),
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          const RequiredLabel(text: 'Bill Date'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _dateField(dateFormat.format(_billDate), () {
+                            _pickDate(isDueDate: false);
+                          }),
+                          SizedBox(height: Dimensions.height20),
+
+                          const RequiredLabel(text: 'Due Date'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          _dateField(dateFormat.format(_dueDate), () {
+                            _pickDate(isDueDate: true);
+                          }),
+                        ],
                       ),
-                    );
-                  },
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(Dimensions.width15),
-                child: Column(
-                  children: [
-                    FormCard(
-                      children: [
-                        const RequiredLabel(text: 'Vendor'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _selectorField(
-                          value: _vendorName,
-                          hint: 'Select a vendor',
-                          onTap: _selectVendor,
-                        ),
-                        SizedBox(height: Dimensions.height20),
+                      SizedBox(height: Dimensions.height15),
 
-                        const RequiredLabel(text: 'Bill#'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        TextField(
-                          controller: _billNumController,
-                          style: FormTextStyles.value(context),
-                          decoration: _underlineDecoration(),
-                        ),
-                        SizedBox(height: Dimensions.height20),
-
-                        const RequiredLabel(text: 'Bill Date'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _dateField(dateFormat.format(_billDate), () {
-                          _pickDate(isDueDate: false);
-                        }),
-                        SizedBox(height: Dimensions.height20),
-
-                        const RequiredLabel(text: 'Due Date'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _dateField(dateFormat.format(_dueDate), () {
-                          _pickDate(isDueDate: true);
-                        }),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height15),
-
-                    FormCard(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const RequiredLabel(text: 'Amount'),
-                            FormNumberField(
-                              controller: _amountController,
-                              hint: '0.00',
-                              prefix: 'AED',
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height30),
-                  ],
+                      FormCard(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const RequiredLabel(text: 'Amount'),
+                              FormNumberField(
+                                controller: _amountController,
+                                hint: '0.00',
+                                prefix: 'AED',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height30),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
