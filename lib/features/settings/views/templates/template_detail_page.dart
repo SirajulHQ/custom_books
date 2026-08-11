@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/features/settings/views/templates/customize_template_page.dart';
 import 'package:flutter/material.dart';
 
 class TemplateDetailPage extends StatefulWidget {
@@ -139,6 +140,15 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
                                   '🎨 Customize template tapped',
                                   name: 'TemplateDetail',
                                 );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => CustomizeTemplatePage(
+                                      templateType: widget.templateType,
+                                      templateName: 'Standard Template',
+                                    ),
+                                  ),
+                                );
                               },
                               icon: Icon(
                                 Icons.settings_outlined,
@@ -205,215 +215,403 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
   }
 
   Widget _buildTemplatePreview() {
+    const themeColor = Appcolors.primary;
+
     return Container(
       padding: EdgeInsets.all(Dimensions.width15),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
-        border: Border.all(color: context.colors.border),
+        borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.5),
+        border: Border.all(color: const Color(0xFFEEF2F6)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
+          // Company header
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Company Logo placeholder
-              Container(
-                width: Dimensions.height45,
-                height: Dimensions.height45,
-                decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
-                ),
-                child: Icon(
-                  Icons.business,
-                  color: Appcolors.primary,
-                  size: Dimensions.iconSize24,
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Your Company',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.72,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF1A202C),
+                      ),
+                    ),
+                    SizedBox(height: Dimensions.height10 * 0.3),
+                    Text(
+                      'Dubai\nUnited Arab Emirates\nTRN 100123456700003\n9967484826\nmisellaneous4825@gmail.com',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.52,
+                        color: const Color(0xFF4A5568),
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    _getTemplateTitle(),
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.9,
-                      fontWeight: FontWeight.w800,
-                      color: Appcolors.primary,
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      _getTemplateTitle(),
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.85,
+                        fontWeight: FontWeight.w800,
+                        color: themeColor,
+                      ),
                     ),
-                  ),
-                  Text(
-                    '#DOC-001',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.6,
-                      color: context.colors.textSecondary,
+                    SizedBox(height: Dimensions.height10 * 0.2),
+                    Text(
+                      '# INV-17',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.55,
+                        color: const Color(0xFF718096),
+                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: Dimensions.height10 * 0.3),
+                    Text(
+                      'AED562.75',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.62,
+                        fontWeight: FontWeight.w700,
+                        color: themeColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
           SizedBox(height: Dimensions.height15),
 
-          // Separator
-          Divider(color: context.colors.border),
-          SizedBox(height: Dimensions.height10),
-
-          // Billing Info
-          Text(
-            'Bill To:',
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.6,
-              color: context.colors.textTertiary,
-            ),
-          ),
-          Text(
-            'Customer Name',
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.7,
-              fontWeight: FontWeight.w600,
-              color: context.colors.textPrimary,
-            ),
+          // Bill To & Invoice Info
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Bill To',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.5,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF718096),
+                      ),
+                    ),
+                    SizedBox(height: Dimensions.height10 * 0.2),
+                    Text(
+                      'Jack & Joe Trading\nBox No. 576\nDubai\n94588 Dubai\nEmirates',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.52,
+                        color: const Color(0xFF2D3748),
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _previewInfoRow('Invoice Date:', '11 Aug 2026'),
+                    _previewInfoRow('Terms:', 'Due on Receipt'),
+                    _previewInfoRow('Due Date:', '11 Aug 2026'),
+                    _previewInfoRow('Order #:', 'SO-17'),
+                  ],
+                ),
+              ),
+            ],
           ),
           SizedBox(height: Dimensions.height10),
 
           // Table Header
           Container(
             padding: EdgeInsets.symmetric(
-              horizontal: Dimensions.width10,
-              vertical: Dimensions.height10 * 0.4,
+              horizontal: Dimensions.width10 * 0.5,
+              vertical: Dimensions.height10 * 0.5,
             ),
             decoration: BoxDecoration(
-              color: Appcolors.primary.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
+              color: themeColor,
+              borderRadius: BorderRadius.circular(3),
             ),
             child: Row(
               children: [
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    'Item',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.55,
-                      fontWeight: FontWeight.w600,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'Qty',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.55,
-                      fontWeight: FontWeight.w600,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'Rate',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.55,
-                      fontWeight: FontWeight.w600,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'Amount',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.55,
-                      fontWeight: FontWeight.w600,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                ),
+                _previewHeaderCell('#', flex: 1),
+                _previewHeaderCell('Item & Description', flex: 5),
+                _previewHeaderCell('Qty', flex: 2),
+                _previewHeaderCell('Rate', flex: 2),
+                _previewHeaderCell('Tax', flex: 2),
+                _previewHeaderCell('Amount', flex: 2),
               ],
             ),
           ),
 
-          // Table Row
-          Padding(
+          // Table Rows
+          _previewItemRow(
+            '1',
+            'Brochure Design',
+            '1.00',
+            '300.00',
+            '21.60',
+            '356.30',
+          ),
+          _previewItemRow(
+            '2',
+            'Web Design Package',
+            '1.00',
+            '250.00',
+            '11.75',
+            '288.80',
+          ),
+          _previewItemRow(
+            '3',
+            'Print Ad - Basic',
+            '1.00',
+            '80.00',
+            '19.00',
+            '99.60',
+          ),
+
+          SizedBox(height: Dimensions.height10 * 0.5),
+          Divider(color: Colors.grey.shade200, height: 1),
+          SizedBox(height: Dimensions.height10 * 0.5),
+
+          // Summary totals
+          _previewSummaryRow('Total', 'AED 642.75', isBold: true),
+          _previewSummaryRow(
+            'Payment Retention',
+            '(-) 18.00',
+            valueColor: themeColor,
+          ),
+          _previewSummaryRow(
+            'Payment Made',
+            '(-) 100.00',
+            valueColor: Appcolors.warn,
+          ),
+          SizedBox(height: Dimensions.height10 * 0.3),
+
+          // Balance Due highlighted
+          Container(
+            width: double.infinity,
             padding: EdgeInsets.symmetric(
-              horizontal: Dimensions.width10,
-              vertical: Dimensions.height10 * 0.6,
+              horizontal: Dimensions.width10 * 0.8,
+              vertical: Dimensions.height10 * 0.5,
+            ),
+            decoration: BoxDecoration(
+              color: themeColor.withValues(alpha: 0.07),
+              borderRadius: BorderRadius.circular(3),
             ),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    'Sample Item',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.55,
-                      color: context.colors.textPrimary,
-                    ),
+                Text(
+                  'Balance Due',
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.55,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF1A202C),
                   ),
                 ),
-                Expanded(
-                  child: Text(
-                    '1.00',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.55,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    '300.00',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.55,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    '300.00',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.55,
-                      color: context.colors.textPrimary,
-                    ),
+                Text(
+                  'AED 62.75',
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.55,
+                    fontWeight: FontWeight.w700,
+                    color: themeColor,
                   ),
                 ),
               ],
             ),
           ),
+          SizedBox(height: Dimensions.height15),
 
-          Divider(color: context.colors.border),
+          // Notes
+          Text(
+            'Notes',
+            style: TextStyle(
+              fontSize: Dimensions.font16 * 0.58,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF1A202C),
+            ),
+          ),
+          SizedBox(height: Dimensions.height10 * 0.2),
+          Text(
+            'Thanks for your business.',
+            style: TextStyle(
+              fontSize: Dimensions.font16 * 0.5,
+              fontStyle: FontStyle.italic,
+              color: const Color(0xFF4A5568),
+            ),
+          ),
+          SizedBox(height: Dimensions.height10),
 
-          // Total
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                'Total   ',
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.6,
-                  fontWeight: FontWeight.w600,
-                  color: context.colors.textPrimary,
-                ),
+          // Terms & Conditions
+          Text(
+            'Terms & Conditions',
+            style: TextStyle(
+              fontSize: Dimensions.font16 * 0.58,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF1A202C),
+            ),
+          ),
+          SizedBox(height: Dimensions.height10 * 0.2),
+          Text(
+            'Your company\'s Terms and Conditions will be displayed here.',
+            style: TextStyle(
+              fontSize: Dimensions.font16 * 0.48,
+              color: const Color(0xFF4A5568),
+              height: 1.4,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _previewInfoRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: Dimensions.height10 * 0.25),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '$label ',
+            style: TextStyle(
+              fontSize: Dimensions.font16 * 0.48,
+              color: const Color(0xFF718096),
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: Dimensions.font16 * 0.48,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF2D3748),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _previewHeaderCell(String text, {required int flex}) {
+    return Expanded(
+      flex: flex,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: Dimensions.font16 * 0.43,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+        textAlign: TextAlign.center,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
+  Widget _previewItemRow(
+    String index,
+    String item,
+    String qty,
+    String rate,
+    String tax,
+    String amount,
+  ) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: Dimensions.width10 * 0.5,
+        vertical: Dimensions.height10 * 0.5,
+      ),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.grey.shade100, width: 0.5),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _previewCell(index, flex: 1),
+          Expanded(
+            flex: 5,
+            child: Text(
+              item,
+              style: TextStyle(
+                fontSize: Dimensions.font16 * 0.43,
+                color: const Color(0xFF2D3748),
+                height: 1.4,
               ),
-              Text(
-                'Rs.630.00',
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.6,
-                  fontWeight: FontWeight.w700,
-                  color: Appcolors.primary,
-                ),
+            ),
+          ),
+          _previewCell(qty, flex: 2),
+          _previewCell(rate, flex: 2),
+          _previewCell(tax, flex: 2),
+          _previewCell(amount, flex: 2),
+        ],
+      ),
+    );
+  }
+
+  Widget _previewCell(String text, {required int flex}) {
+    return Expanded(
+      flex: flex,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: Dimensions.font16 * 0.43,
+          color: const Color(0xFF2D3748),
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget _previewSummaryRow(
+    String label,
+    String value, {
+    bool isBold = false,
+    Color? valueColor,
+  }) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: Dimensions.height10 * 0.2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: Dimensions.font16 * 0.52,
+              fontWeight: isBold ? FontWeight.w700 : FontWeight.w500,
+              color: const Color(0xFF4A5568),
+            ),
+          ),
+          SizedBox(width: Dimensions.width20),
+          SizedBox(
+            width: Dimensions.width30 * 3,
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: Dimensions.font16 * 0.52,
+                fontWeight: isBold ? FontWeight.w700 : FontWeight.w500,
+                color: valueColor ?? const Color(0xFF1A202C),
               ),
-            ],
+            ),
           ),
         ],
       ),
