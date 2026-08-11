@@ -1,6 +1,8 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/features/auth/views/forgot_password_page.dart';
+import 'package:custom_books/features/auth/views/signup_page.dart';
 import 'package:custom_books/features/home/views/home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -181,9 +183,34 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
 
-                SizedBox(height: Dimensions.height30),
+                SizedBox(height: Dimensions.height15),
 
-                // Login button
+                // Forgot Password link
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ForgotPasswordPage(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Forgot Password?',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.85,
+                        fontWeight: FontWeight.w500,
+                        color: Appcolors.primary,
+                      ),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: Dimensions.height20),
+
+                // Sign In button
                 SizedBox(
                   width: double.infinity,
                   height: 52,
@@ -200,13 +227,45 @@ class _LoginPageState extends State<LoginPage> {
                       elevation: 0,
                     ),
                     child: Text(
-                      'Login',
+                      'Sign In',
                       style: TextStyle(
                         fontSize: Dimensions.font16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
+                ),
+
+                SizedBox(height: Dimensions.height20),
+
+                // Don't have an account? Sign Up
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't have an account? ",
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.9,
+                        color: context.colors.textSecondary,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => const SignupPage()),
+                        );
+                      },
+                      child: Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.9,
+                          fontWeight: FontWeight.w600,
+                          color: Appcolors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
