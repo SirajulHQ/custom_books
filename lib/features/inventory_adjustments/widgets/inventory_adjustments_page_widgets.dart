@@ -63,7 +63,10 @@ class AdjustmentsSearchField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: 'Search by reason or person',
           hintStyle: TextStyle(color: context.colors.textTertiary),
-          prefixIcon: Icon(Icons.search_rounded, color: context.colors.textTertiary),
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            color: context.colors.textTertiary,
+          ),
           filled: true,
           fillColor: context.colors.card,
           contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
@@ -117,7 +120,7 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
         children: [
           Expanded(
             child: Container(
-              padding: const EdgeInsets.all(4),
+              padding: EdgeInsets.all(Dimensions.width10 * 0.4),
               decoration: BoxDecoration(
                 color: context.colors.surfaceLight,
                 borderRadius: BorderRadius.circular(Dimensions.radius30),
@@ -134,23 +137,27 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
                           vertical: Dimensions.height10,
                         ),
                         decoration: BoxDecoration(
-                          color: selected ? context.colors.card : Colors.transparent,
+                          color: selected
+                              ? context.colors.card
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(
                             Dimensions.radius30,
                           ),
                           border: selected
                               ? Border.all(
-                                  color: Appcolors.primary
-                                      .withValues(alpha: 0.3),
+                                  color: Appcolors.primary.withValues(
+                                    alpha: 0.3,
+                                  ),
                                   width: 1.5,
                                 )
                               : null,
                           boxShadow: selected
                               ? [
                                   BoxShadow(
-                                    color: Appcolors.primary
-                                        .withValues(alpha: 0.08),
-                                    blurRadius: 8,
+                                    color: Appcolors.primary.withValues(
+                                      alpha: 0.08,
+                                    ),
+                                    blurRadius: Dimensions.radius15 * 0.53,
                                     offset: const Offset(0, 2),
                                   ),
                                 ]

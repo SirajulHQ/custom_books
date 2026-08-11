@@ -213,9 +213,9 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   }
 
   double _columnWidth(String col) {
-    if (col.length > 15) return 160;
-    if (col.length > 10) return 130;
-    return 110;
+    if (col.length > 15) return Dimensions.width20 * 8;
+    if (col.length > 10) return Dimensions.width20 * 6.5;
+    return Dimensions.width20 * 5.5;
   }
 
   Widget _buildReportContent() {
@@ -876,7 +876,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
           ),
           decoration: BoxDecoration(
             color: Appcolors.ok,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
           ),
           child: Text(
             '₹',

@@ -232,8 +232,8 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
               ),
               Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.width10 + 2,
-                  vertical: 5,
+                  horizontal: Dimensions.width10 * 1.2,
+                  vertical: Dimensions.height10 * 0.5,
                 ),
                 decoration: BoxDecoration(
                   color: _statusColor(

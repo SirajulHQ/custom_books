@@ -399,14 +399,14 @@ class _CustomersVendorsPreferencesPageState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 24,
-            height: 24,
+            width: Dimensions.iconSize24,
+            height: Dimensions.iconSize24,
             child: Checkbox(
               value: value,
               onChanged: onChanged,
               activeColor: Appcolors.primary,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
               ),
             ),
           ),

@@ -2,14 +2,9 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-/// A reusable confirmation dialog shown when the user attempts to leave
-/// a page that has unsaved changes.
-///
-/// Returns `true` if the user chooses to leave, `false` to stay.
 class UnsavedChangesDialog extends StatelessWidget {
   const UnsavedChangesDialog({super.key});
 
-  /// Shows the dialog and returns `true` if the user chose to leave.
   static Future<bool> show(BuildContext context) async {
     final result = await showDialog<bool>(
       context: context,

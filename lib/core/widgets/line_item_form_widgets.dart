@@ -3,9 +3,6 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/image_helper.dart';
 import 'package:flutter/material.dart';
 
-/// Shared widgets for line item forms (inventory adjustments and invoices)
-
-/// Builds a consistent square item thumbnail with proper error handling
 class ItemThumbnail extends StatelessWidget {
   final String? imageUrl;
   final double? size;
@@ -20,7 +17,7 @@ class ItemThumbnail extends StatelessWidget {
     final fallback = Icon(
       Icons.inventory_2_outlined,
       color: Appcolors.primary,
-      size: Dimensions.iconSize24 - 6,
+      size: Dimensions.iconSize24 * 0.75,
     );
 
     return Container(
@@ -28,7 +25,7 @@ class ItemThumbnail extends StatelessWidget {
       height: thumbnailSize,
       decoration: BoxDecoration(
         color: Appcolors.primary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
+        borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.73),
       ),
       clipBehavior: Clip.antiAlias,
       child: imageUrl != null
@@ -103,7 +100,7 @@ class ItemSearchField<T> extends StatelessWidget {
                           icon: Icon(
                             Icons.qr_code_scanner_rounded,
                             color: context.colors.textSecondary,
-                            size: Dimensions.iconSize24 - 4,
+                            size: Dimensions.iconSize20,
                           ),
                           onPressed: onBarcodeScan,
                         )

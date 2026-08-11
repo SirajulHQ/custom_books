@@ -442,11 +442,11 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                         : (value) => setState(() => _project = value),
                   ),
                   if (_customer.text.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 6),
+                    Padding(
+                      padding: EdgeInsets.only(top: Dimensions.height10 * 0.6),
                       child: Text(
                         'Select a customer to associate a project.',
-                        style: TextStyle(fontSize: 12),
+                        style: TextStyle(fontSize: Dimensions.font16 * 0.75),
                       ),
                     ),
                   _label('Subject', info: true),
@@ -459,7 +459,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                   Text('Tax', style: FormTextStyles.label()),
                   SizedBox(height: Dimensions.height10),
                   Container(
-                    padding: const EdgeInsets.all(4),
+                    padding: EdgeInsets.all(Dimensions.height10 * 0.4),
                     decoration: BoxDecoration(
                       color: context.colors.surfaceLight,
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -548,7 +548,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: Dimensions.width10 * 0.6,
-                            vertical: 2,
+                            vertical: Dimensions.height10 * 0.2,
                           ),
                           decoration: BoxDecoration(
                             color: Appcolors.primary,
@@ -659,7 +659,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                 ? [
                     BoxShadow(
                       color: Appcolors.primary.withValues(alpha: 0.08),
-                      blurRadius: 8,
+                      blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
                   ]

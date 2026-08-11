@@ -804,10 +804,10 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                                 ),
                               ),
                               IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.delete_outline_rounded,
                                   color: Colors.red,
-                                  size: 20,
+                                  size: Dimensions.iconSize20,
                                 ),
                                 onPressed: () =>
                                     setState(() => _lineItems.removeAt(index)),
@@ -950,14 +950,14 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                   if (_attachments.isNotEmpty) ...[
                     SizedBox(height: Dimensions.height15),
                     Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
+                      spacing: Dimensions.width10 * 0.8,
+                      runSpacing: Dimensions.height10 * 0.8,
                       children: _attachments
                           .map(
                             (file) => Chip(
-                              avatar: const Icon(
+                              avatar: Icon(
                                 Icons.insert_drive_file_outlined,
-                                size: 16,
+                                size: Dimensions.iconSize16,
                               ),
                               label: Text(file.name),
                               onDeleted: () =>

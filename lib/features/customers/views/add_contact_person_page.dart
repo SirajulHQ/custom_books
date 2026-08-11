@@ -134,7 +134,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
                       boxShadow: [
                         BoxShadow(
                           color: context.colors.border.withValues(alpha: 0.5),
-                          blurRadius: 10,
+                          blurRadius: Dimensions.radius15 * 0.67,
                           offset: const Offset(0, 2),
                         ),
                       ],

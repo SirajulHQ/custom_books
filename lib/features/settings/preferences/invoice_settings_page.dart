@@ -97,7 +97,9 @@ class _InvoiceSettingsPageState extends State<InvoiceSettingsPage> {
                             setState(() => _autoGenerateNumber = val ?? false),
                         activeColor: Appcolors.primary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radius15 * 0.27,
+                          ),
                         ),
                       ),
                     ),
@@ -148,7 +150,9 @@ class _InvoiceSettingsPageState extends State<InvoiceSettingsPage> {
                             setState(() => _editInvoice = val ?? false),
                         activeColor: Appcolors.primary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radius15 * 0.27,
+                          ),
                         ),
                       ),
                     ),
@@ -164,7 +168,9 @@ class _InvoiceSettingsPageState extends State<InvoiceSettingsPage> {
                             setState(() => _discountBeforeTax = val ?? false),
                         activeColor: Appcolors.primary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radius15 * 0.27,
+                          ),
                         ),
                       ),
                     ),
@@ -182,7 +188,9 @@ class _InvoiceSettingsPageState extends State<InvoiceSettingsPage> {
                         ),
                         activeColor: Appcolors.primary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radius15 * 0.27,
+                          ),
                         ),
                       ),
                     ),

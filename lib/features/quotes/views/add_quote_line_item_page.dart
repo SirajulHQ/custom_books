@@ -279,7 +279,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
         ),
         SizedBox(width: Dimensions.width10),
         Container(
-          padding: const EdgeInsets.all(3),
+          padding: EdgeInsets.all(Dimensions.height10 * 0.3),
           decoration: BoxDecoration(
             color: context.colors.surfaceLight,
             borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -287,10 +287,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              _discountOption('%', true),
-              _discountOption('₹', false),
-            ],
+            children: [_discountOption('%', true), _discountOption('₹', false)],
           ),
         ),
       ],

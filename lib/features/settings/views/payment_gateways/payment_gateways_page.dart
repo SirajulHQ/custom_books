@@ -193,11 +193,13 @@ class _PaymentGatewaysPageState extends State<PaymentGatewaysPage>
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: Dimensions.width10,
-                    vertical: 3,
+                    vertical: Dimensions.height10 * 0.3,
                   ),
                   decoration: BoxDecoration(
                     color: Appcolors.warning,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(
+                      Dimensions.radius15 * 0.27,
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -207,7 +209,7 @@ class _PaymentGatewaysPageState extends State<PaymentGatewaysPage>
                         size: Dimensions.iconSize16 * 0.8,
                         color: Colors.white,
                       ),
-                      SizedBox(width: 2),
+                      SizedBox(width: Dimensions.width10 * 0.2),
                       Text(
                         'Preferred',
                         style: TextStyle(

@@ -87,8 +87,10 @@ class _TimerPageState extends State<TimerPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: context.colors.card,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
       ),
       builder: (context) {
         return SafeArea(
@@ -174,89 +176,125 @@ class _TimerPageState extends State<TimerPage> {
           ),
         ],
         body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width20,
-          vertical: Dimensions.height20,
-        ),
-        child: Column(
-          children: [
-            SizedBox(height: Dimensions.height20),
-            // Circular timer display
-            Container(
-              width: Dimensions.height45 * 4,
-              height: Dimensions.height45 * 4,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: context.colors.card,
-                border: Border.all(
-                  color: _running ? Appcolors.primary : context.colors.border,
-                  width: 4,
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.width20,
+            vertical: Dimensions.height20,
+          ),
+          child: Column(
+            children: [
+              SizedBox(height: Dimensions.height20),
+              // Circular timer display
+              Container(
+                width: Dimensions.height45 * 4,
+                height: Dimensions.height45 * 4,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: context.colors.card,
+                  border: Border.all(
+                    color: _running ? Appcolors.primary : context.colors.border,
+                    width: 4,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Appcolors.primary.withValues(alpha: 0.12),
+                      blurRadius: Dimensions.radius20 * 1.2,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Appcolors.primary.withValues(alpha: 0.12),
-                    blurRadius: 24,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.timer_outlined,
+                      size: Dimensions.iconSize24,
+                      color: Appcolors.primary,
+                    ),
+                    SizedBox(height: Dimensions.height10),
+                    Text(
+                      _formattedTime,
+                      style: TextStyle(
+                        fontSize: Dimensions.font26 * 1.1,
+                        fontWeight: FontWeight.w800,
+                        color: context.colors.textPrimary,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                    SizedBox(height: Dimensions.height10 / 2),
+                    Text(
+                      _running ? 'Running' : 'Paused',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.7,
+                        fontWeight: FontWeight.w600,
+                        color: _running
+                            ? Appcolors.success
+                            : context.colors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              SizedBox(height: Dimensions.height30),
+              // Start/Pause + Stop buttons
+              Row(
                 children: [
-                  Icon(
-                    Icons.timer_outlined,
-                    size: Dimensions.iconSize24,
-                    color: Appcolors.primary,
-                  ),
-                  SizedBox(height: Dimensions.height10),
-                  Text(
-                    _formattedTime,
-                    style: TextStyle(
-                      fontSize: Dimensions.font26 * 1.1,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.textPrimary,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Text(
-                    _running ? 'Running' : 'Paused',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.7,
-                      fontWeight: FontWeight.w600,
-                      color: _running
-                          ? Appcolors.success
-                          : context.colors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: Dimensions.height30),
-            // Start/Pause + Stop buttons
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Appcolors.primary.withValues(alpha: 0.35),
-                          blurRadius: 16,
-                          offset: const Offset(0, 8),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15,
                         ),
-                      ],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Appcolors.primary.withValues(alpha: 0.35),
+                            blurRadius: Dimensions.radius15 * 1.07,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: OutlinedButton.icon(
+                        onPressed: _toggleTimer,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Appcolors.primary,
+                          side: const BorderSide(
+                            color: Appcolors.primary,
+                            width: 1.5,
+                          ),
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                          padding: EdgeInsets.symmetric(
+                            vertical: Dimensions.height15,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15,
+                            ),
+                          ),
+                        ),
+                        icon: Icon(
+                          _running
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
+                        ),
+                        label: Text(
+                          _running ? 'Pause' : 'Start',
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.9,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
                     ),
-                    child: OutlinedButton.icon(
-                      onPressed: _toggleTimer,
+                  ),
+                  SizedBox(width: Dimensions.width15),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _stopTimer,
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Appcolors.primary,
-                        side: const BorderSide(color: Appcolors.primary, width: 1.5),
-                        backgroundColor: Colors.transparent,
-                        elevation: 0,
+                        foregroundColor: Appcolors.error,
+                        side: const BorderSide(color: Appcolors.error),
                         padding: EdgeInsets.symmetric(
                           vertical: Dimensions.height15,
                         ),
@@ -266,110 +304,79 @@ class _TimerPageState extends State<TimerPage> {
                           ),
                         ),
                       ),
-                      icon: Icon(
-                        _running
-                            ? Icons.pause_rounded
-                            : Icons.play_arrow_rounded,
-                      ),
-                      label: Text(
-                        _running ? 'Pause' : 'Start',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.9,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: Dimensions.width15),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: _stopTimer,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Appcolors.error,
-                      side: const BorderSide(color: Appcolors.error),
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.stop_rounded),
-                        SizedBox(width: Dimensions.width10 / 2),
-                        Text(
-                          'Stop',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.9,
-                            fontWeight: FontWeight.w700,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.stop_rounded),
+                          SizedBox(width: Dimensions.width10 / 2),
+                          Text(
+                            'Stop',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.9,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: Dimensions.height30),
+              _selectorCard(
+                label: 'Project',
+                value: _selectedProject,
+                icon: Icons.folder_open_rounded,
+                onTap: () => _openSelector(
+                  title: 'Select Project',
+                  options: _projectOptions,
+                  onSelected: (v) => setState(() => _selectedProject = v),
+                ),
+              ),
+              SizedBox(height: Dimensions.height15),
+              _selectorCard(
+                label: 'Task',
+                value: _selectedTask,
+                icon: Icons.checklist_rounded,
+                onTap: () => _openSelector(
+                  title: 'Select Task',
+                  options: _taskOptions,
+                  onSelected: (v) => setState(() => _selectedTask = v),
+                ),
+              ),
+              SizedBox(height: Dimensions.height15),
+              // Notes field
+              Container(
+                decoration: BoxDecoration(
+                  color: context.colors.card,
+                  borderRadius: BorderRadius.circular(Dimensions.radius15),
+                  border: Border.all(color: context.colors.border),
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width15,
+                  vertical: Dimensions.height10 / 2,
+                ),
+                child: TextField(
+                  controller: _notesController,
+                  maxLines: 3,
+                  minLines: 2,
+                  style: TextStyle(fontSize: Dimensions.font16 * 0.85),
+                  decoration: InputDecoration(
+                    hintText: 'Notes',
+                    hintStyle: TextStyle(color: context.colors.textTertiary),
+                    border: InputBorder.none,
+                    prefixIcon: Icon(
+                      Icons.notes_rounded,
+                      color: context.colors.textTertiary,
+                      size: Dimensions.iconSize16 + 2,
                     ),
                   ),
                 ),
-              ],
-            ),
-            SizedBox(height: Dimensions.height30),
-            _selectorCard(
-              label: 'Project',
-              value: _selectedProject,
-              icon: Icons.folder_open_rounded,
-              onTap: () => _openSelector(
-                title: 'Select Project',
-                options: _projectOptions,
-                onSelected: (v) => setState(() => _selectedProject = v),
               ),
-            ),
-            SizedBox(height: Dimensions.height15),
-            _selectorCard(
-              label: 'Task',
-              value: _selectedTask,
-              icon: Icons.checklist_rounded,
-              onTap: () => _openSelector(
-                title: 'Select Task',
-                options: _taskOptions,
-                onSelected: (v) => setState(() => _selectedTask = v),
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-            // Notes field
-            Container(
-              decoration: BoxDecoration(
-                color: context.colors.card,
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-                border: Border.all(color: context.colors.border),
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width15,
-                vertical: Dimensions.height10 / 2,
-              ),
-              child: TextField(
-                controller: _notesController,
-                maxLines: 3,
-                minLines: 2,
-                style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-                decoration: InputDecoration(
-                  hintText: 'Notes',
-                  hintStyle: TextStyle(color: context.colors.textTertiary),
-                  border: InputBorder.none,
-                  prefixIcon: Icon(
-                    Icons.notes_rounded,
-                    color: context.colors.textTertiary,
-                    size: Dimensions.iconSize16 + 2,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: Dimensions.height20),
-          ],
+              SizedBox(height: Dimensions.height20),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }

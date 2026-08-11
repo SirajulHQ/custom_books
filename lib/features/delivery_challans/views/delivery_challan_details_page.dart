@@ -206,11 +206,11 @@ class _DeliveryChallanDetailsPageState extends State<DeliveryChallanDetailsPage>
               padding: EdgeInsets.all(Dimensions.width20),
               decoration: BoxDecoration(
                 color: context.colors.card,
-                boxShadow: const [
+                boxShadow: [
                   BoxShadow(
-                    color: Color(0x08000000),
-                    blurRadius: 8,
-                    offset: Offset(0, 2),
+                    color: const Color(0x08000000),
+                    blurRadius: Dimensions.radius15 * 0.53,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
@@ -231,7 +231,7 @@ class _DeliveryChallanDetailsPageState extends State<DeliveryChallanDetailsPage>
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: Dimensions.width10 + 2,
-                          vertical: 5,
+                          vertical: Dimensions.height10 * 0.5,
                         ),
                         decoration: BoxDecoration(
                           color: statusColor.withValues(alpha: 0.15),
@@ -302,7 +302,7 @@ class _DeliveryChallanDetailsPageState extends State<DeliveryChallanDetailsPage>
                   boxShadow: [
                     BoxShadow(
                       color: Appcolors.primary.withValues(alpha: 0.08),
-                      blurRadius: 8,
+                      blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -349,11 +349,11 @@ class _DeliveryChallanDetailsPageState extends State<DeliveryChallanDetailsPage>
           decoration: BoxDecoration(
             color: context.colors.card,
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
-                color: Color(0x08000000),
-                blurRadius: 8,
-                offset: Offset(0, 2),
+                color: const Color(0x08000000),
+                blurRadius: Dimensions.radius15 * 0.53,
+                offset: const Offset(0, 2),
               ),
             ],
           ),

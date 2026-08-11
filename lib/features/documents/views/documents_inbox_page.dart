@@ -104,8 +104,10 @@ class _DocumentsInboxPageState extends State<DocumentsInboxPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: context.colors.card,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
       ),
       builder: (context) {
         return StatefulBuilder(

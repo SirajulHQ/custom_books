@@ -125,8 +125,10 @@ class _AllFilesPageState extends State<AllFilesPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: context.colors.card,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
       ),
       builder: (context) {
         return SafeArea(
@@ -206,8 +208,10 @@ class _AllFilesPageState extends State<AllFilesPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: context.colors.card,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
       ),
       builder: (context) {
         return StatefulBuilder(
@@ -383,7 +387,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
           boxShadow: [
             BoxShadow(
               color: Appcolors.primary.withValues(alpha: 0.35),
-              blurRadius: 16,
+              blurRadius: Dimensions.radius15 * 1.07,
               offset: const Offset(0, 8),
             ),
           ],
@@ -403,7 +407,8 @@ class _AllFilesPageState extends State<AllFilesPage> {
         headerSliverBuilder: (context, _) => [
           CustomSliverAppBar(
             title: 'All Files',
-            subtitle: '${_documents.length} file${_documents.length == 1 ? '' : 's'}',
+            subtitle:
+                '${_documents.length} file${_documents.length == 1 ? '' : 's'}',
             leadingType: AppBarLeadingType.menu,
             actions: [
               AppBarIconButton(
@@ -425,150 +430,152 @@ class _AllFilesPageState extends State<AllFilesPage> {
         ],
         body: Column(
           children: [
-          if (_searchOpen)
+            if (_searchOpen)
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  Dimensions.height10,
+                  Dimensions.width20,
+                  Dimensions.height15,
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  onChanged: (_) => setState(() {}),
+                  style: TextStyle(fontSize: Dimensions.font16 * 0.85),
+                  decoration: InputDecoration(
+                    hintText: 'Search by file or folder',
+                    hintStyle: TextStyle(color: context.colors.textTertiary),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: context.colors.textTertiary,
+                    ),
+                    filled: true,
+                    fillColor: context.colors.card,
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: Dimensions.height10,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: BorderSide(color: context.colors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: BorderSide(color: context.colors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: const BorderSide(
+                        color: Appcolors.primary,
+                        width: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             Padding(
               padding: EdgeInsets.fromLTRB(
                 Dimensions.width20,
-                Dimensions.height10,
+                Dimensions.height10 / 2,
                 Dimensions.width20,
                 Dimensions.height15,
               ),
-              child: TextField(
-                controller: _searchController,
-                autofocus: true,
-                onChanged: (_) => setState(() {}),
-                style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-                decoration: InputDecoration(
-                  hintText: 'Search by file or folder',
-                  hintStyle: TextStyle(color: context.colors.textTertiary),
-                  prefixIcon: Icon(
-                    Icons.search_rounded,
-                    color: context.colors.textTertiary,
-                  ),
-                  filled: true,
-                  fillColor: context.colors.card,
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: Dimensions.height10,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: const BorderSide(
-                      color: Appcolors.primary,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              Dimensions.width20,
-              Dimensions.height10 / 2,
-              Dimensions.width20,
-              Dimensions.height15,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _typeFilter == null ? 'All documents' : _typeFilter!.label,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.8,
-                      fontWeight: FontWeight.w700,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                ),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: _openFilterSheet,
-                  child: _controlBadge(
-                    _typeFilter == null
-                        ? Icons.filter_list_rounded
-                        : Icons.filter_alt_rounded,
-                    active: _typeFilter != null,
-                  ),
-                ),
-                SizedBox(width: Dimensions.width10 / 2),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: _openSortSheet,
-                  child: _controlBadge(Icons.swap_vert_rounded),
-                ),
-              ],
-            ),
-          ),
-          if (_typeFilter != null)
-            Container(
-              margin: EdgeInsets.fromLTRB(
-                Dimensions.width20,
-                0,
-                Dimensions.width20,
-                Dimensions.height10,
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width15,
-                vertical: Dimensions.height10 / 2,
-              ),
-              decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.07),
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-              ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.filter_alt_rounded,
-                    size: Dimensions.iconSize16,
-                    color: Appcolors.primary,
+                  Expanded(
+                    child: Text(
+                      _typeFilter == null
+                          ? 'All documents'
+                          : _typeFilter!.label,
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.8,
+                        fontWeight: FontWeight.w700,
+                        color: context.colors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    onTap: _openFilterSheet,
+                    child: _controlBadge(
+                      _typeFilter == null
+                          ? Icons.filter_list_rounded
+                          : Icons.filter_alt_rounded,
+                      active: _typeFilter != null,
+                    ),
                   ),
                   SizedBox(width: Dimensions.width10 / 2),
-                  Text(
-                    'Type: ${_typeFilter!.label}',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.72,
-                      fontWeight: FontWeight.w600,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                  const Spacer(),
                   InkWell(
-                    onTap: () => setState(() => _typeFilter = null),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
-                    ),
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    onTap: _openSortSheet,
+                    child: _controlBadge(Icons.swap_vert_rounded),
                   ),
                 ],
               ),
             ),
-          Expanded(
-            child: visibleList.isEmpty
-                ? _emptyState()
-                : RefreshIndicator(
-                    onRefresh: () async => setState(() {}),
-                    child: ListView.builder(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                      ),
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
-                      ),
-                      itemCount: visibleList.length,
-                      itemBuilder: (context, index) =>
-                          _documentTile(visibleList[index]),
+            if (_typeFilter != null)
+              Container(
+                margin: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  0,
+                  Dimensions.width20,
+                  Dimensions.height10,
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width15,
+                  vertical: Dimensions.height10 / 2,
+                ),
+                decoration: BoxDecoration(
+                  color: Appcolors.primary.withValues(alpha: 0.07),
+                  borderRadius: BorderRadius.circular(Dimensions.radius15),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.filter_alt_rounded,
+                      size: Dimensions.iconSize16,
+                      color: Appcolors.primary,
                     ),
-                  ),
-          ),
-        ],
+                    SizedBox(width: Dimensions.width10 / 2),
+                    Text(
+                      'Type: ${_typeFilter!.label}',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.72,
+                        fontWeight: FontWeight.w600,
+                        color: Appcolors.primary,
+                      ),
+                    ),
+                    const Spacer(),
+                    InkWell(
+                      onTap: () => setState(() => _typeFilter = null),
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: Dimensions.iconSize16,
+                        color: Appcolors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            Expanded(
+              child: visibleList.isEmpty
+                  ? _emptyState()
+                  : RefreshIndicator(
+                      onRefresh: () async => setState(() {}),
+                      child: ListView.builder(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width20,
+                        ),
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
+                        itemCount: visibleList.length,
+                        itemBuilder: (context, index) =>
+                            _documentTile(visibleList[index]),
+                      ),
+                    ),
+            ),
+          ],
         ),
       ),
     );

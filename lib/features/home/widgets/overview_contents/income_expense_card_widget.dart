@@ -9,7 +9,8 @@ class IncomeExpenseCardWidget extends StatefulWidget {
   const IncomeExpenseCardWidget({super.key});
 
   @override
-  State<IncomeExpenseCardWidget> createState() => _IncomeExpenseCardWidgetState();
+  State<IncomeExpenseCardWidget> createState() =>
+      _IncomeExpenseCardWidgetState();
 }
 
 class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
@@ -47,7 +48,7 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
                 child: Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: Dimensions.width10,
-                    vertical: 4,
+                    vertical: Dimensions.height10 * 0.4,
                   ),
                   decoration: BoxDecoration(
                     color: Appcolors.primary.withValues(alpha: 0.08),

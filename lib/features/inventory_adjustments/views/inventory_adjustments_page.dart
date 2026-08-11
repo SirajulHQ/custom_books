@@ -132,7 +132,7 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
           boxShadow: [
             BoxShadow(
               color: Appcolors.primary.withValues(alpha: 0.35),
-              blurRadius: 16,
+              blurRadius: Dimensions.radius15 * 1.07,
               offset: const Offset(0, 8),
             ),
           ],

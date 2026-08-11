@@ -356,16 +356,19 @@ class _AddItemPageState extends State<AddItemPage> {
                                           onTap: () =>
                                               setState(() => _itemImage = null),
                                           child: Container(
-                                            padding: const EdgeInsets.all(4),
+                                            padding: EdgeInsets.all(
+                                              Dimensions.height10 * 0.4,
+                                            ),
                                             decoration: BoxDecoration(
                                               color:
                                                   context.colors.textSecondary,
                                               shape: BoxShape.circle,
                                             ),
-                                            child: const Icon(
+                                            child: Icon(
                                               Icons.close,
                                               color: Colors.white,
-                                              size: 14,
+                                              size:
+                                                  Dimensions.iconSize16 * 0.875,
                                             ),
                                           ),
                                         ),
@@ -585,8 +588,8 @@ class _AddItemPageState extends State<AddItemPage> {
           Padding(
             padding: EdgeInsets.all(Dimensions.width10),
             child: Container(
-              width: 20,
-              height: 20,
+              width: Dimensions.height20,
+              height: Dimensions.height20,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -599,8 +602,8 @@ class _AddItemPageState extends State<AddItemPage> {
               child: isSelected
                   ? Center(
                       child: Container(
-                        width: 10,
-                        height: 10,
+                        width: Dimensions.height10,
+                        height: Dimensions.height10,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Appcolors.primary,
@@ -826,7 +829,7 @@ class _AddItemPageState extends State<AddItemPage> {
             onChanged: onChanged,
             activeColor: Appcolors.primary,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
             ),
           ),
         ),

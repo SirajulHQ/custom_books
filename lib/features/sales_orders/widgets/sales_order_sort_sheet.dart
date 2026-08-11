@@ -8,7 +8,7 @@ Future<void> showSalesOrderSortSheet(
   required SalesOrderSortField selectedField,
   required SortDirection selectedDirection,
   required void Function(SalesOrderSortField field, SortDirection direction)
-      onApply,
+  onApply,
 }) {
   return showModalBottomSheet(
     context: context,
@@ -60,15 +60,17 @@ class _SalesOrderSortSheetState extends State<SalesOrderSortSheet> {
       ),
       decoration: BoxDecoration(
         color: context.colors.card,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20 * 1.2),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Drag handle
           Container(
-            width: 40,
-            height: 4,
+            width: Dimensions.width20 * 2,
+            height: Dimensions.height10 * 0.4,
             margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
             decoration: BoxDecoration(
               color: context.colors.border,
@@ -282,7 +284,10 @@ class _SalesOrderSortSheetState extends State<SalesOrderSortSheet> {
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Appcolors.primary,
-                    side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                    side: const BorderSide(
+                      color: Appcolors.primary,
+                      width: 1.5,
+                    ),
                     backgroundColor: Colors.transparent,
                     padding: EdgeInsets.symmetric(
                       horizontal: Dimensions.width20 * 1.2,

@@ -49,11 +49,11 @@ class CostPriceEditor extends StatelessWidget {
           Center(
             child: Container(
               width: Dimensions.width20 * 2,
-              height: 4,
+              height: Dimensions.height10 * 0.4,
               margin: EdgeInsets.only(bottom: Dimensions.height15),
               decoration: BoxDecoration(
                 color: context.colors.border,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.13),
               ),
             ),
           ),
@@ -81,7 +81,7 @@ class CostPriceEditor extends StatelessWidget {
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(Dimensions.radius30),
                   ),
                   padding: EdgeInsets.symmetric(
                     horizontal: Dimensions.width20,

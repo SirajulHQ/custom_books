@@ -168,8 +168,8 @@ class _PaymentsReceivedPageState extends State<PaymentsReceivedPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 40,
-                  height: 4,
+                  width: Dimensions.width20 * 2,
+                  height: Dimensions.height10 * 0.4,
                   margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
                   decoration: BoxDecoration(
                     color: context.colors.border,
@@ -294,16 +294,16 @@ class _PaymentsReceivedPageState extends State<PaymentsReceivedPage> {
               ),
               decoration: BoxDecoration(
                 color: context.colors.card,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(24),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(Dimensions.radius20 * 1.2),
                 ),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 40,
-                    height: 4,
+                    width: Dimensions.width20 * 2,
+                    height: Dimensions.height10 * 0.4,
                     margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
                     decoration: BoxDecoration(
                       color: context.colors.border,
@@ -584,7 +584,7 @@ class _PaymentsReceivedPageState extends State<PaymentsReceivedPage> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(Dimensions.height10 * 0.4),
                       decoration: BoxDecoration(
                         color: context.colors.surfaceLight,
                         borderRadius: BorderRadius.circular(
@@ -756,7 +756,7 @@ class _PaymentsReceivedPageState extends State<PaymentsReceivedPage> {
                 ? [
                     BoxShadow(
                       color: Appcolors.primary.withValues(alpha: 0.08),
-                      blurRadius: 8,
+                      blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
                   ]
@@ -881,7 +881,7 @@ class _PaymentsReceivedPageState extends State<PaymentsReceivedPage> {
                   Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: Dimensions.width10,
-                      vertical: 2,
+                      vertical: Dimensions.height10 * 0.2,
                     ),
                     decoration: BoxDecoration(
                       color: Appcolors.primaryLight.withValues(alpha: 0.12),

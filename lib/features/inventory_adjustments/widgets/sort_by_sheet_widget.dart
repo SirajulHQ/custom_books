@@ -58,14 +58,16 @@ class _SortBySheetState extends State<_SortBySheet> {
       ),
       decoration: BoxDecoration(
         color: context.colors.card,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20 * 1.2),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 40,
-            height: 4,
+            width: Dimensions.width20 * 2,
+            height: Dimensions.height10 * 0.4,
             margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
             decoration: BoxDecoration(
               color: context.colors.border,
@@ -276,7 +278,10 @@ class _SortBySheetState extends State<_SortBySheet> {
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Appcolors.primary,
-                    side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                    side: const BorderSide(
+                      color: Appcolors.primary,
+                      width: 1.5,
+                    ),
                     backgroundColor: Colors.transparent,
                     padding: EdgeInsets.symmetric(
                       horizontal: Dimensions.width20 * 1.2,

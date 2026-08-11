@@ -138,8 +138,10 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: context.colors.card,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
       ),
       builder: (context) {
         return SafeArea(
@@ -223,8 +225,10 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: context.colors.card,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
       ),
       builder: (context) {
         return StatefulBuilder(
@@ -476,7 +480,7 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(Dimensions.width10 * 0.4),
                       decoration: BoxDecoration(
                         color: context.colors.surfaceLight,
                         borderRadius: BorderRadius.circular(
@@ -648,7 +652,7 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
                 ? [
                     BoxShadow(
                       color: Appcolors.primary.withValues(alpha: 0.08),
-                      blurRadius: 8,
+                      blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
                   ]

@@ -255,7 +255,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(Dimensions.height10 * 0.4),
                       decoration: BoxDecoration(
                         color: context.colors.surfaceLight,
                         borderRadius: BorderRadius.circular(
@@ -427,7 +427,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                 ? [
                     BoxShadow(
                       color: Appcolors.primary.withValues(alpha: 0.08),
-                      blurRadius: 8,
+                      blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
                   ]
@@ -576,7 +576,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: Dimensions.width10,
-        vertical: 2,
+        vertical: Dimensions.height10 * 0.2,
       ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),

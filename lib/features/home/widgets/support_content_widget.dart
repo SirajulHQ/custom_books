@@ -121,7 +121,7 @@ class HelpCategoryCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: context.colors.border.withValues(alpha: 0.5),
-            blurRadius: 8,
+            blurRadius: Dimensions.radius15 * 0.53,
             offset: const Offset(0, 2),
           ),
         ],
@@ -249,7 +249,7 @@ class ContactSupportCard extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                     color: Appcolors.primary.withValues(alpha: 0.3),
-                    blurRadius: 8,
+                    blurRadius: Dimensions.radius15 * 0.53,
                     offset: const Offset(0, 2),
                   ),
                 ],

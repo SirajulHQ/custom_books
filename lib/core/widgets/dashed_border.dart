@@ -1,24 +1,22 @@
+import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-/// Simple dashed-rounded-rectangle border widget.
-/// Useful for upload zones, drop areas, or other interactive regions
-/// that need a dashed border style.
 class DashedBorder extends StatelessWidget {
   final Widget child;
   final Color color;
   final double strokeWidth;
-  final double borderRadius;
-  final double dashWidth;
-  final double dashSpace;
+  final double? borderRadius;
+  final double? dashWidth;
+  final double? dashSpace;
 
   const DashedBorder({
     super.key,
     required this.child,
     this.color = const Color(0xFFCBD5E1),
     this.strokeWidth = 1.2,
-    this.borderRadius = 14,
-    this.dashWidth = 6.0,
-    this.dashSpace = 4.0,
+    this.borderRadius,
+    this.dashWidth,
+    this.dashSpace,
   });
 
   @override
@@ -27,9 +25,9 @@ class DashedBorder extends StatelessWidget {
       painter: _DashedBorderPainter(
         color: color,
         strokeWidth: strokeWidth,
-        borderRadius: borderRadius,
-        dashWidth: dashWidth,
-        dashSpace: dashSpace,
+        borderRadius: borderRadius ?? Dimensions.radius15 * 0.93,
+        dashWidth: dashWidth ?? Dimensions.height10 * 0.6,
+        dashSpace: dashSpace ?? Dimensions.height10 * 0.4,
       ),
       child: child,
     );

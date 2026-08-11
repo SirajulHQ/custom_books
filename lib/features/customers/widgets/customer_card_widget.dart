@@ -11,12 +11,12 @@ class CustomerCardWidget extends StatelessWidget {
 
   Color _getAvatarColor(String name) {
     final colors = [
-      const Color(0xFF64B5F6), // Blue
-      const Color(0xFF81C784), // Green
-      const Color(0xFFFFB74D), // Orange
-      const Color(0xFFE57373), // Red
-      const Color(0xFF9575CD), // Purple
-      const Color(0xFF4DD0E1), // Cyan
+      const Color(0xFF64B5F6),
+      const Color(0xFF81C784),
+      const Color(0xFFFFB74D),
+      const Color(0xFFE57373),
+      const Color(0xFF9575CD),
+      const Color(0xFF4DD0E1),
     ];
 
     final index = name.length % colors.length;

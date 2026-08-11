@@ -282,7 +282,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
         boxShadow: [
           BoxShadow(
             color: context.colors.border.withValues(alpha: 0.5),
-            blurRadius: 10,
+            blurRadius: Dimensions.radius15 * 0.67,
             offset: const Offset(0, 2),
           ),
         ],
@@ -305,8 +305,8 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
           Padding(
             padding: EdgeInsets.all(Dimensions.width10),
             child: Container(
-              width: 20,
-              height: 20,
+              width: Dimensions.height20,
+              height: Dimensions.height20,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -319,8 +319,8 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
               child: isSelected
                   ? Center(
                       child: Container(
-                        width: 10,
-                        height: 10,
+                        width: Dimensions.height10,
+                        height: Dimensions.height10,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Appcolors.primary,
@@ -681,14 +681,14 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
       child: Row(
         children: [
           SizedBox(
-            width: 24,
-            height: 24,
+            width: Dimensions.iconSize24,
+            height: Dimensions.iconSize24,
             child: Checkbox(
               value: value,
               onChanged: onChanged,
               activeColor: Appcolors.primary,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
               ),
             ),
           ),

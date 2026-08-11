@@ -5,37 +5,16 @@ import 'package:flutter/material.dart';
 enum AppBarLeadingType { back, menu, custom, none }
 
 class CustomSliverAppBar extends StatelessWidget {
-  /// Main title text
   final String title;
-
-  /// Optional subtitle text (appears below the title)
   final String? subtitle;
-
-  /// Type of leading button: back, menu, custom, or none
   final AppBarLeadingType leadingType;
-
-  /// Custom leading widget (used when leadingType is custom)
   final Widget? customLeading;
-
-  /// Callback for leading button press
   final VoidCallback? onLeadingPressed;
-
-  /// List of action widgets to display on the right side
   final List<Widget>? actions;
-
-  /// Whether the app bar should remain visible when scrolling
   final bool pinned;
-
-  /// Whether the app bar should float
   final bool floating;
-
-  /// Background color
   final Color? backgroundColor;
-
-  /// Height of the toolbar
   final double? toolbarHeight;
-
-  /// Custom title widget (overrides title and subtitle)
   final Widget? customTitle;
 
   const CustomSliverAppBar({

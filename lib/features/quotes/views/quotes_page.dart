@@ -128,7 +128,12 @@ class _QuotesPageState extends State<QuotesPage> {
       isScrollControlled: true,
       builder: (context) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
+          padding: EdgeInsets.fromLTRB(
+            Dimensions.width20 * 1.2,
+            Dimensions.height10 * 0.4,
+            Dimensions.width20 * 1.2,
+            Dimensions.width20 * 1.2,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,29 +143,29 @@ class _QuotesPageState extends State<QuotesPage> {
                 children: [
                   Text(
                     quote.quoteNumber,
-                    style: const TextStyle(
-                      fontSize: 22,
+                    style: TextStyle(
+                      fontSize: Dimensions.font20 * 1.1,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   _statusChip(quote.status),
                 ],
               ),
-              const SizedBox(height: 18),
+              SizedBox(height: Dimensions.height15 * 1.2),
               Text(
                 quote.customerName,
-                style: const TextStyle(
-                  fontSize: 18,
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 1.125,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               Text(DateFormat('dd MMM yyyy').format(quote.quoteDate)),
               if (quote.subject.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(top: 10),
+                  padding: EdgeInsets.only(top: Dimensions.height10),
                   child: Text(quote.subject),
                 ),
-              const Divider(height: 30),
+              Divider(height: Dimensions.height30),
               ...quote.lineItems.map(
                 (item) => ListTile(
                   contentPadding: EdgeInsets.zero,
@@ -175,20 +180,23 @@ class _QuotesPageState extends State<QuotesPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Total',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 1.125,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   Text(
                     '₹${quote.total.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontSize: 18,
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 1.125,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 18),
+              SizedBox(height: Dimensions.height15 * 1.2),
               if (quote.status == QuoteStatus.draft)
                 OutlinedButton.icon(
                   onPressed: () {
@@ -211,7 +219,10 @@ class _QuotesPageState extends State<QuotesPage> {
                       width: 1.5,
                     ),
                     backgroundColor: Colors.transparent,
-                    minimumSize: const Size(double.infinity, 50),
+                    minimumSize: Size(
+                      double.infinity,
+                      Dimensions.height45 * 1.11,
+                    ),
                   ),
                 ),
             ],
@@ -231,7 +242,7 @@ class _QuotesPageState extends State<QuotesPage> {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: Dimensions.width10,
-        vertical: 2,
+        vertical: Dimensions.height10 * 0.2,
       ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
@@ -395,7 +406,7 @@ class _QuotesPageState extends State<QuotesPage> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(Dimensions.height10 * 0.4),
                       decoration: BoxDecoration(
                         color: context.colors.surfaceLight,
                         borderRadius: BorderRadius.circular(
@@ -567,7 +578,7 @@ class _QuotesPageState extends State<QuotesPage> {
                 ? [
                     BoxShadow(
                       color: Appcolors.primary.withValues(alpha: 0.08),
-                      blurRadius: 8,
+                      blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
                   ]
@@ -737,14 +748,16 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
         ),
         decoration: BoxDecoration(
           color: context.colors.card,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(Dimensions.radius20 * 1.2),
+          ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 40,
-              height: 4,
+              width: Dimensions.width20 * 2,
+              height: Dimensions.height10 * 0.4,
               margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
               decoration: BoxDecoration(
                 color: context.colors.border,
@@ -853,7 +866,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                             color: Appcolors.primary,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        SizedBox(height: Dimensions.height10 * 0.2),
                         Text(
                           '${_field.label} (${_ascending ? 'Ascending' : 'Descending'})',
                           overflow: TextOverflow.ellipsis,

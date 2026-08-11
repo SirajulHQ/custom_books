@@ -24,7 +24,7 @@ class AdjustmentRadioOption extends StatelessWidget {
     final selected = selectedValue == value;
     return InkWell(
       onTap: () => onChanged(value),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(Dimensions.radius20),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

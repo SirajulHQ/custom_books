@@ -88,8 +88,8 @@ class _SignupPageState extends State<SignupPage> {
 
                   // Logo / App icon
                   Container(
-                    width: 80,
-                    height: 80,
+                    width: Dimensions.height80,
+                    height: Dimensions.height80,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: const LinearGradient(
@@ -104,15 +104,15 @@ class _SignupPageState extends State<SignupPage> {
                       boxShadow: [
                         BoxShadow(
                           color: Appcolors.primary.withValues(alpha: 0.3),
-                          blurRadius: 20,
-                          spreadRadius: 4,
+                          blurRadius: Dimensions.height20,
+                          spreadRadius: Dimensions.height10 / 2.5,
                         ),
                       ],
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.person_add_rounded,
                       color: Colors.white,
-                      size: 36,
+                      size: Dimensions.iconSize36,
                     ),
                   ),
 
@@ -290,7 +290,7 @@ class _SignupPageState extends State<SignupPage> {
                   // Sign Up button
                   SizedBox(
                     width: double.infinity,
-                    height: 52,
+                    height: Dimensions.height52,
                     child: ElevatedButton(
                       onPressed: _isLoading ? null : _signup,
                       style: ElevatedButton.styleFrom(
@@ -307,9 +307,9 @@ class _SignupPageState extends State<SignupPage> {
                         elevation: 0,
                       ),
                       child: _isLoading
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
+                          ? SizedBox(
+                              width: Dimensions.iconSize22,
+                              height: Dimensions.iconSize22,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2.5,
                                 color: Colors.white,

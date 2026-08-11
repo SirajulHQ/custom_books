@@ -113,14 +113,16 @@ class _NewTaxGroupPageState extends State<NewTaxGroupPage>
         child: Row(
           children: [
             SizedBox(
-              width: 24,
-              height: 24,
+              width: Dimensions.iconSize24,
+              height: Dimensions.iconSize24,
               child: Checkbox(
                 value: tax.selected,
                 onChanged: (val) => setState(() => tax.selected = val ?? false),
                 activeColor: Appcolors.primary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(
+                    Dimensions.radius15 * 0.27,
+                  ),
                 ),
               ),
             ),

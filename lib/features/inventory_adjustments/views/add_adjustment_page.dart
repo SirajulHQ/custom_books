@@ -89,7 +89,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                         IconButton(
                           onPressed: () => Navigator.pop(dialogCtx),
                           icon: Container(
-                            padding: const EdgeInsets.all(4),
+                            padding: EdgeInsets.all(Dimensions.width10 * 0.4),
                             decoration: BoxDecoration(
                               color: context.colors.surfaceLight,
                               shape: BoxShape.circle,
@@ -154,7 +154,9 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                       )
                     else
                       ConstrainedBox(
-                        constraints: const BoxConstraints(maxHeight: 260),
+                        constraints: BoxConstraints(
+                          maxHeight: Dimensions.height80 * 3.25,
+                        ),
                         child: ListView.separated(
                           shrinkWrap: true,
                           itemCount: _attachments.length,
@@ -172,7 +174,9 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                 borderRadius: BorderRadius.circular(
                                   Dimensions.radius15 / 2,
                                 ),
-                                border: Border.all(color: context.colors.border),
+                                border: Border.all(
+                                  color: context.colors.border,
+                                ),
                               ),
                               child: Row(
                                 children: [
@@ -216,7 +220,8 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                             style: TextStyle(
                                               fontSize:
                                                   Dimensions.font16 * 0.72,
-                                              color: context.colors.textSecondary,
+                                              color:
+                                                  context.colors.textSecondary,
                                             ),
                                           ),
                                       ],
@@ -712,7 +717,10 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(_formatDate(_date), style: FormTextStyles.value(context)),
+                      Text(
+                        _formatDate(_date),
+                        style: FormTextStyles.value(context),
+                      ),
                       Icon(
                         Icons.calendar_today_outlined,
                         size: Dimensions.iconSize24 - 6,

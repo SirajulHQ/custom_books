@@ -108,13 +108,10 @@ class _CustomersPageState extends State<CustomersPage> {
     } else if (_selectedFilter == 'Inactive Customers') {
       list = list.where((customer) => !customer.isActive).toList();
     } else if (_selectedFilter == 'Overdue Customers') {
-      // Customers with outstanding receivables
       list = list.where((customer) => customer.receivables > 0).toList();
     } else if (_selectedFilter == 'Unpaid Customers') {
-      // Customers with any receivables
       list = list.where((customer) => customer.receivables > 0).toList();
     } else if (_selectedFilter == 'Duplicate Customers') {
-      // Find customers with same name (case-insensitive)
       final nameCount = <String, int>{};
       for (final c in list) {
         final key = c.name.trim().toLowerCase();
@@ -381,7 +378,7 @@ class _CustomersPageState extends State<CustomersPage> {
                     boxShadow: [
                       BoxShadow(
                         color: Appcolors.primary.withValues(alpha: 0.08),
-                        blurRadius: 8,
+                        blurRadius: Dimensions.radius15 * 0.53,
                         offset: const Offset(0, 2),
                       ),
                     ],
@@ -410,7 +407,7 @@ class _CustomersPageState extends State<CustomersPage> {
               ),
             ),
 
-            SizedBox(width: 8),
+            SizedBox(width: Dimensions.width10 * 0.8),
 
             // Sort button
             GestureDetector(
@@ -426,7 +423,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 ),
                 child: Icon(
                   Icons.sort_rounded,
-                  size: Dimensions.iconSize24 - 4,
+                  size: Dimensions.iconSize20,
                   color: context.colors.textSecondary,
                 ),
               ),

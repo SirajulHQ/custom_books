@@ -270,7 +270,7 @@ class _VendorsPageState extends State<VendorsPage> {
                     children: [
                       Expanded(
                         child: Container(
-                          padding: const EdgeInsets.all(4),
+                          padding: EdgeInsets.all(Dimensions.width10 * 0.4),
                           decoration: BoxDecoration(
                             color: context.colors.surfaceLight,
                             borderRadius: BorderRadius.circular(
@@ -448,7 +448,7 @@ class _VendorsPageState extends State<VendorsPage> {
                 ? [
                     BoxShadow(
                       color: Appcolors.primary.withValues(alpha: 0.08),
-                      blurRadius: 8,
+                      blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
                   ]
@@ -482,7 +482,7 @@ class _VendorsPageState extends State<VendorsPage> {
       ),
       child: Icon(
         icon,
-        size: Dimensions.iconSize24 - 4,
+        size: Dimensions.iconSize20,
         color: active ? Appcolors.accent : Appcolors.primary,
       ),
     );
@@ -551,7 +551,7 @@ class _VendorsPageState extends State<VendorsPage> {
                     children: [
                       Icon(
                         Icons.business_rounded,
-                        size: Dimensions.iconSize16 - 2,
+                        size: Dimensions.iconSize16 * 0.875,
                         color: context.colors.textTertiary,
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
@@ -574,7 +574,7 @@ class _VendorsPageState extends State<VendorsPage> {
                     children: [
                       Icon(
                         Icons.phone_outlined,
-                        size: Dimensions.iconSize16 - 2,
+                        size: Dimensions.iconSize16 * 0.875,
                         color: context.colors.textTertiary,
                       ),
                       SizedBox(width: Dimensions.width10 / 2),

@@ -190,7 +190,7 @@ class _BillsPageState extends State<BillsPage> {
           boxShadow: [
             BoxShadow(
               color: Appcolors.primary.withValues(alpha: 0.35),
-              blurRadius: 16,
+              blurRadius: Dimensions.radius15 * 1.07,
               offset: const Offset(0, 8),
             ),
           ],
@@ -286,7 +286,7 @@ class _BillsPageState extends State<BillsPage> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(Dimensions.height10 * 0.4),
                       decoration: BoxDecoration(
                         color: context.colors.surfaceLight,
                         borderRadius: BorderRadius.circular(
@@ -459,7 +459,7 @@ class _BillsPageState extends State<BillsPage> {
                 ? [
                     BoxShadow(
                       color: Appcolors.primary.withValues(alpha: 0.08),
-                      blurRadius: 8,
+                      blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
                   ]
@@ -627,7 +627,7 @@ class _BillsPageState extends State<BillsPage> {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: Dimensions.width10,
-        vertical: 2,
+        vertical: Dimensions.height10 * 0.2,
       ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/auth/views/login_page.dart';
 import 'package:flutter/material.dart';
 
@@ -108,6 +109,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    Dimensions.init(context);
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -131,17 +133,26 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
             Positioned(
               top: -80,
               right: -60,
-              child: _GlowCircle(size: 220, opacity: 0.06),
+              child: _GlowCircle(
+                size: Dimensions.height80 * 2.75,
+                opacity: 0.06,
+              ),
             ),
             Positioned(
               bottom: -100,
               left: -80,
-              child: _GlowCircle(size: 280, opacity: 0.05),
+              child: _GlowCircle(
+                size: Dimensions.height80 * 3.5,
+                opacity: 0.05,
+              ),
             ),
             Positioned(
               top: MediaQuery.of(context).size.height * 0.25,
               left: -40,
-              child: _GlowCircle(size: 120, opacity: 0.04),
+              child: _GlowCircle(
+                size: Dimensions.height80 * 1.5,
+                opacity: 0.04,
+              ),
             ),
 
             // Main content
@@ -162,8 +173,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                             child: Opacity(
                               opacity: _pulseOpacity.value,
                               child: Container(
-                                width: 140,
-                                height: 140,
+                                width: Dimensions.height80 * 1.75,
+                                height: Dimensions.height80 * 1.75,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
@@ -184,8 +195,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                       child: FadeTransition(
                         opacity: _iconOpacity,
                         child: Container(
-                          width: 130,
-                          height: 130,
+                          width: Dimensions.height80 * 1.63,
+                          height: Dimensions.height80 * 1.63,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             gradient: const LinearGradient(
@@ -202,8 +213,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                                 color: const Color(
                                   0xFF1E88E5,
                                 ).withValues(alpha: 0.4),
-                                blurRadius: 30,
-                                spreadRadius: 8,
+                                blurRadius: Dimensions.radius30,
+                                spreadRadius: Dimensions.height10 * 0.8,
                               ),
                             ],
                           ),
@@ -213,7 +224,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  SizedBox(height: Dimensions.height20 * 2),
 
                   // App name text
                   SlideTransition(
@@ -225,24 +236,24 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                           Text(
                             'Custom Books',
                             style: TextStyle(
-                              fontSize: 28,
+                              fontSize: Dimensions.font26 * 1.08,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
                               letterSpacing: 1.2,
                               shadows: [
                                 Shadow(
                                   color: Colors.black.withValues(alpha: 0.3),
-                                  blurRadius: 8,
+                                  blurRadius: Dimensions.radius15 * 0.53,
                                   offset: const Offset(0, 2),
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: Dimensions.height10 * 0.8),
                           Text(
                             'Smart Accounting Made Simple',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: Dimensions.font16 * 0.875,
                               fontWeight: FontWeight.w400,
                               color: Colors.white.withValues(alpha: 0.7),
                               letterSpacing: 0.5,
@@ -258,7 +269,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
             // Bottom loading indicator
             Positioned(
-              bottom: 60,
+              bottom: Dimensions.height52 * 1.15,
               left: 0,
               right: 0,
               child: FadeTransition(
@@ -281,8 +292,8 @@ class _BookIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        width: 60,
-        height: 60,
+        width: Dimensions.height52 * 1.15,
+        height: Dimensions.height52 * 1.15,
         child: CustomPaint(painter: _BookPainter()),
       ),
     );
@@ -449,9 +460,11 @@ class _LoadingDotsState extends State<_LoadingDots>
             final value = ((_controller.value - delay) % 1.0).clamp(0.0, 1.0);
             final scale = 0.5 + 0.5 * math.sin(value * math.pi);
             return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: 8,
-              height: 8,
+              margin: EdgeInsets.symmetric(
+                horizontal: Dimensions.width10 * 0.4,
+              ),
+              width: Dimensions.width10 * 0.8,
+              height: Dimensions.height10 * 0.8,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white.withValues(alpha: scale * 0.8),

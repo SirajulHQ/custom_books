@@ -30,7 +30,9 @@ class ReceivablesSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: context.colors.card,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20 * 1.2),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -56,7 +58,7 @@ class ReceivablesSheet extends StatelessWidget {
                   child: Icon(
                     Icons.call_received_rounded,
                     color: Appcolors.primary,
-                    size: Dimensions.iconSize24 - 2,
+                    size: Dimensions.iconSize22,
                   ),
                 ),
                 SizedBox(width: Dimensions.width10),

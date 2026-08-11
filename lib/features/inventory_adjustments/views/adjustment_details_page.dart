@@ -118,7 +118,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                         'assets/images/placeholder_attachment.png',
                         fit: BoxFit.contain,
                         errorBuilder: (_, _, _) => Container(
-                          height: 300,
+                          height: Dimensions.height80 * 3.75,
                           color: context.colors.surfaceLight,
                           child: Center(
                             child: Column(
@@ -449,7 +449,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                 boxShadow: [
                   BoxShadow(
                     color: Color(0x08000000),
-                    blurRadius: 8,
+                    blurRadius: Dimensions.radius15 * 0.53,
                     offset: Offset(0, 2),
                   ),
                 ],
@@ -471,7 +471,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: Dimensions.width10 + 2,
-                          vertical: 5,
+                          vertical: Dimensions.height10 * 0.5,
                         ),
                         decoration: BoxDecoration(
                           color: (isDraft ? Appcolors.warn : Appcolors.primary)
@@ -548,8 +548,8 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                             child: Badge(
                               label: Text(
                                 '${_attachments.length}',
-                                style: const TextStyle(
-                                  fontSize: 9,
+                                style: TextStyle(
+                                  fontSize: Dimensions.font16 * 0.56,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.white,
                                 ),
@@ -589,7 +589,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                   boxShadow: [
                     BoxShadow(
                       color: Appcolors.primary.withValues(alpha: 0.08),
-                      blurRadius: 8,
+                      blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -645,7 +645,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
             boxShadow: [
               BoxShadow(
                 color: const Color(0x08000000),
-                blurRadius: 8,
+                blurRadius: Dimensions.radius15 * 0.53,
                 offset: const Offset(0, 2),
               ),
             ],
@@ -674,7 +674,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
             boxShadow: [
               BoxShadow(
                 color: const Color(0x08000000),
-                blurRadius: 8,
+                blurRadius: Dimensions.radius15 * 0.53,
                 offset: const Offset(0, 2),
               ),
             ],
@@ -756,7 +756,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                           boxShadow: [
                             BoxShadow(
                               color: Appcolors.primary.withValues(alpha: 0.1),
-                              blurRadius: 4,
+                              blurRadius: Dimensions.radius15 * 0.27,
                               offset: const Offset(0, 1),
                             ),
                           ],
@@ -788,7 +788,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
             boxShadow: [
               BoxShadow(
                 color: const Color(0x08000000),
-                blurRadius: 8,
+                blurRadius: Dimensions.radius15 * 0.53,
                 offset: const Offset(0, 2),
               ),
             ],

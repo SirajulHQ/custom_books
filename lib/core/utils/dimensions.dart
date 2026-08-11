@@ -16,6 +16,9 @@ class Dimensions {
   static double get height20 => screenHeight / 42.2;
   static double get height30 => screenHeight / 28.13;
   static double get height45 => screenHeight / 18.76;
+  static double get height52 => screenHeight / 16.23;
+  static double get height80 => screenHeight / 10.55;
+  static double get height90 => screenHeight / 9.38;
 
   // Widths
   static double get width10 => screenWidth / 84.4;
@@ -35,5 +38,9 @@ class Dimensions {
 
   // Icon sizes
   static double get iconSize16 => screenHeight / 52.75;
+  static double get iconSize20 => screenHeight / 42.2;
+  static double get iconSize22 => screenHeight / 38.36;
   static double get iconSize24 => screenHeight / 35.17;
+  static double get iconSize36 => screenHeight / 23.44;
+  static double get iconSize40 => screenHeight / 21.1;
 }

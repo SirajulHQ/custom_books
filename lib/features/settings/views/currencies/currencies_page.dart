@@ -177,7 +177,7 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
                             Container(
                               padding: EdgeInsets.symmetric(
                                 horizontal: Dimensions.width10,
-                                vertical: 2,
+                                vertical: Dimensions.height10 * 0.2,
                               ),
                               decoration: BoxDecoration(
                                 color: Appcolors.ok.withValues(alpha: 0.1),

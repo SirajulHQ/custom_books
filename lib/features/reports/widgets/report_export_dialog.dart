@@ -569,14 +569,14 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 24,
-            height: 24,
+            width: Dimensions.iconSize24,
+            height: Dimensions.iconSize24,
             child: Checkbox(
               value: value,
               onChanged: onChanged,
               activeColor: Appcolors.primary,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
               ),
             ),
           ),
@@ -604,8 +604,8 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
       child: Row(
         children: [
           SizedBox(
-            width: 24,
-            height: 24,
+            width: Dimensions.iconSize24,
+            height: Dimensions.iconSize24,
             child: Radio<String>(
               value: value,
               groupValue: _language,
@@ -630,8 +630,8 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
     return Row(
       children: [
         SizedBox(
-          width: 24,
-          height: 24,
+          width: Dimensions.iconSize24,
+          height: Dimensions.iconSize24,
           child: Radio<String>(
             value: value,
             groupValue: _orientation,

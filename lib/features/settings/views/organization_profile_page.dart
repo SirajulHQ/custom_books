@@ -274,8 +274,8 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
                             child: Row(
                               children: [
                                 Container(
-                                  width: 100,
-                                  height: 80,
+                                  width: Dimensions.height45 * 2.22,
+                                  height: Dimensions.height80,
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                       color: context.colors.textTertiary,
@@ -664,14 +664,14 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 24,
-            height: 24,
+            width: Dimensions.iconSize24,
+            height: Dimensions.iconSize24,
             child: Checkbox(
               value: value,
               onChanged: onChanged,
               activeColor: Appcolors.primary,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
               ),
             ),
           ),
@@ -767,7 +767,7 @@ class _DashedBorderPainter extends CustomPainter {
       ..addRRect(
         RRect.fromRectAndRadius(
           Rect.fromLTWH(0, 0, size.width, size.height),
-          const Radius.circular(6),
+          Radius.circular(Dimensions.radius15 * 0.4),
         ),
       );
 

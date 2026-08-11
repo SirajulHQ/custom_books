@@ -214,7 +214,7 @@ class _NotificationCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: context.colors.border.withValues(alpha: 0.5),
-            blurRadius: 6,
+            blurRadius: Dimensions.radius15 * 0.4,
             offset: const Offset(0, 2),
           ),
         ],
@@ -277,8 +277,8 @@ class _NotificationCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(left: Dimensions.width10 / 2),
               child: Container(
-                width: 8,
-                height: 8,
+                width: Dimensions.width10 * 0.8,
+                height: Dimensions.height10 * 0.8,
                 decoration: BoxDecoration(
                   color: item.color,
                   shape: BoxShape.circle,

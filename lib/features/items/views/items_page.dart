@@ -127,14 +127,16 @@ class _ItemsPageState extends State<ItemsPage> {
         return Container(
           decoration: BoxDecoration(
             color: context.colors.card,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(Dimensions.radius20 * 1.2),
+            ),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 40,
-                height: 4,
+                width: Dimensions.width20 * 2,
+                height: Dimensions.height10 * 0.4,
                 margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
                 decoration: BoxDecoration(
                   color: context.colors.border,
@@ -389,7 +391,7 @@ class _ItemsPageState extends State<ItemsPage> {
                     boxShadow: [
                       BoxShadow(
                         color: Appcolors.primary.withValues(alpha: 0.08),
-                        blurRadius: 8,
+                        blurRadius: Dimensions.radius15 * 0.53,
                         offset: const Offset(0, 2),
                       ),
                     ],
@@ -424,7 +426,7 @@ class _ItemsPageState extends State<ItemsPage> {
               ),
             ),
 
-            SizedBox(width: 8),
+            SizedBox(width: Dimensions.width10 * 0.8),
 
             // Sort button
             GestureDetector(

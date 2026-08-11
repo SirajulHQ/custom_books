@@ -85,13 +85,11 @@ class AnnouncementCardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.colors.card,
         borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(
-          color: context.colors.border,
-        ),
+        border: Border.all(color: context.colors.border),
         boxShadow: [
           BoxShadow(
             color: context.colors.border.withValues(alpha: 0.5),
-            blurRadius: 8,
+            blurRadius: Dimensions.radius15 * 0.53,
             offset: const Offset(0, 2),
           ),
         ],
@@ -104,15 +102,9 @@ class AnnouncementCardWidget extends StatelessWidget {
             height: Dimensions.height45,
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(
-                Dimensions.radius15,
-              ),
+              borderRadius: BorderRadius.circular(Dimensions.radius15),
             ),
-            child: Icon(
-              icon,
-              color: color,
-              size: Dimensions.iconSize24,
-            ),
+            child: Icon(icon, color: color, size: Dimensions.iconSize24),
           ),
           SizedBox(width: Dimensions.width15),
           Expanded(

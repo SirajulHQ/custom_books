@@ -508,7 +508,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
         boxShadow: [
           BoxShadow(
             color: context.colors.border.withValues(alpha: 0.5),
-            blurRadius: 10,
+            blurRadius: Dimensions.radius15 * 0.67,
             offset: const Offset(0, 2),
           ),
         ],
@@ -1046,7 +1046,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
             onChanged: onChanged,
             activeColor: Appcolors.primary,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
             ),
           ),
         ),
@@ -1112,7 +1112,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
           boxShadow: [
             BoxShadow(
               color: context.colors.border.withValues(alpha: 0.5),
-              blurRadius: 10,
+              blurRadius: Dimensions.radius15 * 0.67,
               offset: const Offset(0, 2),
             ),
           ],

@@ -25,8 +25,8 @@ class SheetHandle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 40,
-      height: 4,
+      width: Dimensions.width20 * 2,
+      height: Dimensions.height10 * 0.4,
       margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
       decoration: BoxDecoration(
         color: context.colors.border,
@@ -83,12 +83,12 @@ class FinancialSummaryCard extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.height10),
             ClipRRect(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
               child: LinearProgressIndicator(
                 value: data.total == 0
                     ? 0
                     : (data.overdue / data.total).clamp(0.0, 1.0),
-                minHeight: 4,
+                minHeight: Dimensions.height10 * 0.4,
                 backgroundColor: Appcolors.ok.withValues(alpha: 0.25),
                 valueColor: AlwaysStoppedAnimation<Color>(
                   data.overdue > 0 ? Appcolors.warning : Appcolors.ok,

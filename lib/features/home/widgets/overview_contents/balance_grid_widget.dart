@@ -95,7 +95,7 @@ class BalanceTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(6),
+                  padding: EdgeInsets.all(Dimensions.width10 * 0.6),
                   decoration: BoxDecoration(
                     color: data.color.withValues(alpha: 0.1),
                     shape: BoxShape.circle,

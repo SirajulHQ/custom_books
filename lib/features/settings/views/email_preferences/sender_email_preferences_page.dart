@@ -117,11 +117,13 @@ class _SenderEmailPreferencesPageState
                           child: Row(
                             children: [
                               Container(
-                                width: 4,
+                                width: Dimensions.width10 * 0.4,
                                 height: Dimensions.height20,
                                 decoration: BoxDecoration(
                                   color: Appcolors.warning,
-                                  borderRadius: BorderRadius.circular(2),
+                                  borderRadius: BorderRadius.circular(
+                                    Dimensions.radius15 * 0.13,
+                                  ),
                                 ),
                               ),
                               SizedBox(width: Dimensions.width10),
@@ -209,7 +211,7 @@ class _SenderEmailPreferencesPageState
                                         color: context.colors.textPrimary,
                                       ),
                                     ),
-                                    SizedBox(height: 4),
+                                    SizedBox(height: Dimensions.height10 * 0.4),
                                     Text(
                                       'Select how you want to send emails using public domain email addresses.',
                                       style: TextStyle(

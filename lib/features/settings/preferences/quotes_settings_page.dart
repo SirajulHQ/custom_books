@@ -117,7 +117,9 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage>
                           ),
                           activeColor: Appcolors.primary,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15 * 0.27,
+                            ),
                           ),
                         ),
                       ),
@@ -169,7 +171,9 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage>
                               setState(() => _convertToInvoice = val ?? false),
                           activeColor: Appcolors.primary,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15 * 0.27,
+                            ),
                           ),
                         ),
                       ),
@@ -196,7 +200,9 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage>
                           ),
                           activeColor: Appcolors.primary,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15 * 0.27,
+                            ),
                           ),
                         ),
                       ),

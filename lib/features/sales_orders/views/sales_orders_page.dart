@@ -219,8 +219,10 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: context.colors.card,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
       ),
       builder: (context) => SalesOrderActionsSheet(
         order: order,
@@ -352,7 +354,7 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
                     children: [
                       Expanded(
                         child: Container(
-                          padding: const EdgeInsets.all(4),
+                          padding: EdgeInsets.all(Dimensions.height10 * 0.4),
                           decoration: BoxDecoration(
                             color: context.colors.surfaceLight,
                             borderRadius: BorderRadius.circular(
@@ -534,7 +536,7 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
                 ? [
                     BoxShadow(
                       color: Appcolors.primary.withValues(alpha: 0.08),
-                      blurRadius: 8,
+                      blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
                   ]
@@ -670,8 +672,8 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Container(
-                              width: 6,
-                              height: 6,
+                              width: Dimensions.width10 * 0.6,
+                              height: Dimensions.height10 * 0.6,
                               decoration: BoxDecoration(
                                 color: order.isInvoiced
                                     ? Appcolors.success

@@ -69,11 +69,11 @@ class ExpenseBreakdownCardWidget extends StatelessWidget {
                   SizedBox(height: Dimensions.height10 / 2),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(
-                      Dimensions.radius15 - 5,
+                      Dimensions.radius15 * 0.67,
                     ),
                     child: LinearProgressIndicator(
                       value: ratio,
-                      minHeight: 6,
+                      minHeight: Dimensions.height10 * 0.6,
                       backgroundColor: context.colors.border,
                       valueColor: AlwaysStoppedAnimation(e.color),
                     ),
@@ -87,4 +87,3 @@ class ExpenseBreakdownCardWidget extends StatelessWidget {
     );
   }
 }
-

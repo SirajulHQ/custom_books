@@ -26,7 +26,7 @@ class _BankingChartState extends State<BankingChart> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 280,
+      height: Dimensions.height30 * 9.33,
       padding: EdgeInsets.fromLTRB(
         Dimensions.width10,
         Dimensions.height10,
@@ -118,7 +118,7 @@ class _BankingChartState extends State<BankingChart> {
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 28,
+                reservedSize: Dimensions.height30 * 0.93,
                 interval: 5,
                 getTitlesWidget: (double value, TitleMeta meta) {
                   final date = DateTime(
@@ -157,7 +157,7 @@ class _BankingChartState extends State<BankingChart> {
                     ),
                   );
                 },
-                reservedSize: 36,
+                reservedSize: Dimensions.width30 * 1.2,
               ),
             ),
           ),

@@ -107,11 +107,13 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: Dimensions.width10,
-                                    vertical: 4,
+                                    vertical: Dimensions.height10 * 0.4,
                                   ),
                                   decoration: BoxDecoration(
                                     color: Appcolors.warning,
-                                    borderRadius: BorderRadius.circular(4),
+                                    borderRadius: BorderRadius.circular(
+                                      Dimensions.radius15 * 0.27,
+                                    ),
                                   ),
                                   child: Text(
                                     'DEFAULT',
@@ -281,11 +283,11 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
           Container(
             padding: EdgeInsets.symmetric(
               horizontal: Dimensions.width10,
-              vertical: 4,
+              vertical: Dimensions.height10 * 0.4,
             ),
             decoration: BoxDecoration(
               color: Appcolors.primary.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
             ),
             child: Row(
               children: [
@@ -341,7 +343,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: Dimensions.width10,
-              vertical: 6,
+              vertical: Dimensions.height10 * 0.6,
             ),
             child: Row(
               children: [
@@ -463,19 +465,19 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
                       ),
                       if (isSelected)
                         Positioned(
-                          bottom: 4,
-                          right: 4,
+                          bottom: Dimensions.height10 * 0.4,
+                          right: Dimensions.width10 * 0.4,
                           child: Container(
-                            width: 20,
-                            height: 20,
+                            width: Dimensions.iconSize20,
+                            height: Dimensions.iconSize20,
                             decoration: const BoxDecoration(
                               color: Appcolors.primary,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.check,
                               color: Colors.white,
-                              size: 14,
+                              size: Dimensions.iconSize16 * 0.875,
                             ),
                           ),
                         ),

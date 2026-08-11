@@ -50,8 +50,8 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 // Logo / App icon
                 Container(
-                  width: 90,
-                  height: 90,
+                  width: Dimensions.height90,
+                  height: Dimensions.height90,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: const LinearGradient(
@@ -66,15 +66,15 @@ class _LoginPageState extends State<LoginPage> {
                     boxShadow: [
                       BoxShadow(
                         color: Appcolors.primary.withValues(alpha: 0.3),
-                        blurRadius: 20,
-                        spreadRadius: 4,
+                        blurRadius: Dimensions.height20,
+                        spreadRadius: Dimensions.height10 / 2.5,
                       ),
                     ],
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.menu_book_rounded,
                     color: Colors.white,
-                    size: 40,
+                    size: Dimensions.iconSize40,
                   ),
                 ),
 
@@ -213,7 +213,7 @@ class _LoginPageState extends State<LoginPage> {
                 // Sign In button
                 SizedBox(
                   width: double.infinity,
-                  height: 52,
+                  height: Dimensions.height52,
                   child: ElevatedButton(
                     onPressed: _login,
                     style: ElevatedButton.styleFrom(
