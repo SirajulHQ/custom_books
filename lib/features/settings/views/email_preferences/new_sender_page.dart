@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:flutter/material.dart';
@@ -51,9 +52,7 @@ class _NewSenderPageState extends State<NewSenderPage>
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Appcolors.warn),
-    );
+    ToastificationHelper.showError(context, message);
   }
 
   Future<void> _selectEmail() async {

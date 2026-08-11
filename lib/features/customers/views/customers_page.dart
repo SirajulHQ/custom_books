@@ -6,6 +6,9 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/widgets/customer_card_widget.dart';
+import 'package:custom_books/features/customers/widgets/customer_filter_sheet.dart';
+import 'package:custom_books/features/customers/widgets/customer_sort_sheet.dart';
+import 'package:custom_books/features/customers/widgets/customer_more_options_sheet.dart';
 import 'package:custom_books/features/customers/views/add_customer_page.dart';
 import 'package:flutter/material.dart';
 
@@ -157,158 +160,38 @@ class _CustomersPageState extends State<CustomersPage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        Widget tile(IconData icon, String label, VoidCallback onTap) {
-          return ListTile(
-            leading: Icon(icon, color: Appcolors.primary),
-            title: Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.9,
-                fontWeight: FontWeight.w600,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            onTap: () {
-              Navigator.pop(ctx);
-              onTap();
-            },
-          );
-        }
-
-        return Container(
-          decoration: BoxDecoration(
-            color: context.colors.card,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-                decoration: BoxDecoration(
-                  color: context.colors.border,
-                  borderRadius: BorderRadius.circular(Dimensions.radius30),
-                ),
-              ),
-              tile(Icons.refresh_rounded, 'Refresh', () {
-                setState(() {});
-                ToastificationHelper.showSuccess(
-                  context,
-                  'Customers refreshed.',
-                );
-              }),
-              tile(
-                Icons.upload_file_outlined,
-                'Import customers',
-                () => ToastificationHelper.showInfo(
-                  context,
-                  'Importing customers is coming soon.',
-                ),
-              ),
-              tile(
-                Icons.file_download_outlined,
-                'Export customers',
-                () => ToastificationHelper.showInfo(
-                  context,
-                  'Exporting customers is coming soon.',
-                ),
-              ),
-              SizedBox(height: Dimensions.height20),
-            ],
-          ),
-        );
-      },
+      builder: (_) => CustomerMoreOptionsSheet(
+        onRefresh: () {
+          setState(() {});
+          ToastificationHelper.showSuccess(context, 'Customers refreshed.');
+        },
+        onImport: () => ToastificationHelper.showInfo(
+          context,
+          'Importing customers is coming soon.',
+        ),
+        onExport: () => ToastificationHelper.showInfo(
+          context,
+          'Exporting customers is coming soon.',
+        ),
+      ),
     );
   }
 
   void _showSortSheet() {
     appLog('🔀 Opening sort sheet', name: 'CustomersPage');
-    const fields = ['Name', 'Receivables', 'Unused Credits'];
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        return Container(
-          decoration: BoxDecoration(
-            color: context.colors.card,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-                decoration: BoxDecoration(
-                  color: context.colors.border,
-                  borderRadius: BorderRadius.circular(Dimensions.radius30),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Sort by',
-                    style: TextStyle(
-                      fontSize: Dimensions.font20,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: Dimensions.height10),
-              ...fields.map((f) {
-                final selected = f == _sortField;
-                return ListTile(
-                  leading: Icon(
-                    selected
-                        ? Icons.radio_button_checked_rounded
-                        : Icons.radio_button_off_rounded,
-                    color: selected
-                        ? Appcolors.primary
-                        : context.colors.textSecondary,
-                  ),
-                  title: Text(
-                    f,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.9,
-                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  trailing: selected
-                      ? Icon(
-                          _sortAsc
-                              ? Icons.arrow_upward_rounded
-                              : Icons.arrow_downward_rounded,
-                          color: Appcolors.primary,
-                          size: Dimensions.iconSize16,
-                        )
-                      : null,
-                  onTap: () {
-                    setState(() {
-                      if (_sortField == f) {
-                        _sortAsc = !_sortAsc;
-                      } else {
-                        _sortField = f;
-                        _sortAsc = true;
-                      }
-                    });
-                    Navigator.pop(ctx);
-                  },
-                );
-              }),
-              SizedBox(height: Dimensions.height20),
-            ],
-          ),
-        );
-      },
+      builder: (_) => CustomerSortSheet(
+        selectedField: _sortField,
+        ascending: _sortAsc,
+        onApply: (field, ascending) {
+          setState(() {
+            _sortField = field;
+            _sortAsc = ascending;
+          });
+        },
+      ),
     );
   }
 
@@ -318,152 +201,16 @@ class _CustomersPageState extends State<CustomersPage> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) {
-        return Container(
-          decoration: BoxDecoration(
-            color: context.colors.card,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(Dimensions.radius20),
-              topRight: Radius.circular(Dimensions.radius20),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.width20,
-                  vertical: Dimensions.height15,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: context.colors.border, width: 1),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Filter',
-                      style: TextStyle(
-                        fontSize: Dimensions.font20,
-                        fontWeight: FontWeight.bold,
-                        color: context.colors.textPrimary,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        appLog('❌ Filter sheet closed', name: 'CustomersPage');
-                        Navigator.pop(context);
-                      },
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: Dimensions.iconSize24,
-                        color: context.colors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Default Filters Label
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.fromLTRB(
-                  Dimensions.width20,
-                  Dimensions.height20,
-                  Dimensions.width20,
-                  Dimensions.height10,
-                ),
-                child: Text(
-                  'DEFAULT FILTERS',
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.7,
-                    fontWeight: FontWeight.w600,
-                    color: context.colors.textTertiary,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
-
-              // Filter options
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.width20,
-                  vertical: Dimensions.height10,
-                ),
-                itemCount: _allFilterOptions.length,
-                itemBuilder: (context, index) {
-                  final filter = _allFilterOptions[index];
-                  final isSelected = filter == _selectedFilter;
-
-                  return GestureDetector(
-                    onTap: () {
-                      appLog(
-                        '✅ Filter selected: $filter',
-                        name: 'CustomersPage',
-                      );
-                      setState(() {
-                        _selectedFilter = filter;
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: Dimensions.height10),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width15,
-                        vertical: Dimensions.height15,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? Appcolors.primary.withValues(alpha: 0.05)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                        border: Border.all(
-                          color: isSelected
-                              ? Appcolors.primary
-                              : context.colors.border,
-                          width: isSelected ? 2 : 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            filter,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16,
-                              fontWeight: isSelected
-                                  ? FontWeight.w600
-                                  : FontWeight.w500,
-                              color: isSelected
-                                  ? Appcolors.primary
-                                  : context.colors.textPrimary,
-                            ),
-                          ),
-                          if (isSelected)
-                            Icon(
-                              Icons.check_circle,
-                              color: Appcolors.primary,
-                              size: Dimensions.iconSize24,
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-
-              SizedBox(height: Dimensions.height20),
-            ],
-          ),
-        );
-      },
+      builder: (_) => CustomerFilterSheet(
+        selectedFilter: _selectedFilter,
+        filterOptions: _allFilterOptions,
+        onSelected: (filter) {
+          appLog('✅ Filter selected: $filter', name: 'CustomersPage');
+          setState(() {
+            _selectedFilter = filter;
+          });
+        },
+      ),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
@@ -52,9 +53,7 @@ class _NewTaxPageState extends State<NewTaxPage> with UnsavedChangesMixin {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Appcolors.warn),
-    );
+    ToastificationHelper.showError(context, message);
   }
 
   @override

@@ -12,7 +12,13 @@ import 'package:custom_books/features/settings/views/taxes/taxes_page.dart';
 import 'package:custom_books/features/settings/views/templates/templates_page.dart';
 import 'package:custom_books/features/settings/views/payment_gateways/payment_gateways_page.dart';
 import 'package:custom_books/features/settings/views/email_preferences/sender_email_preferences_page.dart';
+import 'package:custom_books/features/settings/views/opening_screen_page.dart';
+import 'package:custom_books/features/settings/views/image_resolution_page.dart';
+import 'package:custom_books/features/settings/views/privacy_security_page.dart';
+import 'package:custom_books/features/settings/views/feedback_page.dart';
+import 'package:custom_books/features/settings/views/about_page.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -195,6 +201,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     label: 'Opening Screen - Default',
                     onTap: () {
                       appLog('📱 Opening Screen tapped', name: 'SettingsPage');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const OpeningScreenPage(),
+                        ),
+                      );
                     },
                   ),
                   _buildSettingsTile(
@@ -205,6 +217,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         '🖼️ Image upload resolution tapped',
                         name: 'SettingsPage',
                       );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ImageResolutionPage(),
+                        ),
+                      );
                     },
                   ),
                   _buildSettingsTile(
@@ -214,6 +232,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       appLog(
                         '🔒 Privacy & Security tapped',
                         name: 'SettingsPage',
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PrivacySecurityPage(),
+                        ),
                       );
                     },
                   ),
@@ -226,6 +250,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     label: 'Feedback',
                     onTap: () {
                       appLog('💬 Feedback tapped', name: 'SettingsPage');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const FeedbackPage()),
+                      );
                     },
                   ),
                   _buildSettingsTile(
@@ -233,6 +261,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     label: 'Share',
                     onTap: () {
                       appLog('🔗 Share tapped', name: 'SettingsPage');
+                      _shareApp();
                     },
                   ),
                   _buildSettingsTile(
@@ -240,6 +269,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     label: 'Rate App',
                     onTap: () {
                       appLog('⭐ Rate App tapped', name: 'SettingsPage');
+                      _rateApp();
                     },
                   ),
                   _buildSettingsTile(
@@ -247,6 +277,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     label: 'About',
                     onTap: () {
                       appLog('ℹ️ About tapped', name: 'SettingsPage');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const AboutPage()),
+                      );
                     },
                   ),
 
@@ -257,6 +291,22 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
         ),
       ),
+    );
+  }
+
+  void _shareApp() {
+    const String message =
+        'Check out Custom Books - a simple and powerful accounting app for your business!\n\nhttps://play.google.com/store/apps';
+    launchUrl(
+      Uri.parse('https://wa.me/?text=${Uri.encodeComponent(message)}'),
+      mode: LaunchMode.externalApplication,
+    );
+  }
+
+  void _rateApp() {
+    launchUrl(
+      Uri.parse('market://details?id=com.example.custom_books'),
+      mode: LaunchMode.externalApplication,
     );
   }
 

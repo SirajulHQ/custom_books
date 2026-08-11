@@ -7,6 +7,8 @@ import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/expenses/models/expense_model.dart';
 import 'package:custom_books/features/expenses/views/add_expense_page.dart';
 import 'package:custom_books/features/expenses/views/expense_details_page.dart';
+import 'package:custom_books/features/expenses/widgets/expense_filter_sheet.dart';
+import 'package:custom_books/features/expenses/widgets/expense_sort_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -137,80 +139,9 @@ class _ExpensesPageState extends State<ExpensesPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        margin: EdgeInsets.all(Dimensions.width15),
-        padding: EdgeInsets.all(Dimensions.width20),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.circular(Dimensions.radius20),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Filter by Status',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.95,
-                fontWeight: FontWeight.w800,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-            _filterOption('All Expenses', null),
-            for (final status in ExpenseStatus.values)
-              _filterOption(status.label, status),
-            SizedBox(height: Dimensions.height10),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _filterOption(String label, ExpenseStatus? status) {
-    final selected = _statusFilter == status;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () {
-        setState(() => _statusFilter = status);
-        Navigator.pop(context);
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width15,
-          vertical: Dimensions.height10,
-        ),
-        decoration: BoxDecoration(
-          color: selected
-              ? Appcolors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: selected
-              ? Border.all(color: Appcolors.primary.withValues(alpha: 0.4))
-              : null,
-        ),
-        child: Row(
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? Appcolors.primary
-                    : context.colors.textPrimary,
-              ),
-            ),
-            const Spacer(),
-            if (selected)
-              Icon(
-                Icons.check_rounded,
-                size: Dimensions.iconSize16,
-                color: Appcolors.primary,
-              ),
-          ],
-        ),
+      builder: (_) => ExpenseFilterSheet(
+        selectedStatus: _statusFilter,
+        onSelected: (status) => setState(() => _statusFilter = status),
       ),
     );
   }
@@ -220,173 +151,15 @@ class _ExpensesPageState extends State<ExpensesPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setSheetState) {
-          return Container(
-            margin: EdgeInsets.all(Dimensions.width15),
-            padding: EdgeInsets.all(Dimensions.width20),
-            decoration: BoxDecoration(
-              color: context.colors.card,
-              borderRadius: BorderRadius.circular(Dimensions.radius20),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Sort By',
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.95,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-                SizedBox(height: Dimensions.height15),
-                for (final field in ExpenseSortField.values)
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: () => setSheetState(() => _sortField = field),
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width15,
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _sortField == field
-                            ? Appcolors.primary.withValues(alpha: 0.08)
-                            : context.colors.surfaceLight,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            field.label,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.8,
-                              fontWeight: _sortField == field
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              color: _sortField == field
-                                  ? Appcolors.primary
-                                  : context.colors.textPrimary,
-                            ),
-                          ),
-                          const Spacer(),
-                          if (_sortField == field)
-                            Icon(
-                              Icons.check_rounded,
-                              size: Dimensions.iconSize16,
-                              color: Appcolors.primary,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                SizedBox(height: Dimensions.height10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _directionButton(
-                        'Ascending',
-                        Icons.arrow_upward_rounded,
-                        SortDirection.ascending,
-                        setSheetState,
-                      ),
-                    ),
-                    SizedBox(width: Dimensions.width10),
-                    Expanded(
-                      child: _directionButton(
-                        'Descending',
-                        Icons.arrow_downward_rounded,
-                        SortDirection.descending,
-                        setSheetState,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: Dimensions.height15),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      setState(() {});
-                      Navigator.pop(context);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Appcolors.primary,
-                      side: const BorderSide(
-                        color: Appcolors.primary,
-                        width: 1.5,
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                    ),
-                    child: const Text('Apply'),
-                  ),
-                ),
-              ],
-            ),
-          );
+      builder: (_) => ExpenseSortSheet(
+        selectedField: _sortField,
+        selectedDirection: _sortDirection,
+        onApply: (field, direction) {
+          setState(() {
+            _sortField = field;
+            _sortDirection = direction;
+          });
         },
-      ),
-    );
-  }
-
-  Widget _directionButton(
-    String label,
-    IconData icon,
-    SortDirection direction,
-    void Function(void Function()) setSheetState,
-  ) {
-    final selected = _sortDirection == direction;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => setSheetState(() => _sortDirection = direction),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-        decoration: BoxDecoration(
-          color: selected
-              ? Appcolors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: selected
-              ? Border.all(color: Appcolors.primary.withValues(alpha: 0.4))
-              : null,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: Dimensions.iconSize16,
-              color: selected
-                  ? Appcolors.primary
-                  : context.colors.textSecondary,
-            ),
-            SizedBox(width: Dimensions.width10 / 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.75,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? Appcolors.primary
-                    : context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
@@ -73,21 +74,11 @@ class _EditUserPageState extends State<EditUserPage> with UnsavedChangesMixin {
 
   void _save() {
     if (_nameController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Name is required'),
-          backgroundColor: Appcolors.warn,
-        ),
-      );
+      ToastificationHelper.showError(context, 'Name is required');
       return;
     }
     if (_emailController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Email Address is required'),
-          backgroundColor: Appcolors.warn,
-        ),
-      );
+      ToastificationHelper.showError(context, 'Email Address is required');
       return;
     }
     markClean();

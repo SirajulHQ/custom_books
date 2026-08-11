@@ -6,6 +6,8 @@ import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/bills/models/bill_model.dart';
 import 'package:custom_books/features/bills/views/add_bill_page.dart';
 import 'package:custom_books/features/bills/views/bill_details_page.dart';
+import 'package:custom_books/features/bills/widgets/bill_filter_sheet.dart';
+import 'package:custom_books/features/bills/widgets/bill_sort_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -149,80 +151,9 @@ class _BillsPageState extends State<BillsPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        margin: EdgeInsets.all(Dimensions.width15),
-        padding: EdgeInsets.all(Dimensions.width20),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.circular(Dimensions.radius20),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Filter by Status',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.95,
-                fontWeight: FontWeight.w800,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-            _filterOption('All Bills', null),
-            for (final status in BillStatus.values)
-              _filterOption(status.label, status),
-            SizedBox(height: Dimensions.height10),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _filterOption(String label, BillStatus? status) {
-    final selected = _statusFilter == status;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () {
-        setState(() => _statusFilter = status);
-        Navigator.pop(context);
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width15,
-          vertical: Dimensions.height10,
-        ),
-        decoration: BoxDecoration(
-          color: selected
-              ? Appcolors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: selected
-              ? Border.all(color: Appcolors.primary.withValues(alpha: 0.4))
-              : null,
-        ),
-        child: Row(
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? Appcolors.primary
-                    : context.colors.textPrimary,
-              ),
-            ),
-            const Spacer(),
-            if (selected)
-              Icon(
-                Icons.check_rounded,
-                size: Dimensions.iconSize16,
-                color: Appcolors.primary,
-              ),
-          ],
-        ),
+      builder: (_) => BillFilterSheet(
+        selectedStatus: _statusFilter,
+        onSelected: (status) => setState(() => _statusFilter = status),
       ),
     );
   }
@@ -232,170 +163,15 @@ class _BillsPageState extends State<BillsPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setSheetState) {
-          return Container(
-            margin: EdgeInsets.all(Dimensions.width15),
-            padding: EdgeInsets.all(Dimensions.width20),
-            decoration: BoxDecoration(
-              color: context.colors.card,
-              borderRadius: BorderRadius.circular(Dimensions.radius20),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Sort By',
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.95,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-                SizedBox(height: Dimensions.height15),
-                for (final field in BillSortField.values)
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: () => setSheetState(() => _sortField = field),
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width15,
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _sortField == field
-                            ? Appcolors.primary.withValues(alpha: 0.08)
-                            : context.colors.surfaceLight,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            field.label,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.8,
-                              fontWeight: _sortField == field
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              color: _sortField == field
-                                  ? Appcolors.primary
-                                  : context.colors.textPrimary,
-                            ),
-                          ),
-                          const Spacer(),
-                          if (_sortField == field)
-                            Icon(
-                              Icons.check_rounded,
-                              size: Dimensions.iconSize16,
-                              color: Appcolors.primary,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                SizedBox(height: Dimensions.height10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _directionButton(
-                        'Ascending',
-                        Icons.arrow_upward_rounded,
-                        SortDirection.ascending,
-                        setSheetState,
-                      ),
-                    ),
-                    SizedBox(width: Dimensions.width10),
-                    Expanded(
-                      child: _directionButton(
-                        'Descending',
-                        Icons.arrow_downward_rounded,
-                        SortDirection.descending,
-                        setSheetState,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: Dimensions.height15),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      setState(() {});
-                      Navigator.pop(context);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Appcolors.primary,
-                      side: const BorderSide(color: Appcolors.primary, width: 1.5),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                    ),
-                    child: const Text('Apply'),
-                  ),
-                ),
-              ],
-            ),
-          );
+      builder: (_) => BillSortSheet(
+        selectedField: _sortField,
+        selectedDirection: _sortDirection,
+        onApply: (field, direction) {
+          setState(() {
+            _sortField = field;
+            _sortDirection = direction;
+          });
         },
-      ),
-    );
-  }
-
-  Widget _directionButton(
-    String label,
-    IconData icon,
-    SortDirection direction,
-    void Function(void Function()) setSheetState,
-  ) {
-    final selected = _sortDirection == direction;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => setSheetState(() => _sortDirection = direction),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-        decoration: BoxDecoration(
-          color: selected
-              ? Appcolors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: selected
-              ? Border.all(color: Appcolors.primary.withValues(alpha: 0.4))
-              : null,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: Dimensions.iconSize16,
-              color: selected
-                  ? Appcolors.primary
-                  : context.colors.textSecondary,
-            ),
-            SizedBox(width: Dimensions.width10 / 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.75,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? Appcolors.primary
-                    : context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -456,200 +232,204 @@ class _BillsPageState extends State<BillsPage> {
         ],
         body: Column(
           children: [
-          if (_searchOpen)
+            if (_searchOpen)
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  Dimensions.height10,
+                  Dimensions.width20,
+                  Dimensions.height15,
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  onChanged: (_) => setState(() {}),
+                  style: TextStyle(fontSize: Dimensions.font16 * 0.85),
+                  decoration: InputDecoration(
+                    hintText: 'Search by vendor or bill number',
+                    hintStyle: TextStyle(color: context.colors.textTertiary),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: context.colors.textTertiary,
+                    ),
+                    filled: true,
+                    fillColor: context.colors.card,
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: Dimensions.height10,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: BorderSide(color: context.colors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: BorderSide(color: context.colors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      borderSide: const BorderSide(
+                        color: Appcolors.primary,
+                        width: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             Padding(
               padding: EdgeInsets.fromLTRB(
                 Dimensions.width20,
-                Dimensions.height10,
+                Dimensions.height10 / 2,
                 Dimensions.width20,
                 Dimensions.height15,
               ),
-              child: TextField(
-                controller: _searchController,
-                autofocus: true,
-                onChanged: (_) => setState(() {}),
-                style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-                decoration: InputDecoration(
-                  hintText: 'Search by vendor or bill number',
-                  hintStyle: TextStyle(color: context.colors.textTertiary),
-                  prefixIcon: Icon(
-                    Icons.search_rounded,
-                    color: context.colors.textTertiary,
-                  ),
-                  filled: true,
-                  fillColor: context.colors.card,
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: Dimensions.height10,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: const BorderSide(
-                      color: Appcolors.primary,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              Dimensions.width20,
-              Dimensions.height10 / 2,
-              Dimensions.width20,
-              Dimensions.height15,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: context.colors.surfaceLight,
-                      borderRadius: BorderRadius.circular(Dimensions.radius30),
-                    ),
-                    child: Row(
-                      children: [
-                        _tabButton('All', 0),
-                        _tabButton('Open', 1),
-                        _tabButton('Overdue', 2),
-                        _tabButton('Paid', 3),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: Dimensions.width10),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: _openFilterSheet,
-                  child: _controlBadge(
-                    _statusFilter == null
-                        ? Icons.filter_list_rounded
-                        : Icons.filter_alt_rounded,
-                    active: _statusFilter != null,
-                  ),
-                ),
-                SizedBox(width: Dimensions.width10 / 2),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: _openSortSheet,
-                  child: _controlBadge(Icons.swap_vert_rounded),
-                ),
-              ],
-            ),
-          ),
-          if (_statusFilter != null)
-            Container(
-              margin: EdgeInsets.fromLTRB(
-                Dimensions.width20,
-                0,
-                Dimensions.width20,
-                Dimensions.height10,
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width15,
-                vertical: Dimensions.height10 / 2,
-              ),
-              decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.07),
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-              ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.filter_alt_rounded,
-                    size: Dimensions.iconSize16,
-                    color: Appcolors.primary,
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: context.colors.surfaceLight,
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius30,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          _tabButton('All', 0),
+                          _tabButton('Open', 1),
+                          _tabButton('Overdue', 2),
+                          _tabButton('Paid', 3),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: Dimensions.width10),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    onTap: _openFilterSheet,
+                    child: _controlBadge(
+                      _statusFilter == null
+                          ? Icons.filter_list_rounded
+                          : Icons.filter_alt_rounded,
+                      active: _statusFilter != null,
+                    ),
                   ),
                   SizedBox(width: Dimensions.width10 / 2),
-                  Text(
-                    'Status: ${_statusFilter!.label}',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.72,
-                      fontWeight: FontWeight.w600,
-                      color: Appcolors.primary,
-                    ),
-                  ),
-                  const Spacer(),
                   InkWell(
-                    onTap: () => setState(() => _statusFilter = null),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
-                    ),
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    onTap: _openSortSheet,
+                    child: _controlBadge(Icons.swap_vert_rounded),
                   ),
                 ],
               ),
             ),
-          Expanded(
-            child: visibleList.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: Dimensions.height45 * 1.6,
-                            height: Dimensions.height45 * 1.6,
-                            decoration: BoxDecoration(
-                              color: Appcolors.primary.withValues(alpha: 0.08),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.description_outlined,
-                              size: Dimensions.iconSize24 * 1.3,
-                              color: Appcolors.primary,
-                            ),
-                          ),
-                          SizedBox(height: Dimensions.height15),
-                          Text(
-                            'No bills found',
-                            style: TextStyle(
-                              fontSize: Dimensions.font16,
-                              fontWeight: FontWeight.w700,
-                              color: context.colors.textPrimary,
-                            ),
-                          ),
-                          SizedBox(height: Dimensions.height10 / 2),
-                          Text(
-                            'Tap the + button to record a new bill.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.75,
-                              color: context.colors.textSecondary,
-                            ),
-                          ),
-                        ],
+            if (_statusFilter != null)
+              Container(
+                margin: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  0,
+                  Dimensions.width20,
+                  Dimensions.height10,
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width15,
+                  vertical: Dimensions.height10 / 2,
+                ),
+                decoration: BoxDecoration(
+                  color: Appcolors.primary.withValues(alpha: 0.07),
+                  borderRadius: BorderRadius.circular(Dimensions.radius15),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.filter_alt_rounded,
+                      size: Dimensions.iconSize16,
+                      color: Appcolors.primary,
+                    ),
+                    SizedBox(width: Dimensions.width10 / 2),
+                    Text(
+                      'Status: ${_statusFilter!.label}',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.72,
+                        fontWeight: FontWeight.w600,
+                        color: Appcolors.primary,
                       ),
                     ),
-                  )
-                : RefreshIndicator(
-                    onRefresh: () async => setState(() {}),
-                    child: ListView.builder(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
+                    const Spacer(),
+                    InkWell(
+                      onTap: () => setState(() => _statusFilter = null),
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: Dimensions.iconSize16,
+                        color: Appcolors.primary,
                       ),
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
-                      ),
-                      itemCount: visibleList.length,
-                      itemBuilder: (context, index) =>
-                          _billTile(visibleList[index]),
                     ),
-                  ),
-          ),
-        ],
+                  ],
+                ),
+              ),
+            Expanded(
+              child: visibleList.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width20,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: Dimensions.height45 * 1.6,
+                              height: Dimensions.height45 * 1.6,
+                              decoration: BoxDecoration(
+                                color: Appcolors.primary.withValues(
+                                  alpha: 0.08,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.description_outlined,
+                                size: Dimensions.iconSize24 * 1.3,
+                                color: Appcolors.primary,
+                              ),
+                            ),
+                            SizedBox(height: Dimensions.height15),
+                            Text(
+                              'No bills found',
+                              style: TextStyle(
+                                fontSize: Dimensions.font16,
+                                fontWeight: FontWeight.w700,
+                                color: context.colors.textPrimary,
+                              ),
+                            ),
+                            SizedBox(height: Dimensions.height10 / 2),
+                            Text(
+                              'Tap the + button to record a new bill.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: Dimensions.font16 * 0.75,
+                                color: context.colors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () async => setState(() {}),
+                      child: ListView.builder(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width20,
+                        ),
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
+                        itemCount: visibleList.length,
+                        itemBuilder: (context, index) =>
+                            _billTile(visibleList[index]),
+                      ),
+                    ),
+            ),
+          ],
         ),
       ),
     );
