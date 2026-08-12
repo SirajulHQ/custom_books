@@ -20,7 +20,7 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
   final TextEditingController _searchController = TextEditingController();
 
   int _selectedTab = 0; // 0: All, 1: Billable, 2: Non-billable
-  bool _searchOpen = false;
+  final bool _searchOpen = false;
   bool? _billableFilter;
   TimeEntrySortField _sortField = TimeEntrySortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;

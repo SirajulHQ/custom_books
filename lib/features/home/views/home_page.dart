@@ -25,7 +25,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedSegment = 0;
-  String _period = 'This Fiscal Year';
+  static const String _period = 'This Fiscal Year';
 
   Future<bool> _showExitDialog() async {
     final result = await showGeneralDialog<bool>(
@@ -279,9 +279,9 @@ class _HomePageState extends State<HomePage> {
       case 0:
         return _buildOverviewContent();
       case 1:
-        return UpdatesContentWidget();
+        return const UpdatesContentWidget();
       case 2:
-        return SupportContentWidget();
+        return const SupportContentWidget();
       default:
         return _buildOverviewContent();
     }

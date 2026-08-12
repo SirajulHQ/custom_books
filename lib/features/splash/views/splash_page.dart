@@ -88,8 +88,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         PageRouteBuilder<void>(
-          pageBuilder: (_, __, ___) => const LoginPage(),
-          transitionsBuilder: (_, animation, __, child) {
+          pageBuilder: (context, animation1, animation2) => const LoginPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
           transitionDuration: const Duration(milliseconds: 500),

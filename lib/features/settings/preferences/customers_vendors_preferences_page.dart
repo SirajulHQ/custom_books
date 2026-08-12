@@ -24,10 +24,10 @@ class _CustomersVendorsPreferencesPageState
   bool _allowDuplicates = true;
   bool _enableCreditLimit = false;
 
-  String _billingAddressFormat =
+  final String _billingAddressFormat =
       '\${CONTACT.CONTACT_DISPLAYNAME}\n\${CONTACT.CONTACT_ADDRESS}\n\${CONTACT.CONTACT_CITY}\n\${CONTACT.CONTACT_CODE} \$\n{CONTACT.CONTACT_STATE}\n\${CONTACT.CONTACT_COUNTRY}\n\${CONTACT.TRN_LABEL} \${CONTACT.TRN}';
 
-  String _shippingAddressFormat =
+  final String _shippingAddressFormat =
       '\${CONTACT.CONTACT_ADDRESS}\n\${CONTACT.CONTACT_CITY}\n\${CONTACT.CONTACT_CODE} \$\n{CONTACT.CONTACT_STATE}\n\${CONTACT.CONTACT_COUNTRY}\n\${CONTACT.TRN_LABEL} \${CONTACT.TRN}';
 
   @override
@@ -194,7 +194,7 @@ class _CustomersVendorsPreferencesPageState
                     value: _enableCreditLimit,
                     onChanged: (val) =>
                         setState(() => _enableCreditLimit = val),
-                    activeColor: Appcolors.primary,
+                    activeThumbColor: Appcolors.primary,
                   ),
                 ],
               ),
@@ -369,12 +369,14 @@ class _CustomersVendorsPreferencesPageState
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Radio<bool>(
-            value: true,
+          RadioGroup<bool>(
             groupValue: selected ? true : null,
             onChanged: (_) => onTap(),
-            activeColor: Appcolors.primary,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            child: Radio<bool>(
+              value: true,
+              activeColor: Appcolors.primary,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
           ),
           Text(
             label,

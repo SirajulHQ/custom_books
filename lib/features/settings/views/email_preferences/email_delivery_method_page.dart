@@ -107,13 +107,15 @@ class _EmailDeliveryMethodPageState extends State<EmailDeliveryMethodPage> {
             ),
           ),
           SizedBox(width: Dimensions.width10),
-          Radio<String>(
-            value: value,
+          RadioGroup<String>(
             groupValue: _selectedMethod,
             onChanged: (val) {
               if (val != null) setState(() => _selectedMethod = val);
             },
-            activeColor: Appcolors.primary,
+            child: Radio<String>(
+              value: value,
+              activeColor: Appcolors.primary,
+            ),
           ),
         ],
       ),

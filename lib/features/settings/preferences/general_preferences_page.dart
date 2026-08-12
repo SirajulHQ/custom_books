@@ -57,7 +57,7 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
   bool _addSalesperson = true;
 
   // Organization Address Format
-  String _orgAddressFormat =
+  final String _orgAddressFormat =
       '{ORGANIZATION.POSTAL_CODE}\n\${ORGANIZATION.COUNTRY}\n\${ORGANIZATION.TRN_LABEL} \$\n{ORGANIZATION.TRN_VALUE}\n\${ORGANIZATION.PHONE}\n\${ORGANIZATION.EMAIL}\n\${ORGANIZATION.WEBSITE}';
 
   @override
@@ -370,12 +370,14 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
         padding: EdgeInsets.symmetric(vertical: Dimensions.height10 / 2),
         child: Row(
           children: [
-            Radio<bool>(
-              value: true,
+            RadioGroup<bool>(
               groupValue: selected ? true : null,
               onChanged: (_) => onTap(),
-              activeColor: Appcolors.primary,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              child: Radio<bool>(
+                value: true,
+                activeColor: Appcolors.primary,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
             ),
             SizedBox(width: Dimensions.width10 / 2),
             Expanded(

@@ -233,7 +233,7 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
               ),
               SizedBox(width: Dimensions.width10),
               Expanded(
-                child: _StatCard(label: 'Unbilled Expenses', value: 'AED0.00'),
+                child: _StatCard(label: 'Unbilled Expenses', value: '₹0.00'),
               ),
             ],
           ),
