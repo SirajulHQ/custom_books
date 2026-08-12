@@ -5,6 +5,7 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/bills/models/bill_model.dart';
+import 'package:custom_books/features/bills/widgets/vendor_picker_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -70,53 +71,7 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
       context: context,
       showDragHandle: true,
       backgroundColor: context.colors.card,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(Dimensions.width15),
-              child: Text(
-                'Select Vendor',
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 1.1,
-                  fontWeight: FontWeight.w700,
-                  color: context.colors.textPrimary,
-                ),
-              ),
-            ),
-            const Divider(height: 1),
-            Flexible(
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  ..._vendors.map(
-                    (name) => ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Appcolors.primary.withValues(
-                          alpha: 0.1,
-                        ),
-                        child: Text(
-                          name.substring(0, 1).toUpperCase(),
-                          style: TextStyle(
-                            color: Appcolors.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      title: Text(
-                        name,
-                        style: TextStyle(color: context.colors.textPrimary),
-                      ),
-                      onTap: () => Navigator.pop(context, name),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+      builder: (_) => VendorPickerSheet(vendors: _vendors),
     );
     if (selected != null) {
       setState(() => _vendorName = selected);
@@ -247,10 +202,45 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
                         children: [
                           const RequiredLabel(text: 'Vendor'),
                           SizedBox(height: Dimensions.height10 / 2),
-                          _selectorField(
-                            value: _vendorName,
-                            hint: 'Select a vendor',
+                          InkWell(
                             onTap: _selectVendor,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: Dimensions.height10,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: context.colors.border,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _vendorName ?? "Select a vendor",
+                                      style: TextStyle(
+                                        fontSize: Dimensions.font16 * 0.9,
+                                        color: _vendorName == null
+                                            ? context.colors.textTertiary
+                                            : context.colors.textPrimary,
+                                        fontWeight: _vendorName == null
+                                            ? FontWeight.normal
+                                            : FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_drop_down_rounded,
+                                    size: Dimensions.iconSize24,
+                                    color: context.colors.textSecondary,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                           SizedBox(height: Dimensions.height20),
 
@@ -259,7 +249,27 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
                           TextField(
                             controller: _billNumController,
                             style: FormTextStyles.value(context),
-                            decoration: _underlineDecoration(),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: Dimensions.height10,
+                              ),
+                              border: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: context.colors.border,
+                                ),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: context.colors.border,
+                                ),
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Appcolors.primary,
+                                ),
+                              ),
+                            ),
                           ),
                           SizedBox(height: Dimensions.height20),
 
@@ -301,62 +311,6 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  InputDecoration _underlineDecoration() {
-    return InputDecoration(
-      isDense: true,
-      contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-      border: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.border),
-      ),
-      enabledBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colors.border),
-      ),
-      focusedBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Appcolors.primary),
-      ),
-    );
-  }
-
-  Widget _selectorField({
-    required String? value,
-    required String hint,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: context.colors.border)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
-                value ?? hint,
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.9,
-                  color: value == null
-                      ? context.colors.textTertiary
-                      : context.colors.textPrimary,
-                  fontWeight: value == null
-                      ? FontWeight.normal
-                      : FontWeight.w600,
-                ),
-              ),
-            ),
-            Icon(
-              Icons.arrow_drop_down_rounded,
-              size: Dimensions.iconSize24,
-              color: context.colors.textSecondary,
-            ),
-          ],
         ),
       ),
     );

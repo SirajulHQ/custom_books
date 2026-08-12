@@ -5,11 +5,13 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/bills/models/bill_model.dart';
 import 'package:custom_books/features/bills/views/add_bill_page.dart';
-import 'package:custom_books/features/bills/views/bill_details_page.dart';
 import 'package:custom_books/features/bills/widgets/bill_filter_sheet.dart';
 import 'package:custom_books/features/bills/widgets/bill_sort_sheet.dart';
+import 'package:custom_books/features/bills/widgets/bills_list_body.dart';
+import 'package:custom_books/features/bills/widgets/bill_tab_button.dart';
+import 'package:custom_books/features/bills/widgets/bill_control_badge.dart';
+import 'package:custom_books/features/bills/widgets/bill_active_filter_chip.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class BillsPage extends StatefulWidget {
   final int initialTab;
@@ -295,10 +297,38 @@ class _BillsPageState extends State<BillsPage> {
                       ),
                       child: Row(
                         children: [
-                          _tabButton('All', 0),
-                          _tabButton('Open', 1),
-                          _tabButton('Overdue', 2),
-                          _tabButton('Paid', 3),
+                          BillTabButton(
+                            label: 'All',
+                            selected: _selectedTab == 0,
+                            onTap: () => setState(() {
+                              _selectedTab = 0;
+                              _statusFilter = null;
+                            }),
+                          ),
+                          BillTabButton(
+                            label: 'Open',
+                            selected: _selectedTab == 1,
+                            onTap: () => setState(() {
+                              _selectedTab = 1;
+                              _statusFilter = null;
+                            }),
+                          ),
+                          BillTabButton(
+                            label: 'Overdue',
+                            selected: _selectedTab == 2,
+                            onTap: () => setState(() {
+                              _selectedTab = 2;
+                              _statusFilter = null;
+                            }),
+                          ),
+                          BillTabButton(
+                            label: 'Paid',
+                            selected: _selectedTab == 3,
+                            onTap: () => setState(() {
+                              _selectedTab = 3;
+                              _statusFilter = null;
+                            }),
+                          ),
                         ],
                       ),
                     ),
@@ -307,8 +337,8 @@ class _BillsPageState extends State<BillsPage> {
                   InkWell(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
                     onTap: _openFilterSheet,
-                    child: _controlBadge(
-                      _statusFilter == null
+                    child: BillControlBadge(
+                      icon: _statusFilter == null
                           ? Icons.filter_list_rounded
                           : Icons.filter_alt_rounded,
                       active: _statusFilter != null,
@@ -318,328 +348,25 @@ class _BillsPageState extends State<BillsPage> {
                   InkWell(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
                     onTap: _openSortSheet,
-                    child: _controlBadge(Icons.swap_vert_rounded),
+                    child: const BillControlBadge(
+                      icon: Icons.swap_vert_rounded,
+                    ),
                   ),
                 ],
               ),
             ),
             if (_statusFilter != null)
-              Container(
-                margin: EdgeInsets.fromLTRB(
-                  Dimensions.width20,
-                  0,
-                  Dimensions.width20,
-                  Dimensions.height10,
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.width15,
-                  vertical: Dimensions.height10 / 2,
-                ),
-                decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.07),
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.filter_alt_rounded,
-                      size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
-                    ),
-                    SizedBox(width: Dimensions.width10 / 2),
-                    Text(
-                      'Status: ${_statusFilter!.label}',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.72,
-                        fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
-                      ),
-                    ),
-                    const Spacer(),
-                    InkWell(
-                      onTap: () => setState(() => _statusFilter = null),
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
-                      ),
-                    ),
-                  ],
-                ),
+              BillActiveFilterChip(
+                label: _statusFilter!.label,
+                onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
-              child: visibleList.isEmpty
-                  ? Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width20,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: Dimensions.height45 * 1.6,
-                              height: Dimensions.height45 * 1.6,
-                              decoration: BoxDecoration(
-                                color: Appcolors.primary.withValues(
-                                  alpha: 0.08,
-                                ),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.description_outlined,
-                                size: Dimensions.iconSize24 * 1.3,
-                                color: Appcolors.primary,
-                              ),
-                            ),
-                            SizedBox(height: Dimensions.height15),
-                            Text(
-                              'No bills found',
-                              style: TextStyle(
-                                fontSize: Dimensions.font16,
-                                fontWeight: FontWeight.w700,
-                                color: context.colors.textPrimary,
-                              ),
-                            ),
-                            SizedBox(height: Dimensions.height10 / 2),
-                            Text(
-                              'Tap the + button to record a new bill.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.75,
-                                color: context.colors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : RefreshIndicator(
-                      onRefresh: () async => setState(() {}),
-                      child: ListView.builder(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width20,
-                        ),
-                        physics: const AlwaysScrollableScrollPhysics(
-                          parent: BouncingScrollPhysics(),
-                        ),
-                        itemCount: visibleList.length,
-                        itemBuilder: (context, index) =>
-                            _billTile(visibleList[index]),
-                      ),
-                    ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _tabButton(String label, int index) {
-    final selected = _selectedTab == index;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() {
-          _selectedTab = index;
-          _statusFilter = null;
-        }),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-          decoration: BoxDecoration(
-            color: selected ? context.colors.card : Colors.transparent,
-            borderRadius: BorderRadius.circular(Dimensions.radius30),
-            border: selected
-                ? Border.all(
-                    color: Appcolors.primary.withValues(alpha: 0.3),
-                    width: 1.5,
-                  )
-                : null,
-            boxShadow: selected
-                ? [
-                    BoxShadow(
-                      color: Appcolors.primary.withValues(alpha: 0.08),
-                      blurRadius: Dimensions.radius15 * 0.53,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : null,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.68,
-              fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
-              color: selected
-                  ? Appcolors.primary
-                  : context.colors.textSecondary,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _controlBadge(IconData icon, {bool active = false}) {
-    return Container(
-      width: Dimensions.height45 * 0.9,
-      height: Dimensions.height45 * 0.9,
-      decoration: BoxDecoration(
-        color: (active ? Appcolors.accent : Appcolors.primary).withValues(
-          alpha: 0.1,
-        ),
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-      ),
-      child: Icon(
-        icon,
-        size: Dimensions.iconSize24 - 4,
-        color: active ? Appcolors.accent : Appcolors.primary,
-      ),
-    );
-  }
-
-  Widget _billTile(BillModel bill) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => BillDetailsPage(bill: bill)),
-      ),
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10),
-        padding: EdgeInsets.all(Dimensions.width15),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: context.colors.border),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: Dimensions.height45 * 0.78,
-              height: Dimensions.height45 * 0.78,
-              decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
-              ),
-              child: Icon(
-                Icons.description_outlined,
-                color: Appcolors.primary,
-                size: Dimensions.iconSize24 - 4,
-              ),
-            ),
-            SizedBox(width: Dimensions.width15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    bill.vendorName,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.95,
-                      fontWeight: FontWeight.w700,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_today_rounded,
-                        size: Dimensions.iconSize16 - 2,
-                        color: context.colors.textTertiary,
-                      ),
-                      SizedBox(width: Dimensions.width10 / 2),
-                      Text(
-                        DateFormat('dd MMM yyyy').format(bill.billDate),
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textSecondary,
-                        ),
-                      ),
-                      Text(
-                        '  •  ',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textTertiary,
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          bill.billNumber,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.7,
-                            color: context.colors.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.event_busy_rounded,
-                        size: Dimensions.iconSize16 - 2,
-                        color: context.colors.textTertiary,
-                      ),
-                      SizedBox(width: Dimensions.width10 / 2),
-                      Text(
-                        'Due ${DateFormat('dd MMM yyyy').format(bill.dueDate)}',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  _statusChip(bill.status),
-                ],
-              ),
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              '₹${bill.total.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.9,
-                fontWeight: FontWeight.w800,
-                color: Appcolors.primary,
+              child: BillsListBody(
+                bills: visibleList,
+                onRefresh: () => setState(() {}),
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statusChip(BillStatus status) {
-    final color = switch (status) {
-      BillStatus.draft => Colors.grey,
-      BillStatus.open => Appcolors.primaryLight,
-      BillStatus.overdue => Appcolors.error,
-      BillStatus.paid => Appcolors.success,
-      BillStatus.partiallyPaid => Appcolors.warning,
-    };
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width10,
-        vertical: Dimensions.height10 * 0.2,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(Dimensions.radius30),
-      ),
-      child: Text(
-        status.label,
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.6,
-          color: color,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
         ),
       ),
     );

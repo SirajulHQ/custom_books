@@ -1,3 +1,6 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:flutter/material.dart';
+
 enum BillStatus { draft, open, overdue, paid, partiallyPaid }
 
 extension BillStatusLabel on BillStatus {
@@ -7,6 +10,14 @@ extension BillStatusLabel on BillStatus {
     BillStatus.overdue => 'OVERDUE',
     BillStatus.paid => 'PAID',
     BillStatus.partiallyPaid => 'PARTIALLY PAID',
+  };
+
+  Color get color => switch (this) {
+    BillStatus.draft => Colors.grey,
+    BillStatus.open => Appcolors.primaryLight,
+    BillStatus.overdue => Appcolors.error,
+    BillStatus.paid => Appcolors.success,
+    BillStatus.partiallyPaid => Appcolors.warning,
   };
 }
 

@@ -2,11 +2,11 @@ enum SalesOrderStatus { draft, confirmed, invoiced, cancelled }
 
 extension SalesOrderStatusLabel on SalesOrderStatus {
   String get label => switch (this) {
-        SalesOrderStatus.draft => 'DRAFT',
-        SalesOrderStatus.confirmed => 'CONFIRMED',
-        SalesOrderStatus.invoiced => 'INVOICED',
-        SalesOrderStatus.cancelled => 'CANCELLED',
-      };
+    SalesOrderStatus.draft => 'DRAFT',
+    SalesOrderStatus.confirmed => 'CONFIRMED',
+    SalesOrderStatus.invoiced => 'INVOICED',
+    SalesOrderStatus.cancelled => 'CANCELLED',
+  };
 }
 
 enum SalesOrderSortField {
@@ -20,13 +20,13 @@ enum SalesOrderSortField {
 
 extension SalesOrderSortFieldLabel on SalesOrderSortField {
   String get label => switch (this) {
-        SalesOrderSortField.createdTime => 'Created Time',
-        SalesOrderSortField.date => 'Date',
-        SalesOrderSortField.salesOrderNumber => 'Sales Order#',
-        SalesOrderSortField.referenceNumber => 'Reference#',
-        SalesOrderSortField.customerName => 'Customer Name',
-        SalesOrderSortField.amount => 'Amount',
-      };
+    SalesOrderSortField.createdTime => 'Created Time',
+    SalesOrderSortField.date => 'Date',
+    SalesOrderSortField.salesOrderNumber => 'Sales Order#',
+    SalesOrderSortField.referenceNumber => 'Reference#',
+    SalesOrderSortField.customerName => 'Customer Name',
+    SalesOrderSortField.amount => 'Amount',
+  };
 }
 
 enum SortDirection { ascending, descending }
