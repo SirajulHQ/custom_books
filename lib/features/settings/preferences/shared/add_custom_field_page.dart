@@ -329,7 +329,7 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
                             value: _isMandatory,
                             onChanged: (val) =>
                                 setState(() => _isMandatory = val),
-                            activeThumbColor: Colors.white,
+                            activeColor: Colors.white,
                             activeTrackColor: Appcolors.primary,
                             inactiveThumbColor: Colors.white,
                             inactiveTrackColor: context.colors.border,
@@ -354,7 +354,7 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
                             value: _showInAllPdf,
                             onChanged: (val) =>
                                 setState(() => _showInAllPdf = val),
-                            activeThumbColor: Colors.white,
+                            activeColor: Colors.white,
                             activeTrackColor: Appcolors.primary,
                             inactiveThumbColor: Colors.white,
                             inactiveTrackColor: context.colors.border,
@@ -378,14 +378,12 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RadioGroup<bool>(
+          Radio<bool>(
+            value: true,
             groupValue: selected ? true : null,
             onChanged: (_) => onTap(),
-            child: Radio<bool>(
-              value: true,
-              activeColor: Appcolors.primary,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
+            activeColor: Appcolors.primary,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           SizedBox(width: Dimensions.width10 / 2),
           Expanded(

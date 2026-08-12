@@ -96,7 +96,7 @@ class _ItemSettingsPageState extends State<ItemSettingsPage> {
                               value: _enableInventory,
                               onChanged: (val) =>
                                   setState(() => _enableInventory = val),
-                              activeThumbColor: Appcolors.primary,
+                              activeColor: Appcolors.primary,
                             ),
                           ],
                         ),
@@ -163,7 +163,7 @@ class _ItemSettingsPageState extends State<ItemSettingsPage> {
                                 value: _notifyReorderPoint,
                                 onChanged: (val) =>
                                     setState(() => _notifyReorderPoint = val),
-                                activeThumbColor: Appcolors.primary,
+                                activeColor: Appcolors.primary,
                               ),
                             ],
                           ),

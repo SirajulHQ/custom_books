@@ -713,49 +713,46 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                       Text('Tax', style: FormTextStyles.label()),
                       Row(
                         children: [
-                          RadioGroup<bool>(
-                            groupValue: _taxInclusive,
-                            onChanged: (val) =>
-                                setState(() => _taxInclusive = val!),
+                          GestureDetector(
+                            onTap: () => setState(() => _taxInclusive = false),
                             child: Row(
                               children: [
-                                GestureDetector(
-                                  onTap: () => setState(() => _taxInclusive = false),
-                                  child: Row(
-                                    children: [
-                                      Radio<bool>(
-                                        value: false,
-                                        activeColor: Appcolors.primary,
-                                      ),
-                                      Text(
-                                        'Exclusive',
-                                        style: TextStyle(
-                                          fontSize: Dimensions.font16 * 0.9,
-                                          fontWeight: FontWeight.w600,
-                                          color: context.colors.textPrimary,
-                                        ),
-                                      ),
-                                    ],
+                                Radio<bool>(
+                                  value: false,
+                                  groupValue: _taxInclusive,
+                                  activeColor: Appcolors.primary,
+                                  onChanged: (val) =>
+                                      setState(() => _taxInclusive = val!),
+                                ),
+                                Text(
+                                  'Exclusive',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.colors.textPrimary,
                                   ),
                                 ),
-                                SizedBox(width: Dimensions.width15),
-                                GestureDetector(
-                                  onTap: () => setState(() => _taxInclusive = true),
-                                  child: Row(
-                                    children: [
-                                      Radio<bool>(
-                                        value: true,
-                                        activeColor: Appcolors.primary,
-                                      ),
-                                      Text(
-                                        'Inclusive',
-                                        style: TextStyle(
-                                          fontSize: Dimensions.font16 * 0.9,
-                                          fontWeight: FontWeight.w600,
-                                          color: context.colors.textPrimary,
-                                        ),
-                                      ),
-                                    ],
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: Dimensions.width15),
+                          GestureDetector(
+                            onTap: () => setState(() => _taxInclusive = true),
+                            child: Row(
+                              children: [
+                                Radio<bool>(
+                                  value: true,
+                                  groupValue: _taxInclusive,
+                                  activeColor: Appcolors.primary,
+                                  onChanged: (val) =>
+                                      setState(() => _taxInclusive = val!),
+                                ),
+                                Text(
+                                  'Inclusive',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.colors.textPrimary,
                                   ),
                                 ),
                               ],

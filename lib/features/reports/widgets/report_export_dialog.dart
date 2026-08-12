@@ -606,13 +606,11 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
           SizedBox(
             width: Dimensions.iconSize24,
             height: Dimensions.iconSize24,
-            child: RadioGroup<String>(
+            child: Radio<String>(
+              value: value,
               groupValue: _language,
               onChanged: (v) => setState(() => _language = v!),
-              child: Radio<String>(
-                value: value,
-                activeColor: Appcolors.primary,
-              ),
+              activeColor: Appcolors.primary,
             ),
           ),
           SizedBox(width: Dimensions.width10),
@@ -634,13 +632,11 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
         SizedBox(
           width: Dimensions.iconSize24,
           height: Dimensions.iconSize24,
-          child: RadioGroup<String>(
+          child: Radio<String>(
+            value: value,
             groupValue: _orientation,
             onChanged: (v) => setState(() => _orientation = v!),
-            child: Radio<String>(
-              value: value,
-              activeColor: Appcolors.primary,
-            ),
+            activeColor: Appcolors.primary,
           ),
         ),
         SizedBox(width: Dimensions.width10 / 2),

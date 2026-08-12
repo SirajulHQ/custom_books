@@ -187,7 +187,7 @@ class _TaxSettingsPageState extends State<TaxSettingsPage>
                                 value: _isRegistered,
                                 onChanged: (val) =>
                                     setState(() => _isRegistered = val),
-                                activeThumbColor: Appcolors.primary,
+                                activeColor: Appcolors.primary,
                               ),
                             ],
                           ),
@@ -252,7 +252,7 @@ class _TaxSettingsPageState extends State<TaxSettingsPage>
                                 onChanged: (val) => setState(
                                   () => _enableInternationalTrade = val,
                                 ),
-                                activeThumbColor: Appcolors.primary,
+                                activeColor: Appcolors.primary,
                               ),
                             ],
                           ),

@@ -148,7 +148,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 vertical: Dimensions.height20,
               ),
               itemCount: _notifications.length,
-              separatorBuilder: (context, index) =>
+              separatorBuilder: (_, __) =>
                   SizedBox(height: Dimensions.height10),
               itemBuilder: (_, i) => _NotificationCard(item: _notifications[i]),
             ),

@@ -437,52 +437,50 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                               Text('Billable', style: FormTextStyles.label()),
                               Row(
                                 children: [
-                                  RadioGroup<bool>(
-                                    groupValue: _isBillable,
-                                    onChanged: (val) => setState(
-                                      () => _isBillable = val!,
-                                    ),
+                                  GestureDetector(
+                                    onTap: () =>
+                                        setState(() => _isBillable = true),
                                     child: Row(
                                       children: [
-                                        GestureDetector(
-                                          onTap: () =>
-                                              setState(() => _isBillable = true),
-                                          child: Row(
-                                            children: [
-                                              Radio<bool>(
-                                                value: true,
-                                                activeColor: Appcolors.primary,
-                                              ),
-                                              Text(
-                                                'Billable',
-                                                style: TextStyle(
-                                                  fontSize: Dimensions.font16 * 0.9,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: context.colors.textPrimary,
-                                                ),
-                                              ),
-                                            ],
+                                        Radio<bool>(
+                                          value: true,
+                                          groupValue: _isBillable,
+                                          activeColor: Appcolors.primary,
+                                          onChanged: (val) => setState(
+                                            () => _isBillable = val!,
                                           ),
                                         ),
-                                        SizedBox(width: Dimensions.width15),
-                                        GestureDetector(
-                                          onTap: () =>
-                                              setState(() => _isBillable = false),
-                                          child: Row(
-                                            children: [
-                                              Radio<bool>(
-                                                value: false,
-                                                activeColor: Appcolors.primary,
-                                              ),
-                                              Text(
-                                                'Non-billable',
-                                                style: TextStyle(
-                                                  fontSize: Dimensions.font16 * 0.9,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: context.colors.textPrimary,
-                                                ),
-                                              ),
-                                            ],
+                                        Text(
+                                          'Billable',
+                                          style: TextStyle(
+                                            fontSize: Dimensions.font16 * 0.9,
+                                            fontWeight: FontWeight.w600,
+                                            color: context.colors.textPrimary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: Dimensions.width15),
+                                  GestureDetector(
+                                    onTap: () =>
+                                        setState(() => _isBillable = false),
+                                    child: Row(
+                                      children: [
+                                        Radio<bool>(
+                                          value: false,
+                                          groupValue: _isBillable,
+                                          activeColor: Appcolors.primary,
+                                          onChanged: (val) => setState(
+                                            () => _isBillable = val!,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Non-billable',
+                                          style: TextStyle(
+                                            fontSize: Dimensions.font16 * 0.9,
+                                            fontWeight: FontWeight.w600,
+                                            color: context.colors.textPrimary,
                                           ),
                                         ),
                                       ],

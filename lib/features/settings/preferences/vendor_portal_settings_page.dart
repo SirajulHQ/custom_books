@@ -166,7 +166,7 @@ class _VendorPortalSettingsPageState extends State<VendorPortalSettingsPage> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: Colors.white,
+            activeColor: Colors.white,
             activeTrackColor: Appcolors.primary,
             inactiveThumbColor: Colors.white,
             inactiveTrackColor: context.colors.border,
