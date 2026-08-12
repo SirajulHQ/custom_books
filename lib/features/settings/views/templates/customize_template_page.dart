@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/features/settings/views/templates/template_preview_colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomizeTemplatePage extends StatefulWidget {
@@ -597,7 +598,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.5),
-        border: Border.all(color: const Color(0xFFEEF2F6)),
+        border: Border.all(color: TemplatePreviewColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -616,7 +617,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.72,
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1A202C),
+                        color: TemplatePreviewColors.heading,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10 * 0.3),
@@ -624,7 +625,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                       'Dubai\nUnited Arab Emirates\nTRN 100123456700003\n9967484826\nmisellaneous4825@gmail.com',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.52,
-                        color: const Color(0xFF4A5568),
+                        color: TemplatePreviewColors.body,
                         height: 1.5,
                       ),
                     ),
@@ -649,7 +650,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                       '# INV-17',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.55,
-                        color: const Color(0xFF718096),
+                        color: TemplatePreviewColors.label,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10 * 0.3),
@@ -682,7 +683,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.5,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFF718096),
+                        color: TemplatePreviewColors.label,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10 * 0.2),
@@ -690,7 +691,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                       'Jack & Joe Trading\nBox No. 576\nDubai\n94588 Dubai\nEmirates',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.52,
-                        color: const Color(0xFF2D3748),
+                        color: TemplatePreviewColors.medium,
                         height: 1.5,
                       ),
                     ),
@@ -719,14 +720,14 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.5,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF718096),
+              color: TemplatePreviewColors.label,
             ),
           ),
           Text(
             'Description',
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.5,
-              color: const Color(0xFF4A5568),
+              color: TemplatePreviewColors.body,
             ),
           ),
           SizedBox(height: Dimensions.height10),
@@ -821,7 +822,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.55,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF1A202C),
+                    color: TemplatePreviewColors.heading,
                   ),
                 ),
                 Text(
@@ -843,7 +844,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.58,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF1A202C),
+              color: TemplatePreviewColors.heading,
             ),
           ),
           SizedBox(height: Dimensions.height10 * 0.5),
@@ -908,7 +909,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.58,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF1A202C),
+              color: TemplatePreviewColors.heading,
             ),
           ),
           SizedBox(height: Dimensions.height10 * 0.2),
@@ -917,7 +918,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.5,
               fontStyle: FontStyle.italic,
-              color: const Color(0xFF4A5568),
+              color: TemplatePreviewColors.body,
             ),
           ),
           SizedBox(height: Dimensions.height10),
@@ -928,7 +929,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.58,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF1A202C),
+              color: TemplatePreviewColors.heading,
             ),
           ),
           SizedBox(height: Dimensions.height10 * 0.2),
@@ -936,7 +937,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
             'Your company\'s Terms and Conditions will be displayed here. You can edit in the more "settings page under settings".',
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.48,
-              color: const Color(0xFF4A5568),
+              color: TemplatePreviewColors.body,
               height: 1.4,
             ),
           ),
@@ -951,7 +952,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.58,
                 fontWeight: FontWeight.w700,
-                color: const Color(0xFF1A202C),
+                color: TemplatePreviewColors.heading,
               ),
             ),
             SizedBox(height: Dimensions.height10 * 0.2),
@@ -959,7 +960,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
               _bankDetails!,
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.5,
-                color: const Color(0xFF4A5568),
+                color: TemplatePreviewColors.body,
               ),
             ),
             SizedBox(height: Dimensions.height10),
@@ -977,7 +978,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                   Container(
                     width: Dimensions.height45 * 2.2,
                     height: 1,
-                    color: const Color(0xFFCBD5E0),
+                    color: TemplatePreviewColors.divider,
                     margin: EdgeInsets.only(bottom: Dimensions.height10 * 0.5),
                   ),
                   Text(
@@ -985,14 +986,14 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.52,
                       fontWeight: FontWeight.w500,
-                      color: const Color(0xFF2D3748),
+                      color: TemplatePreviewColors.medium,
                     ),
                   ),
                   Text(
                     'Authorized Signatory',
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.45,
-                      color: const Color(0xFF718096),
+                      color: TemplatePreviewColors.label,
                     ),
                   ),
                 ],
@@ -1016,7 +1017,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
             '$label ',
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.48,
-              color: const Color(0xFF718096),
+              color: TemplatePreviewColors.label,
             ),
           ),
           Text(
@@ -1024,7 +1025,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.48,
               fontWeight: FontWeight.w500,
-              color: const Color(0xFF2D3748),
+              color: TemplatePreviewColors.medium,
             ),
           ),
         ],
@@ -1077,7 +1078,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
               item,
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.43,
-                color: const Color(0xFF2D3748),
+                color: TemplatePreviewColors.medium,
                 height: 1.4,
               ),
             ),
@@ -1098,7 +1099,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
         text,
         style: TextStyle(
           fontSize: Dimensions.font16 * 0.43,
-          color: const Color(0xFF2D3748),
+          color: TemplatePreviewColors.medium,
         ),
         textAlign: TextAlign.center,
       ),
@@ -1127,7 +1128,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.45,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF4A5568),
+                color: TemplatePreviewColors.body,
               ),
               textAlign: TextAlign.center,
             ),
@@ -1157,7 +1158,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.52,
               fontWeight: isBold ? FontWeight.w700 : FontWeight.w500,
-              color: const Color(0xFF4A5568),
+              color: TemplatePreviewColors.body,
             ),
           ),
           SizedBox(width: Dimensions.width20),
@@ -1169,7 +1170,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.52,
                 fontWeight: isBold ? FontWeight.w700 : FontWeight.w500,
-                color: valueColor ?? const Color(0xFF1A202C),
+                color: valueColor ?? TemplatePreviewColors.heading,
               ),
             ),
           ),
@@ -1198,7 +1199,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.48,
                 fontWeight: isBold ? FontWeight.w700 : FontWeight.w400,
-                color: const Color(0xFF2D3748),
+                color: TemplatePreviewColors.medium,
               ),
             ),
           ),
@@ -1210,7 +1211,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.48,
                 fontWeight: isBold ? FontWeight.w700 : FontWeight.w400,
-                color: const Color(0xFF2D3748),
+                color: TemplatePreviewColors.medium,
               ),
             ),
           ),
@@ -1222,7 +1223,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.48,
                 fontWeight: isBold ? FontWeight.w700 : FontWeight.w400,
-                color: const Color(0xFF2D3748),
+                color: TemplatePreviewColors.medium,
               ),
             ),
           ),

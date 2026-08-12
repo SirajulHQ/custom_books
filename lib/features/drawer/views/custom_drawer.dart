@@ -225,22 +225,7 @@ class _DrawerViewState extends State<DrawerView> {
                   ),
                   onCustomTap: () {
                     appLog('🛍️ Items button tapped', name: 'DrawerNavigation');
-
-                    // If already on Items page, just close the drawer
-                    if (widget.currentRoute == 'items') {
-                      appLog(
-                        '⚠️ Already on Items page, just closing drawer',
-                        name: 'DrawerNavigation',
-                      );
-                      Navigator.pop(context);
-                      return;
-                    }
-
-                    appLog(
-                      '📍 Navigating to ItemsPage...',
-                      name: 'DrawerNavigation',
-                    );
-                    _navigateToTopLevel(const ItemsPage());
+                    _navigateToSub('items', const ItemsPage());
                   },
                 ),
 
@@ -264,21 +249,10 @@ class _DrawerViewState extends State<DrawerView> {
                     );
 
                     if (subItem == 'Inventory Adjustments') {
-                      // If already on Inventory Adjustments page, just close the drawer
-                      if (widget.currentRoute == 'inventory_adjustments') {
-                        appLog(
-                          '⚠️ Already on Inventory Adjustments page, just closing drawer',
-                          name: 'DrawerNavigation',
-                        );
-                        Navigator.pop(context);
-                        return;
-                      }
-
-                      appLog(
-                        '📍 Navigating to InventoryAdjustmentsPage...',
-                        name: 'DrawerNavigation',
+                      _navigateToSub(
+                        'inventory_adjustments',
+                        const InventoryAdjustmentsPage(),
                       );
-                      _navigateToTopLevel(const InventoryAdjustmentsPage());
                     }
                   },
                 ),
@@ -295,22 +269,7 @@ class _DrawerViewState extends State<DrawerView> {
                       '🏦 Banking button tapped',
                       name: 'DrawerNavigation',
                     );
-
-                    // If already on Banking page, just close the drawer
-                    if (widget.currentRoute == 'banking') {
-                      appLog(
-                        '⚠️ Already on Banking page, just closing drawer',
-                        name: 'DrawerNavigation',
-                      );
-                      Navigator.pop(context);
-                      return;
-                    }
-
-                    appLog(
-                      '📍 Navigating to BankingPage...',
-                      name: 'DrawerNavigation',
-                    );
-                    _navigateToTopLevel(const BankingPage());
+                    _navigateToSub('banking', const BankingPage());
                   },
                 ),
 
@@ -340,43 +299,11 @@ class _DrawerViewState extends State<DrawerView> {
                     );
 
                     if (subItem == 'Customers') {
-                      // If already on Customers page, just close the drawer
-                      if (widget.currentRoute == 'customers') {
-                        appLog(
-                          '⚠️ Already on Customers page, just closing drawer',
-                          name: 'DrawerNavigation',
-                        );
-                        Navigator.pop(context);
-                        return;
-                      }
-
-                      appLog(
-                        '📍 Navigating to CustomersPage...',
-                        name: 'DrawerNavigation',
-                      );
-                      _navigateToTopLevel(const CustomersPage());
+                      _navigateToSub('customers', const CustomersPage());
                     } else if (subItem == 'Quotes') {
-                      if (widget.currentRoute == 'quotes') {
-                        Navigator.pop(context);
-                        return;
-                      }
-
-                      appLog(
-                        '📍 Navigating to QuotesPage...',
-                        name: 'DrawerNavigation',
-                      );
-                      _navigateToTopLevel(const QuotesPage());
+                      _navigateToSub('quotes', const QuotesPage());
                     } else if (subItem == 'Sales Orders') {
-                      if (widget.currentRoute == 'sales_orders') {
-                        Navigator.pop(context);
-                        return;
-                      }
-
-                      appLog(
-                        '📍 Navigating to SalesOrdersPage...',
-                        name: 'DrawerNavigation',
-                      );
-                      _navigateToTopLevel(const SalesOrdersPage());
+                      _navigateToSub('sales_orders', const SalesOrdersPage());
                     } else if (subItem == 'Delivery Challans') {
                       _navigateToSub(
                         'delivery_challans',
@@ -565,22 +492,7 @@ class _DrawerViewState extends State<DrawerView> {
                       '⚙️ Settings button tapped',
                       name: 'DrawerNavigation',
                     );
-
-                    // If already on Settings page, just close the drawer
-                    if (widget.currentRoute == 'settings') {
-                      appLog(
-                        '⚠️ Already on Settings page, just closing drawer',
-                        name: 'DrawerNavigation',
-                      );
-                      Navigator.pop(context);
-                      return;
-                    }
-
-                    appLog(
-                      '📍 Navigating to SettingsPage...',
-                      name: 'DrawerNavigation',
-                    );
-                    _navigateToTopLevel(const SettingsPage());
+                    _navigateToSub('settings', const SettingsPage());
                   },
                 ),
 

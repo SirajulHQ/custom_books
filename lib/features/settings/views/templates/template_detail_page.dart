@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/settings/views/templates/customize_template_page.dart';
+import 'package:custom_books/features/settings/views/templates/template_preview_colors.dart';
 import 'package:flutter/material.dart';
 
 class TemplateDetailPage extends StatefulWidget {
@@ -222,7 +223,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.5),
-        border: Border.all(color: const Color(0xFFEEF2F6)),
+        border: Border.all(color: TemplatePreviewColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +242,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.72,
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1A202C),
+                        color: TemplatePreviewColors.heading,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10 * 0.3),
@@ -249,7 +250,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
                       'Dubai\nUnited Arab Emirates\nTRN 100123456700003\n9967484826\nmisellaneous4825@gmail.com',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.52,
-                        color: const Color(0xFF4A5568),
+                        color: TemplatePreviewColors.body,
                         height: 1.5,
                       ),
                     ),
@@ -274,7 +275,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
                       '# INV-17',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.55,
-                        color: const Color(0xFF718096),
+                        color: TemplatePreviewColors.label,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10 * 0.3),
@@ -307,7 +308,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.5,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFF718096),
+                        color: TemplatePreviewColors.label,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10 * 0.2),
@@ -315,7 +316,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
                       'Jack & Joe Trading\nBox No. 576\nDubai\n94588 Dubai\nEmirates',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.52,
-                        color: const Color(0xFF2D3748),
+                        color: TemplatePreviewColors.medium,
                         height: 1.5,
                       ),
                     ),
@@ -423,7 +424,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.55,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF1A202C),
+                    color: TemplatePreviewColors.heading,
                   ),
                 ),
                 Text(
@@ -445,7 +446,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.58,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF1A202C),
+              color: TemplatePreviewColors.heading,
             ),
           ),
           SizedBox(height: Dimensions.height10 * 0.2),
@@ -454,7 +455,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.5,
               fontStyle: FontStyle.italic,
-              color: const Color(0xFF4A5568),
+              color: TemplatePreviewColors.body,
             ),
           ),
           SizedBox(height: Dimensions.height10),
@@ -465,7 +466,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.58,
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF1A202C),
+              color: TemplatePreviewColors.heading,
             ),
           ),
           SizedBox(height: Dimensions.height10 * 0.2),
@@ -473,7 +474,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
             'Your company\'s Terms and Conditions will be displayed here.',
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.48,
-              color: const Color(0xFF4A5568),
+              color: TemplatePreviewColors.body,
               height: 1.4,
             ),
           ),
@@ -492,7 +493,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
             '$label ',
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.48,
-              color: const Color(0xFF718096),
+              color: TemplatePreviewColors.label,
             ),
           ),
           Text(
@@ -500,7 +501,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.48,
               fontWeight: FontWeight.w500,
-              color: const Color(0xFF2D3748),
+              color: TemplatePreviewColors.medium,
             ),
           ),
         ],
@@ -553,7 +554,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
               item,
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.43,
-                color: const Color(0xFF2D3748),
+                color: TemplatePreviewColors.medium,
                 height: 1.4,
               ),
             ),
@@ -574,7 +575,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
         text,
         style: TextStyle(
           fontSize: Dimensions.font16 * 0.43,
-          color: const Color(0xFF2D3748),
+          color: TemplatePreviewColors.medium,
         ),
         textAlign: TextAlign.center,
       ),
@@ -597,7 +598,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.52,
               fontWeight: isBold ? FontWeight.w700 : FontWeight.w500,
-              color: const Color(0xFF4A5568),
+              color: TemplatePreviewColors.body,
             ),
           ),
           SizedBox(width: Dimensions.width20),
@@ -609,7 +610,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.52,
                 fontWeight: isBold ? FontWeight.w700 : FontWeight.w500,
-                color: valueColor ?? const Color(0xFF1A202C),
+                color: valueColor ?? TemplatePreviewColors.heading,
               ),
             ),
           ),
