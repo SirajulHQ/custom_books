@@ -5,8 +5,11 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/banking/models/bank_account.dart';
 import 'package:custom_books/features/banking/views/add_bank_account_page.dart';
 import 'package:custom_books/features/banking/widgets/account_card.dart';
+import 'package:custom_books/features/banking/widgets/banking_more_options_sheet.dart';
+import 'package:custom_books/features/banking/widgets/banking_summary_card.dart';
 import 'package:custom_books/features/banking/widgets/active_account_item.dart';
-import 'package:custom_books/features/banking/widgets/banking_chart.dart';
+import 'package:custom_books/features/banking/widgets/filter_button.dart';
+import 'package:custom_books/features/banking/widgets/selection_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +22,6 @@ class BankingPage extends StatefulWidget {
 }
 
 class _BankingPageState extends State<BankingPage> {
-  bool _isChartVisible = false;
   String _selectedAccountFilter = 'All Accounts';
   String _selectedDateFilter = 'Last 30 days';
 
@@ -109,29 +111,182 @@ class _BankingPageState extends State<BankingPage> {
                 AppBarIconButton(
                   icon: Icons.filter_list_rounded,
                   color: Appcolors.primary,
-                  onPressed: _showAccountFilterSheet,
+                  onPressed: () {
+                    SelectionSheet.show(
+                      context,
+                      title: 'Select Account',
+                      options: _accountFilterOptions,
+                      selectedOption: _selectedAccountFilter,
+                      onSelected: (filter) {
+                        setState(() {
+                          _selectedAccountFilter = filter;
+                        });
+                      },
+                    );
+                  },
                 ),
                 SizedBox(width: Dimensions.width10),
                 AppBarIconButton(
                   icon: Icons.more_vert_rounded,
                   color: Appcolors.accent,
-                  onPressed: _showMoreOptions,
+                  onPressed: () {
+                    BankingMoreOptionsSheet.show(
+                      context,
+                      onRefresh: () {
+                        setState(() {});
+                        ToastificationHelper.showSuccess(
+                          context,
+                          'Banking refreshed.',
+                        );
+                      },
+                      onExportStatement: () {
+                        ToastificationHelper.showInfo(
+                          context,
+                          'Exporting statements is coming soon.',
+                        );
+                      },
+                    );
+                  },
                 ),
                 SizedBox(width: Dimensions.width20),
               ],
             ),
 
             // Filter Buttons
-            SliverToBoxAdapter(child: _buildFilterSection()),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  0,
+                  Dimensions.width20,
+                  Dimensions.height15,
+                ),
+                child: Container(
+                  padding: EdgeInsets.all(Dimensions.width10 / 2),
+                  decoration: BoxDecoration(
+                    color: context.colors.surfaceLight,
+                    borderRadius: BorderRadius.circular(Dimensions.radius30),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: FilterButton(
+                          label: _selectedAccountFilter,
+                          onTap: () {
+                            SelectionSheet.show(
+                              context,
+                              title: 'Select Account',
+                              options: _accountFilterOptions,
+                              selectedOption: _selectedAccountFilter,
+                              onSelected: (filter) {
+                                setState(() {
+                                  _selectedAccountFilter = filter;
+                                });
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(width: Dimensions.width10 * 0.4),
+                      Expanded(
+                        child: FilterButton(
+                          label: _selectedDateFilter,
+                          icon: Icons.calendar_today_rounded,
+                          onTap: () {
+                            SelectionSheet.show(
+                              context,
+                              title: 'Select Date Range',
+                              options: _dateFilterOptions,
+                              selectedOption: _selectedDateFilter,
+                              onSelected: (filter) {
+                                setState(() {
+                                  _selectedDateFilter = filter;
+                                });
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
 
             // Account Summary Cards
-            SliverToBoxAdapter(child: _buildAccountCards()),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  0,
+                  Dimensions.width20,
+                  Dimensions.height20,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: AccountCard(
+                        icon: Icons.payments_rounded,
+                        iconBgColor: Appcolors.primary,
+                        title: 'Cash In Hand',
+                        amount: '₹${cashInHand.toStringAsFixed(2)}',
+                      ),
+                    ),
+                    SizedBox(width: Dimensions.width15),
+                    Expanded(
+                      child: AccountCard(
+                        icon: Icons.account_balance_rounded,
+                        iconBgColor: Appcolors.success,
+                        title: 'Bank Balance',
+                        amount: '₹${bankBalance.toStringAsFixed(2)}',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
             // Banking Summary Chart
-            SliverToBoxAdapter(child: _buildBankingSummary()),
+            SliverToBoxAdapter(
+              child: BankingSummaryCard(
+                chartData: chartData,
+                cashInHand: cashInHand,
+                bankBalance: bankBalance,
+              ),
+            ),
 
             // Active Accounts Header
-            SliverToBoxAdapter(child: _buildActiveAccountsHeader()),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  Dimensions.height20,
+                  Dimensions.width20,
+                  Dimensions.height15,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Active Accounts',
+                      style: TextStyle(
+                        fontSize: Dimensions.font20 * 0.95,
+                        color: context.colors.textPrimary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      '${accounts.length} accounts',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.75,
+                        color: context.colors.textSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
             // Active Accounts List
             SliverPadding(
@@ -165,551 +320,6 @@ class _BankingPageState extends State<BankingPage> {
           color: Colors.white,
           size: Dimensions.iconSize24 * 1.2,
         ),
-      ),
-    );
-  }
-
-  Widget _buildFilterSection() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        Dimensions.width20,
-        0,
-        Dimensions.width20,
-        Dimensions.height15,
-      ),
-      child: Container(
-        padding: EdgeInsets.all(Dimensions.width10 / 2),
-        decoration: BoxDecoration(
-          color: context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius30),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: _buildFilterButton(
-                _selectedAccountFilter,
-                null,
-                isFirst: true,
-              ),
-            ),
-            SizedBox(width: Dimensions.width10 * 0.4),
-            Expanded(
-              child: _buildFilterButton(
-                _selectedDateFilter,
-                Icons.calendar_today_rounded,
-                isFirst: false,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilterButton(
-    String label,
-    IconData? icon, {
-    required bool isFirst,
-  }) {
-    return GestureDetector(
-      onTap: () {
-        if (isFirst) {
-          _showAccountFilterSheet();
-        } else {
-          _showDateFilterSheet();
-        }
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(Dimensions.radius30),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (icon != null) ...[
-              Icon(
-                icon,
-                size: Dimensions.iconSize16,
-                color: context.colors.textSecondary,
-              ),
-              SizedBox(width: Dimensions.width10 / 2),
-            ],
-            Flexible(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.75,
-                  fontWeight: FontWeight.w500,
-                  color: context.colors.textSecondary,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            SizedBox(width: Dimensions.width10 / 3),
-            Icon(
-              Icons.keyboard_arrow_down_rounded,
-              size: Dimensions.iconSize16,
-              color: context.colors.textSecondary,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showMoreOptions() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        Widget tile(IconData icon, String label, VoidCallback onTap) {
-          return ListTile(
-            leading: Icon(icon, color: Appcolors.primary),
-            title: Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.9,
-                fontWeight: FontWeight.w600,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            onTap: () {
-              Navigator.pop(ctx);
-              onTap();
-            },
-          );
-        }
-
-        return Container(
-          decoration: BoxDecoration(
-            color: context.colors.card,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(Dimensions.radius20 * 1.2),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: Dimensions.width20 * 2,
-                height: Dimensions.height10 * 0.4,
-                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-                decoration: BoxDecoration(
-                  color: context.colors.border,
-                  borderRadius: BorderRadius.circular(Dimensions.radius30),
-                ),
-              ),
-              tile(Icons.refresh_rounded, 'Refresh', () {
-                setState(() {});
-                ToastificationHelper.showSuccess(context, 'Banking refreshed.');
-              }),
-              tile(
-                Icons.file_download_outlined,
-                'Export statement',
-                () => ToastificationHelper.showInfo(
-                  context,
-                  'Exporting statements is coming soon.',
-                ),
-              ),
-              SizedBox(height: Dimensions.height20),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _showAccountFilterSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) {
-        return Container(
-          decoration: BoxDecoration(
-            color: context.colors.card,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(Dimensions.radius20),
-              topRight: Radius.circular(Dimensions.radius20),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.width20,
-                  vertical: Dimensions.height15,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: context.colors.border, width: 1),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Select Account',
-                      style: TextStyle(
-                        fontSize: Dimensions.font20,
-                        fontWeight: FontWeight.w700,
-                        color: context.colors.textPrimary,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: Dimensions.iconSize24,
-                        color: context.colors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Filter options
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.all(Dimensions.width20),
-                itemCount: _accountFilterOptions.length,
-                itemBuilder: (context, index) {
-                  final filter = _accountFilterOptions[index];
-                  final isSelected = filter == _selectedAccountFilter;
-
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedAccountFilter = filter;
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: Dimensions.height10),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width15,
-                        vertical: Dimensions.height15,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? Appcolors.primary.withValues(alpha: 0.05)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                        border: Border.all(
-                          color: isSelected
-                              ? Appcolors.primary
-                              : context.colors.border,
-                          width: isSelected ? 2 : 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            filter,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16,
-                              fontWeight: isSelected
-                                  ? FontWeight.w600
-                                  : FontWeight.w500,
-                              color: isSelected
-                                  ? Appcolors.primary
-                                  : context.colors.textPrimary,
-                            ),
-                          ),
-                          if (isSelected)
-                            Icon(
-                              Icons.check_circle,
-                              color: Appcolors.primary,
-                              size: Dimensions.iconSize24,
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-
-              SizedBox(height: Dimensions.height10),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _showDateFilterSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) {
-        return Container(
-          decoration: BoxDecoration(
-            color: context.colors.card,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(Dimensions.radius20),
-              topRight: Radius.circular(Dimensions.radius20),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.width20,
-                  vertical: Dimensions.height15,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: context.colors.border, width: 1),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Select Date Range',
-                      style: TextStyle(
-                        fontSize: Dimensions.font20,
-                        fontWeight: FontWeight.w700,
-                        color: context.colors.textPrimary,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: Dimensions.iconSize24,
-                        color: context.colors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Filter options
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.all(Dimensions.width20),
-                itemCount: _dateFilterOptions.length,
-                itemBuilder: (context, index) {
-                  final filter = _dateFilterOptions[index];
-                  final isSelected = filter == _selectedDateFilter;
-
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedDateFilter = filter;
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: Dimensions.height10),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width15,
-                        vertical: Dimensions.height15,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? Appcolors.primary.withValues(alpha: 0.05)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                        border: Border.all(
-                          color: isSelected
-                              ? Appcolors.primary
-                              : context.colors.border,
-                          width: isSelected ? 2 : 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            filter,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16,
-                              fontWeight: isSelected
-                                  ? FontWeight.w600
-                                  : FontWeight.w500,
-                              color: isSelected
-                                  ? Appcolors.primary
-                                  : context.colors.textPrimary,
-                            ),
-                          ),
-                          if (isSelected)
-                            Icon(
-                              Icons.check_circle,
-                              color: Appcolors.primary,
-                              size: Dimensions.iconSize24,
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-
-              SizedBox(height: Dimensions.height10),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildAccountCards() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        Dimensions.width20,
-        0,
-        Dimensions.width20,
-        Dimensions.height20,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: AccountCard(
-              icon: Icons.payments_rounded,
-              iconBgColor: Appcolors.primary,
-              title: 'Cash In Hand',
-              amount: '₹${cashInHand.toStringAsFixed(2)}',
-            ),
-          ),
-          SizedBox(width: Dimensions.width15),
-          Expanded(
-            child: AccountCard(
-              icon: Icons.account_balance_rounded,
-              iconBgColor: Appcolors.success,
-              title: 'Bank Balance',
-              amount: '₹${bankBalance.toStringAsFixed(2)}',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBankingSummary() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-      decoration: BoxDecoration(
-        color: context.colors.card,
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: context.colors.border),
-      ),
-      child: Column(
-        children: [
-          // Header with Hide/Show button
-          Padding(
-            padding: EdgeInsets.all(Dimensions.width20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Banking Summary',
-                  style: TextStyle(
-                    fontSize: Dimensions.font20 * 0.95,
-                    color: context.colors.textPrimary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _isChartVisible = !_isChartVisible;
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Dimensions.width15 * 0.8,
-                      vertical: Dimensions.height10 / 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Appcolors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(Dimensions.radius20),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          _isChartVisible ? 'Hide' : 'Show',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.8,
-                            color: Appcolors.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(width: Dimensions.width10 / 3),
-                        Icon(
-                          _isChartVisible
-                              ? Icons.keyboard_arrow_up_rounded
-                              : Icons.keyboard_arrow_down_rounded,
-                          color: Appcolors.primary,
-                          size: Dimensions.iconSize16,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Chart (conditionally shown)
-          AnimatedSize(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            child: _isChartVisible
-                ? BankingChart(
-                    dataPoints: chartData,
-                    cashInHand: cashInHand,
-                    bankBalance: bankBalance,
-                  )
-                : const SizedBox.shrink(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActiveAccountsHeader() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        Dimensions.width20,
-        Dimensions.height20,
-        Dimensions.width20,
-        Dimensions.height15,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Active Accounts',
-            style: TextStyle(
-              fontSize: Dimensions.font20 * 0.95,
-              color: context.colors.textPrimary,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          Text(
-            '${accounts.length} accounts',
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.75,
-              color: context.colors.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
       ),
     );
   }
