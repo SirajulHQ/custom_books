@@ -7,6 +7,7 @@ import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/line_item_form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
+import 'package:custom_books/features/invoices/models/item_lookup_model.dart';
 import 'package:flutter/material.dart';
 
 class AddInvoiceLineItemPage extends StatefulWidget {
@@ -230,17 +231,61 @@ class _AddInvoiceLineItemPageState extends State<AddInvoiceLineItemPage>
             physics: const BouncingScrollPhysics(),
             child: FormCard(
               children: [
-                _InvoiceItemPicker(
-                  controller: _itemSearchController,
-                  selectedItem: _selectedItem,
-                  suggestions: _suggestions,
-                  onChanged: (_) => setState(() {}),
-                  onClear: _clearItem,
-                  onSelect: _selectItem,
-                  onBarcodeScan: () => ToastificationHelper.showInfo(
-                    context,
-                    'Barcode scan coming soon',
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const RequiredLabel(text: 'Item'),
+                    SizedBox(height: Dimensions.height10 / 2),
+                    ItemSearchField<ItemLookup>(
+                      controller: _itemSearchController,
+                      isItemSelected: _selectedItem != null,
+                      suggestions: _suggestions,
+                      selectedItemImageUrl: _selectedItem?.imageUrl,
+                      onChanged: (_) => setState(() {}),
+                      onClear: _clearItem,
+                      onBarcodeScan: () => ToastificationHelper.showInfo(
+                        context,
+                        'Barcode scan coming soon',
+                      ),
+                      suggestionBuilder: (item) => InkWell(
+                        onTap: () => _selectItem(item),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: Dimensions.height10,
+                          ),
+                          child: Row(
+                            children: [
+                              ItemThumbnail(imageUrl: item.imageUrl),
+                              SizedBox(width: Dimensions.width10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.name,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: Dimensions.font16 * 0.85,
+                                        color: context.colors.textPrimary,
+                                      ),
+                                    ),
+                                    SizedBox(height: Dimensions.height10 / 4),
+                                    Text(
+                                      '₹${item.salesPrice.toStringAsFixed(2)} per ${item.unit}',
+                                      style: TextStyle(
+                                        color: context.colors.textSecondary,
+                                        fontSize: Dimensions.font16 * 0.75,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 if (_selectedItem != null) ...[
                   const FormDivider(),
@@ -258,9 +303,30 @@ class _AddInvoiceLineItemPageState extends State<AddInvoiceLineItemPage>
                     onChanged: (_) => setState(() {}),
                   ),
                   SizedBox(height: Dimensions.height20),
-                  _InvoiceAmountSummary(
-                    amount: _calculatedAmount,
-                    taxAmount: _calculatedTaxAmount,
+                  Container(
+                    padding: EdgeInsets.all(Dimensions.width15),
+                    decoration: BoxDecoration(
+                      color: Appcolors.primary.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(
+                        Dimensions.radius15 / 2,
+                      ),
+                      border: Border.all(
+                        color: Appcolors.primary.withValues(alpha: 0.2),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        _SummaryRow(
+                          label: 'Amount:',
+                          amount: _calculatedAmount,
+                        ),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _SummaryRow(
+                          label: 'Tax Amount:',
+                          amount: _calculatedTaxAmount,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ],
@@ -268,81 +334,6 @@ class _AddInvoiceLineItemPageState extends State<AddInvoiceLineItemPage>
           ),
         ),
       ),
-    );
-  }
-}
-
-class _InvoiceItemPicker extends StatelessWidget {
-  final TextEditingController controller;
-  final ItemLookup? selectedItem;
-  final List<ItemLookup> suggestions;
-  final ValueChanged<String> onChanged;
-  final VoidCallback onClear;
-  final VoidCallback onBarcodeScan;
-  final ValueChanged<ItemLookup> onSelect;
-
-  const _InvoiceItemPicker({
-    required this.controller,
-    required this.selectedItem,
-    required this.suggestions,
-    required this.onChanged,
-    required this.onClear,
-    required this.onBarcodeScan,
-    required this.onSelect,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const RequiredLabel(text: 'Item'),
-        SizedBox(height: Dimensions.height10 / 2),
-        ItemSearchField<ItemLookup>(
-          controller: controller,
-          isItemSelected: selectedItem != null,
-          suggestions: suggestions,
-          selectedItemImageUrl: selectedItem?.imageUrl,
-          onChanged: onChanged,
-          onClear: onClear,
-          onBarcodeScan: onBarcodeScan,
-          suggestionBuilder: (item) => InkWell(
-            onTap: () => onSelect(item),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-              child: Row(
-                children: [
-                  ItemThumbnail(imageUrl: item.imageUrl),
-                  SizedBox(width: Dimensions.width10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: Dimensions.font16 * 0.85,
-                            color: context.colors.textPrimary,
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height10 / 4),
-                        Text(
-                          '₹${item.salesPrice.toStringAsFixed(2)} per ${item.unit}',
-                          style: TextStyle(
-                            color: context.colors.textSecondary,
-                            fontSize: Dimensions.font16 * 0.75,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
@@ -463,32 +454,6 @@ class _InvoicePricingFields extends StatelessWidget {
   }
 }
 
-class _InvoiceAmountSummary extends StatelessWidget {
-  final double amount;
-  final double taxAmount;
-
-  const _InvoiceAmountSummary({required this.amount, required this.taxAmount});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(Dimensions.width15),
-      decoration: BoxDecoration(
-        color: Appcolors.primary.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
-        border: Border.all(color: Appcolors.primary.withValues(alpha: 0.2)),
-      ),
-      child: Column(
-        children: [
-          _SummaryRow(label: 'Amount:', amount: amount),
-          SizedBox(height: Dimensions.height10 / 2),
-          _SummaryRow(label: 'Tax Amount:', amount: taxAmount),
-        ],
-      ),
-    );
-  }
-}
-
 class _SummaryRow extends StatelessWidget {
   final String label;
   final double amount;
@@ -518,22 +483,4 @@ class _SummaryRow extends StatelessWidget {
       ],
     );
   }
-}
-
-class ItemLookup {
-  final String id;
-  final String name;
-  final double salesPrice;
-  final String unit;
-  final String? imageUrl;
-  final double taxRate;
-
-  const ItemLookup({
-    required this.id,
-    required this.name,
-    required this.salesPrice,
-    required this.unit,
-    this.imageUrl,
-    this.taxRate = 5.0,
-  });
 }
