@@ -83,52 +83,22 @@ class UnsavedChangesDialog extends StatelessWidget {
   }
 }
 
-/// A mixin for [State] classes that provides unsaved-changes protection.
-///
-/// Usage:
-/// 1. Add `with UnsavedChangesMixin` to your State class.
-/// 2. Call `markDirty()` whenever the form data changes.
-/// 3. Call `markClean()` after a successful save.
-/// 4. Wrap your `Scaffold` with the [buildUnsavedChangesScope] method,
-///    or use [PopScope] with [onBackPressed] as the `onPopInvokedWithResult`.
-///
-/// Example:
-/// ```dart
-/// class _MyPageState extends State<MyPage> with UnsavedChangesMixin {
-///   @override
-///   Widget build(BuildContext context) {
-///     return PopScope(
-///       canPop: false,
-///       onPopInvokedWithResult: onPopInvokedWithResult,
-///       child: Scaffold(...),
-///     );
-///   }
-/// }
-/// ```
 mixin UnsavedChangesMixin<T extends StatefulWidget> on State<T> {
   bool _isDirty = false;
 
-  /// Whether the form has been modified since the last save/clean.
   bool get isDirty => _isDirty;
-
-  /// Mark the form as having unsaved changes.
   void markDirty() {
     if (!_isDirty) {
       setState(() => _isDirty = true);
     }
   }
 
-  /// Mark the form as clean (e.g. after saving).
   void markClean() {
     if (_isDirty) {
       setState(() => _isDirty = false);
     }
   }
 
-  /// Use as the `onPopInvokedWithResult` callback for [PopScope].
-  ///
-  /// If the form is dirty, shows the confirmation dialog.
-  /// If the user chooses to leave (or form is clean), pops the page.
   void onPopInvokedWithResult(bool didPop, dynamic result) async {
     if (didPop) return;
 

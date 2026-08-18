@@ -7,12 +7,10 @@ import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
-import 'package:custom_books/features/invoices/widgets/custom_date_field.dart';
-import 'package:custom_books/features/invoices/widgets/custom_dropdown_field.dart';
 import 'package:custom_books/features/invoices/widgets/custom_text_field.dart';
+import 'package:custom_books/features/invoices/widgets/customer_information_card.dart';
 import 'package:custom_books/features/invoices/widgets/email_communications_card.dart';
 import 'package:custom_books/features/invoices/widgets/invoice_form_helpers.dart';
-import 'package:custom_books/features/invoices/widgets/invoice_number_field.dart';
 import 'package:custom_books/features/invoices/widgets/invoice_tax_and_line_item_section.dart';
 import 'package:custom_books/features/invoices/widgets/select_customer_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -89,6 +87,26 @@ class _NewInvoicePageState extends State<NewInvoicePage>
     super.dispose();
   }
 
+  void _resetForm() {
+    setState(() {
+      _customerNameController.clear();
+      _orderNumberController.clear();
+      _salespersonController.clear();
+      _subjectController.clear();
+      _customerNotesController.text = 'Thanks for your business.';
+      _termsController.clear();
+      _selectedPlaceOfSupply = 'Dubai';
+      _invoiceDate = DateTime.now();
+      _selectedTerms = 'Due on Receipt';
+      _dueDate = DateTime.now();
+      _isTaxInclusive = false;
+      _lineItems.clear();
+      _emailCommunications = [];
+      _paymentReceived = false;
+    });
+    markClean();
+  }
+
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
@@ -132,20 +150,10 @@ class _NewInvoicePageState extends State<NewInvoicePage>
                     color: context.colors.textSecondary,
                     onPressed: () {
                       appLog('⋮ More options pressed', name: 'NewInvoicePage');
-                      SelectCustomerBottomSheet.show(
+                      showInvoiceMoreOptionsSheet(
                         context,
-                        isCustomerSelected: _customerNameController.text
-                            .trim()
-                            .isNotEmpty,
-                        onResetForm: () {
-                          setState(() {
-                            _customerNameController.clear();
-                            _orderNumberController.clear();
-                            _subjectController.clear();
-                            _emailCommunications.clear();
-                            _paymentReceived = false;
-                          });
-                        },
+                        customerNameController: _customerNameController,
+                        onResetForm: _resetForm,
                       );
                     },
                   ),
@@ -158,266 +166,44 @@ class _NewInvoicePageState extends State<NewInvoicePage>
                 padding: EdgeInsets.all(Dimensions.width20),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
-                    // Customer Information Card
-                    FormCard(
-                      borderRadius: Dimensions.radius20,
-                      showShadow: true,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Customer Name',
-                                      style: TextStyle(
-                                        fontSize: Dimensions.font16 * 0.85,
-                                        fontWeight: FontWeight.w600,
-                                        color: Appcolors.primary,
-                                      ),
-                                    ),
-                                    SizedBox(width: Dimensions.width10 / 3),
-                                    Text(
-                                      '*',
-                                      style: TextStyle(
-                                        fontSize: Dimensions.font16 * 0.85,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: Dimensions.height10),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: Dimensions.width15,
-                                          vertical: Dimensions.height15,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: context.colors.surfaceLight,
-                                          borderRadius: BorderRadius.circular(
-                                            Dimensions.radius15,
-                                          ),
-                                          border: Border.all(
-                                            color: context.colors.border,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          _customerNameController.text.isEmpty
-                                              ? 'Select Customer'
-                                              : _customerNameController.text,
-                                          style: TextStyle(
-                                            fontSize: Dimensions.font16 * 0.85,
-                                            color:
-                                                _customerNameController
-                                                    .text
-                                                    .isEmpty
-                                                ? context.colors.textTertiary
-                                                : context.colors.textPrimary,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: Dimensions.width10),
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(
-                                          () => _customerNameController.clear(),
-                                        );
-                                        appLog(
-                                          '❌ Clear customer tapped',
-                                          name: 'NewInvoicePage',
-                                        );
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(
-                                          Dimensions.width10,
-                                        ),
-                                        child: Icon(
-                                          Icons.close_rounded,
-                                          size: Dimensions.iconSize24,
-                                          color: context.colors.textTertiary,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: Dimensions.height15),
-                            InvoiceFormHelpers.buildLinkRow(context, [
-                              GestureDetector(
-                                onTap: () {
-                                  appLog(
-                                    '📍 Address tapped',
-                                    name: 'NewInvoicePage',
-                                  );
-                                  ToastificationHelper.showInfo(
-                                    context,
-                                    'Select a customer to manage the address.',
-                                  );
-                                },
-                                child: Text(
-                                  'Address',
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16 * 0.85,
-                                    color: Appcolors.primary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  appLog(
-                                    '👤 Customer Details tapped',
-                                    name: 'NewInvoicePage',
-                                  );
-                                  ToastificationHelper.showInfo(
-                                    context,
-                                    'Select a customer to view their details.',
-                                  );
-                                },
-                                child: Text(
-                                  'Customer Details',
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16 * 0.85,
-                                    color: Appcolors.primary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ]),
-                            SizedBox(height: Dimensions.height20),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Tax Treatment',
-                                      style: TextStyle(
-                                        fontSize: Dimensions.font16 * 0.85,
-                                        fontWeight: FontWeight.w600,
-                                        color: context.colors.textSecondary,
-                                      ),
-                                    ),
-                                    SizedBox(width: Dimensions.width10),
-                                    GestureDetector(
-                                      onTap: () {
-                                        appLog(
-                                          '✏️ Edit Tax Treatment tapped',
-                                          name: 'NewInvoicePage',
-                                        );
-                                        ToastificationHelper.showInfo(
-                                          context,
-                                          'Editing tax treatment is coming soon.',
-                                        );
-                                      },
-                                      child: Icon(
-                                        Icons.edit_outlined,
-                                        size: Dimensions.iconSize16,
-                                        color: context.colors.textSecondary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: Dimensions.height10),
-                                Text(
-                                  _selectedTaxTreatment,
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16 * 0.85,
-                                    fontWeight: FontWeight.w600,
-                                    color: context.colors.textPrimary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: Dimensions.height20),
-                            CustomDropdownField(
-                              label: 'Place Of Supply',
-                              value: _selectedPlaceOfSupply,
-                              options: const [
-                                'Dubai',
-                                'Abu Dhabi',
-                                'Sharjah',
-                                'Ajman',
-                              ],
-                              isRequired: true,
-                              onChanged: (value) {
-                                setState(() => _selectedPlaceOfSupply = value!);
-                              },
-                              onShowSheet: _showDropdownSheet,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            InvoiceNumberField(
-                              invoiceNumber: _invoiceNumber,
-                              onSettingsTap: () {
-                                appLog(
-                                  '⚙️ Invoice settings tapped',
-                                  name: 'NewInvoicePage',
-                                );
-                                ToastificationHelper.showInfo(
-                                  context,
-                                  'Invoice number settings are coming soon.',
-                                );
-                              },
-                            ),
-                            SizedBox(height: Dimensions.height20),
 
-                            CustomTextField(
-                              label: 'Order Number',
-                              controller: _orderNumberController,
-                            ),
-                            SizedBox(height: Dimensions.height20),
-                            CustomDateField(
-                              label: 'Invoice Date',
-                              date: _invoiceDate,
-                              isRequired: true,
-                              onDateSelected: (picked) {
-                                setState(() => _invoiceDate = picked);
-                              },
-                            ),
-                            SizedBox(height: Dimensions.height20),
-                            CustomDropdownField(
-                              label: 'Terms',
-                              value: _selectedTerms,
-                              options: const [
-                                'Due on Receipt',
-                                'Net 15',
-                                'Net 30',
-                                'Net 45',
-                                'Net 60',
-                              ],
-                              isRequired: true,
-                              onChanged: (value) {
-                                setState(() => _selectedTerms = value!);
-                              },
-                              onShowSheet: _showDropdownSheet,
-                            ),
-                            SizedBox(height: Dimensions.height20),
-                            CustomDateField(
-                              label: 'Due Date',
-                              date: _dueDate,
-                              isRequired: true,
-                              onDateSelected: (picked) {
-                                setState(() => _dueDate = picked);
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
+                    // Customer Information Card
+                    CustomerInformationCard(
+                      customerNameController: _customerNameController,
+                      onClearCustomer: () =>
+                          setState(() => _customerNameController.clear()),
+                      onAddressTap: () => ToastificationHelper.showInfo(
+                        context,
+                        'Select a customer to manage the address.',
+                      ),
+                      onCustomerDetailsTap: () => ToastificationHelper.showInfo(
+                        context,
+                        'Select a customer to view their details.',
+                      ),
+                      selectedTaxTreatment: _selectedTaxTreatment,
+                      onEditTaxTreatmentTap: () =>
+                          ToastificationHelper.showInfo(
+                            context,
+                            'Editing tax treatment is coming soon.',
+                          ),
+                      selectedPlaceOfSupply: _selectedPlaceOfSupply,
+                      onPlaceOfSupplyChanged: (value) =>
+                          setState(() => _selectedPlaceOfSupply = value!),
+                      invoiceNumber: _invoiceNumber,
+                      onInvoiceSettingsTap: () => ToastificationHelper.showInfo(
+                        context,
+                        'Invoice number settings are coming soon.',
+                      ),
+                      orderNumberController: _orderNumberController,
+                      invoiceDate: _invoiceDate,
+                      onInvoiceDateSelected: (picked) =>
+                          setState(() => _invoiceDate = picked),
+                      selectedTerms: _selectedTerms,
+                      onTermsChanged: (value) =>
+                          setState(() => _selectedTerms = value!),
+                      dueDate: _dueDate,
+                      onDueDateSelected: (picked) =>
+                          setState(() => _dueDate = picked),
                     ),
                     SizedBox(height: Dimensions.height15),
 
@@ -520,8 +306,10 @@ class _NewInvoicePageState extends State<NewInvoicePage>
                         ),
                         SizedBox(height: Dimensions.height15),
                         GestureDetector(
-                          onTap: () => (value) {
-                            setState(() => _paymentReceived = value ?? false);
+                          onTap: () {
+                            setState(
+                              () => _paymentReceived = !_paymentReceived,
+                            );
                           },
                           child: Row(
                             children: [
@@ -636,21 +424,6 @@ class _NewInvoicePageState extends State<NewInvoicePage>
           ),
         ),
       ),
-    );
-  }
-
-  void _showDropdownSheet(
-    String label,
-    String value,
-    List<String> options,
-    Function(String?)? onChanged,
-  ) {
-    InvoiceFormHelpers.showDropdownSheet(
-      context,
-      label: label,
-      value: value,
-      options: options,
-      onChanged: onChanged,
     );
   }
 }

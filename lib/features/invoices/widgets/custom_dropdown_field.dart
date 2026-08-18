@@ -8,15 +8,15 @@ class CustomDropdownField extends StatelessWidget {
   final List<String> options;
   final bool isRequired;
   final Function(String?)? onChanged;
-  final void Function(String, String, List<String>, Function(String?)?)
-  onShowSheet;
+  // final void Function(String, String, List<String>, Function(String?)?)
+  // onShowSheet;
 
   const CustomDropdownField({
     super.key,
     required this.label,
     required this.value,
     required this.options,
-    required this.onShowSheet,
+    // required this.onShowSheet,
     this.isRequired = false,
     this.onChanged,
   });
@@ -51,7 +51,83 @@ class CustomDropdownField extends StatelessWidget {
         ),
         SizedBox(height: Dimensions.height10),
         GestureDetector(
-          onTap: () => onShowSheet(label, value, options, onChanged),
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              backgroundColor: Colors.transparent,
+              builder: (ctx) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: context.colors.card,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(Dimensions.radius20 * 1.2),
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: Dimensions.width20 * 2,
+                        height: Dimensions.height10 * 0.4,
+                        margin: EdgeInsets.symmetric(
+                          vertical: Dimensions.height10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: context.colors.border,
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radius30,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width20,
+                        ),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            label,
+                            style: TextStyle(
+                              fontSize: Dimensions.font20,
+                              fontWeight: FontWeight.w800,
+                              color: context.colors.textPrimary,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.height10),
+                      ...options.map((option) {
+                        final selected = option == value;
+                        return ListTile(
+                          title: Text(
+                            option,
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.9,
+                              fontWeight: selected
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              color: context.colors.textPrimary,
+                            ),
+                          ),
+                          trailing: selected
+                              ? Icon(
+                                  Icons.check_rounded,
+                                  color: Appcolors.primary,
+                                )
+                              : null,
+                          onTap: () {
+                            onChanged?.call(option);
+                            Navigator.pop(ctx);
+                          },
+                        );
+                      }),
+                      SizedBox(height: Dimensions.height20),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
           child: Container(
             padding: EdgeInsets.symmetric(
               horizontal: Dimensions.width15,
