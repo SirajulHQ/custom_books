@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/purchase_orders/models/purchase_order_model.dart';
 import 'package:custom_books/features/purchase_orders/views/add_purchase_order_page.dart';
@@ -784,7 +785,10 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
                     ],
                   ),
                   SizedBox(height: Dimensions.height10 / 2),
-                  _statusChip(order.status),
+                  StatusChip(
+                    color: order.status.color,
+                    label: order.status.label,
+                  ),
                 ],
               ),
             ),
@@ -798,34 +802,6 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statusChip(PurchaseOrderStatus status) {
-    final color = switch (status) {
-      PurchaseOrderStatus.draft => Colors.grey,
-      PurchaseOrderStatus.issued => Appcolors.primaryLight,
-      PurchaseOrderStatus.billed => Appcolors.success,
-      PurchaseOrderStatus.cancelled => Appcolors.error,
-    };
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width10,
-        vertical: 2,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(Dimensions.radius30),
-      ),
-      child: Text(
-        status.label,
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.6,
-          color: color,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
         ),
       ),
     );

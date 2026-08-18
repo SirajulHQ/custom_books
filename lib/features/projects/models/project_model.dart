@@ -1,3 +1,6 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:flutter/material.dart';
+
 enum ProjectStatus { active, onHold, completed, cancelled }
 
 extension ProjectStatusLabel on ProjectStatus {
@@ -6,6 +9,15 @@ extension ProjectStatusLabel on ProjectStatus {
     ProjectStatus.onHold => 'ON HOLD',
     ProjectStatus.completed => 'COMPLETED',
     ProjectStatus.cancelled => 'CANCELLED',
+  };
+}
+
+extension ProjectStatusColor on ProjectStatus {
+  Color get color => switch (this) {
+    ProjectStatus.active => Appcolors.success,
+    ProjectStatus.onHold => Appcolors.warning,
+    ProjectStatus.completed => Appcolors.primaryLight,
+    ProjectStatus.cancelled => Appcolors.error,
   };
 }
 

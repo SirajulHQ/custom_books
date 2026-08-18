@@ -1,3 +1,6 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:flutter/material.dart';
+
 enum DeliveryChallanStatus { draft, delivered, returned, cancelled }
 
 extension DeliveryChallanStatusLabel on DeliveryChallanStatus {
@@ -6,6 +9,15 @@ extension DeliveryChallanStatusLabel on DeliveryChallanStatus {
     DeliveryChallanStatus.delivered => 'DELIVERED',
     DeliveryChallanStatus.returned => 'RETURNED',
     DeliveryChallanStatus.cancelled => 'CANCELLED',
+  };
+}
+
+extension DeliveryChallanStatusColor on DeliveryChallanStatus {
+  Color get color => switch (this) {
+    DeliveryChallanStatus.draft => Appcolors.statusDraft,
+    DeliveryChallanStatus.delivered => Appcolors.success,
+    DeliveryChallanStatus.returned => Appcolors.warning,
+    DeliveryChallanStatus.cancelled => Appcolors.error,
   };
 }
 

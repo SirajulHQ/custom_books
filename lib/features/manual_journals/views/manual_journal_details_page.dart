@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/manual_journals/models/manual_journal_model.dart';
 import 'package:custom_books/features/manual_journals/views/add_manual_journal_page.dart';
 import 'package:flutter/material.dart';
@@ -32,20 +33,11 @@ class _ManualJournalDetailsPageState extends State<ManualJournalDetailsPage>
     super.dispose();
   }
 
-  Color _statusColor(ManualJournalStatus status) {
-    switch (status) {
-      case ManualJournalStatus.draft:
-        return context.colors.textTertiary;
-      case ManualJournalStatus.published:
-        return Appcolors.success;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
     final journal = widget.journal;
-    final statusColor = _statusColor(journal.status);
+    final statusColor = journal.status.color;
 
     return Scaffold(
       backgroundColor: context.colors.background,
@@ -336,14 +328,22 @@ class _ManualJournalDetailsPageState extends State<ManualJournalDetailsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow(
-                'Reference#:',
-                journal.referenceNumber.isEmpty ? '-' : journal.referenceNumber,
+              DetailRow(
+                label: 'Reference#:',
+                value: journal.referenceNumber.isEmpty
+                    ? '-'
+                    : journal.referenceNumber,
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', '₹${journal.amount.toStringAsFixed(2)}'),
+              DetailRow(
+                label: 'Amount:',
+                value: '₹${journal.amount.toStringAsFixed(2)}',
+              ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Notes:', journal.notes.isEmpty ? '-' : journal.notes),
+              DetailRow(
+                label: 'Notes:',
+                value: journal.notes.isEmpty ? '-' : journal.notes,
+              ),
             ],
           ),
         ),
@@ -393,34 +393,6 @@ class _ManualJournalDetailsPageState extends State<ManualJournalDetailsPage>
           ],
         ),
       ),
-    );
-  }
-
-  Widget _detailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.78,
-            color: context.colors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.88,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-            textAlign: TextAlign.right,
-          ),
-        ),
-      ],
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
@@ -575,24 +576,6 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
     Navigator.pop(context, adjustment);
   }
 
-  String _formatDate(DateTime d) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return '${d.day} ${months[d.month - 1]} ${d.year}';
-  }
-
   /// Returns a human-readable file size string (e.g. "2.3 MB").
   String _formatBytes(int bytes) {
     if (bytes < 1024) return '$bytes B';
@@ -718,7 +701,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        _formatDate(_date),
+                        formatDate(_date),
                         style: FormTextStyles.value(context),
                       ),
                       Icon(

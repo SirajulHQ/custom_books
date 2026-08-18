@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/time_entries/models/time_entry_model.dart';
 import 'package:custom_books/features/time_entries/views/add_time_entry_page.dart';
 import 'package:flutter/material.dart';
@@ -335,22 +336,28 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow('Project:', entry.projectName),
+              DetailRow(label: 'Project:', value: entry.projectName),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Task:', entry.taskName),
+              DetailRow(label: 'Task:', value: entry.taskName),
               SizedBox(height: Dimensions.height15),
-              _detailRow('User:', entry.userName),
+              DetailRow(label: 'User:', value: entry.userName),
               SizedBox(height: Dimensions.height15),
-              _detailRow(
-                'Log Date:',
-                DateFormat('dd MMM yyyy').format(entry.logDate),
+              DetailRow(
+                label: 'Log Date:',
+                value: DateFormat('dd MMM yyyy').format(entry.logDate),
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Duration:', entry.durationLabel),
+              DetailRow(label: 'Duration:', value: entry.durationLabel),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Billable:', entry.isBillable ? 'Yes' : 'No'),
+              DetailRow(
+                label: 'Billable:',
+                value: entry.isBillable ? 'Yes' : 'No',
+              ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Notes:', entry.notes.isEmpty ? '-' : entry.notes),
+              DetailRow(
+                label: 'Notes:',
+                value: entry.notes.isEmpty ? '-' : entry.notes,
+              ),
             ],
           ),
         ),
@@ -400,34 +407,6 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
           ],
         ),
       ),
-    );
-  }
-
-  Widget _detailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.78,
-            color: context.colors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.88,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-            textAlign: TextAlign.right,
-          ),
-        ),
-      ],
     );
   }
 }

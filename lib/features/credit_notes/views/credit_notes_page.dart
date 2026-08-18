@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/credit_notes/models/credit_note_model.dart';
 import 'package:custom_books/features/credit_notes/views/add_credit_note_page.dart';
 import 'package:custom_books/features/credit_notes/views/credit_note_details_page.dart';
@@ -888,7 +889,10 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
                     ],
                   ),
                   SizedBox(height: Dimensions.height10 / 2),
-                  _statusChip(note.status),
+                  StatusChip(
+                    color: note.status.color,
+                    label: note.status.label,
+                  ),
                 ],
               ),
             ),
@@ -902,34 +906,6 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statusChip(CreditNoteStatus status) {
-    final color = switch (status) {
-      CreditNoteStatus.draft => Colors.grey,
-      CreditNoteStatus.open => Appcolors.primaryLight,
-      CreditNoteStatus.closed => Appcolors.success,
-      CreditNoteStatus.void_ => Appcolors.error,
-    };
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width10,
-        vertical: 2,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(Dimensions.radius30),
-      ),
-      child: Text(
-        status.label.toUpperCase(),
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.6,
-          color: color,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
         ),
       ),
     );

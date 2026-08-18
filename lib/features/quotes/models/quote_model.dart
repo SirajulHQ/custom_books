@@ -1,3 +1,6 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:flutter/material.dart';
+
 enum QuoteStatus { draft, sent, accepted, declined, expired, converted }
 
 class QuoteLineItem {
@@ -95,4 +98,15 @@ class QuoteModel {
 
 extension QuoteStatusLabel on QuoteStatus {
   String get label => name.replaceFirst(name[0], name[0].toUpperCase());
+}
+
+extension QuoteStatusColor on QuoteStatus {
+  Color get color => switch (this) {
+    QuoteStatus.draft => Appcolors.statusDraft,
+    QuoteStatus.sent => Appcolors.primaryLight,
+    QuoteStatus.accepted => Appcolors.success,
+    QuoteStatus.declined => Appcolors.error,
+    QuoteStatus.expired => Appcolors.error,
+    QuoteStatus.converted => Appcolors.success,
+  };
 }

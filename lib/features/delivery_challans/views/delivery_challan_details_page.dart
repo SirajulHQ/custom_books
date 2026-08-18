@@ -1,5 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/delivery_challans/models/delivery_challan_model.dart';
 import 'package:custom_books/features/delivery_challans/views/add_delivery_challan_page.dart';
 import 'package:flutter/material.dart';
@@ -31,38 +33,11 @@ class _DeliveryChallanDetailsPageState extends State<DeliveryChallanDetailsPage>
     super.dispose();
   }
 
-  Color _statusColor(DeliveryChallanStatus status) {
-    return switch (status) {
-      DeliveryChallanStatus.draft => Colors.grey,
-      DeliveryChallanStatus.delivered => Appcolors.success,
-      DeliveryChallanStatus.returned => Appcolors.warning,
-      DeliveryChallanStatus.cancelled => Appcolors.error,
-    };
-  }
-
-  String _formatDate(DateTime date) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
-  }
-
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
     final challan = widget.challan;
-    final statusColor = _statusColor(challan.status);
+    final statusColor = challan.status.color;
 
     return Scaffold(
       backgroundColor: context.colors.background,
@@ -253,7 +228,7 @@ class _DeliveryChallanDetailsPageState extends State<DeliveryChallanDetailsPage>
                   ),
                   SizedBox(height: Dimensions.height10 / 2.5),
                   Text(
-                    _formatDate(challan.challanDate),
+                    formatDate(challan.challanDate),
                     style: TextStyle(
                       fontSize: Dimensions.font20 * 0.95,
                       fontWeight: FontWeight.w800,
@@ -360,14 +335,19 @@ class _DeliveryChallanDetailsPageState extends State<DeliveryChallanDetailsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow(
-                'Reference#:',
-                challan.referenceNumber.isEmpty ? '-' : challan.referenceNumber,
+              DetailRow(
+                label: 'Reference#:',
+                value: challan.referenceNumber.isEmpty
+                    ? '-'
+                    : challan.referenceNumber,
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Type:', challan.type),
+              DetailRow(label: 'Type:', value: challan.type),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', '₹${challan.total.toStringAsFixed(2)}'),
+              DetailRow(
+                label: 'Amount:',
+                value: '₹${challan.total.toStringAsFixed(2)}',
+              ),
             ],
           ),
         ),
@@ -417,33 +397,6 @@ class _DeliveryChallanDetailsPageState extends State<DeliveryChallanDetailsPage>
           ],
         ),
       ),
-    );
-  }
-
-  Widget _detailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.78,
-            color: context.colors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.88,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

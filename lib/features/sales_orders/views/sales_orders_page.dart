@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/sales_orders/models/sales_order_model.dart';
 import 'package:custom_books/features/sales_orders/views/add_sales_order_page.dart';
@@ -655,7 +656,10 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
                   SizedBox(height: Dimensions.height10 / 2),
                   Row(
                     children: [
-                      _statusChip(order.status),
+                      StatusChip(
+                        color: order.status.color,
+                        label: order.status.label,
+                      ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Container(
                         padding: EdgeInsets.symmetric(
@@ -708,34 +712,6 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statusChip(SalesOrderStatus status) {
-    final color = switch (status) {
-      SalesOrderStatus.draft => Colors.grey,
-      SalesOrderStatus.confirmed => Appcolors.primaryLight,
-      SalesOrderStatus.invoiced => Appcolors.success,
-      SalesOrderStatus.cancelled => Appcolors.error,
-    };
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width10,
-        vertical: 2,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(Dimensions.radius30),
-      ),
-      child: Text(
-        status.label.toUpperCase(),
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.6,
-          color: color,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
         ),
       ),
     );

@@ -1,6 +1,8 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/inventory_adjustments/models/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/models/line_item_model.dart';
 import 'package:custom_books/features/inventory_adjustments/views/add_adjustment_page.dart';
@@ -228,24 +230,6 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
         ),
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 
   @override
@@ -494,7 +478,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                   ),
                   SizedBox(height: Dimensions.height10 / 2.5),
                   Text(
-                    _formatDate(adjustment.date),
+                    formatDate(adjustment.date),
                     style: TextStyle(
                       fontSize: Dimensions.font20 * 0.95,
                       fontWeight: FontWeight.w800,
@@ -653,13 +637,13 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow('Account:', 'Cost of Goods Sold'),
+              DetailRow(label: 'Account:', value: 'Cost of Goods Sold'),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Reference#:', 'lssj'),
+              DetailRow(label: 'Reference#:', value: 'lssj'),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Adjusted By:', adjustment.createdBy),
+              DetailRow(label: 'Adjusted By:', value: adjustment.createdBy),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Adjustment Type:', 'Quantity'),
+              DetailRow(label: 'Adjustment Type:', value: 'Quantity'),
             ],
           ),
         ),
@@ -871,33 +855,6 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
           ],
         ),
       ),
-    );
-  }
-
-  Widget _detailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.78,
-            color: context.colors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.88,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

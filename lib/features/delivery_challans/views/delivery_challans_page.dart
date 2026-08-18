@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/delivery_challans/models/delivery_challan_model.dart';
 import 'package:custom_books/features/delivery_challans/views/add_delivery_challan_page.dart';
 import 'package:custom_books/features/delivery_challans/views/delivery_challan_details_page.dart';
@@ -898,7 +899,10 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                   SizedBox(height: Dimensions.height10 / 2),
                   Row(
                     children: [
-                      _statusChip(challan.status),
+                      StatusChip(
+                        color: challan.status.color,
+                        label: challan.status.label,
+                      ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Container(
                         padding: EdgeInsets.symmetric(
@@ -935,34 +939,6 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statusChip(DeliveryChallanStatus status) {
-    final color = switch (status) {
-      DeliveryChallanStatus.draft => Colors.grey,
-      DeliveryChallanStatus.delivered => Appcolors.success,
-      DeliveryChallanStatus.returned => Appcolors.warning,
-      DeliveryChallanStatus.cancelled => Appcolors.error,
-    };
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width10,
-        vertical: 2,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(Dimensions.radius30),
-      ),
-      child: Text(
-        status.label.toUpperCase(),
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.6,
-          color: color,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
         ),
       ),
     );

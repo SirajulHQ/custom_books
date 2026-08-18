@@ -1,3 +1,6 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:flutter/material.dart';
+
 enum SalesOrderStatus { draft, confirmed, invoiced, cancelled }
 
 extension SalesOrderStatusLabel on SalesOrderStatus {
@@ -6,6 +9,15 @@ extension SalesOrderStatusLabel on SalesOrderStatus {
     SalesOrderStatus.confirmed => 'CONFIRMED',
     SalesOrderStatus.invoiced => 'INVOICED',
     SalesOrderStatus.cancelled => 'CANCELLED',
+  };
+}
+
+extension SalesOrderStatusColor on SalesOrderStatus {
+  Color get color => switch (this) {
+    SalesOrderStatus.draft => Appcolors.statusDraft,
+    SalesOrderStatus.confirmed => Appcolors.primaryLight,
+    SalesOrderStatus.invoiced => Appcolors.success,
+    SalesOrderStatus.cancelled => Appcolors.error,
   };
 }
 

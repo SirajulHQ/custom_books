@@ -1,9 +1,19 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:flutter/material.dart';
+
 enum ManualJournalStatus { draft, published }
 
 extension ManualJournalStatusLabel on ManualJournalStatus {
   String get label => switch (this) {
     ManualJournalStatus.draft => 'DRAFT',
     ManualJournalStatus.published => 'PUBLISHED',
+  };
+}
+
+extension ManualJournalStatusColor on ManualJournalStatus {
+  Color get color => switch (this) {
+    ManualJournalStatus.draft => Appcolors.statusDraft,
+    ManualJournalStatus.published => Appcolors.success,
   };
 }
 

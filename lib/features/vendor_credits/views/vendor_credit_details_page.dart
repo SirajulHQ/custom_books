@@ -1,10 +1,11 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/vendor_credits/models/vendor_credit_model.dart';
 import 'package:custom_books/features/vendor_credits/views/add_vendor_credit_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class VendorCreditDetailsPage extends StatefulWidget {
   final VendorCreditModel credit;
@@ -32,26 +33,11 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
     super.dispose();
   }
 
-  Color _statusColor(VendorCreditStatus status) {
-    switch (status) {
-      case VendorCreditStatus.draft:
-        return context.colors.textTertiary;
-      case VendorCreditStatus.open:
-        return Appcolors.primaryLight;
-      case VendorCreditStatus.closed:
-        return Appcolors.success;
-      case VendorCreditStatus.void_:
-        return Appcolors.error;
-    }
-  }
-
-  String _formatDate(DateTime date) => DateFormat('dd MMM yyyy').format(date);
-
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
     final credit = widget.credit;
-    final statusColor = _statusColor(credit.status);
+    final statusColor = credit.status.color;
 
     return Scaffold(
       backgroundColor: context.colors.background,
@@ -259,7 +245,7 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
                   ),
                   SizedBox(height: Dimensions.height10 / 2.5),
                   Text(
-                    _formatDate(credit.creditDate),
+                    formatDate(credit.creditDate),
                     style: TextStyle(
                       fontSize: Dimensions.font20 * 0.95,
                       fontWeight: FontWeight.w800,
@@ -364,12 +350,17 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow(
-                'Reference#:',
-                credit.referenceNumber.isEmpty ? '—' : credit.referenceNumber,
+              DetailRow(
+                label: 'Reference#:',
+                value: credit.referenceNumber.isEmpty
+                    ? '—'
+                    : credit.referenceNumber,
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', '₹${credit.total.toStringAsFixed(2)}'),
+              DetailRow(
+                label: 'Amount:',
+                value: '₹${credit.total.toStringAsFixed(2)}',
+              ),
             ],
           ),
         ),
@@ -419,33 +410,6 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
           ],
         ),
       ),
-    );
-  }
-
-  Widget _detailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.78,
-            color: context.colors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.88,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

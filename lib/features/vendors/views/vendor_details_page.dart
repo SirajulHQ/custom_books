@@ -32,15 +32,6 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
     super.dispose();
   }
 
-  Color _statusColor(VendorStatus status) {
-    switch (status) {
-      case VendorStatus.active:
-        return Appcolors.success;
-      case VendorStatus.inactive:
-        return context.colors.textTertiary;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
@@ -236,9 +227,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
                   vertical: Dimensions.height10 * 0.5,
                 ),
                 decoration: BoxDecoration(
-                  color: _statusColor(
-                    widget.vendor.status,
-                  ).withValues(alpha: 0.15),
+                  color: widget.vendor.status.color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(Dimensions.radius30),
                 ),
                 child: Text(
@@ -247,7 +236,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
                     fontSize: Dimensions.font16 * 0.62,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.6,
-                    color: _statusColor(widget.vendor.status),
+                    color: widget.vendor.status.color,
                   ),
                 ),
               ),

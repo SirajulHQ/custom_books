@@ -1,6 +1,8 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/recurring_invoices/models/recurring_invoice_model.dart';
 import 'package:custom_books/features/recurring_invoices/views/add_recurring_invoice_page.dart';
 import 'package:flutter/material.dart';
@@ -32,38 +34,11 @@ class _RecurringInvoiceDetailsPageState
     super.dispose();
   }
 
-  Color _statusColor(RecurringInvoiceStatus status) {
-    return switch (status) {
-      RecurringInvoiceStatus.active => Appcolors.success,
-      RecurringInvoiceStatus.stopped => Appcolors.error,
-      RecurringInvoiceStatus.expired => Appcolors.warning,
-      RecurringInvoiceStatus.draft => Colors.grey,
-    };
-  }
-
-  String _formatDate(DateTime date) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
-  }
-
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
     final profile = widget.profile;
-    final statusColor = _statusColor(profile.status);
+    final statusColor = profile.status.color;
 
     return Scaffold(
       backgroundColor: context.colors.background,
@@ -271,7 +246,7 @@ class _RecurringInvoiceDetailsPageState
                   ),
                   SizedBox(height: Dimensions.height10 / 2.5),
                   Text(
-                    _formatDate(profile.startDate),
+                    formatDate(profile.startDate),
                     style: TextStyle(
                       fontSize: Dimensions.font20 * 0.95,
                       fontWeight: FontWeight.w800,
@@ -378,13 +353,19 @@ class _RecurringInvoiceDetailsPageState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow('Customer:', profile.customerName),
+              DetailRow(label: 'Customer:', value: profile.customerName),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Frequency:', profile.frequency.label),
+              DetailRow(label: 'Frequency:', value: profile.frequency.label),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Start Date:', _formatDate(profile.startDate)),
+              DetailRow(
+                label: 'Start Date:',
+                value: formatDate(profile.startDate),
+              ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', '₹${profile.amount.toStringAsFixed(2)}'),
+              DetailRow(
+                label: 'Amount:',
+                value: '₹${profile.amount.toStringAsFixed(2)}',
+              ),
             ],
           ),
         ),
@@ -434,33 +415,6 @@ class _RecurringInvoiceDetailsPageState
           ],
         ),
       ),
-    );
-  }
-
-  Widget _detailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.78,
-            color: context.colors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.88,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

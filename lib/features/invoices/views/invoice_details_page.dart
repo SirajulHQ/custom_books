@@ -1,5 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
 import 'package:custom_books/features/invoices/views/new_invoice_page.dart';
 import 'package:flutter/material.dart';
@@ -30,51 +32,11 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage>
     super.dispose();
   }
 
-  String _statusLabel(InvoiceStatus status) {
-    return switch (status) {
-      InvoiceStatus.draft => 'DRAFT',
-      InvoiceStatus.sent => 'SENT',
-      InvoiceStatus.paid => 'PAID',
-      InvoiceStatus.partiallyPaid => 'PARTIALLY PAID',
-      InvoiceStatus.overdue => 'OVERDUE',
-      InvoiceStatus.cancelled => 'CANCELLED',
-    };
-  }
-
-  Color _statusColor(InvoiceStatus status) {
-    return switch (status) {
-      InvoiceStatus.draft => Colors.grey,
-      InvoiceStatus.sent => Appcolors.primaryLight,
-      InvoiceStatus.paid => Appcolors.success,
-      InvoiceStatus.partiallyPaid => Appcolors.warning,
-      InvoiceStatus.overdue => Appcolors.error,
-      InvoiceStatus.cancelled => context.colors.textTertiary,
-    };
-  }
-
-  String _formatDate(DateTime date) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
-  }
-
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
     final invoice = widget.invoice;
-    final statusColor = _statusColor(invoice.status);
+    final statusColor = invoice.status.color;
 
     return Scaffold(
       backgroundColor: context.colors.background,
@@ -91,7 +53,10 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage>
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const NewInvoicePage()),
+                MaterialPageRoute(
+                  builder: (_) =>
+                      NewInvoicePage(existingInvoice: widget.invoice),
+                ),
               );
             },
           ),
@@ -250,7 +215,7 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage>
                           ),
                         ),
                         child: Text(
-                          _statusLabel(invoice.status),
+                          invoice.status.label,
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.62,
                             fontWeight: FontWeight.w800,
@@ -263,7 +228,7 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage>
                   ),
                   SizedBox(height: Dimensions.height10 / 2.5),
                   Text(
-                    _formatDate(invoice.invoiceDate),
+                    formatDate(invoice.invoiceDate),
                     style: TextStyle(
                       fontSize: Dimensions.font20 * 0.95,
                       fontWeight: FontWeight.w800,
@@ -370,23 +335,34 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow('Due Date:', _formatDate(invoice.dueDate)),
+              DetailRow(label: 'Due Date:', value: formatDate(invoice.dueDate)),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Terms:', invoice.terms.isEmpty ? '-' : invoice.terms),
-              SizedBox(height: Dimensions.height15),
-              _detailRow(
-                'Place of Supply:',
-                invoice.placeOfSupply.isEmpty ? '-' : invoice.placeOfSupply,
+              DetailRow(
+                label: 'Terms:',
+                value: invoice.terms.isEmpty ? '-' : invoice.terms,
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow(
-                'Sub Total:',
-                '₹${invoice.subTotal.toStringAsFixed(2)}',
+              DetailRow(
+                label: 'Place of Supply:',
+                value: invoice.placeOfSupply.isEmpty
+                    ? '-'
+                    : invoice.placeOfSupply,
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Tax:', '₹${invoice.taxAmount.toStringAsFixed(2)}'),
+              DetailRow(
+                label: 'Sub Total:',
+                value: '₹${invoice.subTotal.toStringAsFixed(2)}',
+              ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Total:', '₹${invoice.total.toStringAsFixed(2)}'),
+              DetailRow(
+                label: 'Tax:',
+                value: '₹${invoice.taxAmount.toStringAsFixed(2)}',
+              ),
+              SizedBox(height: Dimensions.height15),
+              DetailRow(
+                label: 'Total:',
+                value: '₹${invoice.total.toStringAsFixed(2)}',
+              ),
             ],
           ),
         ),
@@ -436,33 +412,6 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage>
           ],
         ),
       ),
-    );
-  }
-
-  Widget _detailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.78,
-            color: context.colors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.88,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

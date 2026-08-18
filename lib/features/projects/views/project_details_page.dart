@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/projects/models/project_model.dart';
 import 'package:custom_books/features/projects/views/add_project_page.dart';
 import 'package:flutter/material.dart';
@@ -31,24 +32,11 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
     super.dispose();
   }
 
-  Color _statusColor(ProjectStatus status) {
-    switch (status) {
-      case ProjectStatus.active:
-        return Appcolors.success;
-      case ProjectStatus.onHold:
-        return Appcolors.warning;
-      case ProjectStatus.completed:
-        return Appcolors.primaryLight;
-      case ProjectStatus.cancelled:
-        return Appcolors.error;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
     final project = widget.project;
-    final statusColor = _statusColor(project.status);
+    final statusColor = project.status.color;
 
     return Scaffold(
       backgroundColor: context.colors.background,
@@ -335,20 +323,26 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow('Customer:', project.customerName),
+              DetailRow(label: 'Customer:', value: project.customerName),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Billing Method:', project.billingMethod.label),
-              SizedBox(height: Dimensions.height15),
-              _detailRow('Rate:', '₹${project.rate.toStringAsFixed(2)}'),
-              SizedBox(height: Dimensions.height15),
-              _detailRow(
-                'Budget Hours:',
-                project.budgetHours.toStringAsFixed(1),
+              DetailRow(
+                label: 'Billing Method:',
+                value: project.billingMethod.label,
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow(
-                'Logged Hours:',
-                project.loggedHours.toStringAsFixed(1),
+              DetailRow(
+                label: 'Rate:',
+                value: '₹${project.rate.toStringAsFixed(2)}',
+              ),
+              SizedBox(height: Dimensions.height15),
+              DetailRow(
+                label: 'Budget Hours:',
+                value: project.budgetHours.toStringAsFixed(1),
+              ),
+              SizedBox(height: Dimensions.height15),
+              DetailRow(
+                label: 'Logged Hours:',
+                value: project.loggedHours.toStringAsFixed(1),
               ),
             ],
           ),
@@ -399,34 +393,6 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
           ],
         ),
       ),
-    );
-  }
-
-  Widget _detailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.78,
-            color: context.colors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.88,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-            textAlign: TextAlign.right,
-          ),
-        ),
-      ],
     );
   }
 }

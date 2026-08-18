@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/recurring_invoices/models/recurring_invoice_model.dart';
 import 'package:custom_books/features/recurring_invoices/views/add_recurring_invoice_page.dart';
@@ -884,7 +885,10 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
                     ],
                   ),
                   SizedBox(height: Dimensions.height10 / 2),
-                  _statusChip(profile.status),
+                  StatusChip(
+                    color: profile.status.color,
+                    label: profile.status.label,
+                  ),
                 ],
               ),
             ),
@@ -898,34 +902,6 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statusChip(RecurringInvoiceStatus status) {
-    final color = switch (status) {
-      RecurringInvoiceStatus.active => Appcolors.success,
-      RecurringInvoiceStatus.stopped => Appcolors.error,
-      RecurringInvoiceStatus.expired => Appcolors.warning,
-      RecurringInvoiceStatus.draft => Colors.grey,
-    };
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width10,
-        vertical: 2,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(Dimensions.radius30),
-      ),
-      child: Text(
-        status.label.toUpperCase(),
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.6,
-          color: color,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
         ),
       ),
     );

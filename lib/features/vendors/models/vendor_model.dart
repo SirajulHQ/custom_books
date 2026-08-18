@@ -1,9 +1,19 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:flutter/material.dart';
+
 enum VendorStatus { active, inactive }
 
 extension VendorStatusLabel on VendorStatus {
   String get label => switch (this) {
     VendorStatus.active => 'ACTIVE',
     VendorStatus.inactive => 'INACTIVE',
+  };
+}
+
+extension VendorStatusColor on VendorStatus {
+  Color get color => switch (this) {
+    VendorStatus.active => Appcolors.success,
+    VendorStatus.inactive => Appcolors.statusCancelled,
   };
 }
 

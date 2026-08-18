@@ -1,3 +1,6 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:flutter/material.dart';
+
 enum CreditNoteStatus { draft, open, closed, void_ }
 
 extension CreditNoteStatusLabel on CreditNoteStatus {
@@ -6,6 +9,15 @@ extension CreditNoteStatusLabel on CreditNoteStatus {
     CreditNoteStatus.open => 'OPEN',
     CreditNoteStatus.closed => 'CLOSED',
     CreditNoteStatus.void_ => 'VOID',
+  };
+}
+
+extension CreditNoteStatusColor on CreditNoteStatus {
+  Color get color => switch (this) {
+    CreditNoteStatus.draft => Appcolors.statusDraft,
+    CreditNoteStatus.open => Appcolors.primaryLight,
+    CreditNoteStatus.closed => Appcolors.success,
+    CreditNoteStatus.void_ => Appcolors.error,
   };
 }
 

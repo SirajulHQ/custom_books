@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Brand & status colors that stay constant across light/dark themes.
-///
-/// Theme-varying surface & text colors live on the [AppColors]
-/// [ThemeExtension] instead and are read through `context.colors`.
 class Appcolors {
   const Appcolors._();
 
@@ -20,13 +16,12 @@ class Appcolors {
   static const Color success = Color(0xFF10B981);
   static const Color info = Color(0xFF3B82F6);
   static const Color warning = Color(0xFFF59E0B);
+
+  // ── Common status chip colors ─────────────────────────────────────────
+  static const Color statusDraft = Color(0xFF9E9E9E);
+  static const Color statusCancelled = Color(0xFF94A3B8);
 }
 
-/// Theme-aware semantic colors, provided through [ThemeData.extensions].
-///
-/// Because these are read via `Theme.of(context)` (through the [context.colors]
-/// helper), every widget that uses them — including `const` widgets — rebuilds
-/// automatically when the theme mode changes. No manual listeners required.
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
   final Color background;

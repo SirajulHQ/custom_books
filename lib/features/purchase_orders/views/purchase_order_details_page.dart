@@ -1,10 +1,11 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/purchase_orders/models/purchase_order_model.dart';
 import 'package:custom_books/features/purchase_orders/views/add_purchase_order_page.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
-import 'package:intl/intl.dart';
 
 class PurchaseOrderDetailsPage extends StatefulWidget {
   final PurchaseOrderModel order;
@@ -32,26 +33,11 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage>
     super.dispose();
   }
 
-  Color _statusColor(PurchaseOrderStatus status) {
-    switch (status) {
-      case PurchaseOrderStatus.draft:
-        return context.colors.textTertiary;
-      case PurchaseOrderStatus.issued:
-        return Appcolors.primaryLight;
-      case PurchaseOrderStatus.billed:
-        return Appcolors.success;
-      case PurchaseOrderStatus.cancelled:
-        return Appcolors.error;
-    }
-  }
-
-  String _formatDate(DateTime date) => DateFormat('dd MMM yyyy').format(date);
-
   @override
   Widget build(BuildContext context) {
     Dimensions.init(context);
     final order = widget.order;
-    final statusColor = _statusColor(order.status);
+    final statusColor = order.status.color;
 
     return Scaffold(
       backgroundColor: context.colors.background,
@@ -251,7 +237,7 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage>
                   ),
                   SizedBox(height: Dimensions.height10 / 2.5),
                   Text(
-                    _formatDate(order.orderDate),
+                    formatDate(order.orderDate),
                     style: TextStyle(
                       fontSize: Dimensions.font20 * 0.95,
                       fontWeight: FontWeight.w800,
@@ -356,19 +342,24 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow(
-                'Reference#:',
-                order.referenceNumber.isEmpty ? '—' : order.referenceNumber,
+              DetailRow(
+                label: 'Reference#:',
+                value: order.referenceNumber.isEmpty
+                    ? '—'
+                    : order.referenceNumber,
               ),
               if (order.expectedDeliveryDate != null) ...[
                 SizedBox(height: Dimensions.height15),
-                _detailRow(
-                  'Expected Delivery:',
-                  _formatDate(order.expectedDeliveryDate!),
+                DetailRow(
+                  label: 'Expected Delivery:',
+                  value: formatDate(order.expectedDeliveryDate!),
                 ),
               ],
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', '₹${order.total.toStringAsFixed(2)}'),
+              DetailRow(
+                label: 'Amount:',
+                value: '₹${order.total.toStringAsFixed(2)}',
+              ),
             ],
           ),
         ),
@@ -418,33 +409,6 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage>
           ],
         ),
       ),
-    );
-  }
-
-  Widget _detailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.78,
-            color: context.colors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.88,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

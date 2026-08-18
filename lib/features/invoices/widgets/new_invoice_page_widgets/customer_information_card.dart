@@ -4,7 +4,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/invoices/widgets/custom_date_field.dart';
 import 'package:custom_books/features/invoices/widgets/custom_dropdown_field.dart';
-import 'package:custom_books/features/invoices/widgets/custom_text_field.dart';
+import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/custom_text_field.dart';
 import 'package:custom_books/features/invoices/widgets/invoice_form_helpers.dart';
 import 'package:flutter/material.dart';
 

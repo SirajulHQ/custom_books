@@ -1,3 +1,6 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:flutter/material.dart';
+
 enum RecurringInvoiceStatus { active, stopped, expired, draft }
 
 extension RecurringInvoiceStatusLabel on RecurringInvoiceStatus {
@@ -6,6 +9,15 @@ extension RecurringInvoiceStatusLabel on RecurringInvoiceStatus {
     RecurringInvoiceStatus.stopped => 'STOPPED',
     RecurringInvoiceStatus.expired => 'EXPIRED',
     RecurringInvoiceStatus.draft => 'DRAFT',
+  };
+}
+
+extension RecurringInvoiceStatusColor on RecurringInvoiceStatus {
+  Color get color => switch (this) {
+    RecurringInvoiceStatus.active => Appcolors.success,
+    RecurringInvoiceStatus.stopped => Appcolors.error,
+    RecurringInvoiceStatus.expired => Appcolors.warning,
+    RecurringInvoiceStatus.draft => Appcolors.statusDraft,
   };
 }
 

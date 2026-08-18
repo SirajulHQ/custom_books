@@ -1,4 +1,5 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/inventory_adjustments/models/inventory_adjustments_model.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,7 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
-                        _formatDate(adjustment.date),
+                        formatDate(adjustment.date),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
                           color: context.colors.textSecondary,
@@ -162,14 +163,6 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-    ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 
   String _formatValue(double value) {

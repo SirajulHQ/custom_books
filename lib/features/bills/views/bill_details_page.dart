@@ -1,11 +1,12 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/bills/models/bill_model.dart';
 import 'package:custom_books/features/bills/views/add_bill_page.dart';
 import 'package:custom_books/features/bills/widgets/bill_details_popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
-import 'package:intl/intl.dart';
 
 class BillDetailsPage extends StatefulWidget {
   final BillModel bill;
@@ -31,8 +32,6 @@ class _BillDetailsPageState extends State<BillDetailsPage>
     _tabController.dispose();
     super.dispose();
   }
-
-  String _formatDate(DateTime date) => DateFormat('dd MMM yyyy').format(date);
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +117,7 @@ class _BillDetailsPageState extends State<BillDetailsPage>
                   ),
                   SizedBox(height: Dimensions.height10 / 2.5),
                   Text(
-                    _formatDate(bill.billDate),
+                    formatDate(bill.billDate),
                     style: TextStyle(
                       fontSize: Dimensions.font20 * 0.95,
                       fontWeight: FontWeight.w800,
@@ -223,13 +222,16 @@ class _BillDetailsPageState extends State<BillDetailsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow('Due Date:', _formatDate(bill.dueDate)),
+              DetailRow(label: 'Due Date:', value: formatDate(bill.dueDate)),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Total:', '₹${bill.total.toStringAsFixed(2)}'),
+              DetailRow(
+                label: 'Total:',
+                value: '₹${bill.total.toStringAsFixed(2)}',
+              ),
               SizedBox(height: Dimensions.height15),
-              _detailRow(
-                'Balance Due:',
-                '₹${bill.balanceDue.toStringAsFixed(2)}',
+              DetailRow(
+                label: 'Balance Due:',
+                value: '₹${bill.balanceDue.toStringAsFixed(2)}',
               ),
             ],
           ),
@@ -280,33 +282,6 @@ class _BillDetailsPageState extends State<BillDetailsPage>
           ],
         ),
       ),
-    );
-  }
-
-  Widget _detailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.78,
-            color: context.colors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.88,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

@@ -1,3 +1,6 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:flutter/material.dart';
+
 enum ExpenseStatus { unbilled, billed, reimbursed, nonBillable }
 
 extension ExpenseStatusLabel on ExpenseStatus {
@@ -6,6 +9,15 @@ extension ExpenseStatusLabel on ExpenseStatus {
     ExpenseStatus.billed => 'BILLED',
     ExpenseStatus.reimbursed => 'REIMBURSED',
     ExpenseStatus.nonBillable => 'NON-BILLABLE',
+  };
+}
+
+extension ExpenseStatusColor on ExpenseStatus {
+  Color get color => switch (this) {
+    ExpenseStatus.unbilled => Appcolors.warning,
+    ExpenseStatus.billed => Appcolors.primaryLight,
+    ExpenseStatus.reimbursed => Appcolors.success,
+    ExpenseStatus.nonBillable => Appcolors.statusCancelled,
   };
 }
 

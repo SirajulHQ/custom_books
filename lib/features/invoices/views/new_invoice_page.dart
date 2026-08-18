@@ -7,18 +7,22 @@ import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
-import 'package:custom_books/features/invoices/widgets/custom_text_field.dart';
-import 'package:custom_books/features/invoices/widgets/customer_information_card.dart';
-import 'package:custom_books/features/invoices/widgets/email_communications_card.dart';
+import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/custom_text_field.dart';
+import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/customer_information_card.dart';
+import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/email_communications_card.dart';
 import 'package:custom_books/features/invoices/widgets/invoice_form_helpers.dart';
-import 'package:custom_books/features/invoices/widgets/invoice_tax_and_line_item_section.dart';
-import 'package:custom_books/features/invoices/widgets/select_customer_bottom_sheet.dart';
+import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/invoice_tax_and_line_item_section.dart';
+import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/invoice_more_options_sheet.dart';
+import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/invoice_attachments_card.dart';
 import 'package:flutter/material.dart';
 
 class NewInvoicePage extends StatefulWidget {
   final CustomerModel? customer;
+  final InvoiceModel? existingInvoice;
 
-  const NewInvoicePage({super.key, this.customer});
+  const NewInvoicePage({super.key, this.customer, this.existingInvoice});
+
+  bool get isEditing => existingInvoice != null;
 
   @override
   State<NewInvoicePage> createState() => _NewInvoicePageState();
@@ -38,10 +42,10 @@ class _NewInvoicePageState extends State<NewInvoicePage>
   // Form data
   final String _selectedTaxTreatment = 'VAT Registered';
   String _selectedPlaceOfSupply = 'Dubai';
-  final String _invoiceNumber = 'INV-000039';
-  DateTime _invoiceDate = DateTime.now();
-  String _selectedTerms = 'Due on Receipt';
-  DateTime _dueDate = DateTime.now();
+  late String _invoiceNumber;
+  late DateTime _invoiceDate;
+  late String _selectedTerms;
+  late DateTime _dueDate;
   bool _isTaxInclusive = false;
   final List<InvoiceLineItem> _lineItems = [];
   List<String> _emailCommunications = [];
@@ -50,14 +54,44 @@ class _NewInvoicePageState extends State<NewInvoicePage>
   @override
   void initState() {
     super.initState();
-    if (widget.customer != null) {
+    final existing = widget.existingInvoice;
+
+    if (existing != null) {
+      // Pre-fill from existing invoice (edit mode)
+      _customerNameController.text = existing.customerName;
+      _orderNumberController.text = existing.orderNumber ?? '';
+      _salespersonController.text = existing.salesperson ?? '';
+      _subjectController.text = existing.subject ?? '';
+      _customerNotesController.text =
+          existing.customerNotes ?? 'Thanks for your business.';
+      _termsController.text = existing.termsAndConditions ?? '';
+      _selectedPlaceOfSupply = existing.placeOfSupply;
+      _invoiceNumber = existing.invoiceNumber;
+      _invoiceDate = existing.invoiceDate;
+      _selectedTerms = existing.terms;
+      _dueDate = existing.dueDate;
+      _isTaxInclusive = existing.isTaxInclusive;
+      _lineItems.addAll(existing.lineItems);
+      _emailCommunications = List<String>.from(existing.emailCommunications);
+      _paymentReceived = existing.paymentReceived;
+    } else if (widget.customer != null) {
       _customerNameController.text = widget.customer!.name;
       if (widget.customer!.email != null &&
           widget.customer!.email!.isNotEmpty) {
         _emailCommunications.add(widget.customer!.email!);
       }
+      _customerNotesController.text = 'Thanks for your business.';
+      _invoiceNumber = 'INV-000039';
+      _invoiceDate = DateTime.now();
+      _selectedTerms = 'Due on Receipt';
+      _dueDate = DateTime.now();
+    } else {
+      _customerNotesController.text = 'Thanks for your business.';
+      _invoiceNumber = 'INV-000039';
+      _invoiceDate = DateTime.now();
+      _selectedTerms = 'Due on Receipt';
+      _dueDate = DateTime.now();
     }
-    _customerNotesController.text = 'Thanks for your business.';
 
     // Track changes for unsaved-changes protection
     _customerNameController.addListener(markDirty);
@@ -122,14 +156,19 @@ class _NewInvoicePageState extends State<NewInvoicePage>
             slivers: [
               // App Bar
               CustomSliverAppBar(
-                title: 'New Invoice',
+                title: widget.isEditing ? 'Edit Invoice' : 'New Invoice',
                 leadingType: AppBarLeadingType.back,
                 onLeadingPressed: () => onPopInvokedWithResult(false, null),
                 actions: [
                   AppBarElevatedButton(
-                    label: 'SAVE AS DRAFT',
+                    label: widget.isEditing ? 'UPDATE' : 'SAVE AS DRAFT',
                     onPressed: () {
-                      appLog('💾 Save as Draft tapped', name: 'NewInvoicePage');
+                      appLog(
+                        widget.isEditing
+                            ? '💾 Update tapped'
+                            : '💾 Save as Draft tapped',
+                        name: 'NewInvoicePage',
+                      );
                       if (_customerNameController.text.trim().isEmpty) {
                         ToastificationHelper.showError(
                           context,
@@ -139,7 +178,9 @@ class _NewInvoicePageState extends State<NewInvoicePage>
                       }
                       ToastificationHelper.showSuccess(
                         context,
-                        'Invoice saved as draft.',
+                        widget.isEditing
+                            ? 'Invoice updated successfully.'
+                            : 'Invoice saved as draft.',
                       );
                       Navigator.pop(context);
                     },
@@ -166,7 +207,6 @@ class _NewInvoicePageState extends State<NewInvoicePage>
                 padding: EdgeInsets.all(Dimensions.width20),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
-
                     // Customer Information Card
                     CustomerInformationCard(
                       customerNameController: _customerNameController,
@@ -358,63 +398,7 @@ class _NewInvoicePageState extends State<NewInvoicePage>
                     SizedBox(height: Dimensions.height15),
 
                     // Attachments Card
-                    FormCard(
-                      borderRadius: Dimensions.radius20,
-                      showShadow: true,
-                      children: [
-                        InvoiceFormHelpers.buildSectionHeader(
-                          context,
-                          'Attachments',
-                        ),
-                        SizedBox(height: Dimensions.height15),
-                        GestureDetector(
-                          onTap: () {
-                            appLog(
-                              '📎 Upload File tapped',
-                              name: 'NewInvoicePage',
-                            );
-                            ToastificationHelper.showInfo(
-                              context,
-                              'File attachments are coming soon.',
-                            );
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: Dimensions.width20,
-                              vertical: Dimensions.height20,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                Dimensions.radius15,
-                              ),
-                              border: Border.all(
-                                color: context.colors.border,
-                                width: 2,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.image_outlined,
-                                  color: context.colors.textSecondary,
-                                  size: Dimensions.iconSize24,
-                                ),
-                                SizedBox(width: Dimensions.width10),
-                                Text(
-                                  'Upload File',
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16 * 0.85,
-                                    color: context.colors.textSecondary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    InvoiceAttachmentsCard(),
 
                     SizedBox(height: Dimensions.height30),
                   ]),

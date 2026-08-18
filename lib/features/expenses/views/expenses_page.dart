@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/expenses/models/expense_model.dart';
 import 'package:custom_books/features/expenses/views/add_expense_page.dart';
@@ -547,7 +548,10 @@ class _ExpensesPageState extends State<ExpensesPage> {
                     ],
                   ),
                   SizedBox(height: Dimensions.height10 / 2),
-                  _statusChip(expense.status),
+                  StatusChip(
+                    color: expense.status.color,
+                    label: expense.status.label,
+                  ),
                 ],
               ),
             ),
@@ -561,34 +565,6 @@ class _ExpensesPageState extends State<ExpensesPage> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statusChip(ExpenseStatus status) {
-    final color = switch (status) {
-      ExpenseStatus.unbilled => Colors.grey,
-      ExpenseStatus.billed => Appcolors.primaryLight,
-      ExpenseStatus.reimbursed => Appcolors.success,
-      ExpenseStatus.nonBillable => Appcolors.warning,
-    };
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width10,
-        vertical: Dimensions.height10 * 0.2,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(Dimensions.radius30),
-      ),
-      child: Text(
-        status.label,
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.6,
-          color: color,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/projects/models/project_model.dart';
 import 'package:custom_books/features/projects/views/add_project_page.dart';
@@ -780,7 +781,10 @@ class _ProjectsPageState extends State<ProjectsPage> {
                     ],
                   ),
                   SizedBox(height: Dimensions.height10 / 2),
-                  _statusChip(project.status),
+                  StatusChip(
+                    color: project.status.color,
+                    label: project.status.label,
+                  ),
                 ],
               ),
             ),
@@ -807,34 +811,6 @@ class _ProjectsPageState extends State<ProjectsPage> {
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statusChip(ProjectStatus status) {
-    final color = switch (status) {
-      ProjectStatus.active => Appcolors.primaryLight,
-      ProjectStatus.onHold => Appcolors.warning,
-      ProjectStatus.completed => Appcolors.success,
-      ProjectStatus.cancelled => Appcolors.error,
-    };
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width10,
-        vertical: Dimensions.height10 * 0.2,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(Dimensions.radius30),
-      ),
-      child: Text(
-        status.label.toUpperCase(),
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.6,
-          color: color,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
         ),
       ),
     );

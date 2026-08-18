@@ -1,3 +1,6 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:flutter/material.dart';
+
 enum PurchaseOrderStatus { draft, issued, billed, cancelled }
 
 extension PurchaseOrderStatusLabel on PurchaseOrderStatus {
@@ -6,6 +9,15 @@ extension PurchaseOrderStatusLabel on PurchaseOrderStatus {
     PurchaseOrderStatus.issued => 'ISSUED',
     PurchaseOrderStatus.billed => 'BILLED',
     PurchaseOrderStatus.cancelled => 'CANCELLED',
+  };
+}
+
+extension PurchaseOrderStatusColor on PurchaseOrderStatus {
+  Color get color => switch (this) {
+    PurchaseOrderStatus.draft => Appcolors.statusDraft,
+    PurchaseOrderStatus.issued => Appcolors.primaryLight,
+    PurchaseOrderStatus.billed => Appcolors.success,
+    PurchaseOrderStatus.cancelled => Appcolors.error,
   };
 }
 

@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
@@ -112,24 +113,6 @@ class _TaxSettingsPageState extends State<TaxSettingsPage>
     if (selected != null) {
       setState(() => _reportingPeriod = selected);
     }
-  }
-
-  String _formatDate(DateTime date) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year}';
   }
 
   @override
@@ -333,7 +316,7 @@ class _TaxSettingsPageState extends State<TaxSettingsPage>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              _formatDate(value),
+              formatDate(value),
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.9,
                 color: context.colors.textPrimary,

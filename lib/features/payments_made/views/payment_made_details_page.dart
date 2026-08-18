@@ -1,10 +1,11 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/payments_made/models/payment_made_model.dart';
 import 'package:custom_books/features/payments_made/views/add_payment_made_page.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
-import 'package:intl/intl.dart';
 
 class PaymentMadeDetailsPage extends StatefulWidget {
   final PaymentMadeModel payment;
@@ -30,8 +31,6 @@ class _PaymentMadeDetailsPageState extends State<PaymentMadeDetailsPage>
     _tabController.dispose();
     super.dispose();
   }
-
-  String _formatDate(DateTime date) => DateFormat('dd MMM yyyy').format(date);
 
   @override
   Widget build(BuildContext context) {
@@ -237,7 +236,7 @@ class _PaymentMadeDetailsPageState extends State<PaymentMadeDetailsPage>
                   ),
                   SizedBox(height: Dimensions.height10 / 2.5),
                   Text(
-                    _formatDate(payment.paymentDate),
+                    formatDate(payment.paymentDate),
                     style: TextStyle(
                       fontSize: Dimensions.font20 * 0.95,
                       fontWeight: FontWeight.w800,
@@ -345,16 +344,21 @@ class _PaymentMadeDetailsPageState extends State<PaymentMadeDetailsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow('Payment Mode:', payment.mode.label),
+              DetailRow(label: 'Payment Mode:', value: payment.mode.label),
               SizedBox(height: Dimensions.height15),
-              _detailRow(
-                'Reference#:',
-                payment.referenceNumber.isEmpty ? '—' : payment.referenceNumber,
+              DetailRow(
+                label: 'Reference#:',
+                value: payment.referenceNumber.isEmpty
+                    ? '—'
+                    : payment.referenceNumber,
               ),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Applied to Bills:', appliedBills),
+              DetailRow(label: 'Applied to Bills:', value: appliedBills),
               SizedBox(height: Dimensions.height15),
-              _detailRow('Amount:', '₹${payment.amount.toStringAsFixed(2)}'),
+              DetailRow(
+                label: 'Amount:',
+                value: '₹${payment.amount.toStringAsFixed(2)}',
+              ),
             ],
           ),
         ),
@@ -404,33 +408,6 @@ class _PaymentMadeDetailsPageState extends State<PaymentMadeDetailsPage>
           ],
         ),
       ),
-    );
-  }
-
-  Widget _detailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.78,
-            color: context.colors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.88,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

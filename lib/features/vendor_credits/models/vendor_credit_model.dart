@@ -1,3 +1,6 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:flutter/material.dart';
+
 enum VendorCreditStatus { draft, open, closed, void_ }
 
 extension VendorCreditStatusLabel on VendorCreditStatus {
@@ -6,6 +9,15 @@ extension VendorCreditStatusLabel on VendorCreditStatus {
     VendorCreditStatus.open => 'OPEN',
     VendorCreditStatus.closed => 'CLOSED',
     VendorCreditStatus.void_ => 'VOID',
+  };
+}
+
+extension VendorCreditStatusColor on VendorCreditStatus {
+  Color get color => switch (this) {
+    VendorCreditStatus.draft => Appcolors.statusDraft,
+    VendorCreditStatus.open => Appcolors.primaryLight,
+    VendorCreditStatus.closed => Appcolors.success,
+    VendorCreditStatus.void_ => Appcolors.error,
   };
 }
 

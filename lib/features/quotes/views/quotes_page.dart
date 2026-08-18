@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/quotes/models/quote_model.dart';
 import 'package:custom_books/features/quotes/views/add_quote_page.dart';
@@ -148,7 +149,10 @@ class _QuotesPageState extends State<QuotesPage> {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  _statusChip(quote.status),
+                  StatusChip(
+                    color: quote.status.color,
+                    label: quote.status.label,
+                  ),
                 ],
               ),
               SizedBox(height: Dimensions.height15 * 1.2),
@@ -227,34 +231,6 @@ class _QuotesPageState extends State<QuotesPage> {
                 ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _statusChip(QuoteStatus status) {
-    final color = switch (status) {
-      QuoteStatus.draft => Colors.grey,
-      QuoteStatus.sent => Appcolors.primaryLight,
-      QuoteStatus.accepted || QuoteStatus.converted => Appcolors.success,
-      QuoteStatus.declined || QuoteStatus.expired => Appcolors.error,
-    };
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width10,
-        vertical: Dimensions.height10 * 0.2,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(Dimensions.radius30),
-      ),
-      child: Text(
-        status.label.toUpperCase(),
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.6,
-          color: color,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
         ),
       ),
     );
@@ -692,7 +668,10 @@ class _QuotesPageState extends State<QuotesPage> {
                   ],
                 ),
                 SizedBox(height: Dimensions.height10 / 2),
-                _statusChip(quote.status),
+                StatusChip(
+                  color: quote.status.color,
+                  label: quote.status.label,
+                ),
               ],
             ),
           ),
