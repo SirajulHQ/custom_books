@@ -2,9 +2,10 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
-import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/credit_notes/models/credit_note_model.dart';
 import 'package:custom_books/features/credit_notes/views/add_credit_note_page.dart';
+import 'package:custom_books/features/credit_notes/widgets/credit_note_card.dart';
+import 'package:custom_books/features/credit_notes/widgets/note_details_tab_view.dart';
 import 'package:flutter/material.dart';
 
 class CreditNoteDetailsPage extends StatefulWidget {
@@ -173,85 +174,10 @@ class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
         child: Column(
           children: [
             // Header section
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(Dimensions.width20),
-              decoration: BoxDecoration(
-                color: context.colors.card,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0x08000000),
-                    blurRadius: Dimensions.radius15 * 0.53,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Date',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textSecondary,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width10 + 2,
-                          vertical: Dimensions.height10 * 0.5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: statusColor.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius30,
-                          ),
-                        ),
-                        child: Text(
-                          note.status.label,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.62,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.6,
-                            color: statusColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2.5),
-                  Text(
-                    formatDate(note.creditNoteDate),
-                    style: TextStyle(
-                      fontSize: Dimensions.font20 * 0.95,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-                  Text(
-                    note.customerName,
-                    style: TextStyle(
-                      fontSize: Dimensions.font20 * 0.95,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2.5),
-                  Text(
-                    note.creditNoteNumber,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.85,
-                      color: context.colors.textSecondary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
+            CreditNoteCard(
+              note: note,
+              statusColor: statusColor,
+              formatDate: (dateStr) => formatDate(DateTime.parse(dateStr)),
             ),
             SizedBox(height: Dimensions.height15),
 
@@ -298,97 +224,7 @@ class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
             SizedBox(height: Dimensions.height15),
 
             // Tab content
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [_buildDetailsTab(), _buildCommentsTab()],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailsTab() {
-    final note = widget.note;
-    return ListView(
-      padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-      physics: const BouncingScrollPhysics(),
-      children: [
-        Container(
-          padding: EdgeInsets.all(Dimensions.width20),
-          decoration: BoxDecoration(
-            color: context.colors.card,
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0x08000000),
-                blurRadius: Dimensions.radius15 * 0.53,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              DetailRow(
-                label: 'Reference#:',
-                value: note.referenceNumber.isEmpty
-                    ? '-'
-                    : note.referenceNumber,
-              ),
-              SizedBox(height: Dimensions.height15),
-              DetailRow(
-                label: 'Amount:',
-                value: '₹${note.total.toStringAsFixed(2)}',
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: Dimensions.height30),
-      ],
-    );
-  }
-
-  Widget _buildCommentsTab() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(Dimensions.width20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(Dimensions.width20),
-              decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.07),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.history_rounded,
-                size: Dimensions.iconSize24 * 2,
-                color: Appcolors.primary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height20),
-            Text(
-              'No comments or history yet',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.95,
-                fontWeight: FontWeight.w700,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height10),
-            Text(
-              'Comments and activity history\nwill appear here',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                color: context.colors.textSecondary,
-                height: 1.5,
-              ),
-            ),
+            NoteDetailsTabView(tabController: _tabController, note: note),
           ],
         ),
       ),
