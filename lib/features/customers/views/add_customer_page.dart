@@ -7,9 +7,10 @@ import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/views/add_address_page.dart';
 import 'package:custom_books/features/customers/views/add_contact_person_page.dart';
+import 'package:custom_books/features/customers/widgets/customer_custom_text_field.dart';
+import 'package:custom_books/features/customers/widgets/customer_information_card.dart';
 import 'package:custom_books/features/customers/widgets/form_section_card.dart';
 import 'package:custom_books/features/customers/widgets/other_details_card.dart';
-import 'package:custom_books/features/customers/widgets/salutation_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 class AddCustomerPage extends StatefulWidget {
@@ -23,17 +24,6 @@ class AddCustomerPage extends StatefulWidget {
 
 class _AddCustomerPageState extends State<AddCustomerPage>
     with UnsavedChangesMixin {
-  String _customerType = 'Business';
-  String _selectedSalutation = '';
-
-  final List<String> _salutationOptions = [
-    'Mr.',
-    'Mrs.',
-    'Ms.',
-    'Miss.',
-    'Dr.',
-  ];
-
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _websiteController = TextEditingController();
   final TextEditingController _facebookController = TextEditingController();
@@ -48,8 +38,6 @@ class _AddCustomerPageState extends State<AddCustomerPage>
       TextEditingController();
   final TextEditingController _remarksController = TextEditingController();
 
-  String _phoneCountryCode = '+91';
-  String _mobileCountryCode = '+91';
   final String _selectedTaxTreatment = 'Select a Tax Treatment';
   final String _selectedPlaceOfSupply = 'Select a Place Of Supply';
   String _selectedCurrency = 'INR- Indian Rupee';
@@ -77,8 +65,6 @@ class _AddCustomerPageState extends State<AddCustomerPage>
       _emailController.text = widget.customer!.email ?? '';
       _phoneController.text = widget.customer!.workPhone ?? '';
       _mobileController.text = widget.customer!.mobileNumber ?? '';
-      _phoneCountryCode = '+971';
-      _mobileCountryCode = '+971';
       appLog(
         '📝 Editing customer: ${widget.customer!.name}',
         name: 'AddCustomerPage',
@@ -162,72 +148,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     // Customer Information Card
-                    FormSectionCard(
-                      title: 'Customer Information',
-                      children: [
-                        _buildSectionHeader('Customer Type', hasInfo: true),
-                        SizedBox(height: Dimensions.height10),
-                        Row(
-                          children: [
-                            Expanded(child: _buildRadioOption('Business')),
-                            SizedBox(width: Dimensions.width15),
-                            Expanded(child: _buildRadioOption('Individual')),
-                          ],
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: _buildSalutationDropdown(),
-                            ),
-                            SizedBox(width: Dimensions.width15),
-                            Expanded(
-                              flex: 2,
-                              child: _buildTextField(
-                                'First Name',
-                                _firstNameController,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        _buildTextField('Last Name', _lastNameController),
-                        SizedBox(height: Dimensions.height20),
-                        _buildTextField('Company Name', _companyNameController),
-                        SizedBox(height: Dimensions.height20),
-                        _buildTextField(
-                          'Display Name',
-                          _displayNameController,
-                          isRequired: true,
-                          hasInfo: true,
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        _buildTextField(
-                          'Email Address',
-                          _emailController,
-                          hasInfo: true,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        _buildPhoneField(
-                          'Phone',
-                          _phoneController,
-                          _phoneCountryCode,
-                          (value) => setState(() => _phoneCountryCode = value!),
-                          hasInfo: true,
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        _buildPhoneField(
-                          'Mobile',
-                          _mobileController,
-                          _mobileCountryCode,
-                          (value) =>
-                              setState(() => _mobileCountryCode = value!),
-                          hasInfo: true,
-                        ),
-                      ],
-                    ),
+                    CustomerInformationCard(),
 
                     SizedBox(height: Dimensions.height15),
 
@@ -293,9 +214,9 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                     FormSectionCard(
                       title: 'Remarks (For Internal Use)',
                       children: [
-                        _buildTextField(
-                          '',
-                          _remarksController,
+                        CustomerCustomTextField(
+                          label: '',
+                          controller: _remarksController,
                           maxLines: 4,
                           hint: 'Enter internal remarks...',
                         ),
@@ -310,29 +231,6 @@ class _AddCustomerPageState extends State<AddCustomerPage>
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildSectionHeader(String label, {bool hasInfo = false}) {
-    return Row(
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.85,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary,
-          ),
-        ),
-        if (hasInfo) ...[
-          SizedBox(width: Dimensions.width10 / 2),
-          Icon(
-            Icons.info_outline,
-            size: Dimensions.iconSize16,
-            color: context.colors.textTertiary,
-          ),
-        ],
-      ],
     );
   }
 
@@ -351,248 +249,6 @@ class _AddCustomerPageState extends State<AddCustomerPage>
     ToastificationHelper.showSuccess(context, '$name saved successfully.');
     markClean();
     Navigator.pop(context);
-  }
-
-  Widget _buildRadioOption(String label) {
-    final isSelected = _customerType == label;
-    return GestureDetector(
-      onTap: () {
-        setState(() => _customerType = label);
-        appLog('📝 Customer type changed to: $label', name: 'AddCustomerPage');
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width15,
-          vertical: Dimensions.height15,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.primary.withValues(alpha: 0.05)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : context.colors.border,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              isSelected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_unchecked,
-              color: isSelected
-                  ? AppColors.primary
-                  : context.colors.textTertiary,
-              size: Dimensions.iconSize16 * 1.2,
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.85,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected
-                    ? AppColors.primary
-                    : context.colors.textPrimary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(
-    String label,
-    TextEditingController? controller, {
-    bool isRequired = false,
-    bool hasInfo = false,
-    String? hint,
-    int maxLines = 1,
-    TextInputType? keyboardType,
-    String? prefix,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (label.isNotEmpty) ...[
-          Row(
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.85,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
-                ),
-              ),
-              if (isRequired) ...[
-                SizedBox(width: Dimensions.width10 / 3),
-                Text(
-                  '*',
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.85,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.red,
-                  ),
-                ),
-              ],
-              if (hasInfo) ...[
-                SizedBox(width: Dimensions.width10 / 2),
-                Icon(
-                  Icons.info_outline,
-                  size: Dimensions.iconSize16,
-                  color: context.colors.textTertiary,
-                ),
-              ],
-            ],
-          ),
-          SizedBox(height: Dimensions.height10),
-        ],
-        TextField(
-          controller: controller,
-          maxLines: maxLines,
-          keyboardType: keyboardType,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.85,
-            color: context.colors.textPrimary,
-          ),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: TextStyle(
-              color: context.colors.textTertiary,
-              fontSize: Dimensions.font16 * 0.85,
-            ),
-            prefixText: prefix != null ? '$prefix ' : null,
-            prefixStyle: TextStyle(
-              fontSize: Dimensions.font16 * 0.85,
-              color: context.colors.textPrimary,
-              fontWeight: FontWeight.w600,
-            ),
-            filled: true,
-            fillColor: context.colors.surfaceLight,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: Dimensions.width15,
-              vertical: Dimensions.height15,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: context.colors.border),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: context.colors.border),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: AppColors.primary, width: 2),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPhoneField(
-    String label,
-    TextEditingController controller,
-    String countryCode,
-    Function(String?) onCountryChanged, {
-    bool hasInfo = false,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.85,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primary,
-              ),
-            ),
-            if (hasInfo) ...[
-              SizedBox(width: Dimensions.width10 / 2),
-              Icon(
-                Icons.info_outline,
-                size: Dimensions.iconSize16,
-                color: context.colors.textTertiary,
-              ),
-            ],
-          ],
-        ),
-        SizedBox(height: Dimensions.height10),
-        Row(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width15,
-                vertical: Dimensions.height15,
-              ),
-              decoration: BoxDecoration(
-                color: context.colors.surfaceLight,
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-                border: Border.all(color: context.colors.border),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    countryCode,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.85,
-                      fontWeight: FontWeight.w600,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  SizedBox(width: Dimensions.width10 / 2),
-                  Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    size: Dimensions.iconSize16 * 1.2,
-                    color: context.colors.textSecondary,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: Dimensions.width10),
-            Expanded(
-              child: TextField(
-                controller: controller,
-                keyboardType: TextInputType.phone,
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.85,
-                  color: context.colors.textPrimary,
-                ),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: context.colors.surfaceLight,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: Dimensions.width15,
-                    vertical: Dimensions.height15,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: AppColors.primary, width: 2),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
   }
 
   Widget _buildExpandableButton(String label, {VoidCallback? onTap}) {
@@ -640,92 +296,6 @@ class _AddCustomerPageState extends State<AddCustomerPage>
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildSalutationDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Salutation',
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.85,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary,
-          ),
-        ),
-        SizedBox(height: Dimensions.height10),
-        GestureDetector(
-          onTap: () => _showSalutationBottomSheet(),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: Dimensions.width15,
-              vertical: Dimensions.height15,
-            ),
-            decoration: BoxDecoration(
-              color: context.colors.surfaceLight,
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-              border: Border.all(
-                color: _selectedSalutation.isEmpty
-                    ? context.colors.border
-                    : AppColors.primary,
-                width: _selectedSalutation.isEmpty ? 1 : 2,
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Text(
-                    _selectedSalutation.isEmpty ? '' : _selectedSalutation,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.85,
-                      color: _selectedSalutation.isEmpty
-                          ? context.colors.textTertiary
-                          : context.colors.textPrimary,
-                      fontWeight: _selectedSalutation.isEmpty
-                          ? FontWeight.w500
-                          : FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  size: Dimensions.iconSize16 * 1.2,
-                  color: context.colors.textSecondary,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _showSalutationBottomSheet() {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: context.colors.card,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.radius20),
-        ),
-      ),
-      builder: (_) {
-        return SalutationBottomSheet(
-          options: _salutationOptions,
-          selectedSalutation: _selectedSalutation,
-          onSelected: (value) {
-            setState(() {
-              _selectedSalutation = value;
-            });
-
-            appLog('✅ Salutation selected: $value', name: 'AddCustomerPage');
-          },
-        );
-      },
     );
   }
 }
