@@ -118,12 +118,12 @@ class _AddItemPageState extends State<AddItemPage> {
             Container(
               padding: EdgeInsets.all(Dimensions.width10),
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
               ),
               child: Icon(
                 icon,
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 size: Dimensions.iconSize24,
               ),
             ),
@@ -288,7 +288,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                         decoration: BoxDecoration(
                                           color: context.colors.surfaceLight,
                                           border: Border.all(
-                                            color: Appcolors.primary.withValues(
+                                            color: AppColors.primary.withValues(
                                               alpha: 0.3,
                                             ),
                                             width: 2,
@@ -313,7 +313,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                                       Dimensions.width10,
                                                     ),
                                                     decoration: BoxDecoration(
-                                                      color: Appcolors.primary
+                                                      color: AppColors.primary
                                                           .withValues(
                                                             alpha: 0.1,
                                                           ),
@@ -324,7 +324,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                                           .add_photo_alternate_outlined,
                                                       size:
                                                           Dimensions.iconSize24,
-                                                      color: Appcolors.primary,
+                                                      color: AppColors.primary,
                                                     ),
                                                   ),
                                                   SizedBox(
@@ -340,7 +340,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                                           0.75,
                                                       fontWeight:
                                                           FontWeight.w600,
-                                                      color: Appcolors.primary,
+                                                      color: AppColors.primary,
                                                     ),
                                                   ),
                                                 ],
@@ -594,7 +594,7 @@ class _AddItemPageState extends State<AddItemPage> {
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: isSelected
-                      ? Appcolors.primary
+                      ? AppColors.primary
                       : context.colors.textTertiary,
                   width: 2,
                 ),
@@ -606,7 +606,7 @@ class _AddItemPageState extends State<AddItemPage> {
                         height: Dimensions.height10,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                         ),
                       ),
                     )
@@ -668,7 +668,7 @@ class _AddItemPageState extends State<AddItemPage> {
         Row(
           children: [
             if (icon != null) ...[
-              Icon(icon, size: Dimensions.iconSize16, color: Appcolors.primary),
+              Icon(icon, size: Dimensions.iconSize16, color: AppColors.primary),
               SizedBox(width: Dimensions.width10 / 2),
             ],
             Text(
@@ -685,7 +685,7 @@ class _AddItemPageState extends State<AddItemPage> {
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.85,
                   fontWeight: FontWeight.w700,
-                  color: Appcolors.error,
+                  color: AppColors.error,
                 ),
               ),
             if (hasInfo) ...[
@@ -714,7 +714,7 @@ class _AddItemPageState extends State<AddItemPage> {
             prefixStyle: TextStyle(
               fontSize: Dimensions.font16,
               fontWeight: FontWeight.w600,
-              color: Appcolors.primary,
+              color: AppColors.primary,
             ),
             hintStyle: TextStyle(
               fontSize: Dimensions.font16,
@@ -723,13 +723,13 @@ class _AddItemPageState extends State<AddItemPage> {
             suffixIcon: hasScan
                 ? Icon(
                     Icons.qr_code_scanner,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                     size: Dimensions.iconSize24 * 0.9,
                   )
                 : hasAdd
                 ? Icon(
                     Icons.add_circle_outline,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                     size: Dimensions.iconSize24 * 0.9,
                   )
                 : null,
@@ -745,7 +745,7 @@ class _AddItemPageState extends State<AddItemPage> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: Appcolors.primary, width: 2),
+              borderSide: BorderSide(color: AppColors.primary, width: 2),
             ),
             contentPadding: EdgeInsets.symmetric(
               horizontal: Dimensions.width15,
@@ -768,7 +768,7 @@ class _AddItemPageState extends State<AddItemPage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
                 fontWeight: FontWeight.w600,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             if (isRequired)
@@ -776,7 +776,7 @@ class _AddItemPageState extends State<AddItemPage> {
                 ' *',
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.85,
-                  color: Appcolors.error,
+                  color: AppColors.error,
                 ),
               ),
           ],
@@ -827,7 +827,7 @@ class _AddItemPageState extends State<AddItemPage> {
           child: Checkbox(
             value: value,
             onChanged: onChanged,
-            activeColor: Appcolors.primary,
+            activeColor: AppColors.primary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
             ),
@@ -893,13 +893,13 @@ class _ItemToggleSection extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(Dimensions.width10 * 0.7),
                 decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
                 ),
                 child: Icon(
                   icon,
                   size: Dimensions.iconSize16 * 1.2,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                 ),
               ),
               SizedBox(width: Dimensions.width10),
@@ -916,7 +916,7 @@ class _ItemToggleSection extends StatelessWidget {
               Switch(
                 value: value,
                 onChanged: onChanged,
-                activeThumbColor: Appcolors.primary,
+                activeThumbColor: AppColors.primary,
               ),
             ],
           ),

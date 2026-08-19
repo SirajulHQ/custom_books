@@ -135,11 +135,11 @@ class _FilterOption extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? Appcolors.primary.withValues(alpha: 0.05)
+              ? AppColors.primary.withValues(alpha: 0.05)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: Border.all(
-            color: isSelected ? Appcolors.primary : context.colors.border,
+            color: isSelected ? AppColors.primary : context.colors.border,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -151,13 +151,13 @@ class _FilterOption extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? Appcolors.primary : context.colors.textPrimary,
+                color: isSelected ? AppColors.primary : context.colors.textPrimary,
               ),
             ),
             if (isSelected)
               Icon(
                 Icons.check_circle,
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 size: Dimensions.iconSize24,
               ),
           ],

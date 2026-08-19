@@ -16,7 +16,7 @@ class ItemThumbnail extends StatelessWidget {
 
     final fallback = Icon(
       Icons.inventory_2_outlined,
-      color: Appcolors.primary,
+      color: AppColors.primary,
       size: Dimensions.iconSize24 * 0.75,
     );
 
@@ -24,7 +24,7 @@ class ItemThumbnail extends StatelessWidget {
       width: thumbnailSize,
       height: thumbnailSize,
       decoration: BoxDecoration(
-        color: Appcolors.primary.withValues(alpha: 0.08),
+        color: AppColors.primary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.73),
       ),
       clipBehavior: Clip.antiAlias,

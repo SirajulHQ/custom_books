@@ -17,14 +17,14 @@ class DrawerMenuItem extends StatelessWidget {
         height: Dimensions.height45 * 0.9,
         decoration: BoxDecoration(
           color: item.isSelected
-              ? Appcolors.primary.withValues(alpha: 0.1)
+              ? AppColors.primary.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
         ),
         child: Icon(
           item.icon,
           size: Dimensions.iconSize24 * 0.9,
-          color: item.isSelected ? Appcolors.primary : context.colors.textSecondary,
+          color: item.isSelected ? AppColors.primary : context.colors.textSecondary,
         ),
       ),
       title: Text(
@@ -32,11 +32,11 @@ class DrawerMenuItem extends StatelessWidget {
         style: TextStyle(
           fontSize: Dimensions.font16 * 0.9,
           fontWeight: item.isSelected ? FontWeight.w700 : FontWeight.w500,
-          color: item.isSelected ? Appcolors.primary : context.colors.textPrimary,
+          color: item.isSelected ? AppColors.primary : context.colors.textPrimary,
         ),
       ),
       selected: item.isSelected,
-      selectedTileColor: Appcolors.primary.withValues(alpha: 0.05),
+      selectedTileColor: AppColors.primary.withValues(alpha: 0.05),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(Dimensions.radius15),
       ),

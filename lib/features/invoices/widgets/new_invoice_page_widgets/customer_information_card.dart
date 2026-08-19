@@ -91,7 +91,7 @@ class CustomerInformationCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.85,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     SizedBox(width: Dimensions.width10 / 3),
@@ -168,7 +168,7 @@ class CustomerInformationCard extends StatelessWidget {
                   'Address',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.85,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -182,7 +182,7 @@ class CustomerInformationCard extends StatelessWidget {
                   'Customer Details',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.85,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -255,7 +255,7 @@ class CustomerInformationCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.85,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     SizedBox(width: Dimensions.width10 / 3),

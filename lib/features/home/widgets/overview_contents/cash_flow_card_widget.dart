@@ -136,7 +136,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
                             ),
                             painter: _InteractiveAreaChartPainter(
                               data: cashFlowData,
-                              color: Appcolors.accent,
+                              color: AppColors.accent,
                               highlightIndex: _tappedIndex,
                               gridColor: context.colors.border,
                               labelColor: context.colors.textTertiary,
@@ -185,19 +185,19 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
               context,
               '+ Incoming',
               'AED${totalIncoming.toStringAsFixed(2)}',
-              Appcolors.ok,
+              AppColors.ok,
             ),
             _statLine(
               context,
               '- Outgoing',
               'AED${totalOutgoing.toStringAsFixed(2)}',
-              Appcolors.warn,
+              AppColors.warn,
             ),
             _statLine(
               context,
               '= Ending Balance',
               'AED${last.ending.toStringAsFixed(2)}',
-              Appcolors.accent,
+              AppColors.accent,
               bold: true,
             ),
           ],
@@ -279,7 +279,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             _tooltipRow(
               'Income',
               'AED${_formatNumber(point.income)}',
-              Appcolors.ok,
+              AppColors.ok,
             ),
             SizedBox(height: Dimensions.height10 * 0.4),
 
@@ -287,7 +287,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             _tooltipRow(
               'Outgoing',
               'AED${_formatNumber(point.outgoing)}',
-              Appcolors.warn,
+              AppColors.warn,
             ),
             SizedBox(height: Dimensions.height10 * 0.4),
 
@@ -295,7 +295,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             _tooltipRow(
               'Ending Bal.',
               'AED${_formatNumber(point.ending)}',
-              Appcolors.accent,
+              AppColors.accent,
               bold: true,
             ),
           ],

@@ -229,14 +229,14 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                           ),
                           decoration: BoxDecoration(
                             color: selected
-                                ? Appcolors.primary.withValues(alpha: 0.05)
+                                ? AppColors.primary.withValues(alpha: 0.05)
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(
                               Dimensions.radius15,
                             ),
                             border: Border.all(
                               color: selected
-                                  ? Appcolors.primary
+                                  ? AppColors.primary
                                   : context.colors.border,
                               width: selected ? 2 : 1,
                             ),
@@ -252,14 +252,14 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                                       ? FontWeight.w600
                                       : FontWeight.w500,
                                   color: selected
-                                      ? Appcolors.primary
+                                      ? AppColors.primary
                                       : context.colors.textPrimary,
                                 ),
                               ),
                               if (selected)
                                 Icon(
                                   Icons.check_circle_rounded,
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                   size: Dimensions.iconSize24,
                                 ),
                             ],
@@ -332,7 +332,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                           child: Container(
                             padding: EdgeInsets.all(Dimensions.width10 * 0.6),
                             decoration: BoxDecoration(
-                              color: Appcolors.primary.withValues(alpha: 0.1),
+                              color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(
                                 Dimensions.radius15,
                               ),
@@ -340,7 +340,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                             child: Icon(
                               Icons.close_rounded,
                               size: Dimensions.iconSize16,
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                             ),
                           ),
                         ),
@@ -381,14 +381,14 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                               ),
                               decoration: BoxDecoration(
                                 color: selected
-                                    ? Appcolors.primary.withValues(alpha: 0.06)
+                                    ? AppColors.primary.withValues(alpha: 0.06)
                                     : context.colors.card,
                                 borderRadius: BorderRadius.circular(
                                   Dimensions.radius15,
                                 ),
                                 border: Border.all(
                                   color: selected
-                                      ? Appcolors.primary
+                                      ? AppColors.primary
                                       : context.colors.border,
                                   width: selected ? 1.5 : 1,
                                 ),
@@ -401,7 +401,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                                         : Icons.radio_button_off_rounded,
                                     size: Dimensions.iconSize24 - 4,
                                     color: selected
-                                        ? Appcolors.primary
+                                        ? AppColors.primary
                                         : context.colors.textTertiary,
                                   ),
                                   SizedBox(width: Dimensions.width10),
@@ -423,7 +423,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                                           ? Icons.arrow_upward_rounded
                                           : Icons.arrow_downward_rounded,
                                       size: Dimensions.iconSize16,
-                                      color: Appcolors.primary,
+                                      color: AppColors.primary,
                                     ),
                                 ],
                               ),
@@ -457,9 +457,9 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                           Navigator.pop(context);
                         },
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Appcolors.primary,
+                          foregroundColor: AppColors.primary,
                           side: const BorderSide(
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             width: 1.5,
                           ),
                           backgroundColor: Colors.transparent,
@@ -505,7 +505,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           boxShadow: [
             BoxShadow(
-              color: Appcolors.primary.withValues(alpha: 0.35),
+              color: AppColors.primary.withValues(alpha: 0.35),
               blurRadius: Dimensions.radius15 * 1.07,
               offset: const Offset(0, 8),
             ),
@@ -513,7 +513,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
         ),
         child: FloatingActionButton(
           onPressed: _addNewChallan,
-          backgroundColor: Appcolors.primary,
+          backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -540,7 +540,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
               SizedBox(width: Dimensions.width10),
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
-                color: Appcolors.accent,
+                color: AppColors.accent,
                 onPressed: _openFilterSheet,
               ),
               SizedBox(width: Dimensions.width20),
@@ -585,7 +585,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       borderSide: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                     ),
@@ -652,7 +652,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                   vertical: Dimensions.height10 / 2,
                 ),
                 decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.07),
+                  color: AppColors.primary.withValues(alpha: 0.07),
                   borderRadius: BorderRadius.circular(Dimensions.radius15),
                 ),
                 child: Row(
@@ -660,7 +660,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                     Icon(
                       Icons.filter_alt_rounded,
                       size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                     SizedBox(width: Dimensions.width10 / 2),
                     Text(
@@ -668,7 +668,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.72,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     const Spacer(),
@@ -677,7 +677,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                       child: Icon(
                         Icons.close_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ],
@@ -697,7 +697,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                               width: Dimensions.height45 * 1.6,
                               height: Dimensions.height45 * 1.6,
                               decoration: BoxDecoration(
-                                color: Appcolors.primary.withValues(
+                                color: AppColors.primary.withValues(
                                   alpha: 0.08,
                                 ),
                                 shape: BoxShape.circle,
@@ -705,7 +705,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                               child: Icon(
                                 Icons.local_shipping_outlined,
                                 size: Dimensions.iconSize24 * 1.3,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               ),
                             ),
                             SizedBox(height: Dimensions.height15),
@@ -767,14 +767,14 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
             borderRadius: BorderRadius.circular(Dimensions.radius30),
             border: selected
                 ? Border.all(
-                    color: Appcolors.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     width: 1.5,
                   )
                 : null,
             boxShadow: selected
                 ? [
                     BoxShadow(
-                      color: Appcolors.primary.withValues(alpha: 0.08),
+                      color: AppColors.primary.withValues(alpha: 0.08),
                       blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
@@ -788,7 +788,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
               fontSize: Dimensions.font16 * 0.72,
               fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
               color: selected
-                  ? Appcolors.primary
+                  ? AppColors.primary
                   : context.colors.textSecondary,
             ),
           ),
@@ -802,7 +802,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
       width: Dimensions.height45 * 0.9,
       height: Dimensions.height45 * 0.9,
       decoration: BoxDecoration(
-        color: (active ? Appcolors.accent : Appcolors.primary).withValues(
+        color: (active ? AppColors.accent : AppColors.primary).withValues(
           alpha: 0.1,
         ),
         borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -810,7 +810,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
       child: Icon(
         icon,
         size: Dimensions.iconSize24 - 4,
-        color: active ? Appcolors.accent : Appcolors.primary,
+        color: active ? AppColors.accent : AppColors.primary,
       ),
     );
   }
@@ -839,12 +839,12 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
               width: Dimensions.height45 * 0.78,
               height: Dimensions.height45 * 0.78,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
               ),
               child: Icon(
                 Icons.local_shipping_outlined,
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 size: Dimensions.iconSize24 - 4,
               ),
             ),
@@ -935,7 +935,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.9,
                 fontWeight: FontWeight.w800,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
           ],

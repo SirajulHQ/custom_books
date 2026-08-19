@@ -120,7 +120,7 @@ class _AddSalesOrderLineItemPageState extends State<AddSalesOrderLineItemPage>
               child: Text(
                 'SAVE',
                 style: TextStyle(
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   fontWeight: FontWeight.bold,
                   fontSize: Dimensions.font16 * 0.85,
                 ),
@@ -227,7 +227,7 @@ class _AddSalesOrderLineItemPageState extends State<AddSalesOrderLineItemPage>
                                   child: Text(
                                     _discountIsPercent ? '%' : '₹',
                                     style: TextStyle(
-                                      color: Appcolors.primary,
+                                      color: AppColors.primary,
                                       fontWeight: FontWeight.bold,
                                       fontSize: Dimensions.font16 * 0.8,
                                     ),

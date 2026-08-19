@@ -96,13 +96,13 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage>
                   ..._customers.map(
                     (name) => ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Appcolors.primary.withValues(
+                        backgroundColor: AppColors.primary.withValues(
                           alpha: 0.1,
                         ),
                         child: Text(
                           name.substring(0, 1).toUpperCase(),
                           style: TextStyle(
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -154,7 +154,7 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage>
                   mode.label,
                   style: TextStyle(
                     color: mode == _mode
-                        ? Appcolors.primary
+                        ? AppColors.primary
                         : context.colors.textPrimary,
                     fontWeight: mode == _mode
                         ? FontWeight.bold
@@ -162,7 +162,7 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage>
                   ),
                 ),
                 trailing: mode == _mode
-                    ? Icon(Icons.check_rounded, color: Appcolors.primary)
+                    ? Icon(Icons.check_rounded, color: AppColors.primary)
                     : null,
                 onTap: () => Navigator.pop(context, mode),
               ),
@@ -231,7 +231,7 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage>
               child: Text(
                 'SAVE',
                 style: TextStyle(
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   fontWeight: FontWeight.w800,
                   fontSize: Dimensions.font16 * 0.75,
                   letterSpacing: 0.5,
@@ -309,7 +309,7 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage>
                         borderSide: BorderSide(color: context.colors.border),
                       ),
                       focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Appcolors.primary),
+                        borderSide: BorderSide(color: AppColors.primary),
                       ),
                     ),
                   ),
@@ -397,7 +397,7 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage>
                         borderSide: BorderSide(color: context.colors.border),
                       ),
                       focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Appcolors.primary),
+                        borderSide: BorderSide(color: AppColors.primary),
                       ),
                     ),
                   ),

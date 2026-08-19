@@ -27,7 +27,7 @@ class ImageHelper {
         errorBuilder: errorWidget != null
             ? (context, error, stackTrace) => errorWidget
             : (context, error, stackTrace) {
-                final colors = Theme.of(context).extension<AppColors>()!;
+                final colors = Theme.of(context).extension<AppThemeColors>()!;
                 return Container(
                   width: width,
                   height: height,
@@ -49,7 +49,7 @@ class ImageHelper {
         errorBuilder: errorWidget != null
             ? (context, error, stackTrace) => errorWidget
             : (context, error, stackTrace) {
-                final colors = Theme.of(context).extension<AppColors>()!;
+                final colors = Theme.of(context).extension<AppThemeColors>()!;
                 return Container(
                   width: width,
                   height: height,

@@ -61,7 +61,7 @@ class CustomerSortSheet extends StatelessWidget {
                     ? Icons.radio_button_checked_rounded
                     : Icons.radio_button_off_rounded,
                 color: selected
-                    ? Appcolors.primary
+                    ? AppColors.primary
                     : context.colors.textSecondary,
               ),
               title: Text(
@@ -77,7 +77,7 @@ class CustomerSortSheet extends StatelessWidget {
                       ascending
                           ? Icons.arrow_upward_rounded
                           : Icons.arrow_downward_rounded,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                       size: Dimensions.iconSize16,
                     )
                   : null,

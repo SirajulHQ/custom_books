@@ -110,7 +110,7 @@ class _BankingPageState extends State<BankingPage> {
               actions: [
                 AppBarIconButton(
                   icon: Icons.filter_list_rounded,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   onPressed: () {
                     SelectionSheet.show(
                       context,
@@ -128,7 +128,7 @@ class _BankingPageState extends State<BankingPage> {
                 SizedBox(width: Dimensions.width10),
                 AppBarIconButton(
                   icon: Icons.more_vert_rounded,
-                  color: Appcolors.accent,
+                  color: AppColors.accent,
                   onPressed: () {
                     BankingMoreOptionsSheet.show(
                       context,
@@ -227,7 +227,7 @@ class _BankingPageState extends State<BankingPage> {
                     Expanded(
                       child: AccountCard(
                         icon: Icons.payments_rounded,
-                        iconBgColor: Appcolors.primary,
+                        iconBgColor: AppColors.primary,
                         title: 'Cash In Hand',
                         amount: '₹${cashInHand.toStringAsFixed(2)}',
                       ),
@@ -236,7 +236,7 @@ class _BankingPageState extends State<BankingPage> {
                     Expanded(
                       child: AccountCard(
                         icon: Icons.account_balance_rounded,
-                        iconBgColor: Appcolors.success,
+                        iconBgColor: AppColors.success,
                         title: 'Bank Balance',
                         amount: '₹${bankBalance.toStringAsFixed(2)}',
                       ),
@@ -311,7 +311,7 @@ class _BankingPageState extends State<BankingPage> {
             MaterialPageRoute(builder: (context) => const AddBankAccountPage()),
           );
         },
-        backgroundColor: Appcolors.primary,
+        backgroundColor: AppColors.primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius20),
         ),

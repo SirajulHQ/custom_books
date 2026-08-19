@@ -137,7 +137,7 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
                   SizedBox(width: Dimensions.width10),
                   AppBarIconButton(
                     icon: Icons.more_vert_rounded,
-                    color: Appcolors.accent,
+                    color: AppColors.accent,
                     onPressed: () {
                       showModalBottomSheet(
                         context: context,
@@ -168,7 +168,7 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
                               ListTile(
                                 leading: Icon(
                                   Icons.save_rounded,
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                 ),
                                 title: Text(
                                   'Save as Open',
@@ -266,7 +266,7 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
                               ),
                               focusedBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                 ),
                               ),
                             ),

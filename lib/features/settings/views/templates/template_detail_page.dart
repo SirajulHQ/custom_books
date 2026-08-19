@@ -112,7 +112,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
                                     vertical: Dimensions.height10 * 0.4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Appcolors.warning,
+                                    color: AppColors.warning,
                                     borderRadius: BorderRadius.circular(
                                       Dimensions.radius15 * 0.27,
                                     ),
@@ -157,9 +157,9 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
                               ),
                               label: const Text('Customize'),
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: Appcolors.primary,
+                                foregroundColor: AppColors.primary,
                                 side: const BorderSide(
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                   width: 1.5,
                                 ),
                                 padding: EdgeInsets.symmetric(
@@ -216,7 +216,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
   }
 
   Widget _buildTemplatePreview() {
-    const themeColor = Appcolors.primary;
+    const themeColor = AppColors.primary;
 
     return Container(
       padding: EdgeInsets.all(Dimensions.width15),
@@ -401,7 +401,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
           _previewSummaryRow(
             'Payment Made',
             '(-) 100.00',
-            valueColor: Appcolors.warn,
+            valueColor: AppColors.warn,
           ),
           SizedBox(height: Dimensions.height10 * 0.3),
 
@@ -643,7 +643,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
               color: isAdd ? context.colors.surfaceLight : context.colors.card,
               borderRadius: BorderRadius.circular(Dimensions.radius15),
               border: Border.all(
-                color: isSelected ? Appcolors.primary : context.colors.border,
+                color: isSelected ? AppColors.primary : context.colors.border,
                 width: isSelected ? 2 : 1,
               ),
             ),
@@ -670,7 +670,7 @@ class _TemplateDetailPageState extends State<TemplateDetailPage> {
                             width: Dimensions.iconSize20,
                             height: Dimensions.iconSize20,
                             decoration: const BoxDecoration(
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(

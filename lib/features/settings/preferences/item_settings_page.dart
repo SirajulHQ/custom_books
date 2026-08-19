@@ -96,7 +96,7 @@ class _ItemSettingsPageState extends State<ItemSettingsPage> {
                               value: _enableInventory,
                               onChanged: (val) =>
                                   setState(() => _enableInventory = val),
-                              activeColor: Appcolors.primary,
+                              activeColor: AppColors.primary,
                             ),
                           ],
                         ),
@@ -110,7 +110,7 @@ class _ItemSettingsPageState extends State<ItemSettingsPage> {
                             style: TextStyle(
                               fontSize: Dimensions.font16 * 0.8,
                               fontWeight: FontWeight.w600,
-                              color: Appcolors.warn,
+                              color: AppColors.warn,
                             ),
                           ),
                           SizedBox(height: Dimensions.height10 / 2),
@@ -163,7 +163,7 @@ class _ItemSettingsPageState extends State<ItemSettingsPage> {
                                 value: _notifyReorderPoint,
                                 onChanged: (val) =>
                                     setState(() => _notifyReorderPoint = val),
-                                activeColor: Appcolors.primary,
+                                activeColor: AppColors.primary,
                               ),
                             ],
                           ),

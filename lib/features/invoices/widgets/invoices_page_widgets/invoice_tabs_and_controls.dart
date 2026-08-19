@@ -82,14 +82,14 @@ class InvoiceTabsAndControls extends StatelessWidget {
             borderRadius: BorderRadius.circular(Dimensions.radius30),
             border: selected
                 ? Border.all(
-                    color: Appcolors.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     width: 1.5,
                   )
                 : null,
             boxShadow: selected
                 ? [
                     BoxShadow(
-                      color: Appcolors.primary.withValues(alpha: 0.08),
+                      color: AppColors.primary.withValues(alpha: 0.08),
                       blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
@@ -103,7 +103,7 @@ class InvoiceTabsAndControls extends StatelessWidget {
               fontSize: Dimensions.font16 * 0.68,
               fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
               color: selected
-                  ? Appcolors.primary
+                  ? AppColors.primary
                   : context.colors.textSecondary,
             ),
           ),
@@ -117,7 +117,7 @@ class InvoiceTabsAndControls extends StatelessWidget {
       width: Dimensions.height45 * 0.9,
       height: Dimensions.height45 * 0.9,
       decoration: BoxDecoration(
-        color: (active ? Appcolors.accent : Appcolors.primary).withValues(
+        color: (active ? AppColors.accent : AppColors.primary).withValues(
           alpha: 0.1,
         ),
         borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -125,7 +125,7 @@ class InvoiceTabsAndControls extends StatelessWidget {
       child: Icon(
         icon,
         size: Dimensions.iconSize24 - 4,
-        color: active ? Appcolors.accent : Appcolors.primary,
+        color: active ? AppColors.accent : AppColors.primary,
       ),
     );
   }

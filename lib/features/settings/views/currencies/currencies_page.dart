@@ -62,8 +62,8 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
             ),
             if (!currency.isBase)
               ListTile(
-                leading: Icon(Icons.delete_outline, color: Appcolors.warn),
-                title: Text('Delete', style: TextStyle(color: Appcolors.warn)),
+                leading: Icon(Icons.delete_outline, color: AppColors.warn),
+                title: Text('Delete', style: TextStyle(color: AppColors.warn)),
                 onTap: () {
                   Navigator.pop(ctx);
                 },
@@ -107,10 +107,10 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
                 child: Container(
                   padding: EdgeInsets.all(Dimensions.width15),
                   decoration: BoxDecoration(
-                    color: Appcolors.warning.withValues(alpha: 0.08),
+                    color: AppColors.warning.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
                     border: Border.all(
-                      color: Appcolors.warning.withValues(alpha: 0.3),
+                      color: AppColors.warning.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Row(
@@ -119,7 +119,7 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
                       Icon(
                         Icons.info_rounded,
                         size: Dimensions.iconSize24,
-                        color: Appcolors.warning,
+                        color: AppColors.warning,
                       ),
                       SizedBox(width: Dimensions.width10),
                       Expanded(
@@ -136,7 +136,7 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
                               TextSpan(
                                 text: 'Central Bank Of Uae',
                                 style: TextStyle(
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -180,7 +180,7 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
                                 vertical: Dimensions.height10 * 0.2,
                               ),
                               decoration: BoxDecoration(
-                                color: Appcolors.ok.withValues(alpha: 0.1),
+                                color: AppColors.ok.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(
                                   Dimensions.radius15,
                                 ),
@@ -190,7 +190,7 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
                                 style: TextStyle(
                                   fontSize: Dimensions.font16 * 0.6,
                                   fontWeight: FontWeight.w700,
-                                  color: Appcolors.ok,
+                                  color: AppColors.ok,
                                 ),
                               ),
                             ),

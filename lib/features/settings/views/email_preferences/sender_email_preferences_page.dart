@@ -67,8 +67,8 @@ class _SenderEmailPreferencesPageState
               onTap: () => Navigator.pop(ctx),
             ),
             ListTile(
-              leading: Icon(Icons.delete_outline, color: Appcolors.warn),
-              title: Text('Delete', style: TextStyle(color: Appcolors.warn)),
+              leading: Icon(Icons.delete_outline, color: AppColors.warn),
+              title: Text('Delete', style: TextStyle(color: AppColors.warn)),
               onTap: () => Navigator.pop(ctx),
             ),
           ],
@@ -120,7 +120,7 @@ class _SenderEmailPreferencesPageState
                                 width: Dimensions.width10 * 0.4,
                                 height: Dimensions.height20,
                                 decoration: BoxDecoration(
-                                  color: Appcolors.warning,
+                                  color: AppColors.warning,
                                   borderRadius: BorderRadius.circular(
                                     Dimensions.radius15 * 0.13,
                                   ),
@@ -168,7 +168,7 @@ class _SenderEmailPreferencesPageState
                               Icon(
                                 Icons.warning_amber_rounded,
                                 size: Dimensions.iconSize24,
-                                color: Appcolors.warning,
+                                color: AppColors.warning,
                               ),
                               SizedBox(width: Dimensions.width10),
                               Text(
@@ -275,7 +275,7 @@ class _SenderEmailPreferencesPageState
                       Icon(
                         Icons.star_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.warning,
+                        color: AppColors.warning,
                       ),
                     ],
                   ],

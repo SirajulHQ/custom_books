@@ -22,7 +22,7 @@ class CustomAddButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = backgroundColor ?? Appcolors.primary;
+    final bgColor = backgroundColor ?? AppColors.primary;
 
     final fab = FloatingActionButton(
       onPressed: onPressed,

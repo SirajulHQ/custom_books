@@ -75,7 +75,7 @@ class BillDetailsPopupMenu extends StatelessWidget {
                   child: Text(
                     'Delete',
                     style: TextStyle(
-                      color: Appcolors.warn,
+                      color: AppColors.warn,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -114,7 +114,7 @@ class BillDetailsPopupMenu extends StatelessWidget {
               Icon(
                 Icons.delete_outline_rounded,
                 size: Dimensions.iconSize16 + 4,
-                color: Appcolors.warn,
+                color: AppColors.warn,
               ),
               SizedBox(width: Dimensions.width10),
               Text(
@@ -122,7 +122,7 @@ class BillDetailsPopupMenu extends StatelessWidget {
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.85,
                   fontWeight: FontWeight.w600,
-                  color: Appcolors.warn,
+                  color: AppColors.warn,
                 ),
               ),
             ],

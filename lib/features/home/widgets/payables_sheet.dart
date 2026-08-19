@@ -52,12 +52,12 @@ class PayablesSheet extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(Dimensions.width10 * 0.7),
                   decoration: BoxDecoration(
-                    color: Appcolors.accent.withValues(alpha: 0.1),
+                    color: AppColors.accent.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.call_made_rounded,
-                    color: Appcolors.accent,
+                    color: AppColors.accent,
                     size: Dimensions.iconSize22,
                   ),
                 ),
@@ -81,7 +81,7 @@ class PayablesSheet extends StatelessWidget {
           FinancialSummaryCard(
             title: 'Total Payables',
             data: _data,
-            accentColor: Appcolors.accent,
+            accentColor: AppColors.accent,
           ),
 
           SizedBox(height: Dimensions.height20),

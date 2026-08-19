@@ -79,13 +79,13 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
                   ..._customers.map(
                     (name) => ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Appcolors.primary.withValues(
+                        backgroundColor: AppColors.primary.withValues(
                           alpha: 0.1,
                         ),
                         child: Text(
                           name.substring(0, 1).toUpperCase(),
                           style: TextStyle(
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -137,7 +137,7 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
                   freq.label,
                   style: TextStyle(
                     color: freq == _frequency
-                        ? Appcolors.primary
+                        ? AppColors.primary
                         : context.colors.textPrimary,
                     fontWeight: freq == _frequency
                         ? FontWeight.bold
@@ -145,7 +145,7 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
                   ),
                 ),
                 trailing: freq == _frequency
-                    ? Icon(Icons.check_rounded, color: Appcolors.primary)
+                    ? Icon(Icons.check_rounded, color: AppColors.primary)
                     : null,
                 onTap: () => Navigator.pop(context, freq),
               ),
@@ -214,7 +214,7 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
                 SizedBox(width: Dimensions.width10),
                 AppBarIconButton(
                   icon: Icons.more_vert_rounded,
-                  color: Appcolors.accent,
+                  color: AppColors.accent,
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
@@ -245,7 +245,7 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
                             ListTile(
                               leading: Icon(
                                 Icons.drafts_rounded,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               ),
                               title: Text(
                                 'Save as Draft',
@@ -301,7 +301,7 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
                               ),
                             ),
                             focusedBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Appcolors.primary),
+                              borderSide: BorderSide(color: AppColors.primary),
                             ),
                           ),
                         ),

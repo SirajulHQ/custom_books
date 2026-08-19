@@ -297,7 +297,7 @@ class _NewInvoicePageState extends State<NewInvoicePage>
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.85,
                                 fontWeight: FontWeight.w600,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               ),
                             ),
                             SizedBox(width: Dimensions.width10 / 2),
@@ -362,12 +362,12 @@ class _NewInvoicePageState extends State<NewInvoicePage>
                                   ),
                                   border: Border.all(
                                     color: _paymentReceived
-                                        ? Appcolors.primary
+                                        ? AppColors.primary
                                         : context.colors.border,
                                     width: 2,
                                   ),
                                   color: _paymentReceived
-                                      ? Appcolors.primary
+                                      ? AppColors.primary
                                       : Colors.transparent,
                                 ),
                                 child: _paymentReceived

@@ -40,7 +40,7 @@ class SupportContentWidget extends StatelessWidget {
             title: 'Getting Started',
             description: 'Learn the basics of using Own Store',
             icon: Icons.rocket_launch_rounded,
-            color: Appcolors.primary,
+            color: AppColors.primary,
             topics: const [
               'Creating your first invoice',
               'Adding customers and vendors',
@@ -55,7 +55,7 @@ class SupportContentWidget extends StatelessWidget {
             title: 'Financial Reports',
             description: 'Generate and understand reports',
             icon: Icons.assessment_rounded,
-            color: Appcolors.ok,
+            color: AppColors.ok,
             topics: const [
               'Cash flow statements',
               'Income and expense reports',
@@ -208,16 +208,16 @@ class ContactSupportCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
-        color: Appcolors.primary.withValues(alpha: 0.08),
+        color: AppColors.primary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: Appcolors.primary.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
           Icon(
             Icons.support_agent_rounded,
             size: Dimensions.iconSize24 * 2,
-            color: Appcolors.primary,
+            color: AppColors.primary,
           ),
           SizedBox(height: Dimensions.height15),
           Text(
@@ -225,7 +225,7 @@ class ContactSupportCard extends StatelessWidget {
             style: TextStyle(
               fontSize: Dimensions.font20,
               fontWeight: FontWeight.w800,
-              color: Appcolors.primary,
+              color: AppColors.primary,
             ),
           ),
           SizedBox(height: Dimensions.height10),
@@ -244,11 +244,11 @@ class ContactSupportCard extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: Dimensions.height15),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 borderRadius: BorderRadius.circular(Dimensions.radius30),
                 boxShadow: [
                   BoxShadow(
-                    color: Appcolors.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: Dimensions.radius15 * 0.53,
                     offset: const Offset(0, 2),
                   ),

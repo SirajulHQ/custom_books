@@ -120,7 +120,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                             Container(
                               padding: EdgeInsets.all(Dimensions.width20),
                               decoration: BoxDecoration(
-                                color: Appcolors.primary.withValues(
+                                color: AppColors.primary.withValues(
                                   alpha: 0.07,
                                 ),
                                 shape: BoxShape.circle,
@@ -128,7 +128,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                               child: Icon(
                                 Icons.attach_file_rounded,
                                 size: Dimensions.iconSize24 * 1.5,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               ),
                             ),
                             SizedBox(height: Dimensions.height15),
@@ -186,7 +186,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                       Dimensions.width10 * 0.7,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Appcolors.primary.withValues(
+                                      color: AppColors.primary.withValues(
                                         alpha: 0.1,
                                       ),
                                       borderRadius: BorderRadius.circular(
@@ -196,7 +196,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                     child: Icon(
                                       _fileIcon(file.extension),
                                       size: Dimensions.iconSize24 - 4,
-                                      color: Appcolors.primary,
+                                      color: AppColors.primary,
                                     ),
                                   ),
                                   SizedBox(width: Dimensions.width10),
@@ -272,7 +272,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                               _showSourcePicker(dialogCtx, setDialogState),
                           icon: Icon(
                             Icons.add_rounded,
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             size: Dimensions.iconSize24 - 4,
                           ),
                           label: Text(
@@ -280,12 +280,12 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                             style: TextStyle(
                               fontSize: Dimensions.font16 * 0.9,
                               fontWeight: FontWeight.w700,
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                             ),
                           ),
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                               width: 1.5,
                             ),
                             shape: RoundedRectangleBorder(
@@ -459,12 +459,12 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
             Container(
               padding: EdgeInsets.all(Dimensions.width10),
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
               ),
               child: Icon(
                 icon,
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 size: Dimensions.iconSize24,
               ),
             ),
@@ -625,7 +625,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.8,
                 fontWeight: FontWeight.w700,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
           ),
@@ -801,7 +801,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                           borderRadius: BorderRadius.circular(99),
                         ),
                         child: Text(
@@ -831,7 +831,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                         children: [
                           Icon(
                             Icons.upload_file_outlined,
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             size: Dimensions.iconSize24 - 4,
                           ),
                           SizedBox(width: Dimensions.width10),
@@ -841,7 +841,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                 : '${_attachments.length} file(s) attached',
                             style: TextStyle(
                               fontSize: Dimensions.font16 * 0.85,
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),

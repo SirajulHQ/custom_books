@@ -37,7 +37,7 @@ class AboutPage extends StatelessWidget {
                       width: Dimensions.height45 * 2,
                       height: Dimensions.height45 * 2,
                       decoration: BoxDecoration(
-                        color: Appcolors.primary.withValues(alpha: 0.1),
+                        color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(
                           Dimensions.radius20,
                         ),
@@ -45,7 +45,7 @@ class AboutPage extends StatelessWidget {
                       child: Icon(
                         Icons.menu_book_rounded,
                         size: Dimensions.height45,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
 
@@ -157,7 +157,7 @@ class AboutPage extends StatelessWidget {
                                 Icon(
                                   Icons.phone_outlined,
                                   size: Dimensions.iconSize24 - 4,
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                 ),
                                 SizedBox(width: Dimensions.width15),
                                 Text(
@@ -165,7 +165,7 @@ class AboutPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: Dimensions.font16 * 0.85,
                                     fontWeight: FontWeight.w600,
-                                    color: Appcolors.primary,
+                                    color: AppColors.primary,
                                   ),
                                 ),
                               ],
@@ -182,7 +182,7 @@ class AboutPage extends StatelessWidget {
                                 Icon(
                                   Icons.email_outlined,
                                   size: Dimensions.iconSize24 - 4,
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                 ),
                                 SizedBox(width: Dimensions.width15),
                                 Text(
@@ -190,7 +190,7 @@ class AboutPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: Dimensions.font16 * 0.85,
                                     fontWeight: FontWeight.w600,
-                                    color: Appcolors.primary,
+                                    color: AppColors.primary,
                                   ),
                                 ),
                               ],
@@ -274,7 +274,7 @@ class AboutPage extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, size: Dimensions.iconSize24, color: Appcolors.primary),
+          Icon(icon, size: Dimensions.iconSize24, color: AppColors.primary),
           SizedBox(width: Dimensions.width15),
           Expanded(
             child: Text(
@@ -311,7 +311,7 @@ class AboutPage extends StatelessWidget {
         style: TextStyle(
           fontSize: Dimensions.font16 * 0.8,
           fontWeight: FontWeight.w600,
-          color: Appcolors.primary,
+          color: AppColors.primary,
         ),
       ),
     );

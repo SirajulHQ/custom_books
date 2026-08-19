@@ -14,10 +14,10 @@ extension DeliveryChallanStatusLabel on DeliveryChallanStatus {
 
 extension DeliveryChallanStatusColor on DeliveryChallanStatus {
   Color get color => switch (this) {
-    DeliveryChallanStatus.draft => Appcolors.statusDraft,
-    DeliveryChallanStatus.delivered => Appcolors.success,
-    DeliveryChallanStatus.returned => Appcolors.warning,
-    DeliveryChallanStatus.cancelled => Appcolors.error,
+    DeliveryChallanStatus.draft => AppColors.statusDraft,
+    DeliveryChallanStatus.delivered => AppColors.success,
+    DeliveryChallanStatus.returned => AppColors.warning,
+    DeliveryChallanStatus.cancelled => AppColors.error,
   };
 }
 

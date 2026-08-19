@@ -129,11 +129,11 @@ class _NewSenderPageState extends State<NewSenderPage>
               (email) => ListTile(
                 leading: CircleAvatar(
                   radius: Dimensions.radius20,
-                  backgroundColor: Appcolors.warn.withValues(alpha: 0.1),
+                  backgroundColor: AppColors.warn.withValues(alpha: 0.1),
                   child: Text(
                     email.substring(0, 2).toUpperCase(),
                     style: TextStyle(
-                      color: Appcolors.warn,
+                      color: AppColors.warn,
                       fontWeight: FontWeight.w600,
                       fontSize: Dimensions.font16 * 0.75,
                     ),
@@ -147,7 +147,7 @@ class _NewSenderPageState extends State<NewSenderPage>
                   ),
                 ),
                 trailing: email == _selectedEmail
-                    ? Icon(Icons.check_rounded, color: Appcolors.primary)
+                    ? Icon(Icons.check_rounded, color: AppColors.primary)
                     : null,
                 onTap: () => Navigator.pop(ctx, email),
               ),
@@ -266,7 +266,7 @@ class _NewSenderPageState extends State<NewSenderPage>
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          borderSide: const BorderSide(color: Appcolors.primary, width: 2),
+          borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         contentPadding: EdgeInsets.symmetric(
           horizontal: Dimensions.width15,
@@ -333,7 +333,7 @@ class _NewSenderPageState extends State<NewSenderPage>
           child: ElevatedButton(
             onPressed: _save,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Appcolors.primary,
+              backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius30),

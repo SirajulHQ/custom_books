@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                         vertical: Dimensions.height20,
                       ),
                       decoration: BoxDecoration(
-                        color: Appcolors.primary.withValues(alpha: 0.05),
+                        color: AppColors.primary.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(Dimensions.radius20),
                           topRight: Radius.circular(Dimensions.radius20),
@@ -87,14 +87,14 @@ class _HomePageState extends State<HomePage> {
                           Container(
                             padding: EdgeInsets.all(Dimensions.width10 * 0.8),
                             decoration: BoxDecoration(
-                              color: Appcolors.primary.withValues(alpha: 0.1),
+                              color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(
                                 Dimensions.radius15 / 2,
                               ),
                             ),
                             child: Icon(
                               Icons.exit_to_app_rounded,
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                               size: Dimensions.iconSize24,
                             ),
                           ),
@@ -178,7 +178,7 @@ class _HomePageState extends State<HomePage> {
                                   vertical: Dimensions.height15,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                   borderRadius: BorderRadius.circular(
                                     Dimensions.radius15 / 2,
                                   ),
@@ -250,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                 actions: [
                   AppBarIconButton(
                     icon: Icons.notifications_none_rounded,
-                    color: Appcolors.accent,
+                    color: AppColors.accent,
                     showBadge: true,
                     onPressed: _openNotificationsPage,
                   ),
@@ -349,14 +349,14 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(Dimensions.radius30),
                     border: selected
                         ? Border.all(
-                            color: Appcolors.primary.withValues(alpha: 0.3),
+                            color: AppColors.primary.withValues(alpha: 0.3),
                             width: 1.5,
                           )
                         : null,
                     boxShadow: selected
                         ? [
                             BoxShadow(
-                              color: Appcolors.primary.withValues(alpha: 0.08),
+                              color: AppColors.primary.withValues(alpha: 0.08),
                               blurRadius: Dimensions.radius15 * 0.53,
                               offset: const Offset(0, 2),
                             ),
@@ -371,7 +371,7 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
                       letterSpacing: 0.3,
                       color: selected
-                          ? Appcolors.primary
+                          ? AppColors.primary
                           : context.colors.textSecondary,
                     ),
                   ),

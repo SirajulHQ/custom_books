@@ -86,11 +86,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             height: Dimensions.height80,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Appcolors.primary.withValues(alpha: 0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
             ),
             child: Icon(
               Icons.lock_reset_rounded,
-              color: Appcolors.primary,
+              color: AppColors.primary,
               size: Dimensions.iconSize40,
             ),
           ),
@@ -148,18 +148,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
                 borderSide: const BorderSide(
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   width: 1.5,
                 ),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
-                borderSide: const BorderSide(color: Appcolors.error),
+                borderSide: const BorderSide(color: AppColors.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
                 borderSide: const BorderSide(
-                  color: Appcolors.error,
+                  color: AppColors.error,
                   width: 1.5,
                 ),
               ),
@@ -175,9 +175,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             child: ElevatedButton(
               onPressed: _isLoading ? null : _submitResetRequest,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Appcolors.primary,
+                backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor: Appcolors.primary.withValues(
+                disabledBackgroundColor: AppColors.primary.withValues(
                   alpha: 0.6,
                 ),
                 shape: RoundedRectangleBorder(
@@ -218,11 +218,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           height: Dimensions.height80,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Appcolors.success.withValues(alpha: 0.1),
+            color: AppColors.success.withValues(alpha: 0.1),
           ),
           child: Icon(
             Icons.mark_email_read_rounded,
-            color: Appcolors.success,
+            color: AppColors.success,
             size: Dimensions.iconSize40,
           ),
         ),
@@ -267,7 +267,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           child: ElevatedButton(
             onPressed: () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Appcolors.primary,
+              backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -295,7 +295,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             'Didn\'t receive the email? Try again',
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.85,
-              color: Appcolors.primary,
+              color: AppColors.primary,
               fontWeight: FontWeight.w500,
             ),
           ),

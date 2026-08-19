@@ -149,7 +149,7 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
                           value: _isBillable,
                           onChanged: (val) =>
                               setState(() => _isBillable = val ?? false),
-                          activeColor: Appcolors.primary,
+                          activeColor: AppColors.primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4),
                           ),
@@ -197,7 +197,7 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
                         borderRadius: BorderRadius.circular(
                           Dimensions.radius15,
                         ),
-                        borderSide: BorderSide(color: Appcolors.primary),
+                        borderSide: BorderSide(color: AppColors.primary),
                       ),
                     ),
                   ),
@@ -225,7 +225,7 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
                     ),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Appcolors.info,
+                      color: AppColors.info,
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                     ),
                     child: Text(
@@ -263,7 +263,7 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
             ? [
                 TextSpan(
                   text: ' *',
-                  style: TextStyle(color: Appcolors.warn),
+                  style: TextStyle(color: AppColors.warn),
                 ),
               ]
             : null,
@@ -308,7 +308,7 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: Appcolors.primary),
+              borderSide: BorderSide(color: AppColors.primary),
             ),
           ),
         ),
@@ -322,7 +322,7 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
               'No result found',
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.8,
-                color: Appcolors.warn,
+                color: AppColors.warn,
               ),
             ),
           ),

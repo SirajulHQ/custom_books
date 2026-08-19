@@ -123,7 +123,7 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
               horizontal: Dimensions.width15,
             ),
             decoration: BoxDecoration(
-              color: Appcolors.primary.withValues(alpha: 0.05),
+              color: AppColors.primary.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(Dimensions.radius15),
             ),
             child: Column(
@@ -201,13 +201,13 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
                       SizedBox(width: Dimensions.width10),
                       _IconActionButton(
                         icon: Icons.delete_outline_rounded,
-                        color: Appcolors.warn,
+                        color: AppColors.warn,
                         onTap: _discardTimer,
                       ),
                       SizedBox(width: Dimensions.width10),
                       _IconActionButton(
                         icon: Icons.stop_rounded,
-                        color: Appcolors.warn,
+                        color: AppColors.warn,
                         onTap: _openAssociateProjectPage,
                       ),
                       SizedBox(width: Dimensions.width10),
@@ -290,7 +290,7 @@ class _FilledActionButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Appcolors.info,
+          color: AppColors.info,
           borderRadius: BorderRadius.circular(Dimensions.radius30),
         ),
         child: Text(

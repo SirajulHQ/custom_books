@@ -14,10 +14,10 @@ extension VendorCreditStatusLabel on VendorCreditStatus {
 
 extension VendorCreditStatusColor on VendorCreditStatus {
   Color get color => switch (this) {
-    VendorCreditStatus.draft => Appcolors.statusDraft,
-    VendorCreditStatus.open => Appcolors.primaryLight,
-    VendorCreditStatus.closed => Appcolors.success,
-    VendorCreditStatus.void_ => Appcolors.error,
+    VendorCreditStatus.draft => AppColors.statusDraft,
+    VendorCreditStatus.open => AppColors.primaryLight,
+    VendorCreditStatus.closed => AppColors.success,
+    VendorCreditStatus.void_ => AppColors.error,
   };
 }
 

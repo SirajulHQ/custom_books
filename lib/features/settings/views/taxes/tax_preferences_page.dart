@@ -66,7 +66,7 @@ class _TaxPreferencesPageState extends State<TaxPreferencesPage> {
                           value: _profitMarginScheme,
                           onChanged: (val) =>
                               setState(() => _profitMarginScheme = val),
-                          activeColor: Appcolors.primary,
+                          activeColor: AppColors.primary,
                         ),
                       ],
                     ),

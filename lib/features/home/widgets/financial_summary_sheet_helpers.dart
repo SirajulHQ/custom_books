@@ -89,9 +89,9 @@ class FinancialSummaryCard extends StatelessWidget {
                     ? 0
                     : (data.overdue / data.total).clamp(0.0, 1.0),
                 minHeight: Dimensions.height10 * 0.4,
-                backgroundColor: Appcolors.ok.withValues(alpha: 0.25),
+                backgroundColor: AppColors.ok.withValues(alpha: 0.25),
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  data.overdue > 0 ? Appcolors.warning : Appcolors.ok,
+                  data.overdue > 0 ? AppColors.warning : AppColors.ok,
                 ),
               ),
             ),
@@ -107,7 +107,7 @@ class FinancialSummaryCard extends StatelessWidget {
                 SummaryLabel(
                   label: 'Overdue',
                   value: '₹${_fmt(data.overdue)}',
-                  color: Appcolors.warn,
+                  color: AppColors.warn,
                 ),
               ],
             ),

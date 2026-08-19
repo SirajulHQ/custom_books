@@ -166,7 +166,7 @@ class _ItemsPageState extends State<ItemsPage> {
                         ? Icons.radio_button_checked_rounded
                         : Icons.radio_button_off_rounded,
                     color: selected
-                        ? Appcolors.primary
+                        ? AppColors.primary
                         : context.colors.textSecondary,
                   ),
                   title: Text(
@@ -182,7 +182,7 @@ class _ItemsPageState extends State<ItemsPage> {
                           _sortAsc
                               ? Icons.arrow_upward_rounded
                               : Icons.arrow_downward_rounded,
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                           size: Dimensions.iconSize16,
                         )
                       : null,
@@ -251,7 +251,7 @@ class _ItemsPageState extends State<ItemsPage> {
                   icon: _searchOpen
                       ? Icons.close_rounded
                       : Icons.search_rounded,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   onPressed: () {
                     appLog('🔍 Search tapped', name: 'ItemsPage');
                     setState(() {
@@ -263,7 +263,7 @@ class _ItemsPageState extends State<ItemsPage> {
                 SizedBox(width: Dimensions.width10),
                 AppBarIconButton(
                   icon: Icons.qr_code_scanner_rounded,
-                  color: Appcolors.accent,
+                  color: AppColors.accent,
                   onPressed: () {
                     appLog('📷 QR Scanner tapped', name: 'ItemsPage');
                     ToastificationHelper.showInfo(
@@ -346,7 +346,7 @@ class _ItemsPageState extends State<ItemsPage> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
+            borderSide: BorderSide(color: AppColors.primary, width: 1.5),
           ),
         ),
       ),
@@ -385,12 +385,12 @@ class _ItemsPageState extends State<ItemsPage> {
                     color: context.colors.card,
                     borderRadius: BorderRadius.circular(Dimensions.radius30),
                     border: Border.all(
-                      color: Appcolors.primary.withValues(alpha: 0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Appcolors.primary.withValues(alpha: 0.08),
+                        color: AppColors.primary.withValues(alpha: 0.08),
                         blurRadius: Dimensions.radius15 * 0.53,
                         offset: const Offset(0, 2),
                       ),
@@ -402,7 +402,7 @@ class _ItemsPageState extends State<ItemsPage> {
                       Icon(
                         Icons.filter_list_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
@@ -411,14 +411,14 @@ class _ItemsPageState extends State<ItemsPage> {
                           fontSize: Dimensions.font16 * 0.8,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0.3,
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                         ),
                       ),
                       SizedBox(width: Dimensions.width10 / 3),
                       Icon(
                         Icons.keyboard_arrow_down_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ],
                   ),
@@ -463,13 +463,13 @@ class _ItemsPageState extends State<ItemsPage> {
             Container(
               padding: EdgeInsets.all(Dimensions.width30),
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.inventory_2_outlined,
                 size: Dimensions.height45 * 1.5,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             SizedBox(height: Dimensions.height20),

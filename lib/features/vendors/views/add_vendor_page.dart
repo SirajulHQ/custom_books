@@ -188,7 +188,7 @@ class _AddVendorPageState extends State<AddVendorPage>
           borderSide: BorderSide(color: context.colors.border),
         ),
         focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Appcolors.primary),
+          borderSide: BorderSide(color: AppColors.primary),
         ),
       ),
     );

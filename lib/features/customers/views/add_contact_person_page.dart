@@ -181,7 +181,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.85,
                             fontWeight: FontWeight.w600,
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                           ),
                         ),
                         SizedBox(height: Dimensions.height15),
@@ -206,7 +206,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.85,
                             fontWeight: FontWeight.w600,
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                           ),
                         ),
                         SizedBox(height: Dimensions.height15),
@@ -255,7 +255,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
           border: Border.all(
             color: _selectedSalutation.isEmpty
                 ? context.colors.border
-                : Appcolors.primary,
+                : AppColors.primary,
             width: _selectedSalutation.isEmpty ? 1 : 2,
           ),
         ),
@@ -363,12 +363,12 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? Appcolors.primary.withValues(alpha: 0.05)
+                          ? AppColors.primary.withValues(alpha: 0.05)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       border: Border.all(
                         color: isSelected
-                            ? Appcolors.primary
+                            ? AppColors.primary
                             : context.colors.border,
                         width: isSelected ? 2 : 1,
                       ),
@@ -384,14 +384,14 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
                                 ? FontWeight.w600
                                 : FontWeight.w500,
                             color: isSelected
-                                ? Appcolors.primary
+                                ? AppColors.primary
                                 : context.colors.textPrimary,
                           ),
                         ),
                         if (isSelected)
                           Icon(
                             Icons.check_circle,
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             size: Dimensions.iconSize24,
                           ),
                       ],
@@ -441,7 +441,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          borderSide: BorderSide(color: Appcolors.primary, width: 2),
+          borderSide: BorderSide(color: AppColors.primary, width: 2),
         ),
       ),
     );
@@ -461,7 +461,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.85,
             fontWeight: FontWeight.w600,
-            color: Appcolors.primary,
+            color: AppColors.primary,
           ),
         ),
         SizedBox(height: Dimensions.height10),
@@ -531,7 +531,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: Appcolors.primary, width: 2),
+                    borderSide: BorderSide(color: AppColors.primary, width: 2),
                   ),
                 ),
               ),

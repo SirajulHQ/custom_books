@@ -101,7 +101,7 @@ class _DrawerViewState extends State<DrawerView> {
             ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Appcolors.primary, Appcolors.primaryLight],
+                colors: [AppColors.primary, AppColors.primaryLight],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -126,7 +126,7 @@ class _DrawerViewState extends State<DrawerView> {
                       style: TextStyle(
                         fontSize: Dimensions.font26,
                         fontWeight: FontWeight.w900,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ),

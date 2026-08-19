@@ -167,7 +167,7 @@ class _VendorPortalSettingsPageState extends State<VendorPortalSettingsPage> {
             value: value,
             onChanged: onChanged,
             activeColor: Colors.white,
-            activeTrackColor: Appcolors.primary,
+            activeTrackColor: AppColors.primary,
             inactiveThumbColor: Colors.white,
             inactiveTrackColor: context.colors.border,
           ),
@@ -197,7 +197,7 @@ class _VendorPortalSettingsPageState extends State<VendorPortalSettingsPage> {
           child: ElevatedButton(
             onPressed: _save,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Appcolors.primary,
+              backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius30),

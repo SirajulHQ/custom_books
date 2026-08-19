@@ -193,11 +193,11 @@ class _ProjectsPageState extends State<ProjectsPage> {
         ),
         decoration: BoxDecoration(
           color: selected
-              ? Appcolors.primary.withValues(alpha: 0.08)
+              ? AppColors.primary.withValues(alpha: 0.08)
               : context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: Border.all(
-            color: selected ? Appcolors.primary : context.colors.border,
+            color: selected ? AppColors.primary : context.colors.border,
           ),
         ),
         child: Row(
@@ -207,7 +207,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                   ? Icons.radio_button_checked_rounded
                   : Icons.radio_button_off_rounded,
               size: Dimensions.iconSize16 + 2,
-              color: selected ? Appcolors.primary : context.colors.textTertiary,
+              color: selected ? AppColors.primary : context.colors.textTertiary,
             ),
             SizedBox(width: Dimensions.width10),
             Text(
@@ -273,14 +273,14 @@ class _ProjectsPageState extends State<ProjectsPage> {
                           ),
                           decoration: BoxDecoration(
                             color: selected
-                                ? Appcolors.primary.withValues(alpha: 0.08)
+                                ? AppColors.primary.withValues(alpha: 0.08)
                                 : context.colors.surfaceLight,
                             borderRadius: BorderRadius.circular(
                               Dimensions.radius15,
                             ),
                             border: Border.all(
                               color: selected
-                                  ? Appcolors.primary
+                                  ? AppColors.primary
                                   : context.colors.border,
                             ),
                           ),
@@ -292,7 +292,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                                     : Icons.radio_button_off_rounded,
                                 size: Dimensions.iconSize16 + 2,
                                 color: selected
-                                    ? Appcolors.primary
+                                    ? AppColors.primary
                                     : context.colors.textTertiary,
                               ),
                               SizedBox(width: Dimensions.width10),
@@ -361,11 +361,11 @@ class _ProjectsPageState extends State<ProjectsPage> {
         padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
         decoration: BoxDecoration(
           color: selected
-              ? Appcolors.primary.withValues(alpha: 0.08)
+              ? AppColors.primary.withValues(alpha: 0.08)
               : context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: Border.all(
-            color: selected ? Appcolors.primary : context.colors.border,
+            color: selected ? AppColors.primary : context.colors.border,
           ),
         ),
         child: Row(
@@ -374,7 +374,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
             Icon(
               icon,
               size: Dimensions.iconSize16 + 2,
-              color: selected ? Appcolors.primary : context.colors.textTertiary,
+              color: selected ? AppColors.primary : context.colors.textTertiary,
             ),
             SizedBox(width: Dimensions.width10 / 2),
             Text(
@@ -383,7 +383,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                 fontSize: Dimensions.font16 * 0.75,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 color: selected
-                    ? Appcolors.primary
+                    ? AppColors.primary
                     : context.colors.textSecondary,
               ),
             ),
@@ -421,7 +421,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
               SizedBox(width: Dimensions.width10),
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
-                color: Appcolors.accent,
+                color: AppColors.accent,
                 onPressed: _openFilterSheet,
               ),
               SizedBox(width: Dimensions.width20),
@@ -466,7 +466,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       borderSide: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                     ),
@@ -533,7 +533,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                   vertical: Dimensions.height10 / 2,
                 ),
                 decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.07),
+                  color: AppColors.primary.withValues(alpha: 0.07),
                   borderRadius: BorderRadius.circular(Dimensions.radius15),
                 ),
                 child: Row(
@@ -541,7 +541,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                     Icon(
                       Icons.filter_alt_rounded,
                       size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                     SizedBox(width: Dimensions.width10 / 2),
                     Text(
@@ -549,7 +549,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.72,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     const Spacer(),
@@ -558,7 +558,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                       child: Icon(
                         Icons.close_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ],
@@ -599,13 +599,13 @@ class _ProjectsPageState extends State<ProjectsPage> {
               width: Dimensions.height45 * 1.6,
               height: Dimensions.height45 * 1.6,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.08),
+                color: AppColors.primary.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.work_outline_rounded,
                 size: Dimensions.iconSize24 * 1.3,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             SizedBox(height: Dimensions.height15),
@@ -648,14 +648,14 @@ class _ProjectsPageState extends State<ProjectsPage> {
             borderRadius: BorderRadius.circular(Dimensions.radius30),
             border: selected
                 ? Border.all(
-                    color: Appcolors.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     width: 1.5,
                   )
                 : null,
             boxShadow: selected
                 ? [
                     BoxShadow(
-                      color: Appcolors.primary.withValues(alpha: 0.08),
+                      color: AppColors.primary.withValues(alpha: 0.08),
                       blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
@@ -669,7 +669,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
               fontSize: Dimensions.font16 * 0.72,
               fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
               color: selected
-                  ? Appcolors.primary
+                  ? AppColors.primary
                   : context.colors.textSecondary,
             ),
           ),
@@ -683,7 +683,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
       width: Dimensions.height45 * 0.9,
       height: Dimensions.height45 * 0.9,
       decoration: BoxDecoration(
-        color: (active ? Appcolors.accent : Appcolors.primary).withValues(
+        color: (active ? AppColors.accent : AppColors.primary).withValues(
           alpha: 0.1,
         ),
         borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -691,7 +691,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
       child: Icon(
         icon,
         size: Dimensions.iconSize24 - 4,
-        color: active ? Appcolors.accent : Appcolors.primary,
+        color: active ? AppColors.accent : AppColors.primary,
       ),
     );
   }
@@ -720,12 +720,12 @@ class _ProjectsPageState extends State<ProjectsPage> {
               width: Dimensions.height45 * 0.78,
               height: Dimensions.height45 * 0.78,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
               ),
               child: Icon(
                 Icons.work_outline_rounded,
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 size: Dimensions.iconSize24 - 4,
               ),
             ),
@@ -797,7 +797,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.9,
                     fontWeight: FontWeight.w800,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                   ),
                 ),
                 SizedBox(height: Dimensions.height10 / 3),

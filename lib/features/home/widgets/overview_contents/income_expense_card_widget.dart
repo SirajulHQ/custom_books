@@ -70,7 +70,7 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
                           ? FontWeight.w700
                           : FontWeight.w400,
                       color: period == _selectedPeriod
-                          ? Appcolors.primary
+                          ? AppColors.primary
                           : context.colors.textPrimary,
                     ),
                   ),
@@ -176,7 +176,7 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
                     size: constraints.biggest,
                     painter: _IncomeExpenseBarPainter(
                       data: data,
-                      incomeColor: Appcolors.info,
+                      incomeColor: AppColors.info,
                       expenseColor: const Color(0xFFF5A623),
                       gridColor: context.colors.border,
                       labelColor: context.colors.textTertiary,
@@ -200,7 +200,7 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
               _TotalLabel(
                 label: 'Income',
                 value: totalIncome,
-                color: Appcolors.info,
+                color: AppColors.info,
               ),
               _TotalLabel(
                 label: 'Expense',

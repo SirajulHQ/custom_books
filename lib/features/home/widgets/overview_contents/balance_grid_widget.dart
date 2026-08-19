@@ -18,25 +18,25 @@ class BalancesGridWidget extends StatelessWidget {
         'Receivables',
         '₹5,886.00',
         Icons.call_received_rounded,
-        Appcolors.primary,
+        AppColors.primary,
       ),
       BalanceTileModel(
         'Payables',
         '₹0.00',
         Icons.call_made_rounded,
-        Appcolors.accent,
+        AppColors.accent,
       ),
       BalanceTileModel(
         'Overdue Invoices',
         '6',
         Icons.error_outline_rounded,
-        Appcolors.warn,
+        AppColors.warn,
       ),
       BalanceTileModel(
         'Overdue Bills',
         '0',
         Icons.check_circle_outline_rounded,
-        Appcolors.ok,
+        AppColors.ok,
       ),
     ];
 

@@ -217,9 +217,9 @@ class _QuotesPageState extends State<QuotesPage> {
                   icon: const Icon(Icons.send_outlined),
                   label: const Text('Mark as Sent'),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Appcolors.primary,
+                    foregroundColor: AppColors.primary,
                     side: const BorderSide(
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                       width: 1.5,
                     ),
                     backgroundColor: Colors.transparent,
@@ -319,7 +319,7 @@ class _QuotesPageState extends State<QuotesPage> {
               SizedBox(width: Dimensions.width10),
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
-                color: Appcolors.accent,
+                color: AppColors.accent,
                 onPressed: _showActionsSheet,
               ),
               SizedBox(width: Dimensions.width20),
@@ -364,7 +364,7 @@ class _QuotesPageState extends State<QuotesPage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       borderSide: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                     ),
@@ -431,7 +431,7 @@ class _QuotesPageState extends State<QuotesPage> {
                   vertical: Dimensions.height10 / 2,
                 ),
                 decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.07),
+                  color: AppColors.primary.withValues(alpha: 0.07),
                   borderRadius: BorderRadius.circular(Dimensions.radius15),
                 ),
                 child: Row(
@@ -439,7 +439,7 @@ class _QuotesPageState extends State<QuotesPage> {
                     Icon(
                       Icons.filter_alt_rounded,
                       size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                     SizedBox(width: Dimensions.width10 / 2),
                     Text(
@@ -447,7 +447,7 @@ class _QuotesPageState extends State<QuotesPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.72,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     const Spacer(),
@@ -456,7 +456,7 @@ class _QuotesPageState extends State<QuotesPage> {
                       child: Icon(
                         Icons.close_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ],
@@ -476,7 +476,7 @@ class _QuotesPageState extends State<QuotesPage> {
                               width: Dimensions.height45 * 1.6,
                               height: Dimensions.height45 * 1.6,
                               decoration: BoxDecoration(
-                                color: Appcolors.primary.withValues(
+                                color: AppColors.primary.withValues(
                                   alpha: 0.08,
                                 ),
                                 shape: BoxShape.circle,
@@ -484,7 +484,7 @@ class _QuotesPageState extends State<QuotesPage> {
                               child: Icon(
                                 Icons.request_quote_rounded,
                                 size: Dimensions.iconSize24 * 1.3,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               ),
                             ),
                             SizedBox(height: Dimensions.height15),
@@ -546,14 +546,14 @@ class _QuotesPageState extends State<QuotesPage> {
             borderRadius: BorderRadius.circular(Dimensions.radius30),
             border: selected
                 ? Border.all(
-                    color: Appcolors.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     width: 1.5,
                   )
                 : null,
             boxShadow: selected
                 ? [
                     BoxShadow(
-                      color: Appcolors.primary.withValues(alpha: 0.08),
+                      color: AppColors.primary.withValues(alpha: 0.08),
                       blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
@@ -567,7 +567,7 @@ class _QuotesPageState extends State<QuotesPage> {
               fontSize: Dimensions.font16 * 0.72,
               fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
               color: selected
-                  ? Appcolors.primary
+                  ? AppColors.primary
                   : context.colors.textSecondary,
             ),
           ),
@@ -580,7 +580,7 @@ class _QuotesPageState extends State<QuotesPage> {
     width: Dimensions.height45 * 0.9,
     height: Dimensions.height45 * 0.9,
     decoration: BoxDecoration(
-      color: (active ? Appcolors.accent : Appcolors.primary).withValues(
+      color: (active ? AppColors.accent : AppColors.primary).withValues(
         alpha: 0.1,
       ),
       borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -588,7 +588,7 @@ class _QuotesPageState extends State<QuotesPage> {
     child: Icon(
       icon,
       size: Dimensions.iconSize24 - 4,
-      color: active ? Appcolors.accent : Appcolors.primary,
+      color: active ? AppColors.accent : AppColors.primary,
     ),
   );
 
@@ -610,12 +610,12 @@ class _QuotesPageState extends State<QuotesPage> {
             width: Dimensions.height45 * 0.78,
             height: Dimensions.height45 * 0.78,
             decoration: BoxDecoration(
-              color: Appcolors.primary.withValues(alpha: 0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
             ),
             child: Icon(
               Icons.request_quote_outlined,
-              color: Appcolors.primary,
+              color: AppColors.primary,
               size: Dimensions.iconSize24 - 4,
             ),
           ),
@@ -681,7 +681,7 @@ class _QuotesPageState extends State<QuotesPage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.9,
               fontWeight: FontWeight.w800,
-              color: Appcolors.primary,
+              color: AppColors.primary,
             ),
           ),
         ],
@@ -762,7 +762,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                     child: Container(
                       padding: EdgeInsets.all(Dimensions.width10 * 0.6),
                       decoration: BoxDecoration(
-                        color: Appcolors.primary.withValues(alpha: 0.1),
+                        color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(
                           Dimensions.radius15,
                         ),
@@ -770,7 +770,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                       child: Icon(
                         Icons.close_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ),
@@ -788,7 +788,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                     Container(
                       padding: EdgeInsets.all(Dimensions.width15 * 0.8),
                       decoration: BoxDecoration(
-                        color: Appcolors.accent.withValues(alpha: 0.08),
+                        color: AppColors.accent.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(
                           Dimensions.radius15,
                         ),
@@ -799,7 +799,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                           Icon(
                             Icons.info_outline_rounded,
                             size: Dimensions.iconSize16,
-                            color: Appcolors.accent,
+                            color: AppColors.accent,
                           ),
                           SizedBox(width: Dimensions.width10),
                           Expanded(
@@ -842,7 +842,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                             fontSize: Dimensions.font16 * 0.6,
                             fontWeight: FontWeight.w700,
                             letterSpacing: 0.5,
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                           ),
                         ),
                         SizedBox(height: Dimensions.height10 * 0.2),
@@ -865,9 +865,9 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                       Navigator.pop(context);
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Appcolors.primary,
+                      foregroundColor: AppColors.primary,
                       side: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                       backgroundColor: Colors.transparent,
@@ -922,11 +922,11 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
           ),
           decoration: BoxDecoration(
             color: selected
-                ? Appcolors.primary.withValues(alpha: 0.06)
+                ? AppColors.primary.withValues(alpha: 0.06)
                 : context.colors.card,
             borderRadius: BorderRadius.circular(Dimensions.radius15),
             border: Border.all(
-              color: selected ? Appcolors.primary : context.colors.border,
+              color: selected ? AppColors.primary : context.colors.border,
               width: selected ? 1.5 : 1,
             ),
           ),
@@ -938,7 +938,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                     : Icons.radio_button_off_rounded,
                 size: Dimensions.iconSize24 - 4,
                 color: selected
-                    ? Appcolors.primary
+                    ? AppColors.primary
                     : context.colors.textTertiary,
               ),
               SizedBox(width: Dimensions.width10),
@@ -958,7 +958,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.75,
                     fontWeight: FontWeight.w600,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                   ),
                 ),
                 SizedBox(width: Dimensions.width10 / 2),
@@ -967,7 +967,7 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
                       ? Icons.arrow_upward_rounded
                       : Icons.arrow_downward_rounded,
                   size: Dimensions.iconSize16,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                 ),
               ],
             ],

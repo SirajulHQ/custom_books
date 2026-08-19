@@ -93,7 +93,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                                 : Icons.star_border_rounded,
                             size: Dimensions.iconSize24 * 1.5,
                             color: starIndex <= _rating
-                                ? Appcolors.warning
+                                ? AppColors.warning
                                 : context.colors.textTertiary,
                           ),
                         ),
@@ -191,7 +191,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     child: ElevatedButton(
                       onPressed: _submit,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Appcolors.primary,
+                        backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(
                           vertical: Dimensions.height15,
@@ -242,7 +242,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
+        borderSide: BorderSide(color: AppColors.primary, width: 1.5),
       ),
     );
   }

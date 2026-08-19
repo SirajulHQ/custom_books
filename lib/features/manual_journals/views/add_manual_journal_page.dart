@@ -87,7 +87,7 @@ class _AddManualJournalPageState extends State<AddManualJournalPage> {
             child: Text(
               'SAVE AS DRAFT',
               style: TextStyle(
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 fontWeight: FontWeight.w800,
                 fontSize: Dimensions.font16 * 0.75,
                 letterSpacing: 0.5,
@@ -137,7 +137,7 @@ class _AddManualJournalPageState extends State<AddManualJournalPage> {
                       borderSide: BorderSide(color: context.colors.border),
                     ),
                     focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Appcolors.primary),
+                      borderSide: BorderSide(color: AppColors.primary),
                     ),
                   ),
                 ),
@@ -163,7 +163,7 @@ class _AddManualJournalPageState extends State<AddManualJournalPage> {
                       borderSide: BorderSide(color: context.colors.border),
                     ),
                     focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Appcolors.primary),
+                      borderSide: BorderSide(color: AppColors.primary),
                     ),
                   ),
                 ),
@@ -245,7 +245,7 @@ class _AddManualJournalPageState extends State<AddManualJournalPage> {
                       borderRadius: BorderRadius.circular(
                         Dimensions.radius15 / 2,
                       ),
-                      borderSide: const BorderSide(color: Appcolors.primary),
+                      borderSide: const BorderSide(color: AppColors.primary),
                     ),
                   ),
                 ),

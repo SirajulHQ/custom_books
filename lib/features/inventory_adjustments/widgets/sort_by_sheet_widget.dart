@@ -93,13 +93,13 @@ class _SortBySheetState extends State<_SortBySheet> {
                   child: Container(
                     padding: EdgeInsets.all(Dimensions.width10 * 0.6),
                     decoration: BoxDecoration(
-                      color: Appcolors.primary.withValues(alpha: 0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                     ),
                     child: Icon(
                       Icons.close_rounded,
                       size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                   ),
                 ),
@@ -135,14 +135,14 @@ class _SortBySheetState extends State<_SortBySheet> {
                       ),
                       decoration: BoxDecoration(
                         color: selected
-                            ? Appcolors.primary.withValues(alpha: 0.06)
+                            ? AppColors.primary.withValues(alpha: 0.06)
                             : context.colors.card,
                         borderRadius: BorderRadius.circular(
                           Dimensions.radius15,
                         ),
                         border: Border.all(
                           color: selected
-                              ? Appcolors.primary
+                              ? AppColors.primary
                               : context.colors.border,
                           width: selected ? 1.5 : 1,
                         ),
@@ -155,7 +155,7 @@ class _SortBySheetState extends State<_SortBySheet> {
                                 : Icons.radio_button_off_rounded,
                             size: Dimensions.iconSize24 - 4,
                             color: selected
-                                ? Appcolors.primary
+                                ? AppColors.primary
                                 : context.colors.textTertiary,
                           ),
                           SizedBox(width: Dimensions.width10),
@@ -181,7 +181,7 @@ class _SortBySheetState extends State<_SortBySheet> {
                                   style: TextStyle(
                                     fontSize: Dimensions.font16 * 0.75,
                                     fontWeight: FontWeight.w600,
-                                    color: Appcolors.primary,
+                                    color: AppColors.primary,
                                   ),
                                 ),
                                 SizedBox(width: Dimensions.width10 / 2),
@@ -190,7 +190,7 @@ class _SortBySheetState extends State<_SortBySheet> {
                                       ? Icons.arrow_upward_rounded
                                       : Icons.arrow_downward_rounded,
                                   size: Dimensions.iconSize16,
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                 ),
                               ],
                             ),
@@ -207,7 +207,7 @@ class _SortBySheetState extends State<_SortBySheet> {
             child: Container(
               padding: EdgeInsets.all(Dimensions.width15 * 0.8),
               decoration: BoxDecoration(
-                color: Appcolors.accent.withValues(alpha: 0.08),
+                color: AppColors.accent.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
               ),
               child: Row(
@@ -216,7 +216,7 @@ class _SortBySheetState extends State<_SortBySheet> {
                   Icon(
                     Icons.info_outline_rounded,
                     size: Dimensions.iconSize16,
-                    color: Appcolors.accent,
+                    color: AppColors.accent,
                   ),
                   SizedBox(width: Dimensions.width10),
                   Expanded(
@@ -255,7 +255,7 @@ class _SortBySheetState extends State<_SortBySheet> {
                           fontSize: Dimensions.font16 * 0.6,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.5,
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -277,9 +277,9 @@ class _SortBySheetState extends State<_SortBySheet> {
                     Navigator.pop(context);
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Appcolors.primary,
+                    foregroundColor: AppColors.primary,
                     side: const BorderSide(
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                       width: 1.5,
                     ),
                     backgroundColor: Colors.transparent,

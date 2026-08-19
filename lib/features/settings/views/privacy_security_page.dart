@@ -249,7 +249,7 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
       ),
       child: Row(
         children: [
-          Icon(icon, size: Dimensions.iconSize24, color: Appcolors.primary),
+          Icon(icon, size: Dimensions.iconSize24, color: AppColors.primary),
           SizedBox(width: Dimensions.width15),
           Expanded(
             child: Column(
@@ -277,7 +277,7 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
           Switch.adaptive(
             value: value,
             onChanged: onChanged,
-            activeColor: Appcolors.primary,
+            activeColor: AppColors.primary,
           ),
         ],
       ),
@@ -301,7 +301,7 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
       ),
       child: Row(
         children: [
-          Icon(icon, size: Dimensions.iconSize24, color: Appcolors.primary),
+          Icon(icon, size: Dimensions.iconSize24, color: AppColors.primary),
           SizedBox(width: Dimensions.width15),
           Expanded(
             child: Text(
@@ -322,7 +322,7 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
               ),
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.8,
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 fontWeight: FontWeight.w600,
               ),
               dropdownColor: context.colors.card,

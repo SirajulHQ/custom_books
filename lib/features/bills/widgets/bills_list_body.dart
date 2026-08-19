@@ -27,13 +27,13 @@ class BillsListBody extends StatelessWidget {
                 width: Dimensions.height45 * 1.6,
                 height: Dimensions.height45 * 1.6,
                 decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.08),
+                  color: AppColors.primary.withValues(alpha: 0.08),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.description_outlined,
                   size: Dimensions.iconSize24 * 1.3,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                 ),
               ),
               SizedBox(height: Dimensions.height15),

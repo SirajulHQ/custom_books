@@ -88,7 +88,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
       builder: (ctx) {
         Widget tile(IconData icon, String label, VoidCallback onTap) {
           return ListTile(
-            leading: Icon(icon, color: Appcolors.primary),
+            leading: Icon(icon, color: AppColors.primary),
             title: Text(
               label,
               style: TextStyle(
@@ -170,7 +170,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
               actions: [
                 AppBarIconButton(
                   icon: Icons.edit_outlined,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   onPressed: () {
                     appLog(
                       '✏️ Edit button pressed',
@@ -249,7 +249,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                   ),
                 );
               },
-              backgroundColor: Appcolors.primary,
+              backgroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius20),
               ),
@@ -354,7 +354,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
       ),
       child: TabBar(
         controller: _tabController,
-        labelColor: Appcolors.primary,
+        labelColor: AppColors.primary,
         unselectedLabelColor: context.colors.textSecondary,
         labelStyle: TextStyle(
           fontSize: Dimensions.font16 * 0.8,
@@ -365,7 +365,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
           fontSize: Dimensions.font16 * 0.8,
           fontWeight: FontWeight.w600,
         ),
-        indicatorColor: Appcolors.primary,
+        indicatorColor: AppColors.primary,
         indicatorWeight: 3,
         tabs: const [
           Tab(text: 'DETAILS'),
@@ -566,7 +566,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                     Icon(
                       Icons.account_balance_wallet_outlined,
                       size: Dimensions.iconSize24,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                     SizedBox(width: Dimensions.width15),
                     Expanded(
@@ -616,7 +616,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                           vertical: Dimensions.height10 / 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Appcolors.primary.withValues(alpha: 0.12),
+                          color: AppColors.primary.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(
                             Dimensions.radius15 / 3,
                           ),
@@ -626,7 +626,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.7,
                             fontWeight: FontWeight.w700,
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                           ),
                         ),
                       ),
@@ -700,7 +700,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                       'Enter Opening Balance',
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.85,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -749,7 +749,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                     Icon(
                       Icons.grid_view_rounded,
                       size: Dimensions.iconSize24,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                     SizedBox(width: Dimensions.width15),
                     Expanded(
@@ -851,7 +851,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                     Icon(
                       Icons.person_outline_rounded,
                       size: Dimensions.iconSize24,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                     SizedBox(width: Dimensions.width15),
                     Expanded(
@@ -909,7 +909,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                       children: [
                         Icon(
                           Icons.add_circle_outline_rounded,
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                           size: Dimensions.iconSize24,
                         ),
                         SizedBox(width: Dimensions.width10),
@@ -917,7 +917,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                           'Add Contact Person',
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.85,
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -1031,7 +1031,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                   child: Icon(
                     Icons.description_outlined,
                     size: Dimensions.height45 * 1.5,
-                    color: Appcolors.primary.withValues(alpha: 0.5),
+                    color: AppColors.primary.withValues(alpha: 0.5),
                   ),
                 ),
               ),
@@ -1040,7 +1040,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                 'Total Count',
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.8,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -1106,7 +1106,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius30),
                       borderSide: BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 2,
                       ),
                     ),
@@ -1120,7 +1120,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
               SizedBox(width: Dimensions.width10),
               Container(
                 decoration: BoxDecoration(
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(

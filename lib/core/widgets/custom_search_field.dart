@@ -132,7 +132,7 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
             widget.borderRadius ?? Dimensions.radius15,
           ),
           borderSide: BorderSide(
-            color: widget.focusedBorderColor ?? Appcolors.primary,
+            color: widget.focusedBorderColor ?? AppColors.primary,
             width: 2,
           ),
         ),

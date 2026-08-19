@@ -143,7 +143,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                   ),
                   IconButton(
                     icon: const Icon(Icons.add_circle_outline_rounded),
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                     onPressed: () async {
                       final nav = Navigator.of(context);
                       nav.pop();
@@ -168,13 +168,13 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                   ..._customers.map(
                     (name) => ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Appcolors.primary.withValues(
+                        backgroundColor: AppColors.primary.withValues(
                           alpha: 0.1,
                         ),
                         child: Text(
                           name.substring(0, 1).toUpperCase(),
                           style: TextStyle(
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -226,7 +226,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                   term,
                   style: TextStyle(
                     color: term == _paymentTerms
-                        ? Appcolors.primary
+                        ? AppColors.primary
                         : context.colors.textPrimary,
                     fontWeight: term == _paymentTerms
                         ? FontWeight.bold
@@ -234,7 +234,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                   ),
                 ),
                 trailing: term == _paymentTerms
-                    ? Icon(Icons.check_rounded, color: Appcolors.primary)
+                    ? Icon(Icons.check_rounded, color: AppColors.primary)
                     : null,
                 onTap: () => Navigator.pop(context, term),
               ),
@@ -276,7 +276,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                   person,
                   style: TextStyle(
                     color: person == _salesperson
-                        ? Appcolors.primary
+                        ? AppColors.primary
                         : context.colors.textPrimary,
                     fontWeight: person == _salesperson
                         ? FontWeight.bold
@@ -389,7 +389,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
               child: Text(
                 'SAVE AS DRAFT',
                 style: TextStyle(
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   fontWeight: FontWeight.w800,
                   fontSize: Dimensions.font16 * 0.75,
                   letterSpacing: 0.5,
@@ -492,7 +492,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                               ),
                             ),
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Appcolors.primary),
+                              borderSide: BorderSide(color: AppColors.primary),
                             ),
                           ),
                         ),
@@ -525,7 +525,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                         borderSide: BorderSide(color: context.colors.border),
                       ),
                       focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Appcolors.primary),
+                        borderSide: BorderSide(color: AppColors.primary),
                       ),
                     ),
                   ),
@@ -661,7 +661,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                         borderSide: BorderSide(color: context.colors.border),
                       ),
                       focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Appcolors.primary),
+                        borderSide: BorderSide(color: AppColors.primary),
                       ),
                     ),
                   ),
@@ -720,7 +720,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                                 Radio<bool>(
                                   value: false,
                                   groupValue: _taxInclusive,
-                                  activeColor: Appcolors.primary,
+                                  activeColor: AppColors.primary,
                                   onChanged: (val) =>
                                       setState(() => _taxInclusive = val!),
                                 ),
@@ -743,7 +743,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                                 Radio<bool>(
                                   value: true,
                                   groupValue: _taxInclusive,
-                                  activeColor: Appcolors.primary,
+                                  activeColor: AppColors.primary,
                                   onChanged: (val) =>
                                       setState(() => _taxInclusive = val!),
                                 ),
@@ -824,19 +824,19 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                       onPressed: _addLineItem,
                       icon: Icon(
                         Icons.add_circle_rounded,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         size: Dimensions.iconSize24 * 0.85,
                       ),
                       label: Text(
                         'Add Line Item',
                         style: TextStyle(
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                           fontSize: Dimensions.font16 * 0.95,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Appcolors.primary, width: 1.2),
+                        side: BorderSide(color: AppColors.primary, width: 1.2),
                         padding: EdgeInsets.symmetric(
                           horizontal: Dimensions.width20 * 1.5,
                           vertical: Dimensions.height15 * 0.8,
@@ -874,7 +874,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                         borderSide: BorderSide(color: context.colors.border),
                       ),
                       focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Appcolors.primary),
+                        borderSide: BorderSide(color: AppColors.primary),
                       ),
                     ),
                   ),
@@ -897,7 +897,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                         borderSide: BorderSide(color: context.colors.border),
                       ),
                       focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Appcolors.primary),
+                        borderSide: BorderSide(color: AppColors.primary),
                       ),
                     ),
                   ),

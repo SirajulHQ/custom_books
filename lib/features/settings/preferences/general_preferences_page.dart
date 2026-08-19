@@ -293,7 +293,7 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
           child: ElevatedButton(
             onPressed: _save,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Appcolors.primary,
+              backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius30),
@@ -343,11 +343,11 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
         ),
         decoration: BoxDecoration(
           color: enabled
-              ? Appcolors.primary.withValues(alpha: 0.08)
+              ? AppColors.primary.withValues(alpha: 0.08)
               : context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius30),
           border: Border.all(
-            color: enabled ? Appcolors.primary : context.colors.border,
+            color: enabled ? AppColors.primary : context.colors.border,
             width: 1.5,
           ),
         ),
@@ -356,7 +356,7 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.8,
             fontWeight: FontWeight.w600,
-            color: enabled ? Appcolors.primary : context.colors.textPrimary,
+            color: enabled ? AppColors.primary : context.colors.textPrimary,
           ),
         ),
       ),
@@ -375,7 +375,7 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
               onChanged: (_) => onTap(),
               child: Radio<bool>(
                 value: true,
-                activeColor: Appcolors.primary,
+                activeColor: AppColors.primary,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ),
@@ -411,7 +411,7 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
             child: Checkbox(
               value: value,
               onChanged: onChanged,
-              activeColor: Appcolors.primary,
+              activeColor: AppColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
               ),
@@ -438,14 +438,14 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: Dimensions.iconSize16, color: Appcolors.primary),
+          Icon(icon, size: Dimensions.iconSize16, color: AppColors.primary),
           SizedBox(width: Dimensions.width10 / 2),
           Text(
             label,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.8,
               fontWeight: FontWeight.w600,
-              color: Appcolors.primary,
+              color: AppColors.primary,
             ),
           ),
         ],

@@ -43,7 +43,7 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
               width: Dimensions.height45 * 0.75,
               height: Dimensions.height45 * 0.75,
               decoration: BoxDecoration(
-                color: (isPositive ? Appcolors.primary : Appcolors.warn)
+                color: (isPositive ? AppColors.primary : AppColors.warn)
                     .withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
               ),
@@ -51,7 +51,7 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
                 isPositive
                     ? Icons.arrow_upward_rounded
                     : Icons.arrow_downward_rounded,
-                color: isPositive ? Appcolors.primary : Appcolors.warn,
+                color: isPositive ? AppColors.primary : AppColors.warn,
                 size: Dimensions.iconSize24 - 4,
               ),
             ),
@@ -116,7 +116,7 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: (isDraft ? Appcolors.warn : Appcolors.primary)
+                      color: (isDraft ? AppColors.warn : AppColors.primary)
                           .withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(Dimensions.radius30),
                     ),
@@ -126,7 +126,7 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
                         fontSize: Dimensions.font16 * 0.6,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.5,
-                        color: isDraft ? Appcolors.warn : Appcolors.primary,
+                        color: isDraft ? AppColors.warn : AppColors.primary,
                       ),
                     ),
                   ),
@@ -144,7 +144,7 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.95,
                     fontWeight: FontWeight.w800,
-                    color: isPositive ? Appcolors.primary : Appcolors.warn,
+                    color: isPositive ? AppColors.primary : AppColors.warn,
                   ),
                 ),
                 if (mode == AdjustmentListMode.all) ...[

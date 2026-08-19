@@ -59,7 +59,7 @@ class _BillsSettingsPageState extends State<BillsSettingsPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10),
@@ -127,7 +127,7 @@ class _BillsSettingsPageState extends State<BillsSettingsPage> {
           IconButton(
             icon: Icon(
               Icons.delete_outline,
-              color: Appcolors.warn,
+              color: AppColors.warn,
               size: Dimensions.iconSize24,
             ),
             onPressed: () {

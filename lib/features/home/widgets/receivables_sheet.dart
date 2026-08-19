@@ -52,12 +52,12 @@ class ReceivablesSheet extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(Dimensions.width10 * 0.7),
                   decoration: BoxDecoration(
-                    color: Appcolors.primary.withValues(alpha: 0.1),
+                    color: AppColors.primary.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.call_received_rounded,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                     size: Dimensions.iconSize22,
                   ),
                 ),
@@ -81,7 +81,7 @@ class ReceivablesSheet extends StatelessWidget {
           FinancialSummaryCard(
             title: 'Total Receivables',
             data: _data,
-            accentColor: Appcolors.primary,
+            accentColor: AppColors.primary,
           ),
 
           SizedBox(height: Dimensions.height20),

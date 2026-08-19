@@ -92,13 +92,13 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage> {
                   ..._customers.map(
                     (name) => ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Appcolors.primary.withValues(
+                        backgroundColor: AppColors.primary.withValues(
                           alpha: 0.1,
                         ),
                         child: Text(
                           name.substring(0, 1).toUpperCase(),
                           style: TextStyle(
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -150,7 +150,7 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage> {
                   type,
                   style: TextStyle(
                     color: type == _type
-                        ? Appcolors.primary
+                        ? AppColors.primary
                         : context.colors.textPrimary,
                     fontWeight: type == _type
                         ? FontWeight.bold
@@ -158,7 +158,7 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage> {
                   ),
                 ),
                 trailing: type == _type
-                    ? Icon(Icons.check_rounded, color: Appcolors.primary)
+                    ? Icon(Icons.check_rounded, color: AppColors.primary)
                     : null,
                 onTap: () => Navigator.pop(context, type),
               ),
@@ -224,7 +224,7 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage> {
             child: Text(
               'SAVE AS DRAFT',
               style: TextStyle(
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 fontWeight: FontWeight.w800,
                 fontSize: Dimensions.font16 * 0.75,
                 letterSpacing: 0.5,
@@ -319,7 +319,7 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage> {
                       borderSide: BorderSide(color: context.colors.border),
                     ),
                     focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Appcolors.primary),
+                      borderSide: BorderSide(color: AppColors.primary),
                     ),
                   ),
                 ),
@@ -343,7 +343,7 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage> {
                       borderSide: BorderSide(color: context.colors.border),
                     ),
                     focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Appcolors.primary),
+                      borderSide: BorderSide(color: AppColors.primary),
                     ),
                   ),
                 ),

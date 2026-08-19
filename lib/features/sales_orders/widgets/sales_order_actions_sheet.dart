@@ -51,7 +51,7 @@ class SalesOrderActionsSheet extends StatelessWidget {
                     vertical: Dimensions.height10 / 2,
                   ),
                   decoration: BoxDecoration(
-                    color: Appcolors.primary.withValues(alpha: 0.1),
+                    color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
                   ),
                   child: Text(
@@ -59,7 +59,7 @@ class SalesOrderActionsSheet extends StatelessWidget {
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.75,
                       fontWeight: FontWeight.w700,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                   ),
                 ),
@@ -94,7 +94,7 @@ class SalesOrderActionsSheet extends StatelessWidget {
               ),
             if (order.status == SalesOrderStatus.confirmed)
               ListTile(
-                leading: const Icon(Icons.receipt_long_rounded, color: Appcolors.primary),
+                leading: const Icon(Icons.receipt_long_rounded, color: AppColors.primary),
                 title: const Text('Convert to Invoice'),
                 onTap: () {
                   Navigator.pop(context);

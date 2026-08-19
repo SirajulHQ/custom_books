@@ -128,7 +128,7 @@ class _NewTaxPageState extends State<NewTaxPage> with UnsavedChangesMixin {
         borderSide: BorderSide(color: context.colors.border),
       ),
       focusedBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Appcolors.primary),
+        borderSide: BorderSide(color: AppColors.primary),
       ),
     );
   }

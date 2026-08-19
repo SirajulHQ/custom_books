@@ -306,7 +306,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
           vertical: Dimensions.height10 / 2,
         ),
         decoration: BoxDecoration(
-          color: selected ? Appcolors.primary : Colors.transparent,
+          color: selected ? AppColors.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(Dimensions.radius15 - 3),
         ),
         child: Text(
@@ -354,9 +354,9 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
     return Container(
       padding: EdgeInsets.all(Dimensions.width15),
       decoration: BoxDecoration(
-        color: Appcolors.primary.withValues(alpha: 0.05),
+        color: AppColors.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: Appcolors.primary.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
@@ -409,7 +409,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
                 onPressed: _saveAndNew,
                 style: OutlinedButton.styleFrom(
                   minimumSize: Size(0, Dimensions.height45 * 1.15),
-                  side: BorderSide(color: Appcolors.primary),
+                  side: BorderSide(color: AppColors.primary),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
                   ),
@@ -422,8 +422,8 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
               child: OutlinedButton(
                 onPressed: _save,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Appcolors.primary,
-                  side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                  foregroundColor: AppColors.primary,
+                  side: const BorderSide(color: AppColors.primary, width: 1.5),
                   backgroundColor: Colors.transparent,
                   minimumSize: Size(0, Dimensions.height45 * 1.15),
                   shape: RoundedRectangleBorder(

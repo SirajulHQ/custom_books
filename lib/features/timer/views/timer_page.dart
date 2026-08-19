@@ -192,12 +192,12 @@ class _TimerPageState extends State<TimerPage> {
                   shape: BoxShape.circle,
                   color: context.colors.card,
                   border: Border.all(
-                    color: _running ? Appcolors.primary : context.colors.border,
+                    color: _running ? AppColors.primary : context.colors.border,
                     width: 4,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Appcolors.primary.withValues(alpha: 0.12),
+                      color: AppColors.primary.withValues(alpha: 0.12),
                       blurRadius: Dimensions.radius20 * 1.2,
                       offset: const Offset(0, 10),
                     ),
@@ -209,7 +209,7 @@ class _TimerPageState extends State<TimerPage> {
                     Icon(
                       Icons.timer_outlined,
                       size: Dimensions.iconSize24,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                     SizedBox(height: Dimensions.height10),
                     Text(
@@ -228,7 +228,7 @@ class _TimerPageState extends State<TimerPage> {
                         fontSize: Dimensions.font16 * 0.7,
                         fontWeight: FontWeight.w600,
                         color: _running
-                            ? Appcolors.success
+                            ? AppColors.success
                             : context.colors.textSecondary,
                       ),
                     ),
@@ -248,7 +248,7 @@ class _TimerPageState extends State<TimerPage> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Appcolors.primary.withValues(alpha: 0.35),
+                            color: AppColors.primary.withValues(alpha: 0.35),
                             blurRadius: Dimensions.radius15 * 1.07,
                             offset: const Offset(0, 8),
                           ),
@@ -257,9 +257,9 @@ class _TimerPageState extends State<TimerPage> {
                       child: OutlinedButton.icon(
                         onPressed: _toggleTimer,
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Appcolors.primary,
+                          foregroundColor: AppColors.primary,
                           side: const BorderSide(
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             width: 1.5,
                           ),
                           backgroundColor: Colors.transparent,
@@ -293,8 +293,8 @@ class _TimerPageState extends State<TimerPage> {
                     child: OutlinedButton(
                       onPressed: _stopTimer,
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Appcolors.error,
-                        side: const BorderSide(color: Appcolors.error),
+                        foregroundColor: AppColors.error,
+                        side: const BorderSide(color: AppColors.error),
                         padding: EdgeInsets.symmetric(
                           vertical: Dimensions.height15,
                         ),
@@ -406,12 +406,12 @@ class _TimerPageState extends State<TimerPage> {
               width: Dimensions.height45 * 0.78,
               height: Dimensions.height45 * 0.78,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
               ),
               child: Icon(
                 icon,
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 size: Dimensions.iconSize24 - 4,
               ),
             ),

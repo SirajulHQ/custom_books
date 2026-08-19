@@ -92,13 +92,13 @@ class InvoiceDetailsTabView extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(Dimensions.width20),
                   decoration: BoxDecoration(
-                    color: Appcolors.primary.withValues(alpha: 0.07),
+                    color: AppColors.primary.withValues(alpha: 0.07),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.history_rounded,
                     size: Dimensions.iconSize24 * 2,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                   ),
                 ),
                 SizedBox(height: Dimensions.height20),

@@ -14,10 +14,10 @@ extension CreditNoteStatusLabel on CreditNoteStatus {
 
 extension CreditNoteStatusColor on CreditNoteStatus {
   Color get color => switch (this) {
-    CreditNoteStatus.draft => Appcolors.statusDraft,
-    CreditNoteStatus.open => Appcolors.primaryLight,
-    CreditNoteStatus.closed => Appcolors.success,
-    CreditNoteStatus.void_ => Appcolors.error,
+    CreditNoteStatus.draft => AppColors.statusDraft,
+    CreditNoteStatus.open => AppColors.primaryLight,
+    CreditNoteStatus.closed => AppColors.success,
+    CreditNoteStatus.void_ => AppColors.error,
   };
 }
 

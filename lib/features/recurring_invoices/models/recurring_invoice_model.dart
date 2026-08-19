@@ -14,10 +14,10 @@ extension RecurringInvoiceStatusLabel on RecurringInvoiceStatus {
 
 extension RecurringInvoiceStatusColor on RecurringInvoiceStatus {
   Color get color => switch (this) {
-    RecurringInvoiceStatus.active => Appcolors.success,
-    RecurringInvoiceStatus.stopped => Appcolors.error,
-    RecurringInvoiceStatus.expired => Appcolors.warning,
-    RecurringInvoiceStatus.draft => Appcolors.statusDraft,
+    RecurringInvoiceStatus.active => AppColors.success,
+    RecurringInvoiceStatus.stopped => AppColors.error,
+    RecurringInvoiceStatus.expired => AppColors.warning,
+    RecurringInvoiceStatus.draft => AppColors.statusDraft,
   };
 }
 

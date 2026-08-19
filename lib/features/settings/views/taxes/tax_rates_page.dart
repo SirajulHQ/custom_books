@@ -87,7 +87,7 @@ class _TaxRatesPageState extends State<TaxRatesPage> {
                                       style: TextStyle(
                                         fontSize: Dimensions.font16,
                                         fontWeight: FontWeight.w600,
-                                        color: Appcolors.primary,
+                                        color: AppColors.primary,
                                       ),
                                     ),
                                     if (tax.isDefault) ...[
@@ -153,14 +153,14 @@ class _TaxRatesPageState extends State<TaxRatesPage> {
                         children: [
                           _buildAddMenuItem(
                             label: 'New Tax Group',
-                            color: Appcolors.warning,
+                            color: AppColors.warning,
                             icon: Icons.folder_outlined,
                             onTap: _addNewTaxGroup,
                           ),
                           SizedBox(height: Dimensions.height10),
                           _buildAddMenuItem(
                             label: 'New Tax',
-                            color: Appcolors.ok,
+                            color: AppColors.ok,
                             icon: Icons.percent_rounded,
                             onTap: _addNewTax,
                           ),

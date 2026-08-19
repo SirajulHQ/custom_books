@@ -117,7 +117,7 @@ class _EditUserPageState extends State<EditUserPage> with UnsavedChangesMixin {
                           role['name']!,
                           style: TextStyle(
                             color: role['name'] == _selectedRole
-                                ? Appcolors.primary
+                                ? AppColors.primary
                                 : context.colors.textPrimary,
                             fontWeight: role['name'] == _selectedRole
                                 ? FontWeight.bold
@@ -134,7 +134,7 @@ class _EditUserPageState extends State<EditUserPage> with UnsavedChangesMixin {
                         trailing: role['name'] == _selectedRole
                             ? Icon(
                                 Icons.check_rounded,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               )
                             : null,
                         onTap: () => Navigator.pop(ctx, role['name']),
@@ -193,12 +193,12 @@ class _EditUserPageState extends State<EditUserPage> with UnsavedChangesMixin {
                         width: double.infinity,
                         padding: EdgeInsets.all(Dimensions.width15),
                         decoration: BoxDecoration(
-                          color: Appcolors.info.withValues(alpha: 0.08),
+                          color: AppColors.info.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(
                             Dimensions.radius15,
                           ),
                           border: Border.all(
-                            color: Appcolors.info.withValues(alpha: 0.3),
+                            color: AppColors.info.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Row(
@@ -207,7 +207,7 @@ class _EditUserPageState extends State<EditUserPage> with UnsavedChangesMixin {
                             Icon(
                               Icons.info_outline_rounded,
                               size: Dimensions.iconSize24,
-                              color: Appcolors.info,
+                              color: AppColors.info,
                             ),
                             SizedBox(width: Dimensions.width10),
                             Expanded(
@@ -229,7 +229,7 @@ class _EditUserPageState extends State<EditUserPage> with UnsavedChangesMixin {
                                         TextSpan(
                                           text: 'https://www.zoho.com/books',
                                           style: TextStyle(
-                                            color: Appcolors.primary,
+                                            color: AppColors.primary,
                                             decoration:
                                                 TextDecoration.underline,
                                           ),
@@ -247,7 +247,7 @@ class _EditUserPageState extends State<EditUserPage> with UnsavedChangesMixin {
                                     'Learn More ›',
                                     style: TextStyle(
                                       fontSize: Dimensions.font16 * 0.8,
-                                      color: Appcolors.primary,
+                                      color: AppColors.primary,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -321,7 +321,7 @@ class _EditUserPageState extends State<EditUserPage> with UnsavedChangesMixin {
         borderSide: BorderSide(color: context.colors.border),
       ),
       focusedBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Appcolors.primary),
+        borderSide: BorderSide(color: AppColors.primary),
       ),
     );
   }

@@ -106,14 +106,14 @@ class _ImageResolutionPageState extends State<ImageResolutionPage> {
                         padding: EdgeInsets.all(Dimensions.width15),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? Appcolors.primary.withValues(alpha: 0.06)
+                              ? AppColors.primary.withValues(alpha: 0.06)
                               : context.colors.card,
                           borderRadius: BorderRadius.circular(
                             Dimensions.radius15,
                           ),
                           border: Border.all(
                             color: isSelected
-                                ? Appcolors.primary
+                                ? AppColors.primary
                                 : context.colors.border,
                             width: isSelected ? 1.5 : 1,
                           ),
@@ -132,7 +132,7 @@ class _ImageResolutionPageState extends State<ImageResolutionPage> {
                                           ? FontWeight.w700
                                           : FontWeight.w600,
                                       color: isSelected
-                                          ? Appcolors.primary
+                                          ? AppColors.primary
                                           : context.colors.textPrimary,
                                     ),
                                   ),
@@ -152,7 +152,7 @@ class _ImageResolutionPageState extends State<ImageResolutionPage> {
                                                 text: 'Recommended.',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w700,
-                                                  color: Appcolors.primary,
+                                                  color: AppColors.primary,
                                                 ),
                                               ),
                                             ]
@@ -170,7 +170,7 @@ class _ImageResolutionPageState extends State<ImageResolutionPage> {
                                 child: Icon(
                                   Icons.check_circle_rounded,
                                   size: Dimensions.iconSize24,
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                 ),
                               ),
                           ],
@@ -187,7 +187,7 @@ class _ImageResolutionPageState extends State<ImageResolutionPage> {
                 child: Container(
                   padding: EdgeInsets.all(Dimensions.width15),
                   decoration: BoxDecoration(
-                    color: Appcolors.info.withValues(alpha: 0.08),
+                    color: AppColors.info.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
                   ),
                   child: Row(
@@ -196,7 +196,7 @@ class _ImageResolutionPageState extends State<ImageResolutionPage> {
                       Icon(
                         Icons.info_outline_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.info,
+                        color: AppColors.info,
                       ),
                       SizedBox(width: Dimensions.width10),
                       Expanded(

@@ -1,4 +1,4 @@
-﻿import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
@@ -56,13 +56,13 @@ class CustomSliverAppBar extends StatelessWidget {
             width: Dimensions.height45 * 0.9,
             height: Dimensions.height45 * 0.9,
             decoration: BoxDecoration(
-              color: Appcolors.primary.withValues(alpha: 0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(Dimensions.radius15),
             ),
             child: Icon(
               Icons.arrow_back,
               size: Dimensions.iconSize24 - 4,
-              color: Appcolors.primary,
+              color: AppColors.primary,
             ),
           ),
           onPressed: onLeadingPressed ?? () => Navigator.pop(context),
@@ -75,13 +75,13 @@ class CustomSliverAppBar extends StatelessWidget {
               width: Dimensions.height45 * 0.9,
               height: Dimensions.height45 * 0.9,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
               ),
               child: Icon(
                 Icons.menu_rounded,
                 size: Dimensions.iconSize24 - 4,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             onPressed:
@@ -144,7 +144,7 @@ class AppBarIconButton extends StatelessWidget {
   const AppBarIconButton({
     super.key,
     required this.icon,
-    this.color = Appcolors.primary,
+    this.color = AppColors.primary,
     this.onPressed,
     this.showBadge = false,
     this.badgeColor,
@@ -173,7 +173,7 @@ class AppBarIconButton extends StatelessWidget {
                 width: 9,
                 height: 9,
                 decoration: BoxDecoration(
-                  color: badgeColor ?? Appcolors.warn,
+                  color: badgeColor ?? AppColors.warn,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -204,7 +204,7 @@ class AppBarElevatedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = foregroundColor ?? backgroundColor ?? Appcolors.primary;
+    final color = foregroundColor ?? backgroundColor ?? AppColors.primary;
     return Container(
       margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
       child: OutlinedButton(

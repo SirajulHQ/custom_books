@@ -55,7 +55,7 @@ class _EmailCommunicationsCardState extends State<EmailCommunicationsCard> {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.85,
                     fontWeight: FontWeight.w600,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                   ),
                 ),
                 SizedBox(width: Dimensions.width10 / 2),
@@ -86,14 +86,14 @@ class _EmailCommunicationsCardState extends State<EmailCommunicationsCard> {
               margin: EdgeInsets.only(bottom: Dimensions.height10),
               padding: EdgeInsets.all(Dimensions.width15),
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
               ),
               child: Row(
                 children: [
                   Icon(
                     Icons.check_box,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                     size: Dimensions.iconSize24,
                   ),
                   SizedBox(width: Dimensions.width10),
@@ -149,9 +149,9 @@ class _EmailCommunicationsCardState extends State<EmailCommunicationsCard> {
                     ),
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Appcolors.primary,
+                        foregroundColor: AppColors.primary,
                         side: const BorderSide(
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                           width: 1.5,
                         ),
                         backgroundColor: Colors.transparent,
@@ -186,7 +186,7 @@ class _EmailCommunicationsCardState extends State<EmailCommunicationsCard> {
               vertical: Dimensions.height15,
             ),
             decoration: BoxDecoration(
-              color: Appcolors.primary.withValues(alpha: 0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(Dimensions.radius15),
             ),
             child: Row(
@@ -194,7 +194,7 @@ class _EmailCommunicationsCardState extends State<EmailCommunicationsCard> {
               children: [
                 Icon(
                   Icons.add,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   size: Dimensions.iconSize24,
                 ),
                 SizedBox(width: Dimensions.width10),
@@ -202,7 +202,7 @@ class _EmailCommunicationsCardState extends State<EmailCommunicationsCard> {
                   'Add New',
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.85,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

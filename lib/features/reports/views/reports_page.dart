@@ -106,7 +106,7 @@ class _ReportsPageState extends State<ReportsPage> {
         style: TextStyle(
           fontSize: Dimensions.font16 * 0.9,
           fontWeight: FontWeight.w700,
-          color: Appcolors.primary,
+          color: AppColors.primary,
         ),
       ),
     );

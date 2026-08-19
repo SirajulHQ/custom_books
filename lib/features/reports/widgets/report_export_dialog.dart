@@ -91,7 +91,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.close_rounded, color: Appcolors.warn),
+                icon: Icon(Icons.close_rounded, color: AppColors.warn),
                 onPressed: () => Navigator.pop(context),
               ),
             ],
@@ -163,7 +163,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.85,
                   fontWeight: FontWeight.w600,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                 ),
               ),
               SizedBox(width: Dimensions.width10 / 2),
@@ -171,7 +171,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
                 _showCustomize
                     ? Icons.keyboard_arrow_up_rounded
                     : Icons.keyboard_arrow_down_rounded,
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 size: Dimensions.iconSize24,
               ),
             ],
@@ -191,7 +191,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
             ElevatedButton(
               onPressed: _export,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Appcolors.primary,
+                backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(
                   horizontal: Dimensions.width20,
@@ -338,15 +338,15 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
             fillColor: context.colors.surfaceLight,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: Appcolors.primary),
+              borderSide: BorderSide(color: AppColors.primary),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: Appcolors.primary),
+              borderSide: BorderSide(color: AppColors.primary),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
+              borderSide: BorderSide(color: AppColors.primary, width: 1.5),
             ),
           ),
         ),
@@ -433,7 +433,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
           padding: EdgeInsets.all(Dimensions.width15),
           decoration: BoxDecoration(
             border: Border(
-              left: BorderSide(color: Appcolors.warning, width: 3),
+              left: BorderSide(color: AppColors.warning, width: 3),
             ),
           ),
           child: Text(
@@ -552,7 +552,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
+          borderSide: BorderSide(color: AppColors.primary, width: 1.5),
         ),
       ),
     );
@@ -574,7 +574,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
             child: Checkbox(
               value: value,
               onChanged: onChanged,
-              activeColor: Appcolors.primary,
+              activeColor: AppColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
               ),
@@ -610,7 +610,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
               value: value,
               groupValue: _language,
               onChanged: (v) => setState(() => _language = v!),
-              activeColor: Appcolors.primary,
+              activeColor: AppColors.primary,
             ),
           ),
           SizedBox(width: Dimensions.width10),
@@ -636,7 +636,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
             value: value,
             groupValue: _orientation,
             onChanged: (v) => setState(() => _orientation = v!),
-            activeColor: Appcolors.primary,
+            activeColor: AppColors.primary,
           ),
         ),
         SizedBox(width: Dimensions.width10 / 2),
@@ -722,7 +722,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
+              borderSide: BorderSide(color: AppColors.primary, width: 1.5),
             ),
           ),
         ),

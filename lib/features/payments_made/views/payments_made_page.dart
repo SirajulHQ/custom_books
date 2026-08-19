@@ -193,11 +193,11 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
         ),
         decoration: BoxDecoration(
           color: selected
-              ? Appcolors.primary.withValues(alpha: 0.08)
+              ? AppColors.primary.withValues(alpha: 0.08)
               : context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: selected
-              ? Border.all(color: Appcolors.primary.withValues(alpha: 0.4))
+              ? Border.all(color: AppColors.primary.withValues(alpha: 0.4))
               : null,
         ),
         child: Row(
@@ -208,7 +208,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                 fontSize: Dimensions.font16 * 0.8,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 color: selected
-                    ? Appcolors.primary
+                    ? AppColors.primary
                     : context.colors.textPrimary,
               ),
             ),
@@ -217,7 +217,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
               Icon(
                 Icons.check_rounded,
                 size: Dimensions.iconSize16,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
           ],
         ),
@@ -264,7 +264,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                       ),
                       decoration: BoxDecoration(
                         color: _sortField == field
-                            ? Appcolors.primary.withValues(alpha: 0.08)
+                            ? AppColors.primary.withValues(alpha: 0.08)
                             : context.colors.surfaceLight,
                         borderRadius: BorderRadius.circular(
                           Dimensions.radius15,
@@ -280,7 +280,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                                   ? FontWeight.w700
                                   : FontWeight.w500,
                               color: _sortField == field
-                                  ? Appcolors.primary
+                                  ? AppColors.primary
                                   : context.colors.textPrimary,
                             ),
                           ),
@@ -289,7 +289,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                             Icon(
                               Icons.check_rounded,
                               size: Dimensions.iconSize16,
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                             ),
                         ],
                       ),
@@ -326,9 +326,9 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                       Navigator.pop(context);
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Appcolors.primary,
+                      foregroundColor: AppColors.primary,
                       side: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                       backgroundColor: Colors.transparent,
@@ -367,11 +367,11 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
         padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
         decoration: BoxDecoration(
           color: selected
-              ? Appcolors.primary.withValues(alpha: 0.08)
+              ? AppColors.primary.withValues(alpha: 0.08)
               : context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: selected
-              ? Border.all(color: Appcolors.primary.withValues(alpha: 0.4))
+              ? Border.all(color: AppColors.primary.withValues(alpha: 0.4))
               : null,
         ),
         child: Row(
@@ -381,7 +381,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
               icon,
               size: Dimensions.iconSize16,
               color: selected
-                  ? Appcolors.primary
+                  ? AppColors.primary
                   : context.colors.textSecondary,
             ),
             SizedBox(width: Dimensions.width10 / 2),
@@ -391,7 +391,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                 fontSize: Dimensions.font16 * 0.75,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 color: selected
-                    ? Appcolors.primary
+                    ? AppColors.primary
                     : context.colors.textSecondary,
               ),
             ),
@@ -429,7 +429,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
               SizedBox(width: Dimensions.width10),
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
-                color: Appcolors.accent,
+                color: AppColors.accent,
                 onPressed: _openFilterSheet,
               ),
               SizedBox(width: Dimensions.width20),
@@ -474,7 +474,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       borderSide: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                     ),
@@ -540,7 +540,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                   vertical: Dimensions.height10 / 2,
                 ),
                 decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.07),
+                  color: AppColors.primary.withValues(alpha: 0.07),
                   borderRadius: BorderRadius.circular(Dimensions.radius15),
                 ),
                 child: Row(
@@ -548,7 +548,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                     Icon(
                       Icons.filter_alt_rounded,
                       size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                     SizedBox(width: Dimensions.width10 / 2),
                     Text(
@@ -556,7 +556,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.72,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     const Spacer(),
@@ -565,7 +565,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                       child: Icon(
                         Icons.close_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ],
@@ -585,7 +585,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                               width: Dimensions.height45 * 1.6,
                               height: Dimensions.height45 * 1.6,
                               decoration: BoxDecoration(
-                                color: Appcolors.primary.withValues(
+                                color: AppColors.primary.withValues(
                                   alpha: 0.08,
                                 ),
                                 shape: BoxShape.circle,
@@ -593,7 +593,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                               child: Icon(
                                 Icons.payments_outlined,
                                 size: Dimensions.iconSize24 * 1.3,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               ),
                             ),
                             SizedBox(height: Dimensions.height15),
@@ -655,14 +655,14 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
             borderRadius: BorderRadius.circular(Dimensions.radius30),
             border: selected
                 ? Border.all(
-                    color: Appcolors.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     width: 1.5,
                   )
                 : null,
             boxShadow: selected
                 ? [
                     BoxShadow(
-                      color: Appcolors.primary.withValues(alpha: 0.08),
+                      color: AppColors.primary.withValues(alpha: 0.08),
                       blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
@@ -676,7 +676,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
               fontSize: Dimensions.font16 * 0.72,
               fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
               color: selected
-                  ? Appcolors.primary
+                  ? AppColors.primary
                   : context.colors.textSecondary,
             ),
           ),
@@ -690,7 +690,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
       width: Dimensions.height45 * 0.9,
       height: Dimensions.height45 * 0.9,
       decoration: BoxDecoration(
-        color: (active ? Appcolors.accent : Appcolors.primary).withValues(
+        color: (active ? AppColors.accent : AppColors.primary).withValues(
           alpha: 0.1,
         ),
         borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -698,7 +698,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
       child: Icon(
         icon,
         size: Dimensions.iconSize24 - 4,
-        color: active ? Appcolors.accent : Appcolors.primary,
+        color: active ? AppColors.accent : AppColors.primary,
       ),
     );
   }
@@ -727,12 +727,12 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
               width: Dimensions.height45 * 0.78,
               height: Dimensions.height45 * 0.78,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
               ),
               child: Icon(
                 Icons.payments_outlined,
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 size: Dimensions.iconSize24 - 4,
               ),
             ),
@@ -795,7 +795,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.9,
                 fontWeight: FontWeight.w800,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
           ],
@@ -811,14 +811,14 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
         vertical: Dimensions.height10 * 0.2,
       ),
       decoration: BoxDecoration(
-        color: Appcolors.primaryLight.withValues(alpha: 0.12),
+        color: AppColors.primaryLight.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(Dimensions.radius30),
       ),
       child: Text(
         mode.label,
         style: TextStyle(
           fontSize: Dimensions.font16 * 0.6,
-          color: Appcolors.primaryLight,
+          color: AppColors.primaryLight,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.5,
         ),

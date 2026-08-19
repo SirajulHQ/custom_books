@@ -114,7 +114,7 @@ class _InviteUserPageState extends State<InviteUserPage>
                           role['name']!,
                           style: TextStyle(
                             color: role['name'] == _selectedRole
-                                ? Appcolors.primary
+                                ? AppColors.primary
                                 : context.colors.textPrimary,
                             fontWeight: role['name'] == _selectedRole
                                 ? FontWeight.bold
@@ -131,7 +131,7 @@ class _InviteUserPageState extends State<InviteUserPage>
                         trailing: role['name'] == _selectedRole
                             ? Icon(
                                 Icons.check_rounded,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               )
                             : null,
                         onTap: () => Navigator.pop(context, role['name']),
@@ -189,12 +189,12 @@ class _InviteUserPageState extends State<InviteUserPage>
                         width: double.infinity,
                         padding: EdgeInsets.all(Dimensions.width15),
                         decoration: BoxDecoration(
-                          color: Appcolors.info.withValues(alpha: 0.08),
+                          color: AppColors.info.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(
                             Dimensions.radius15,
                           ),
                           border: Border.all(
-                            color: Appcolors.info.withValues(alpha: 0.3),
+                            color: AppColors.info.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Row(
@@ -203,7 +203,7 @@ class _InviteUserPageState extends State<InviteUserPage>
                             Icon(
                               Icons.info_outline_rounded,
                               size: Dimensions.iconSize24,
-                              color: Appcolors.info,
+                              color: AppColors.info,
                             ),
                             SizedBox(width: Dimensions.width10),
                             Expanded(
@@ -223,7 +223,7 @@ class _InviteUserPageState extends State<InviteUserPage>
                                     'Learn More ›',
                                     style: TextStyle(
                                       fontSize: Dimensions.font16 * 0.8,
-                                      color: Appcolors.primary,
+                                      color: AppColors.primary,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -297,7 +297,7 @@ class _InviteUserPageState extends State<InviteUserPage>
         borderSide: BorderSide(color: context.colors.border),
       ),
       focusedBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Appcolors.primary),
+        borderSide: BorderSide(color: AppColors.primary),
       ),
     );
   }

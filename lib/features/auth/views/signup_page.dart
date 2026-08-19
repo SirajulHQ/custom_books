@@ -103,7 +103,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Appcolors.primary.withValues(alpha: 0.3),
+                          color: AppColors.primary.withValues(alpha: 0.3),
                           blurRadius: Dimensions.height20,
                           spreadRadius: Dimensions.height10 / 2.5,
                         ),
@@ -294,9 +294,9 @@ class _SignupPageState extends State<SignupPage> {
                     child: ElevatedButton(
                       onPressed: _isLoading ? null : _signup,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Appcolors.primary,
+                        backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: Appcolors.primary.withValues(
+                        disabledBackgroundColor: AppColors.primary.withValues(
                           alpha: 0.6,
                         ),
                         shape: RoundedRectangleBorder(
@@ -345,7 +345,7 @@ class _SignupPageState extends State<SignupPage> {
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.9,
                             fontWeight: FontWeight.w600,
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                           ),
                         ),
                       ),
@@ -385,15 +385,15 @@ class _SignupPageState extends State<SignupPage> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        borderSide: const BorderSide(color: Appcolors.primary, width: 1.5),
+        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        borderSide: const BorderSide(color: Appcolors.error),
+        borderSide: const BorderSide(color: AppColors.error),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(Dimensions.radius15),
-        borderSide: const BorderSide(color: Appcolors.error, width: 1.5),
+        borderSide: const BorderSide(color: AppColors.error, width: 1.5),
       ),
     );
   }

@@ -147,13 +147,13 @@ class _ActionOption extends StatelessWidget {
               width: Dimensions.height45 * 0.9,
               height: Dimensions.height45 * 0.9,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Dimensions.radius15 - 3),
               ),
               child: Icon(
                 icon,
                 size: Dimensions.iconSize24 - 4,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             SizedBox(width: Dimensions.width15),

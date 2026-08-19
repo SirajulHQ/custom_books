@@ -98,11 +98,11 @@ extension InvoiceStatusLabel on InvoiceStatus {
 
 extension InvoiceStatusColor on InvoiceStatus {
   Color get color => switch (this) {
-    InvoiceStatus.draft => Appcolors.statusDraft,
-    InvoiceStatus.sent => Appcolors.primaryLight,
-    InvoiceStatus.paid => Appcolors.success,
-    InvoiceStatus.partiallyPaid => Appcolors.warning,
-    InvoiceStatus.overdue => Appcolors.error,
-    InvoiceStatus.cancelled => Appcolors.statusCancelled,
+    InvoiceStatus.draft => AppColors.statusDraft,
+    InvoiceStatus.sent => AppColors.primaryLight,
+    InvoiceStatus.paid => AppColors.success,
+    InvoiceStatus.partiallyPaid => AppColors.warning,
+    InvoiceStatus.overdue => AppColors.error,
+    InvoiceStatus.cancelled => AppColors.statusCancelled,
   };
 }

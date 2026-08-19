@@ -12,8 +12,8 @@ extension VendorStatusLabel on VendorStatus {
 
 extension VendorStatusColor on VendorStatus {
   Color get color => switch (this) {
-    VendorStatus.active => Appcolors.success,
-    VendorStatus.inactive => Appcolors.statusCancelled,
+    VendorStatus.active => AppColors.success,
+    VendorStatus.inactive => AppColors.statusCancelled,
   };
 }
 

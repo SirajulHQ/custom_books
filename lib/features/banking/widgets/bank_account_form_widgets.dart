@@ -76,7 +76,7 @@ class BankFormTextField extends StatelessWidget {
               Text(
                 ' *',
                 style: TextStyle(
-                  color: Appcolors.error,
+                  color: AppColors.error,
                   fontSize: Dimensions.font16 * 0.85,
                 ),
               ),
@@ -112,7 +112,7 @@ class BankFormTextField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
-              borderSide: BorderSide(color: Appcolors.primary, width: 2),
+              borderSide: BorderSide(color: AppColors.primary, width: 2),
             ),
           ),
         ),
@@ -150,7 +150,7 @@ class BankFormRadioOption extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: isSelected
-                      ? Appcolors.primary
+                      ? AppColors.primary
                       : context.colors.textTertiary,
                   width: 2,
                 ),
@@ -162,7 +162,7 @@ class BankFormRadioOption extends StatelessWidget {
                         height: Dimensions.height10,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                         ),
                       ),
                     )
@@ -173,7 +173,7 @@ class BankFormRadioOption extends StatelessWidget {
             icon,
             size: Dimensions.iconSize16,
             color: isSelected
-                ? Appcolors.primary
+                ? AppColors.primary
                 : context.colors.textSecondary,
           ),
           SizedBox(width: Dimensions.width10 / 2),
@@ -183,7 +183,7 @@ class BankFormRadioOption extends StatelessWidget {
               fontSize: Dimensions.font16 * 0.85,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               color: isSelected
-                  ? Appcolors.primary
+                  ? AppColors.primary
                   : context.colors.textPrimary,
             ),
           ),

@@ -102,14 +102,14 @@ class _OpeningScreenPageState extends State<OpeningScreenPage> {
                         ),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? Appcolors.primary.withValues(alpha: 0.06)
+                              ? AppColors.primary.withValues(alpha: 0.06)
                               : context.colors.card,
                           borderRadius: BorderRadius.circular(
                             Dimensions.radius15,
                           ),
                           border: Border.all(
                             color: isSelected
-                                ? Appcolors.primary
+                                ? AppColors.primary
                                 : context.colors.border,
                             width: isSelected ? 1.5 : 1,
                           ),
@@ -120,7 +120,7 @@ class _OpeningScreenPageState extends State<OpeningScreenPage> {
                               option.icon,
                               size: Dimensions.iconSize24,
                               color: isSelected
-                                  ? Appcolors.primary
+                                  ? AppColors.primary
                                   : context.colors.textSecondary,
                             ),
                             SizedBox(width: Dimensions.width15),
@@ -133,7 +133,7 @@ class _OpeningScreenPageState extends State<OpeningScreenPage> {
                                       ? FontWeight.w700
                                       : FontWeight.w500,
                                   color: isSelected
-                                      ? Appcolors.primary
+                                      ? AppColors.primary
                                       : context.colors.textPrimary,
                                 ),
                               ),
@@ -142,7 +142,7 @@ class _OpeningScreenPageState extends State<OpeningScreenPage> {
                               Icon(
                                 Icons.check_circle_rounded,
                                 size: Dimensions.iconSize24,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               ),
                           ],
                         ),

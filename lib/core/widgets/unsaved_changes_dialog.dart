@@ -47,7 +47,7 @@ class UnsavedChangesDialog extends StatelessWidget {
         TextButton(
           onPressed: () => Navigator.pop(context, false),
           style: TextButton.styleFrom(
-            foregroundColor: Appcolors.primary,
+            foregroundColor: AppColors.primary,
             padding: EdgeInsets.symmetric(
               horizontal: Dimensions.width15,
               vertical: Dimensions.height10,
@@ -64,7 +64,7 @@ class UnsavedChangesDialog extends StatelessWidget {
         TextButton(
           onPressed: () => Navigator.pop(context, true),
           style: TextButton.styleFrom(
-            foregroundColor: Appcolors.warn,
+            foregroundColor: AppColors.warn,
             padding: EdgeInsets.symmetric(
               horizontal: Dimensions.width15,
               vertical: Dimensions.height10,

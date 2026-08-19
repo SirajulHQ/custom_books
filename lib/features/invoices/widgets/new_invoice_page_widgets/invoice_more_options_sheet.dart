@@ -83,7 +83,7 @@ Widget _moreOptionTile(
   VoidCallback onTap,
 ) {
   return ListTile(
-    leading: Icon(icon, color: Appcolors.primary),
+    leading: Icon(icon, color: AppColors.primary),
     title: Text(
       label,
       style: TextStyle(

@@ -60,7 +60,7 @@ class _BankingSummaryCardState extends State<BankingSummaryCard> {
                       vertical: Dimensions.height10 / 2,
                     ),
                     decoration: BoxDecoration(
-                      color: Appcolors.primary.withValues(alpha: 0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(Dimensions.radius20),
                     ),
                     child: Row(
@@ -69,7 +69,7 @@ class _BankingSummaryCardState extends State<BankingSummaryCard> {
                           _isChartVisible ? 'Hide' : 'Show',
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.8,
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -78,7 +78,7 @@ class _BankingSummaryCardState extends State<BankingSummaryCard> {
                           _isChartVisible
                               ? Icons.keyboard_arrow_up_rounded
                               : Icons.keyboard_arrow_down_rounded,
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                           size: Dimensions.iconSize16,
                         ),
                       ],

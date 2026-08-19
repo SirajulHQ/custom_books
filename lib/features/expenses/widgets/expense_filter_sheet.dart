@@ -84,11 +84,11 @@ class _FilterOption extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? Appcolors.primary.withValues(alpha: 0.08)
+              ? AppColors.primary.withValues(alpha: 0.08)
               : context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: isSelected
-              ? Border.all(color: Appcolors.primary.withValues(alpha: 0.4))
+              ? Border.all(color: AppColors.primary.withValues(alpha: 0.4))
               : null,
         ),
         child: Row(
@@ -99,7 +99,7 @@ class _FilterOption extends StatelessWidget {
                 fontSize: Dimensions.font16 * 0.8,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected
-                    ? Appcolors.primary
+                    ? AppColors.primary
                     : context.colors.textPrimary,
               ),
             ),
@@ -108,7 +108,7 @@ class _FilterOption extends StatelessWidget {
               Icon(
                 Icons.check_rounded,
                 size: Dimensions.iconSize16,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
           ],
         ),

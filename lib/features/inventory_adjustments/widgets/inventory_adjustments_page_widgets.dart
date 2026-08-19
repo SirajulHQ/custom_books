@@ -80,7 +80,7 @@ class AdjustmentsSearchField extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
+            borderSide: BorderSide(color: AppColors.primary, width: 1.5),
           ),
         ),
       ),
@@ -145,7 +145,7 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
                           ),
                           border: selected
                               ? Border.all(
-                                  color: Appcolors.primary.withValues(
+                                  color: AppColors.primary.withValues(
                                     alpha: 0.3,
                                   ),
                                   width: 1.5,
@@ -154,7 +154,7 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
                           boxShadow: selected
                               ? [
                                   BoxShadow(
-                                    color: Appcolors.primary.withValues(
+                                    color: AppColors.primary.withValues(
                                       alpha: 0.08,
                                     ),
                                     blurRadius: Dimensions.radius15 * 0.53,
@@ -173,7 +173,7 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
                                 : FontWeight.w500,
                             letterSpacing: 0.3,
                             color: selected
-                                ? Appcolors.primary
+                                ? AppColors.primary
                                 : context.colors.textSecondary,
                           ),
                         ),
@@ -187,7 +187,7 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
           SizedBox(width: Dimensions.width10),
           IconBadge(
             icon: Icons.swap_vert_rounded,
-            color: Appcolors.primary,
+            color: AppColors.primary,
             onTap: () {
               showSortBySheet(
                 context,
@@ -219,13 +219,13 @@ class AdjustmentsEmptyState extends StatelessWidget {
               width: Dimensions.height45 * 1.6,
               height: Dimensions.height45 * 1.6,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.08),
+                color: AppColors.primary.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.inventory_2_rounded,
                 size: Dimensions.iconSize24 * 1.3,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             SizedBox(height: Dimensions.height15),

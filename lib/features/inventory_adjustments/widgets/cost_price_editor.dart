@@ -76,8 +76,8 @@ class CostPriceEditor extends StatelessWidget {
                   double.tryParse(controller.text) ?? initialValue,
                 ),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Appcolors.primary,
-                  side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                  foregroundColor: AppColors.primary,
+                  side: const BorderSide(color: AppColors.primary, width: 1.5),
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
@@ -108,7 +108,7 @@ class CostPriceEditor extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.8,
                 fontWeight: FontWeight.w600,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
               children: [
                 TextSpan(

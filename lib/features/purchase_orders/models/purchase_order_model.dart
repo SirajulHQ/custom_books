@@ -14,10 +14,10 @@ extension PurchaseOrderStatusLabel on PurchaseOrderStatus {
 
 extension PurchaseOrderStatusColor on PurchaseOrderStatus {
   Color get color => switch (this) {
-    PurchaseOrderStatus.draft => Appcolors.statusDraft,
-    PurchaseOrderStatus.issued => Appcolors.primaryLight,
-    PurchaseOrderStatus.billed => Appcolors.success,
-    PurchaseOrderStatus.cancelled => Appcolors.error,
+    PurchaseOrderStatus.draft => AppColors.statusDraft,
+    PurchaseOrderStatus.issued => AppColors.primaryLight,
+    PurchaseOrderStatus.billed => AppColors.success,
+    PurchaseOrderStatus.cancelled => AppColors.error,
   };
 }
 

@@ -174,11 +174,11 @@ class _AllFilesPageState extends State<AllFilesPage> {
         ),
         decoration: BoxDecoration(
           color: selected
-              ? Appcolors.primary.withValues(alpha: 0.08)
+              ? AppColors.primary.withValues(alpha: 0.08)
               : context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: Border.all(
-            color: selected ? Appcolors.primary : context.colors.border,
+            color: selected ? AppColors.primary : context.colors.border,
           ),
         ),
         child: Row(
@@ -186,7 +186,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
             Icon(
               type == null ? Icons.folder_copy_rounded : type.iconData,
               size: Dimensions.iconSize16 + 2,
-              color: selected ? Appcolors.primary : context.colors.textTertiary,
+              color: selected ? AppColors.primary : context.colors.textTertiary,
             ),
             SizedBox(width: Dimensions.width10),
             Text(
@@ -252,14 +252,14 @@ class _AllFilesPageState extends State<AllFilesPage> {
                           ),
                           decoration: BoxDecoration(
                             color: selected
-                                ? Appcolors.primary.withValues(alpha: 0.08)
+                                ? AppColors.primary.withValues(alpha: 0.08)
                                 : context.colors.surfaceLight,
                             borderRadius: BorderRadius.circular(
                               Dimensions.radius15,
                             ),
                             border: Border.all(
                               color: selected
-                                  ? Appcolors.primary
+                                  ? AppColors.primary
                                   : context.colors.border,
                             ),
                           ),
@@ -271,7 +271,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
                                     : Icons.radio_button_off_rounded,
                                 size: Dimensions.iconSize16 + 2,
                                 color: selected
-                                    ? Appcolors.primary
+                                    ? AppColors.primary
                                     : context.colors.textTertiary,
                               ),
                               SizedBox(width: Dimensions.width10),
@@ -340,11 +340,11 @@ class _AllFilesPageState extends State<AllFilesPage> {
         padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
         decoration: BoxDecoration(
           color: selected
-              ? Appcolors.primary.withValues(alpha: 0.08)
+              ? AppColors.primary.withValues(alpha: 0.08)
               : context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: Border.all(
-            color: selected ? Appcolors.primary : context.colors.border,
+            color: selected ? AppColors.primary : context.colors.border,
           ),
         ),
         child: Row(
@@ -353,7 +353,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
             Icon(
               icon,
               size: Dimensions.iconSize16 + 2,
-              color: selected ? Appcolors.primary : context.colors.textTertiary,
+              color: selected ? AppColors.primary : context.colors.textTertiary,
             ),
             SizedBox(width: Dimensions.width10 / 2),
             Text(
@@ -362,7 +362,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
                 fontSize: Dimensions.font16 * 0.75,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 color: selected
-                    ? Appcolors.primary
+                    ? AppColors.primary
                     : context.colors.textSecondary,
               ),
             ),
@@ -386,7 +386,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           boxShadow: [
             BoxShadow(
-              color: Appcolors.primary.withValues(alpha: 0.35),
+              color: AppColors.primary.withValues(alpha: 0.35),
               blurRadius: Dimensions.radius15 * 1.07,
               offset: const Offset(0, 8),
             ),
@@ -394,7 +394,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
         ),
         child: FloatingActionButton(
           onPressed: _upload,
-          backgroundColor: Appcolors.primary,
+          backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -421,7 +421,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
               SizedBox(width: Dimensions.width10),
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
-                color: Appcolors.accent,
+                color: AppColors.accent,
                 onPressed: _openFilterSheet,
               ),
               SizedBox(width: Dimensions.width20),
@@ -466,7 +466,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       borderSide: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                     ),
@@ -526,7 +526,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
                   vertical: Dimensions.height10 / 2,
                 ),
                 decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.07),
+                  color: AppColors.primary.withValues(alpha: 0.07),
                   borderRadius: BorderRadius.circular(Dimensions.radius15),
                 ),
                 child: Row(
@@ -534,7 +534,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
                     Icon(
                       Icons.filter_alt_rounded,
                       size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                     SizedBox(width: Dimensions.width10 / 2),
                     Text(
@@ -542,7 +542,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.72,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     const Spacer(),
@@ -551,7 +551,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
                       child: Icon(
                         Icons.close_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ],
@@ -592,13 +592,13 @@ class _AllFilesPageState extends State<AllFilesPage> {
               width: Dimensions.height45 * 1.6,
               height: Dimensions.height45 * 1.6,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.08),
+                color: AppColors.primary.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.folder_copy_rounded,
                 size: Dimensions.iconSize24 * 1.3,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             SizedBox(height: Dimensions.height15),
@@ -630,7 +630,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
       width: Dimensions.height45 * 0.9,
       height: Dimensions.height45 * 0.9,
       decoration: BoxDecoration(
-        color: (active ? Appcolors.accent : Appcolors.primary).withValues(
+        color: (active ? AppColors.accent : AppColors.primary).withValues(
           alpha: 0.1,
         ),
         borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -638,7 +638,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
       child: Icon(
         icon,
         size: Dimensions.iconSize24 - 4,
-        color: active ? Appcolors.accent : Appcolors.primary,
+        color: active ? AppColors.accent : AppColors.primary,
       ),
     );
   }
@@ -662,12 +662,12 @@ class _AllFilesPageState extends State<AllFilesPage> {
               width: Dimensions.height45 * 0.78,
               height: Dimensions.height45 * 0.78,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
               ),
               child: Icon(
                 doc.fileType.iconData,
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 size: Dimensions.iconSize24 - 4,
               ),
             ),

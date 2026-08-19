@@ -124,7 +124,7 @@ class _NewCurrencyPageState extends State<NewCurrencyPage>
                   return ListTile(
                     title: Text(code),
                     trailing: code == _selectedCode
-                        ? Icon(Icons.check_rounded, color: Appcolors.primary)
+                        ? Icon(Icons.check_rounded, color: AppColors.primary)
                         : null,
                     onTap: () => Navigator.pop(ctx, code),
                   );
@@ -165,7 +165,7 @@ class _NewCurrencyPageState extends State<NewCurrencyPage>
               (option) => ListTile(
                 title: Text(option),
                 trailing: option == _selectedDecimalPlaces
-                    ? Icon(Icons.check_rounded, color: Appcolors.primary)
+                    ? Icon(Icons.check_rounded, color: AppColors.primary)
                     : null,
                 onTap: () => Navigator.pop(ctx, option),
               ),
@@ -204,7 +204,7 @@ class _NewCurrencyPageState extends State<NewCurrencyPage>
               (option) => ListTile(
                 title: Text(option),
                 trailing: option == _selectedFormat
-                    ? Icon(Icons.check_rounded, color: Appcolors.primary)
+                    ? Icon(Icons.check_rounded, color: AppColors.primary)
                     : null,
                 onTap: () => Navigator.pop(ctx, option),
               ),
@@ -358,7 +358,7 @@ class _NewCurrencyPageState extends State<NewCurrencyPage>
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          borderSide: const BorderSide(color: Appcolors.primary, width: 2),
+          borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         contentPadding: EdgeInsets.symmetric(
           horizontal: Dimensions.width15,
@@ -425,7 +425,7 @@ class _NewCurrencyPageState extends State<NewCurrencyPage>
           child: ElevatedButton(
             onPressed: _save,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Appcolors.primary,
+              backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius30),

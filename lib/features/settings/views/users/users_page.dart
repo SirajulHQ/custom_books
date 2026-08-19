@@ -117,7 +117,7 @@ class _UsersPageState extends State<UsersPage> {
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.75,
                           fontWeight: FontWeight.w700,
-                          color: Appcolors.ok,
+                          color: AppColors.ok,
                         ),
                       ),
                     ),

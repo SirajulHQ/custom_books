@@ -65,7 +65,7 @@ class _ExpenseSortSheetState extends State<ExpenseSortSheet> {
                 ),
                 decoration: BoxDecoration(
                   color: _sortField == field
-                      ? Appcolors.primary.withValues(alpha: 0.08)
+                      ? AppColors.primary.withValues(alpha: 0.08)
                       : context.colors.surfaceLight,
                   borderRadius: BorderRadius.circular(Dimensions.radius15),
                 ),
@@ -79,7 +79,7 @@ class _ExpenseSortSheetState extends State<ExpenseSortSheet> {
                             ? FontWeight.w700
                             : FontWeight.w500,
                         color: _sortField == field
-                            ? Appcolors.primary
+                            ? AppColors.primary
                             : context.colors.textPrimary,
                       ),
                     ),
@@ -88,7 +88,7 @@ class _ExpenseSortSheetState extends State<ExpenseSortSheet> {
                       Icon(
                         Icons.check_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                   ],
                 ),
@@ -127,8 +127,8 @@ class _ExpenseSortSheetState extends State<ExpenseSortSheet> {
                 Navigator.pop(context);
               },
               style: OutlinedButton.styleFrom(
-                foregroundColor: Appcolors.primary,
-                side: const BorderSide(color: Appcolors.primary, width: 1.5),
+                foregroundColor: AppColors.primary,
+                side: const BorderSide(color: AppColors.primary, width: 1.5),
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 padding: EdgeInsets.symmetric(vertical: Dimensions.height15),
@@ -167,11 +167,11 @@ class _DirectionButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
         decoration: BoxDecoration(
           color: isSelected
-              ? Appcolors.primary.withValues(alpha: 0.08)
+              ? AppColors.primary.withValues(alpha: 0.08)
               : context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: isSelected
-              ? Border.all(color: Appcolors.primary.withValues(alpha: 0.4))
+              ? Border.all(color: AppColors.primary.withValues(alpha: 0.4))
               : null,
         ),
         child: Row(
@@ -181,7 +181,7 @@ class _DirectionButton extends StatelessWidget {
               icon,
               size: Dimensions.iconSize16,
               color: isSelected
-                  ? Appcolors.primary
+                  ? AppColors.primary
                   : context.colors.textSecondary,
             ),
             SizedBox(width: Dimensions.width10 / 2),
@@ -191,7 +191,7 @@ class _DirectionButton extends StatelessWidget {
                 fontSize: Dimensions.font16 * 0.75,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected
-                    ? Appcolors.primary
+                    ? AppColors.primary
                     : context.colors.textSecondary,
               ),
             ),

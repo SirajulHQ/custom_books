@@ -19,7 +19,7 @@ class UpdatesContentWidget extends StatelessWidget {
                 'Save time with our new automated invoicing system. Schedule recurring invoices and never miss a payment.',
             time: '2 hours ago',
             icon: Icons.celebration_rounded,
-            color: Appcolors.primaryLight,
+            color: AppColors.primaryLight,
           ),
 
           SizedBox(height: Dimensions.height15),
@@ -41,7 +41,7 @@ class UpdatesContentWidget extends StatelessWidget {
                 'Tax season is approaching. Ensure all your financial records are up to date and consult with your accountant.',
             time: '3 days ago',
             icon: Icons.calendar_today_rounded,
-            color: Appcolors.ok,
+            color: AppColors.ok,
           ),
 
           SizedBox(height: Dimensions.height15),
@@ -52,7 +52,7 @@ class UpdatesContentWidget extends StatelessWidget {
                 'We have added support for multiple payment gateways. Check settings to configure your preferred options.',
             time: '1 week ago',
             icon: Icons.payment_rounded,
-            color: Appcolors.accent,
+            color: AppColors.accent,
           ),
 
           SizedBox(height: Dimensions.height30),

@@ -191,7 +191,7 @@ class _BillsPageState extends State<BillsPage> {
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           boxShadow: [
             BoxShadow(
-              color: Appcolors.primary.withValues(alpha: 0.35),
+              color: AppColors.primary.withValues(alpha: 0.35),
               blurRadius: Dimensions.radius15 * 1.07,
               offset: const Offset(0, 8),
             ),
@@ -199,7 +199,7 @@ class _BillsPageState extends State<BillsPage> {
         ),
         child: FloatingActionButton(
           onPressed: _addNewBill,
-          backgroundColor: Appcolors.primary,
+          backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -225,7 +225,7 @@ class _BillsPageState extends State<BillsPage> {
               SizedBox(width: Dimensions.width10),
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
-                color: Appcolors.accent,
+                color: AppColors.accent,
                 onPressed: _openFilterSheet,
               ),
               SizedBox(width: Dimensions.width20),
@@ -270,7 +270,7 @@ class _BillsPageState extends State<BillsPage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       borderSide: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                     ),

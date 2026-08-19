@@ -14,10 +14,10 @@ extension BillStatusLabel on BillStatus {
 
   Color get color => switch (this) {
     BillStatus.draft => Colors.grey,
-    BillStatus.open => Appcolors.primaryLight,
-    BillStatus.overdue => Appcolors.error,
-    BillStatus.paid => Appcolors.success,
-    BillStatus.partiallyPaid => Appcolors.warning,
+    BillStatus.open => AppColors.primaryLight,
+    BillStatus.overdue => AppColors.error,
+    BillStatus.paid => AppColors.success,
+    BillStatus.partiallyPaid => AppColors.warning,
   };
 }
 

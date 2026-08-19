@@ -204,7 +204,7 @@ class _AddAddressPageState extends State<AddAddressPage>
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.9,
                             fontWeight: FontWeight.w600,
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                           ),
                         ),
                       ),
@@ -336,7 +336,7 @@ class _AddAddressPageState extends State<AddAddressPage>
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          borderSide: BorderSide(color: Appcolors.primary, width: 2),
+          borderSide: BorderSide(color: AppColors.primary, width: 2),
         ),
       ),
     );
@@ -411,7 +411,7 @@ class _AddAddressPageState extends State<AddAddressPage>
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
-                borderSide: BorderSide(color: Appcolors.primary, width: 2),
+                borderSide: BorderSide(color: AppColors.primary, width: 2),
               ),
             ),
           ),

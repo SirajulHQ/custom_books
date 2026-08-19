@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Appcolors.primary.withValues(alpha: 0.3),
+                        color: AppColors.primary.withValues(alpha: 0.3),
                         blurRadius: Dimensions.height20,
                         spreadRadius: Dimensions.height10 / 2.5,
                       ),
@@ -128,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       borderSide: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                     ),
@@ -176,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       borderSide: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                     ),
@@ -202,7 +202,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.85,
                         fontWeight: FontWeight.w500,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ),
@@ -217,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                     onPressed: _login,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Appcolors.primary,
+                      backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
@@ -261,7 +261,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.9,
                           fontWeight: FontWeight.w600,
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                         ),
                       ),
                     ),

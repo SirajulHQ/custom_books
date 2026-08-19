@@ -118,7 +118,7 @@ class _NewTaxGroupPageState extends State<NewTaxGroupPage>
               child: Checkbox(
                 value: tax.selected,
                 onChanged: (val) => setState(() => tax.selected = val ?? false),
-                activeColor: Appcolors.primary,
+                activeColor: AppColors.primary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(
                     Dimensions.radius15 * 0.27,
@@ -151,7 +151,7 @@ class _NewTaxGroupPageState extends State<NewTaxGroupPage>
         borderSide: BorderSide(color: context.colors.border),
       ),
       focusedBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Appcolors.primary),
+        borderSide: BorderSide(color: AppColors.primary),
       ),
     );
   }

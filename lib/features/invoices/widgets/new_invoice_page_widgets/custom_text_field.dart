@@ -33,7 +33,7 @@ class CustomTextField extends StatelessWidget {
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.85,
                   fontWeight: FontWeight.w600,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                 ),
               ),
               if (isRequired) ...[
@@ -90,7 +90,7 @@ class CustomTextField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: Appcolors.primary, width: 2),
+              borderSide: BorderSide(color: AppColors.primary, width: 2),
             ),
           ),
         ),

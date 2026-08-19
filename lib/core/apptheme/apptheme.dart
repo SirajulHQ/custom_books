@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Appcolors {
-  const Appcolors._();
+/// Static brand & status color constants.
+class AppColors {
+  const AppColors._();
 
   // ── Brand colors ────────────────────────────────────────────────────────
   static const Color primary = Color(0xFF0D47A1);
   static const Color primaryLight = Color(0xFF1976D2);
   static const Color accent = Color(0xFF1E88E5);
 
-  // ── Status colors ─────────────────────────────────────────────────────��─
+  // ── Status colors ───────────────────────────────────────────────────────
   static const Color warn = Color(0xFFDC2626);
   static const Color ok = Color(0xFF15803D);
   static const Color error = Color(0xFFEF4444);
@@ -22,8 +23,9 @@ class Appcolors {
   static const Color statusCancelled = Color(0xFF94A3B8);
 }
 
+/// Theme-aware semantic colors exposed via [ThemeExtension].
 @immutable
-class AppColors extends ThemeExtension<AppColors> {
+class AppThemeColors extends ThemeExtension<AppThemeColors> {
   final Color background;
   final Color card;
   final Color surfaceLight;
@@ -32,7 +34,7 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color textSecondary;
   final Color textTertiary;
 
-  const AppColors({
+  const AppThemeColors({
     required this.background,
     required this.card,
     required this.surfaceLight,
@@ -42,7 +44,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.textTertiary,
   });
 
-  static const AppColors light = AppColors(
+  static const AppThemeColors light = AppThemeColors(
     background: Color(0xFFF4F7F6),
     card: Colors.white,
     surfaceLight: Color(0xFFF8FAFC),
@@ -52,7 +54,7 @@ class AppColors extends ThemeExtension<AppColors> {
     textTertiary: Color(0xFF94A3B8),
   );
 
-  static const AppColors dark = AppColors(
+  static const AppThemeColors dark = AppThemeColors(
     background: Color(0xFF0E1116),
     card: Color(0xFF1A1F27),
     surfaceLight: Color(0xFF232A34),
@@ -63,7 +65,7 @@ class AppColors extends ThemeExtension<AppColors> {
   );
 
   @override
-  AppColors copyWith({
+  AppThemeColors copyWith({
     Color? background,
     Color? card,
     Color? surfaceLight,
@@ -72,7 +74,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? textSecondary,
     Color? textTertiary,
   }) {
-    return AppColors(
+    return AppThemeColors(
       background: background ?? this.background,
       card: card ?? this.card,
       surfaceLight: surfaceLight ?? this.surfaceLight,
@@ -84,9 +86,9 @@ class AppColors extends ThemeExtension<AppColors> {
   }
 
   @override
-  AppColors lerp(ThemeExtension<AppColors>? other, double t) {
-    if (other is! AppColors) return this;
-    return AppColors(
+  AppThemeColors lerp(ThemeExtension<AppThemeColors>? other, double t) {
+    if (other is! AppThemeColors) return this;
+    return AppThemeColors(
       background: Color.lerp(background, other.background, t)!,
       card: Color.lerp(card, other.card, t)!,
       surfaceLight: Color.lerp(surfaceLight, other.surfaceLight, t)!,
@@ -99,28 +101,28 @@ class AppColors extends ThemeExtension<AppColors> {
 }
 
 /// Convenient access to the app's semantic colors: `context.colors.card`.
-extension AppColorsContext on BuildContext {
-  AppColors get colors => Theme.of(this).extension<AppColors>()!;
+extension AppThemeColorsContext on BuildContext {
+  AppThemeColors get colors => Theme.of(this).extension<AppThemeColors>()!;
 }
 
 /// Builds the light and dark [ThemeData] used by the root [MaterialApp].
 class AppTheme {
   const AppTheme._();
 
-  static ThemeData get light => _build(Brightness.light, AppColors.light);
-  static ThemeData get dark => _build(Brightness.dark, AppColors.dark);
+  static ThemeData get light => _build(Brightness.light, AppThemeColors.light);
+  static ThemeData get dark => _build(Brightness.dark, AppThemeColors.dark);
 
-  static ThemeData _build(Brightness brightness, AppColors colors) {
+  static ThemeData _build(Brightness brightness, AppThemeColors colors) {
     final ColorScheme scheme =
         ColorScheme.fromSeed(
-          seedColor: Appcolors.primary,
+          seedColor: AppColors.primary,
           brightness: brightness,
         ).copyWith(
-          primary: Appcolors.primary,
-          secondary: Appcolors.accent,
+          primary: AppColors.primary,
+          secondary: AppColors.accent,
           surface: colors.card,
           onSurface: colors.textPrimary,
-          error: Appcolors.error,
+          error: AppColors.error,
           outline: colors.border,
         );
 
@@ -147,6 +149,81 @@ class AppTheme {
       drawerTheme: DrawerThemeData(backgroundColor: colors.card),
       iconTheme: IconThemeData(color: colors.textPrimary),
       popupMenuTheme: PopupMenuThemeData(color: colors.card),
+
+      // ── Component themes ──────────────────────────────────────────────
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.primary,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          side: BorderSide(color: colors.border),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.primary,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: colors.surfaceLight,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: colors.border),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: colors.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.error),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.5),
+        ),
+        hintStyle: TextStyle(color: colors.textTertiary),
+        labelStyle: TextStyle(color: colors.textSecondary),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: colors.surfaceLight,
+        side: BorderSide(color: colors.border),
+        labelStyle: TextStyle(
+          color: colors.textPrimary,
+          fontSize: 13,
+          fontWeight: FontWeight.w500,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
     );
   }
 }

@@ -60,7 +60,7 @@ class _PaymentGatewaysPageState extends State<PaymentGatewaysPage>
                 tabBar: TabBar(
                   controller: _tabController,
                   isScrollable: true,
-                  labelColor: Appcolors.primary,
+                  labelColor: AppColors.primary,
                   unselectedLabelColor: context.colors.textSecondary,
                   labelStyle: TextStyle(
                     fontSize: Dimensions.font16 * 0.8,
@@ -70,7 +70,7 @@ class _PaymentGatewaysPageState extends State<PaymentGatewaysPage>
                     fontSize: Dimensions.font16 * 0.8,
                     fontWeight: FontWeight.w500,
                   ),
-                  indicatorColor: Appcolors.primary,
+                  indicatorColor: AppColors.primary,
                   indicatorWeight: 3,
                   tabAlignment: TabAlignment.start,
                   dividerColor: context.colors.border,
@@ -196,7 +196,7 @@ class _PaymentGatewaysPageState extends State<PaymentGatewaysPage>
                     vertical: Dimensions.height10 * 0.3,
                   ),
                   decoration: BoxDecoration(
-                    color: Appcolors.warning,
+                    color: AppColors.warning,
                     borderRadius: BorderRadius.circular(
                       Dimensions.radius15 * 0.27,
                     ),
@@ -243,8 +243,8 @@ class _PaymentGatewaysPageState extends State<PaymentGatewaysPage>
               appLog('🔧 Setup $name tapped', name: 'PaymentGateways');
             },
             style: OutlinedButton.styleFrom(
-              foregroundColor: Appcolors.primary,
-              side: const BorderSide(color: Appcolors.primary, width: 1.5),
+              foregroundColor: AppColors.primary,
+              side: const BorderSide(color: AppColors.primary, width: 1.5),
               padding: EdgeInsets.symmetric(
                 horizontal: Dimensions.width20,
                 vertical: Dimensions.height10,

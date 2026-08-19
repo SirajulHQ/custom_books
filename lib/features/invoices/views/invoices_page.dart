@@ -206,7 +206,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
               SizedBox(width: Dimensions.width10),
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
-                color: Appcolors.accent,
+                color: AppColors.accent,
                 onPressed: _openFilterSheet,
               ),
               SizedBox(width: Dimensions.width20),
@@ -251,7 +251,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       borderSide: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                     ),
@@ -281,7 +281,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                   vertical: Dimensions.height10 / 2,
                 ),
                 decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.07),
+                  color: AppColors.primary.withValues(alpha: 0.07),
                   borderRadius: BorderRadius.circular(Dimensions.radius15),
                 ),
                 child: Row(
@@ -289,7 +289,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                     Icon(
                       Icons.filter_alt_rounded,
                       size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                     SizedBox(width: Dimensions.width10 / 2),
                     Text(
@@ -297,7 +297,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.72,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     const Spacer(),
@@ -306,7 +306,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                       child: Icon(
                         Icons.close_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ],
@@ -326,7 +326,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                               width: Dimensions.height45 * 1.6,
                               height: Dimensions.height45 * 1.6,
                               decoration: BoxDecoration(
-                                color: Appcolors.primary.withValues(
+                                color: AppColors.primary.withValues(
                                   alpha: 0.08,
                                 ),
                                 shape: BoxShape.circle,
@@ -334,7 +334,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                               child: Icon(
                                 Icons.description_outlined,
                                 size: Dimensions.iconSize24 * 1.3,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               ),
                             ),
                             SizedBox(height: Dimensions.height15),

@@ -17,7 +17,7 @@ class InvoiceFormHelpers {
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.85,
             fontWeight: FontWeight.w600,
-            color: Appcolors.primary,
+            color: AppColors.primary,
           ),
         ),
         if (hasInfo) ...[
@@ -58,7 +58,7 @@ class InvoiceFormHelpers {
         label,
         style: TextStyle(
           fontSize: Dimensions.font16 * 0.85,
-          color: Appcolors.primary,
+          color: AppColors.primary,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -122,7 +122,7 @@ class InvoiceFormHelpers {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
                 fontWeight: FontWeight.w600,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             SizedBox(width: Dimensions.width10 / 3),
@@ -203,7 +203,7 @@ class InvoiceFormHelpers {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
                 fontWeight: FontWeight.w600,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             if (isRequired) ...[
@@ -270,10 +270,10 @@ class InvoiceFormHelpers {
           data: Theme.of(context).copyWith(
             colorScheme:
                 ColorScheme.fromSeed(
-                  seedColor: Appcolors.primary,
+                  seedColor: AppColors.primary,
                   brightness: Theme.of(context).brightness,
                 ).copyWith(
-                  primary: Appcolors.primary,
+                  primary: AppColors.primary,
                   onSurface: context.colors.textPrimary,
                   surface: context.colors.card,
                 ),

@@ -195,7 +195,7 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
                           option,
                           style: TextStyle(
                             color: option == current
-                                ? Appcolors.primary
+                                ? AppColors.primary
                                 : context.colors.textPrimary,
                             fontWeight: option == current
                                 ? FontWeight.bold
@@ -205,7 +205,7 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
                         trailing: option == current
                             ? Icon(
                                 Icons.check_rounded,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               )
                             : null,
                         onTap: () => Navigator.pop(context, option),
@@ -369,7 +369,7 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
                               'https://books.zoho.com/portal/store926602888',
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.75,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               ),
                             ),
                           ),
@@ -669,7 +669,7 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
             child: Checkbox(
               value: value,
               onChanged: onChanged,
-              activeColor: Appcolors.primary,
+              activeColor: AppColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
               ),
@@ -703,7 +703,7 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
         borderSide: BorderSide(color: context.colors.border),
       ),
       focusedBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Appcolors.primary),
+        borderSide: BorderSide(color: AppColors.primary),
       ),
     );
   }

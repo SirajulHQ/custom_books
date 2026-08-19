@@ -102,11 +102,11 @@ extension QuoteStatusLabel on QuoteStatus {
 
 extension QuoteStatusColor on QuoteStatus {
   Color get color => switch (this) {
-    QuoteStatus.draft => Appcolors.statusDraft,
-    QuoteStatus.sent => Appcolors.primaryLight,
-    QuoteStatus.accepted => Appcolors.success,
-    QuoteStatus.declined => Appcolors.error,
-    QuoteStatus.expired => Appcolors.error,
-    QuoteStatus.converted => Appcolors.success,
+    QuoteStatus.draft => AppColors.statusDraft,
+    QuoteStatus.sent => AppColors.primaryLight,
+    QuoteStatus.accepted => AppColors.success,
+    QuoteStatus.declined => AppColors.error,
+    QuoteStatus.expired => AppColors.error,
+    QuoteStatus.converted => AppColors.success,
   };
 }

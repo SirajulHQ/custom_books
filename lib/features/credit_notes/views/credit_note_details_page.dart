@@ -112,7 +112,7 @@ class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
                         child: Text(
                           'Delete',
                           style: TextStyle(
-                            color: Appcolors.warn,
+                            color: AppColors.warn,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -151,7 +151,7 @@ class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
                     Icon(
                       Icons.delete_outline_rounded,
                       size: Dimensions.iconSize16 + 4,
-                      color: Appcolors.warn,
+                      color: AppColors.warn,
                     ),
                     SizedBox(width: Dimensions.width10),
                     Text(
@@ -159,7 +159,7 @@ class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.85,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.warn,
+                        color: AppColors.warn,
                       ),
                     ),
                   ],
@@ -194,19 +194,19 @@ class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
                   color: context.colors.card,
                   borderRadius: BorderRadius.circular(Dimensions.radius30),
                   border: Border.all(
-                    color: Appcolors.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Appcolors.primary.withValues(alpha: 0.08),
+                      color: AppColors.primary.withValues(alpha: 0.08),
                       blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
                   ],
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: Appcolors.primary,
+                labelColor: AppColors.primary,
                 unselectedLabelColor: context.colors.textSecondary,
                 labelStyle: TextStyle(
                   fontSize: Dimensions.font16 * 0.72,

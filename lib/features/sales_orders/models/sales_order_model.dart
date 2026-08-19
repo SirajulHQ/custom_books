@@ -14,10 +14,10 @@ extension SalesOrderStatusLabel on SalesOrderStatus {
 
 extension SalesOrderStatusColor on SalesOrderStatus {
   Color get color => switch (this) {
-    SalesOrderStatus.draft => Appcolors.statusDraft,
-    SalesOrderStatus.confirmed => Appcolors.primaryLight,
-    SalesOrderStatus.invoiced => Appcolors.success,
-    SalesOrderStatus.cancelled => Appcolors.error,
+    SalesOrderStatus.draft => AppColors.statusDraft,
+    SalesOrderStatus.confirmed => AppColors.primaryLight,
+    SalesOrderStatus.invoiced => AppColors.success,
+    SalesOrderStatus.cancelled => AppColors.error,
   };
 }
 

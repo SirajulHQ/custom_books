@@ -126,7 +126,7 @@ class _FoldersPageState extends State<FoldersPage> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
                     borderSide: const BorderSide(
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                       width: 1.5,
                     ),
                   ),
@@ -163,9 +163,9 @@ class _FoldersPageState extends State<FoldersPage> {
                     );
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Appcolors.primary,
+                    foregroundColor: AppColors.primary,
                     side: const BorderSide(
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                       width: 1.5,
                     ),
                     backgroundColor: Colors.transparent,
@@ -264,7 +264,7 @@ class _FoldersPageState extends State<FoldersPage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       borderSide: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                     ),
@@ -310,13 +310,13 @@ class _FoldersPageState extends State<FoldersPage> {
               width: Dimensions.height45 * 1.6,
               height: Dimensions.height45 * 1.6,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.08),
+                color: AppColors.primary.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.folder_rounded,
                 size: Dimensions.iconSize24 * 1.3,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             SizedBox(height: Dimensions.height15),
@@ -361,12 +361,12 @@ class _FoldersPageState extends State<FoldersPage> {
               width: Dimensions.height45,
               height: Dimensions.height45,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.12),
+                color: AppColors.primary.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(Dimensions.radius15),
               ),
               child: Icon(
                 Icons.folder_rounded,
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 size: Dimensions.iconSize24,
               ),
             ),

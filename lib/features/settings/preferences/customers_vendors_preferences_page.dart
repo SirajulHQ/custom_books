@@ -75,9 +75,9 @@ class _CustomersVendorsPreferencesPageState
               delegate: _TabBarDelegate(
                 tabBar: TabBar(
                   controller: _tabController,
-                  labelColor: Appcolors.primary,
+                  labelColor: AppColors.primary,
                   unselectedLabelColor: context.colors.textSecondary,
-                  indicatorColor: Appcolors.primary,
+                  indicatorColor: AppColors.primary,
                   indicatorWeight: 3,
                   labelStyle: TextStyle(
                     fontSize: Dimensions.font16 * 0.9,
@@ -194,7 +194,7 @@ class _CustomersVendorsPreferencesPageState
                     value: _enableCreditLimit,
                     onChanged: (val) =>
                         setState(() => _enableCreditLimit = val),
-                    activeThumbColor: Appcolors.primary,
+                    activeThumbColor: AppColors.primary,
                   ),
                 ],
               ),
@@ -336,7 +336,7 @@ class _CustomersVendorsPreferencesPageState
           child: ElevatedButton(
             onPressed: _save,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Appcolors.primary,
+              backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius30),
@@ -374,7 +374,7 @@ class _CustomersVendorsPreferencesPageState
             onChanged: (_) => onTap(),
             child: Radio<bool>(
               value: true,
-              activeColor: Appcolors.primary,
+              activeColor: AppColors.primary,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           ),
@@ -406,7 +406,7 @@ class _CustomersVendorsPreferencesPageState
             child: Checkbox(
               value: value,
               onChanged: onChanged,
-              activeColor: Appcolors.primary,
+              activeColor: AppColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
               ),
@@ -433,14 +433,14 @@ class _CustomersVendorsPreferencesPageState
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: Dimensions.iconSize16, color: Appcolors.primary),
+          Icon(icon, size: Dimensions.iconSize16, color: AppColors.primary),
           SizedBox(width: Dimensions.width10 / 2),
           Text(
             label,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.8,
               fontWeight: FontWeight.w600,
-              color: Appcolors.primary,
+              color: AppColors.primary,
             ),
           ),
         ],

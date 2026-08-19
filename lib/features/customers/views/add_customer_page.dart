@@ -7,6 +7,9 @@ import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/views/add_address_page.dart';
 import 'package:custom_books/features/customers/views/add_contact_person_page.dart';
+import 'package:custom_books/features/customers/widgets/form_section_card.dart';
+import 'package:custom_books/features/customers/widgets/other_details_card.dart';
+import 'package:custom_books/features/customers/widgets/salutation_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 class AddCustomerPage extends StatefulWidget {
@@ -21,8 +24,6 @@ class AddCustomerPage extends StatefulWidget {
 class _AddCustomerPageState extends State<AddCustomerPage>
     with UnsavedChangesMixin {
   String _customerType = 'Business';
-  bool _allowPortalAccess = false;
-  bool _showWebsiteSocial = false;
   String _selectedSalutation = '';
 
   final List<String> _salutationOptions = [
@@ -49,105 +50,11 @@ class _AddCustomerPageState extends State<AddCustomerPage>
 
   String _phoneCountryCode = '+91';
   String _mobileCountryCode = '+91';
-  String _selectedTaxTreatment = 'Select a Tax Treatment';
-  String _selectedPlaceOfSupply = 'Select a Place Of Supply';
+  final String _selectedTaxTreatment = 'Select a Tax Treatment';
+  final String _selectedPlaceOfSupply = 'Select a Place Of Supply';
   String _selectedCurrency = 'INR- Indian Rupee';
   String _selectedAccountsReceivable = 'Select a Accounts Receivable';
-  String _selectedPaymentTerms = 'Due on Receipt';
-  String _selectedPortalLanguage = 'English';
-
-  // Dropdown options for India
-  final List<String> _taxTreatmentOptions = [
-    'Select a Tax Treatment',
-    'GST Registered',
-    'Non GST Registered',
-    'GST Registered - Composition',
-    'Consumer',
-    'Overseas',
-    'SEZ',
-  ];
-
-  final List<String> _placeOfSupplyOptions = [
-    'Select a Place Of Supply',
-    'Andaman and Nicobar Islands',
-    'Andhra Pradesh',
-    'Arunachal Pradesh',
-    'Assam',
-    'Bihar',
-    'Chandigarh',
-    'Chhattisgarh',
-    'Dadra and Nagar Haveli and Daman and Diu',
-    'Delhi',
-    'Goa',
-    'Gujarat',
-    'Haryana',
-    'Himachal Pradesh',
-    'Jammu and Kashmir',
-    'Jharkhand',
-    'Karnataka',
-    'Kerala',
-    'Ladakh',
-    'Lakshadweep',
-    'Madhya Pradesh',
-    'Maharashtra',
-    'Manipur',
-    'Meghalaya',
-    'Mizoram',
-    'Nagaland',
-    'Odisha',
-    'Puducherry',
-    'Punjab',
-    'Rajasthan',
-    'Sikkim',
-    'Tamil Nadu',
-    'Telangana',
-    'Tripura',
-    'Uttar Pradesh',
-    'Uttarakhand',
-    'West Bengal',
-  ];
-
-  final List<String> _currencyOptions = [
-    'INR- Indian Rupee',
-    'USD- United States Dollar',
-    'EUR- Euro',
-    'GBP- Pound Sterling',
-    'AED- UAE Dirham',
-    'CAD- Canadian Dollar',
-    'AUD- Australian Dollar',
-    'SGD- Singapore Dollar',
-    'JPY- Japanese Yen',
-    'CNY- Yuan Renminbi',
-  ];
-
-  final List<String> _accountsReceivableOptions = [
-    'Select a Accounts Receivable',
-    'Accounts Receivable',
-    'Accounts Receivable - Domestic',
-    'Accounts Receivable - Foreign',
-  ];
-
-  final List<String> _paymentTermsOptions = [
-    'Due on Receipt',
-    'Net 15',
-    'Net 30',
-    'Net 45',
-    'Net 60',
-    'Due end of the month',
-    'Due end of next month',
-  ];
-
-  final List<String> _portalLanguageOptions = [
-    'English',
-    'Hindi',
-    'Tamil',
-    'Telugu',
-    'Marathi',
-    'Bengali',
-    'Gujarati',
-    'Kannada',
-    'Malayalam',
-  ];
+  String _selectedAccountsPayable = 'Select a Accounts Payable';
 
   @override
   void initState() {
@@ -255,187 +162,92 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     // Customer Information Card
-                    _buildCard('Customer Information', [
-                      _buildSectionHeader('Customer Type', hasInfo: true),
-                      SizedBox(height: Dimensions.height10),
-                      Row(
-                        children: [
-                          Expanded(child: _buildRadioOption('Business')),
-                          SizedBox(width: Dimensions.width15),
-                          Expanded(child: _buildRadioOption('Individual')),
-                        ],
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      Row(
-                        children: [
-                          Expanded(flex: 1, child: _buildSalutationDropdown()),
-                          SizedBox(width: Dimensions.width15),
-                          Expanded(
-                            flex: 2,
-                            child: _buildTextField(
-                              'First Name',
-                              _firstNameController,
+                    FormSectionCard(
+                      title: 'Customer Information',
+                      children: [
+                        _buildSectionHeader('Customer Type', hasInfo: true),
+                        SizedBox(height: Dimensions.height10),
+                        Row(
+                          children: [
+                            Expanded(child: _buildRadioOption('Business')),
+                            SizedBox(width: Dimensions.width15),
+                            Expanded(child: _buildRadioOption('Individual')),
+                          ],
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: _buildSalutationDropdown(),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildTextField('Last Name', _lastNameController),
-                      SizedBox(height: Dimensions.height20),
-                      _buildTextField('Company Name', _companyNameController),
-                      SizedBox(height: Dimensions.height20),
-                      _buildTextField(
-                        'Display Name',
-                        _displayNameController,
-                        isRequired: true,
-                        hasInfo: true,
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildTextField(
-                        'Email Address',
-                        _emailController,
-                        hasInfo: true,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildPhoneField(
-                        'Phone',
-                        _phoneController,
-                        _phoneCountryCode,
-                        (value) => setState(() => _phoneCountryCode = value!),
-                        hasInfo: true,
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildPhoneField(
-                        'Mobile',
-                        _mobileController,
-                        _mobileCountryCode,
-                        (value) => setState(() => _mobileCountryCode = value!),
-                        hasInfo: true,
-                      ),
-                    ]),
+                            SizedBox(width: Dimensions.width15),
+                            Expanded(
+                              flex: 2,
+                              child: _buildTextField(
+                                'First Name',
+                                _firstNameController,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTextField('Last Name', _lastNameController),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTextField('Company Name', _companyNameController),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTextField(
+                          'Display Name',
+                          _displayNameController,
+                          isRequired: true,
+                          hasInfo: true,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTextField(
+                          'Email Address',
+                          _emailController,
+                          hasInfo: true,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildPhoneField(
+                          'Phone',
+                          _phoneController,
+                          _phoneCountryCode,
+                          (value) => setState(() => _phoneCountryCode = value!),
+                          hasInfo: true,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildPhoneField(
+                          'Mobile',
+                          _mobileController,
+                          _mobileCountryCode,
+                          (value) =>
+                              setState(() => _mobileCountryCode = value!),
+                          hasInfo: true,
+                        ),
+                      ],
+                    ),
 
                     SizedBox(height: Dimensions.height15),
 
                     // Other Details Card
-                    _buildCard('Other Details', [
-                      _buildDropdown(
-                        'Tax Treatment',
-                        _selectedTaxTreatment,
-                        _taxTreatmentOptions,
-                        isRequired: true,
-                        onChanged: (value) {
-                          setState(() => _selectedTaxTreatment = value!);
-                        },
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildDropdown(
-                        'Place Of Supply',
-                        _selectedPlaceOfSupply,
-                        _placeOfSupplyOptions,
-                        isRequired: true,
-                        onChanged: (value) {
-                          setState(() => _selectedPlaceOfSupply = value!);
-                        },
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildDropdown(
-                        'Currency',
-                        _selectedCurrency,
-                        _currencyOptions,
-                        isRequired: true,
-                        onChanged: (value) {
-                          setState(() => _selectedCurrency = value!);
-                        },
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildDropdown(
-                        'Accounts Receivable',
-                        _selectedAccountsReceivable,
-                        _accountsReceivableOptions,
-                        onChanged: (value) {
-                          setState(() => _selectedAccountsReceivable = value!);
-                        },
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildTextField(
-                        'Opening Balance',
-                        _openingBalanceController,
-                        prefix: '₹',
-                        keyboardType: TextInputType.number,
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildDropdown(
-                        'Payment Terms',
-                        _selectedPaymentTerms,
-                        _paymentTermsOptions,
-                        onChanged: (value) {
-                          setState(() => _selectedPaymentTerms = value!);
-                        },
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildSectionHeader('Enable Portal?', hasInfo: true),
-                      SizedBox(height: Dimensions.height10),
-                      _buildCheckbox(
-                        'Allow portal access for this customer',
-                        _allowPortalAccess,
-                        (value) {
-                          setState(() => _allowPortalAccess = value ?? false);
-                        },
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildDropdown(
-                        'Portal Language',
-                        _selectedPortalLanguage,
-                        _portalLanguageOptions,
-                        hasInfo: true,
-                        onChanged: (value) {
-                          setState(() => _selectedPortalLanguage = value!);
-                        },
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      if (_showWebsiteSocial) ...[
-                        _buildTextField(
-                          'Website',
-                          _websiteController,
-                          keyboardType: TextInputType.url,
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        _buildTextField(
-                          'Facebook',
-                          _facebookController,
-                          hint: 'https://www.facebook.com/',
-                          keyboardType: TextInputType.url,
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                        _buildTextField(
-                          'Twitter',
-                          _twitterController,
-                          hint: 'https://www.twitter.com/',
-                          keyboardType: TextInputType.url,
-                        ),
-                        SizedBox(height: Dimensions.height20),
-                      ],
-                      _buildActionButton(
-                        _showWebsiteSocial
-                            ? 'Hide Website & Social'
-                            : 'Add Website & Social',
-                        _showWebsiteSocial
-                            ? Icons.remove_circle_outline
-                            : Icons.language_outlined,
-                        onTap: () {
-                          setState(() {
-                            _showWebsiteSocial = !_showWebsiteSocial;
-                          });
-                          appLog(
-                            _showWebsiteSocial
-                                ? '🌐 Website & Social fields shown'
-                                : '🌐 Website & Social fields hidden',
-                            name: 'AddCustomerPage',
-                          );
-                        },
-                      ),
-                    ]),
+                    OtherDetailsCard(
+                      selectedCurrency: _selectedCurrency,
+                      selectedAccountsReceivable: _selectedAccountsReceivable,
+                      selectedAccountsPayable: _selectedAccountsPayable,
+                      selectedTaxTreatment: _selectedTaxTreatment,
+                      selectedPlaceOfSupply: _selectedPlaceOfSupply,
+                      onCurrencyChanged: (value) {
+                        setState(() => _selectedCurrency = value!);
+                      },
+                      onAccountsReceivableChanged: (value) {
+                        setState(() => _selectedAccountsReceivable = value!);
+                      },
+                      onAccountsPayableChanged: (value) {
+                        setState(() => _selectedAccountsPayable = value!);
+                      },
+                    ),
 
                     SizedBox(height: Dimensions.height15),
 
@@ -478,14 +290,17 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                     SizedBox(height: Dimensions.height15),
 
                     // Remarks Card
-                    _buildCard('Remarks (For Internal Use)', [
-                      _buildTextField(
-                        '',
-                        _remarksController,
-                        maxLines: 4,
-                        hint: 'Enter internal remarks...',
-                      ),
-                    ]),
+                    FormSectionCard(
+                      title: 'Remarks (For Internal Use)',
+                      children: [
+                        _buildTextField(
+                          '',
+                          _remarksController,
+                          maxLines: 4,
+                          hint: 'Enter internal remarks...',
+                        ),
+                      ],
+                    ),
 
                     SizedBox(height: Dimensions.height30),
                   ]),
@@ -498,39 +313,6 @@ class _AddCustomerPageState extends State<AddCustomerPage>
     );
   }
 
-  Widget _buildCard(String title, List<Widget> children) {
-    return Container(
-      padding: EdgeInsets.all(Dimensions.width20),
-      decoration: BoxDecoration(
-        color: context.colors.card,
-        borderRadius: BorderRadius.circular(Dimensions.radius20),
-        border: Border.all(color: context.colors.border),
-        boxShadow: [
-          BoxShadow(
-            color: context.colors.border.withValues(alpha: 0.5),
-            blurRadius: Dimensions.radius15 * 0.67,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.95,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-          ),
-          SizedBox(height: Dimensions.height20),
-          ...children,
-        ],
-      ),
-    );
-  }
-
   Widget _buildSectionHeader(String label, {bool hasInfo = false}) {
     return Row(
       children: [
@@ -539,7 +321,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.85,
             fontWeight: FontWeight.w600,
-            color: Appcolors.primary,
+            color: AppColors.primary,
           ),
         ),
         if (hasInfo) ...[
@@ -585,11 +367,11 @@ class _AddCustomerPageState extends State<AddCustomerPage>
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? Appcolors.primary.withValues(alpha: 0.05)
+              ? AppColors.primary.withValues(alpha: 0.05)
               : context.colors.surfaceLight,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: Border.all(
-            color: isSelected ? Appcolors.primary : context.colors.border,
+            color: isSelected ? AppColors.primary : context.colors.border,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -601,7 +383,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                   ? Icons.radio_button_checked
                   : Icons.radio_button_unchecked,
               color: isSelected
-                  ? Appcolors.primary
+                  ? AppColors.primary
                   : context.colors.textTertiary,
               size: Dimensions.iconSize16 * 1.2,
             ),
@@ -612,7 +394,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                 fontSize: Dimensions.font16 * 0.85,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 color: isSelected
-                    ? Appcolors.primary
+                    ? AppColors.primary
                     : context.colors.textPrimary,
               ),
             ),
@@ -643,7 +425,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.85,
                   fontWeight: FontWeight.w600,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                 ),
               ),
               if (isRequired) ...[
@@ -705,7 +487,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(color: Appcolors.primary, width: 2),
+              borderSide: BorderSide(color: AppColors.primary, width: 2),
             ),
           ),
         ),
@@ -730,7 +512,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
                 fontWeight: FontWeight.w600,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             if (hasInfo) ...[
@@ -802,7 +584,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: Appcolors.primary, width: 2),
+                    borderSide: BorderSide(color: AppColors.primary, width: 2),
                   ),
                 ),
               ),
@@ -810,293 +592,6 @@ class _AddCustomerPageState extends State<AddCustomerPage>
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildDropdown(
-    String label,
-    String value,
-    List<String> options, {
-    bool isRequired = false,
-    bool hasInfo = false,
-    Function(String?)? onChanged,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.85,
-                fontWeight: FontWeight.w600,
-                color: Appcolors.primary,
-              ),
-            ),
-            if (isRequired) ...[
-              SizedBox(width: Dimensions.width10 / 3),
-              Text(
-                '*',
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.85,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.red,
-                ),
-              ),
-            ],
-            if (hasInfo) ...[
-              SizedBox(width: Dimensions.width10 / 2),
-              Icon(
-                Icons.info_outline,
-                size: Dimensions.iconSize16,
-                color: context.colors.textTertiary,
-              ),
-            ],
-          ],
-        ),
-        SizedBox(height: Dimensions.height10),
-        GestureDetector(
-          onTap: () =>
-              _showDropdownBottomSheet(label, value, options, onChanged),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: Dimensions.width15,
-              vertical: Dimensions.height15,
-            ),
-            decoration: BoxDecoration(
-              color: context.colors.surfaceLight,
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-              border: Border.all(color: context.colors.border),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    value,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.85,
-                      color: value.startsWith('Select')
-                          ? context.colors.textTertiary
-                          : context.colors.textPrimary,
-                      fontWeight: value.startsWith('Select')
-                          ? FontWeight.w500
-                          : FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  size: Dimensions.iconSize16 * 1.2,
-                  color: context.colors.textSecondary,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _showDropdownBottomSheet(
-    String label,
-    String currentValue,
-    List<String> options,
-    Function(String?)? onChanged,
-  ) {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: context.colors.card,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.radius20),
-        ),
-      ),
-      builder: (_) => DraggableScrollableSheet(
-        initialChildSize: 0.6,
-        minChildSize: 0.4,
-        maxChildSize: 0.9,
-        expand: false,
-        builder: (_, scrollController) => Column(
-          children: [
-            // Header
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width20,
-                vertical: Dimensions.height15,
-              ),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: context.colors.border, width: 1),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: Dimensions.font20 * 0.85,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: Dimensions.iconSize24,
-                      color: context.colors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Options
-            Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                padding: EdgeInsets.all(Dimensions.width20),
-                itemCount: options.length,
-                itemBuilder: (context, index) {
-                  final option = options[index];
-                  final isSelected = currentValue == option;
-                  final isPlaceholder = option.startsWith('Select');
-
-                  // Skip the placeholder option in the list
-                  if (isPlaceholder && index == 0) {
-                    return const SizedBox.shrink();
-                  }
-
-                  return GestureDetector(
-                    onTap: () {
-                      if (onChanged != null) {
-                        onChanged(option);
-                      }
-                      Navigator.pop(context);
-                      appLog('✅ Selected: $option', name: 'AddCustomerPage');
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: Dimensions.height10),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width15,
-                        vertical: Dimensions.height15,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? Appcolors.primary.withValues(alpha: 0.05)
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                        border: Border.all(
-                          color: isSelected
-                              ? Appcolors.primary
-                              : context.colors.border,
-                          width: isSelected ? 2 : 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              option,
-                              style: TextStyle(
-                                fontSize: Dimensions.font16,
-                                fontWeight: isSelected
-                                    ? FontWeight.w600
-                                    : FontWeight.w500,
-                                color: isSelected
-                                    ? Appcolors.primary
-                                    : context.colors.textPrimary,
-                              ),
-                            ),
-                          ),
-                          if (isSelected)
-                            Icon(
-                              Icons.check_circle,
-                              color: Appcolors.primary,
-                              size: Dimensions.iconSize24,
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCheckbox(String label, bool value, Function(bool?) onChanged) {
-    return Row(
-      children: [
-        SizedBox(
-          width: Dimensions.iconSize24,
-          height: Dimensions.iconSize24,
-          child: Checkbox(
-            value: value,
-            onChanged: onChanged,
-            activeColor: Appcolors.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
-            ),
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.85,
-              color: context.colors.textPrimary,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionButton(
-    String label,
-    IconData icon, {
-    VoidCallback? onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width15,
-          vertical: Dimensions.height15,
-        ),
-        decoration: BoxDecoration(
-          color: Appcolors.primary.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: Appcolors.primary.withValues(alpha: 0.3)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: Dimensions.iconSize16, color: Appcolors.primary),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.85,
-                fontWeight: FontWeight.w600,
-                color: Appcolors.primary,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -1122,7 +617,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
             Container(
               padding: EdgeInsets.all(Dimensions.width10 * 0.7),
               decoration: BoxDecoration(
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -1138,7 +633,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.9,
                   fontWeight: FontWeight.w700,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                 ),
               ),
             ),
@@ -1157,7 +652,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
           style: TextStyle(
             fontSize: Dimensions.font16 * 0.85,
             fontWeight: FontWeight.w600,
-            color: Appcolors.primary,
+            color: AppColors.primary,
           ),
         ),
         SizedBox(height: Dimensions.height10),
@@ -1174,7 +669,7 @@ class _AddCustomerPageState extends State<AddCustomerPage>
               border: Border.all(
                 color: _selectedSalutation.isEmpty
                     ? context.colors.border
-                    : Appcolors.primary,
+                    : AppColors.primary,
                 width: _selectedSalutation.isEmpty ? 1 : 2,
               ),
             ),
@@ -1218,111 +713,19 @@ class _AddCustomerPageState extends State<AddCustomerPage>
           top: Radius.circular(Dimensions.radius20),
         ),
       ),
-      builder: (_) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width20,
-                vertical: Dimensions.height15,
-              ),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: context.colors.border, width: 1),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Select Salutation',
-                    style: TextStyle(
-                      fontSize: Dimensions.font20 * 0.85,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: Dimensions.iconSize24,
-                      color: context.colors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+      builder: (_) {
+        return SalutationBottomSheet(
+          options: _salutationOptions,
+          selectedSalutation: _selectedSalutation,
+          onSelected: (value) {
+            setState(() {
+              _selectedSalutation = value;
+            });
 
-            // Options
-            ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.all(Dimensions.width20),
-              itemCount: _salutationOptions.length,
-              itemBuilder: (context, index) {
-                final option = _salutationOptions[index];
-                final isSelected = _selectedSalutation == option;
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() => _selectedSalutation = option);
-                    Navigator.pop(context);
-                    appLog(
-                      '✅ Salutation selected: $option',
-                      name: 'AddCustomerPage',
-                    );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(bottom: Dimensions.height10),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Dimensions.width15,
-                      vertical: Dimensions.height15,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? Appcolors.primary.withValues(alpha: 0.05)
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      border: Border.all(
-                        color: isSelected
-                            ? Appcolors.primary
-                            : context.colors.border,
-                        width: isSelected ? 2 : 1,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          option,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w500,
-                            color: isSelected
-                                ? Appcolors.primary
-                                : context.colors.textPrimary,
-                          ),
-                        ),
-                        if (isSelected)
-                          Icon(
-                            Icons.check_circle,
-                            color: Appcolors.primary,
-                            size: Dimensions.iconSize24,
-                          ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: Dimensions.height10),
-          ],
-        ),
-      ),
+            appLog('✅ Salutation selected: $value', name: 'AddCustomerPage');
+          },
+        );
+      },
     );
   }
 }

@@ -12,7 +12,7 @@ class CardTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: Dimensions.iconSize16, color: Appcolors.primary),
+        Icon(icon, size: Dimensions.iconSize16, color: AppColors.primary),
         SizedBox(width: Dimensions.width10 / 2),
         Text(
           title,

@@ -67,7 +67,7 @@ class ItemCardWidget extends StatelessWidget {
                       vertical: Dimensions.height10 / 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Appcolors.accent.withValues(alpha: 0.1),
+                      color: AppColors.accent.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(
                         Dimensions.radius15 / 2,
                       ),
@@ -77,7 +77,7 @@ class ItemCardWidget extends StatelessWidget {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.7,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.accent,
+                        color: AppColors.accent,
                       ),
                     ),
                   ),
@@ -94,7 +94,7 @@ class ItemCardWidget extends StatelessWidget {
                         context,
                         'Sales',
                         '₹${item.salesPrice.toStringAsFixed(2)}',
-                        Appcolors.ok,
+                        AppColors.ok,
                         Icons.call_made_rounded,
                       ),
                     ),
@@ -105,7 +105,7 @@ class ItemCardWidget extends StatelessWidget {
                         context,
                         'Purchase',
                         '₹${item.purchasePrice.toStringAsFixed(2)}',
-                        Appcolors.primary,
+                        AppColors.primary,
                         Icons.call_received_rounded,
                       ),
                     ),
@@ -122,8 +122,8 @@ class ItemCardWidget extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: item.profit >= 0
-                        ? Appcolors.success.withValues(alpha: 0.1)
-                        : Appcolors.error.withValues(alpha: 0.1),
+                        ? AppColors.success.withValues(alpha: 0.1)
+                        : AppColors.error.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(
                       Dimensions.radius15 / 2,
                     ),
@@ -137,8 +137,8 @@ class ItemCardWidget extends StatelessWidget {
                             : Icons.trending_down_rounded,
                         size: Dimensions.iconSize16 * 0.9,
                         color: item.profit >= 0
-                            ? Appcolors.success
-                            : Appcolors.error,
+                            ? AppColors.success
+                            : AppColors.error,
                       ),
                       SizedBox(width: Dimensions.width10 / 3),
                       Text(
@@ -147,8 +147,8 @@ class ItemCardWidget extends StatelessWidget {
                           fontSize: Dimensions.font16 * 0.85,
                           fontWeight: FontWeight.w700,
                           color: item.profit >= 0
-                              ? Appcolors.success
-                              : Appcolors.error,
+                              ? AppColors.success
+                              : AppColors.error,
                         ),
                       ),
                     ],

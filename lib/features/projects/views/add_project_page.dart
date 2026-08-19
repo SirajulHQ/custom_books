@@ -80,13 +80,13 @@ class _AddProjectPageState extends State<AddProjectPage>
                   ..._customers.map(
                     (name) => ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Appcolors.primary.withValues(
+                        backgroundColor: AppColors.primary.withValues(
                           alpha: 0.1,
                         ),
                         child: Text(
                           name.substring(0, 1).toUpperCase(),
                           style: const TextStyle(
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -138,7 +138,7 @@ class _AddProjectPageState extends State<AddProjectPage>
                   method.label,
                   style: TextStyle(
                     color: method == _billingMethod
-                        ? Appcolors.primary
+                        ? AppColors.primary
                         : context.colors.textPrimary,
                     fontWeight: method == _billingMethod
                         ? FontWeight.bold
@@ -146,7 +146,7 @@ class _AddProjectPageState extends State<AddProjectPage>
                   ),
                 ),
                 trailing: method == _billingMethod
-                    ? const Icon(Icons.check_rounded, color: Appcolors.primary)
+                    ? const Icon(Icons.check_rounded, color: AppColors.primary)
                     : null,
                 onTap: () => Navigator.pop(context, method),
               ),
@@ -207,7 +207,7 @@ class _AddProjectPageState extends State<AddProjectPage>
               child: Text(
                 'SAVE',
                 style: TextStyle(
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   fontWeight: FontWeight.w800,
                   fontSize: Dimensions.font16 * 0.75,
                   letterSpacing: 0.5,
@@ -242,7 +242,7 @@ class _AddProjectPageState extends State<AddProjectPage>
                         borderSide: BorderSide(color: context.colors.border),
                       ),
                       focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Appcolors.primary),
+                        borderSide: BorderSide(color: AppColors.primary),
                       ),
                     ),
                   ),

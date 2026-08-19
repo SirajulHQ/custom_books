@@ -105,14 +105,14 @@ class InvoiceTaxAndLineItemSection extends StatelessWidget {
             decoration: BoxDecoration(
               color: context.colors.card,
               borderRadius: BorderRadius.circular(Dimensions.radius20),
-              border: Border.all(color: Appcolors.primary, width: 2),
+              border: Border.all(color: AppColors.primary, width: 2),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.add_circle,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   size: Dimensions.iconSize24,
                 ),
                 SizedBox(width: Dimensions.width10),
@@ -121,7 +121,7 @@ class InvoiceTaxAndLineItemSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: Dimensions.font16 * 0.9,
                     fontWeight: FontWeight.w700,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                   ),
                 ),
               ],
@@ -148,7 +148,7 @@ class InvoiceTaxAndLineItemSection extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: isSelected ? Appcolors.primary : context.colors.border,
+                color: isSelected ? AppColors.primary : context.colors.border,
                 width: 2,
               ),
             ),
@@ -159,7 +159,7 @@ class InvoiceTaxAndLineItemSection extends StatelessWidget {
                       height: Dimensions.iconSize24 / 2,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   )

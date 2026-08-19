@@ -33,12 +33,12 @@ class BillTile extends StatelessWidget {
               width: Dimensions.height45 * 0.78,
               height: Dimensions.height45 * 0.78,
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
               ),
               child: Icon(
                 Icons.description_outlined,
-                color: Appcolors.primary,
+                color: AppColors.primary,
                 size: Dimensions.iconSize24 - 4,
               ),
             ),
@@ -144,7 +144,7 @@ class BillTile extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.9,
                 fontWeight: FontWeight.w800,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
           ],

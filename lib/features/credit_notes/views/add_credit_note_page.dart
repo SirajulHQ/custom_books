@@ -95,13 +95,13 @@ class _AddCreditNotePageState extends State<AddCreditNotePage>
                   ..._customers.map(
                     (name) => ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Appcolors.primary.withValues(
+                        backgroundColor: AppColors.primary.withValues(
                           alpha: 0.1,
                         ),
                         child: Text(
                           name.substring(0, 1).toUpperCase(),
                           style: TextStyle(
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -179,7 +179,7 @@ class _AddCreditNotePageState extends State<AddCreditNotePage>
               child: Text(
                 'SAVE AS DRAFT',
                 style: TextStyle(
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   fontWeight: FontWeight.w800,
                   fontSize: Dimensions.font16 * 0.75,
                   letterSpacing: 0.5,
@@ -274,7 +274,7 @@ class _AddCreditNotePageState extends State<AddCreditNotePage>
                         borderSide: BorderSide(color: context.colors.border),
                       ),
                       focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Appcolors.primary),
+                        borderSide: BorderSide(color: AppColors.primary),
                       ),
                     ),
                   ),
@@ -298,7 +298,7 @@ class _AddCreditNotePageState extends State<AddCreditNotePage>
                         borderSide: BorderSide(color: context.colors.border),
                       ),
                       focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Appcolors.primary),
+                        borderSide: BorderSide(color: AppColors.primary),
                       ),
                     ),
                   ),

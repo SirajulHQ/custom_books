@@ -96,7 +96,7 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                   name,
                   style: TextStyle(
                     color: name == _project
-                        ? Appcolors.primary
+                        ? AppColors.primary
                         : context.colors.textPrimary,
                     fontWeight: name == _project
                         ? FontWeight.bold
@@ -104,7 +104,7 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                   ),
                 ),
                 trailing: name == _project
-                    ? const Icon(Icons.check_rounded, color: Appcolors.primary)
+                    ? const Icon(Icons.check_rounded, color: AppColors.primary)
                     : null,
                 onTap: () => Navigator.pop(context, name),
               ),
@@ -146,7 +146,7 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                   name,
                   style: TextStyle(
                     color: name == _userName
-                        ? Appcolors.primary
+                        ? AppColors.primary
                         : context.colors.textPrimary,
                     fontWeight: name == _userName
                         ? FontWeight.bold
@@ -154,7 +154,7 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                   ),
                 ),
                 trailing: name == _userName
-                    ? const Icon(Icons.check_rounded, color: Appcolors.primary)
+                    ? const Icon(Icons.check_rounded, color: AppColors.primary)
                     : null,
                 onTap: () => Navigator.pop(context, name),
               ),
@@ -301,7 +301,7 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                               ),
                               focusedBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                 ),
                               ),
                             ),
@@ -445,7 +445,7 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                                         Radio<bool>(
                                           value: true,
                                           groupValue: _isBillable,
-                                          activeColor: Appcolors.primary,
+                                          activeColor: AppColors.primary,
                                           onChanged: (val) => setState(
                                             () => _isBillable = val!,
                                           ),
@@ -470,7 +470,7 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                                         Radio<bool>(
                                           value: false,
                                           groupValue: _isBillable,
-                                          activeColor: Appcolors.primary,
+                                          activeColor: AppColors.primary,
                                           onChanged: (val) => setState(
                                             () => _isBillable = val!,
                                           ),
@@ -529,7 +529,7 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                                   Dimensions.radius15 / 2,
                                 ),
                                 borderSide: const BorderSide(
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                 ),
                               ),
                             ),

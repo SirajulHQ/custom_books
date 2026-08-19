@@ -32,7 +32,7 @@ class ExpenseBreakdownCardWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: Dimensions.font16,
                   fontWeight: FontWeight.w800,
-                  color: Appcolors.accent,
+                  color: AppColors.accent,
                 ),
               ),
             ],

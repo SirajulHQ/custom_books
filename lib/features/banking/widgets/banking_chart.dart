@@ -76,7 +76,7 @@ class _BankingChartState extends State<BankingChart> {
                       TextSpan(
                         text: 'Bank Balance\n',
                         style: TextStyle(
-                          color: Appcolors.success,
+                          color: AppColors.success,
                           fontSize: Dimensions.font16 * 0.65,
                           fontWeight: FontWeight.w500,
                         ),
@@ -84,7 +84,7 @@ class _BankingChartState extends State<BankingChart> {
                       TextSpan(
                         text: '₹${widget.bankBalance.toStringAsFixed(2)}',
                         style: TextStyle(
-                          color: Appcolors.success,
+                          color: AppColors.success,
                           fontSize: Dimensions.font16 * 0.7,
                           fontWeight: FontWeight.w700,
                         ),
@@ -172,8 +172,8 @@ class _BankingChartState extends State<BankingChart> {
               isCurved: true,
               gradient: LinearGradient(
                 colors: [
-                  Appcolors.success.withValues(alpha: 0.9),
-                  Appcolors.success,
+                  AppColors.success.withValues(alpha: 0.9),
+                  AppColors.success,
                 ],
               ),
               barWidth: 3,
@@ -183,8 +183,8 @@ class _BankingChartState extends State<BankingChart> {
                 show: true,
                 gradient: LinearGradient(
                   colors: [
-                    Appcolors.success.withValues(alpha: 0.12),
-                    Appcolors.success.withValues(alpha: 0.02),
+                    AppColors.success.withValues(alpha: 0.12),
+                    AppColors.success.withValues(alpha: 0.02),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,

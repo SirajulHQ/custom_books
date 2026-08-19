@@ -112,7 +112,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.add_rounded, color: Appcolors.primary),
+              leading: const Icon(Icons.add_rounded, color: AppColors.primary),
               title: const Text('Add New Customer'),
               onTap: () => Navigator.pop(context, 'New Customer'),
             ),
@@ -206,8 +206,8 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
           OutlinedButton(
             onPressed: () => Navigator.pop(context, controller.text.trim()),
             style: OutlinedButton.styleFrom(
-              foregroundColor: Appcolors.primary,
-              side: const BorderSide(color: Appcolors.primary, width: 1.5),
+              foregroundColor: AppColors.primary,
+              side: const BorderSide(color: AppColors.primary, width: 1.5),
               backgroundColor: Colors.transparent,
             ),
             child: const Text('SAVE'),
@@ -242,7 +242,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(Dimensions.radius15),
-      borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
+      borderSide: BorderSide(color: AppColors.primary, width: 1.5),
     ),
   );
 
@@ -299,7 +299,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.75,
                   fontWeight: FontWeight.w700,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                 ),
               ),
             ),
@@ -483,12 +483,12 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                     Container(
                       padding: EdgeInsets.all(Dimensions.width15),
                       decoration: BoxDecoration(
-                        color: Appcolors.primary.withValues(alpha: 0.05),
+                        color: AppColors.primary.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(
                           Dimensions.radius15,
                         ),
                         border: Border.all(
-                          color: Appcolors.primary.withValues(alpha: 0.18),
+                          color: AppColors.primary.withValues(alpha: 0.18),
                         ),
                       ),
                       child: Column(
@@ -551,7 +551,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                             vertical: Dimensions.height10 * 0.2,
                           ),
                           decoration: BoxDecoration(
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             borderRadius: BorderRadius.circular(99),
                           ),
                           child: Text(
@@ -581,7 +581,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                           children: [
                             Icon(
                               Icons.upload_file_outlined,
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                               size: Dimensions.iconSize24 - 4,
                             ),
                             SizedBox(width: Dimensions.width10),
@@ -591,7 +591,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                                   : 'Add More Files',
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.85,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -613,7 +613,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                         dense: true,
                         leading: Icon(
                           Icons.attach_file_rounded,
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                         ),
                         title: Text(
                           entry.value.name,
@@ -653,12 +653,12 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
             color: selected ? context.colors.card : Colors.transparent,
             borderRadius: BorderRadius.circular(Dimensions.radius15 - 3),
             border: selected
-                ? Border.all(color: Appcolors.primary.withValues(alpha: 0.3))
+                ? Border.all(color: AppColors.primary.withValues(alpha: 0.3))
                 : null,
             boxShadow: selected
                 ? [
                     BoxShadow(
-                      color: Appcolors.primary.withValues(alpha: 0.08),
+                      color: AppColors.primary.withValues(alpha: 0.08),
                       blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
@@ -672,7 +672,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
               fontSize: Dimensions.font16 * 0.8,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
               color: selected
-                  ? Appcolors.primary
+                  ? AppColors.primary
                   : context.colors.textSecondary,
             ),
           ),
@@ -750,7 +750,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
           style: TextStyle(
             fontSize: Dimensions.font16 * (bold ? 0.95 : 0.82),
             fontWeight: FontWeight.w700,
-            color: bold ? Appcolors.primary : context.colors.textPrimary,
+            color: bold ? AppColors.primary : context.colors.textPrimary,
           ),
         ),
       ],

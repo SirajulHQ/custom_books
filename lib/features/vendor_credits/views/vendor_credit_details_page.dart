@@ -64,7 +64,7 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
                       ),
                       AppBarIconButton(
                         icon: Icons.more_vert_rounded,
-                        color: Appcolors.accent,
+                        color: AppColors.accent,
                         onPressed: () {
                           showModalBottomSheet(
                             context: context,
@@ -112,14 +112,14 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
                                   ListTile(
                                     leading: Icon(
                                       Icons.delete_outline_rounded,
-                                      color: Appcolors.warn,
+                                      color: AppColors.warn,
                                     ),
                                     title: Text(
                                       'Delete',
                                       style: TextStyle(
                                         fontSize: Dimensions.font16 * 0.9,
                                         fontWeight: FontWeight.w600,
-                                        color: Appcolors.warn,
+                                        color: AppColors.warn,
                                       ),
                                     ),
                                     onTap: () {
@@ -170,7 +170,7 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
                                               child: Text(
                                                 'Delete',
                                                 style: TextStyle(
-                                                  color: Appcolors.warn,
+                                                  color: AppColors.warn,
                                                   fontWeight: FontWeight.w700,
                                                 ),
                                               ),
@@ -287,19 +287,19 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
                   color: context.colors.card,
                   borderRadius: BorderRadius.circular(Dimensions.radius30),
                   border: Border.all(
-                    color: Appcolors.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Appcolors.primary.withValues(alpha: 0.08),
+                      color: AppColors.primary.withValues(alpha: 0.08),
                       blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
                   ],
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: Appcolors.primary,
+                labelColor: AppColors.primary,
                 unselectedLabelColor: context.colors.textSecondary,
                 labelStyle: TextStyle(
                   fontSize: Dimensions.font16 * 0.72,
@@ -379,13 +379,13 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
             Container(
               padding: EdgeInsets.all(Dimensions.width20),
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.07),
+                color: AppColors.primary.withValues(alpha: 0.07),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.history_rounded,
                 size: Dimensions.iconSize24 * 2,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             SizedBox(height: Dimensions.height20),

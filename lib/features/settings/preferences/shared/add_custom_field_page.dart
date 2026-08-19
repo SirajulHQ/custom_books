@@ -55,7 +55,7 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Label Name is required'),
-          backgroundColor: Appcolors.warn,
+          backgroundColor: AppColors.warn,
         ),
       );
       return;
@@ -113,7 +113,7 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
                   ),
                 ),
                 trailing: _dataType == type
-                    ? Icon(Icons.check, color: Appcolors.primary)
+                    ? Icon(Icons.check, color: AppColors.primary)
                     : null,
                 onTap: () {
                   setState(() => _dataType = type);
@@ -175,7 +175,7 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
                           ),
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                               width: 2,
                             ),
                           ),
@@ -255,7 +255,7 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
                           ),
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                               width: 2,
                             ),
                           ),
@@ -330,7 +330,7 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
                             onChanged: (val) =>
                                 setState(() => _isMandatory = val),
                             activeColor: Colors.white,
-                            activeTrackColor: Appcolors.primary,
+                            activeTrackColor: AppColors.primary,
                             inactiveThumbColor: Colors.white,
                             inactiveTrackColor: context.colors.border,
                           ),
@@ -355,7 +355,7 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
                             onChanged: (val) =>
                                 setState(() => _showInAllPdf = val),
                             activeColor: Colors.white,
-                            activeTrackColor: Appcolors.primary,
+                            activeTrackColor: AppColors.primary,
                             inactiveThumbColor: Colors.white,
                             inactiveTrackColor: context.colors.border,
                           ),
@@ -382,7 +382,7 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
             value: true,
             groupValue: selected ? true : null,
             onChanged: (_) => onTap(),
-            activeColor: Appcolors.primary,
+            activeColor: AppColors.primary,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           SizedBox(width: Dimensions.width10 / 2),

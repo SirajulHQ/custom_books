@@ -115,7 +115,7 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage>
                           onChanged: (val) => setState(
                             () => _autoGenerateNumber = val ?? false,
                           ),
-                          activeColor: Appcolors.primary,
+                          activeColor: AppColors.primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
                               Dimensions.radius15 * 0.27,
@@ -169,7 +169,7 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage>
                           value: _convertToInvoice,
                           onChanged: (val) =>
                               setState(() => _convertToInvoice = val ?? false),
-                          activeColor: Appcolors.primary,
+                          activeColor: AppColors.primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
                               Dimensions.radius15 * 0.27,
@@ -186,7 +186,7 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage>
                         style: TextStyle(
                           fontSize: Dimensions.font16,
                           fontWeight: FontWeight.w600,
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                         ),
                       ),
                       SizedBox(height: Dimensions.height10),
@@ -198,7 +198,7 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage>
                           onChanged: (val) => setState(
                             () => _prefillCountryCode = val ?? false,
                           ),
-                          activeColor: Appcolors.primary,
+                          activeColor: AppColors.primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
                               Dimensions.radius15 * 0.27,
@@ -224,7 +224,7 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage>
                         style: TextStyle(
                           fontSize: Dimensions.font16,
                           fontWeight: FontWeight.w600,
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                         ),
                       ),
                       SizedBox(height: Dimensions.height10),
@@ -336,7 +336,7 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage>
               borderSide: BorderSide(color: context.colors.border),
             ),
             focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Appcolors.primary, width: 2),
+              borderSide: BorderSide(color: AppColors.primary, width: 2),
             ),
             contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
           ),
@@ -382,7 +382,7 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage>
           IconButton(
             icon: Icon(
               Icons.delete_outline,
-              color: Appcolors.warn,
+              color: AppColors.warn,
               size: Dimensions.iconSize24,
             ),
             onPressed: () {

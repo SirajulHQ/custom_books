@@ -91,13 +91,13 @@ class _AddVendorCreditPageState extends State<AddVendorCreditPage>
                   ..._vendors.map(
                     (name) => ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Appcolors.primary.withValues(
+                        backgroundColor: AppColors.primary.withValues(
                           alpha: 0.1,
                         ),
                         child: Text(
                           name.substring(0, 1).toUpperCase(),
                           style: TextStyle(
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -177,7 +177,7 @@ class _AddVendorCreditPageState extends State<AddVendorCreditPage>
                   SizedBox(width: Dimensions.width10),
                   AppBarIconButton(
                     icon: Icons.more_vert_rounded,
-                    color: Appcolors.accent,
+                    color: AppColors.accent,
                     onPressed: () {
                       showModalBottomSheet(
                         context: context,
@@ -208,7 +208,7 @@ class _AddVendorCreditPageState extends State<AddVendorCreditPage>
                               ListTile(
                                 leading: Icon(
                                   Icons.save_rounded,
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                 ),
                                 title: Text(
                                   'Save as Open',
@@ -308,7 +308,7 @@ class _AddVendorCreditPageState extends State<AddVendorCreditPage>
         borderSide: BorderSide(color: context.colors.border),
       ),
       focusedBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Appcolors.primary),
+        borderSide: BorderSide(color: AppColors.primary),
       ),
     );
   }

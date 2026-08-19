@@ -113,7 +113,7 @@ class _EmailDeliveryMethodPageState extends State<EmailDeliveryMethodPage> {
             onChanged: (val) {
               if (val != null) setState(() => _selectedMethod = val);
             },
-            activeColor: Appcolors.primary,
+            activeColor: AppColors.primary,
           ),
         ],
       ),

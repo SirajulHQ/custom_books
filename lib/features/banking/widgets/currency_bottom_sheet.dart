@@ -134,7 +134,7 @@ class _CurrencyBottomSheetState extends State<CurrencyBottomSheet> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
-                  borderSide: BorderSide(color: Appcolors.primary, width: 2),
+                  borderSide: BorderSide(color: AppColors.primary, width: 2),
                 ),
               ),
             ),
@@ -162,12 +162,12 @@ class _CurrencyBottomSheetState extends State<CurrencyBottomSheet> {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? Appcolors.primary.withValues(alpha: 0.05)
+                          ? AppColors.primary.withValues(alpha: 0.05)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       border: Border.all(
                         color: isSelected
-                            ? Appcolors.primary
+                            ? AppColors.primary
                             : context.colors.border,
                         width: isSelected ? 2 : 1,
                       ),
@@ -183,14 +183,14 @@ class _CurrencyBottomSheetState extends State<CurrencyBottomSheet> {
                                 ? FontWeight.w600
                                 : FontWeight.w500,
                             color: isSelected
-                                ? Appcolors.primary
+                                ? AppColors.primary
                                 : context.colors.textPrimary,
                           ),
                         ),
                         if (isSelected)
                           Icon(
                             Icons.check_circle,
-                            color: Appcolors.primary,
+                            color: AppColors.primary,
                             size: Dimensions.iconSize24,
                           ),
                       ],

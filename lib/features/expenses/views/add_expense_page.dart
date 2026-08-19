@@ -115,7 +115,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         option,
                         style: TextStyle(
                           color: option == current
-                              ? Appcolors.primary
+                              ? AppColors.primary
                               : context.colors.textPrimary,
                           fontWeight: option == current
                               ? FontWeight.bold
@@ -123,7 +123,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         ),
                       ),
                       trailing: option == current
-                          ? Icon(Icons.check_rounded, color: Appcolors.primary)
+                          ? Icon(Icons.check_rounded, color: AppColors.primary)
                           : null,
                       onTap: () => Navigator.pop(context, option),
                     ),
@@ -184,7 +184,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 SizedBox(width: Dimensions.width10),
                 AppBarIconButton(
                   icon: Icons.more_vert_rounded,
-                  color: Appcolors.accent,
+                  color: AppColors.accent,
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
@@ -215,7 +215,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                             ListTile(
                               leading: Icon(
                                 Icons.receipt_rounded,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               ),
                               title: Text(
                                 'Save as Billed',
@@ -318,7 +318,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
         borderSide: BorderSide(color: context.colors.border),
       ),
       focusedBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Appcolors.primary),
+        borderSide: BorderSide(color: AppColors.primary),
       ),
     );
   }

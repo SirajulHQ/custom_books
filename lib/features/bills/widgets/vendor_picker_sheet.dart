@@ -32,11 +32,11 @@ class VendorPickerSheet extends StatelessWidget {
                 ...vendors.map(
                   (name) => ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: Appcolors.primary.withValues(alpha: 0.1),
+                      backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                       child: Text(
                         name.substring(0, 1).toUpperCase(),
                         style: TextStyle(
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

@@ -692,9 +692,9 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
           Color textColor = context.colors.textPrimary;
 
           if (isLink) {
-            textColor = Appcolors.primary;
+            textColor = AppColors.primary;
           } else if (isStatus && values[i] == 'Overdue') {
-            textColor = Appcolors.warn;
+            textColor = AppColors.warn;
           }
 
           return Container(
@@ -801,7 +801,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
                 fontWeight: FontWeight.w500,
-                color: isLink ? Appcolors.primary : context.colors.textPrimary,
+                color: isLink ? AppColors.primary : context.colors.textPrimary,
               ),
             ),
           ),
@@ -810,7 +810,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.85,
               fontWeight: FontWeight.w500,
-              color: isLink ? Appcolors.primary : context.colors.textPrimary,
+              color: isLink ? AppColors.primary : context.colors.textPrimary,
             ),
           ),
         ],
@@ -875,7 +875,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
             vertical: 2,
           ),
           decoration: BoxDecoration(
-            color: Appcolors.ok,
+            color: AppColors.ok,
             borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
           ),
           child: Text(

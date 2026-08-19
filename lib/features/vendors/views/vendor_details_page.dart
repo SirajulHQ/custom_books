@@ -49,7 +49,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
               actions: [
                 AppBarIconButton(
                   icon: Icons.edit_outlined,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -161,7 +161,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
       ),
       child: TabBar(
         controller: _tabController,
-        labelColor: Appcolors.primary,
+        labelColor: AppColors.primary,
         unselectedLabelColor: context.colors.textSecondary,
         labelStyle: TextStyle(
           fontSize: Dimensions.font16 * 0.8,
@@ -172,7 +172,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
           fontSize: Dimensions.font16 * 0.8,
           fontWeight: FontWeight.w600,
         ),
-        indicatorColor: Appcolors.primary,
+        indicatorColor: AppColors.primary,
         indicatorWeight: 3,
         tabs: const [
           Tab(text: 'DETAILS'),
@@ -385,7 +385,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
                   child: Icon(
                     Icons.description_outlined,
                     size: Dimensions.height45 * 1.5,
-                    color: Appcolors.primary.withValues(alpha: 0.5),
+                    color: AppColors.primary.withValues(alpha: 0.5),
                   ),
                 ),
               ),
@@ -448,7 +448,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius30),
                       borderSide: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 2,
                       ),
                     ),
@@ -462,7 +462,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
               SizedBox(width: Dimensions.width10),
               Container(
                 decoration: const BoxDecoration(
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(

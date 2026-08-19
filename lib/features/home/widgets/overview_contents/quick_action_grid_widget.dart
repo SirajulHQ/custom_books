@@ -16,7 +16,7 @@ class QuickActionsGridWidget extends StatelessWidget {
       ActionItemModel(
         Icons.person_add_alt_1_rounded,
         'Customer',
-        Appcolors.primary,
+        AppColors.primary,
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => const AddCustomerPage()),
@@ -25,7 +25,7 @@ class QuickActionsGridWidget extends StatelessWidget {
       ActionItemModel(
         Icons.note_add_rounded,
         'Invoice',
-        Appcolors.primaryLight,
+        AppColors.primaryLight,
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => const NewInvoicePage()),
@@ -34,7 +34,7 @@ class QuickActionsGridWidget extends StatelessWidget {
       ActionItemModel(
         Icons.assignment_rounded,
         'Bill',
-        Appcolors.accent,
+        AppColors.accent,
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => const AddBillPage()),
@@ -43,7 +43,7 @@ class QuickActionsGridWidget extends StatelessWidget {
       ActionItemModel(
         Icons.shopping_bag_rounded,
         'Expense',
-        Appcolors.warn,
+        AppColors.warn,
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => const AddExpensePage()),

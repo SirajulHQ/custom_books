@@ -33,7 +33,7 @@ class CustomDropdownField extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.85,
                 fontWeight: FontWeight.w600,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             if (isRequired) ...[
@@ -112,7 +112,7 @@ class CustomDropdownField extends StatelessWidget {
                           trailing: selected
                               ? Icon(
                                   Icons.check_rounded,
-                                  color: Appcolors.primary,
+                                  color: AppColors.primary,
                                 )
                               : null,
                           onTap: () {

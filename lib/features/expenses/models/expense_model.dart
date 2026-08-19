@@ -14,10 +14,10 @@ extension ExpenseStatusLabel on ExpenseStatus {
 
 extension ExpenseStatusColor on ExpenseStatus {
   Color get color => switch (this) {
-    ExpenseStatus.unbilled => Appcolors.warning,
-    ExpenseStatus.billed => Appcolors.primaryLight,
-    ExpenseStatus.reimbursed => Appcolors.success,
-    ExpenseStatus.nonBillable => Appcolors.statusCancelled,
+    ExpenseStatus.unbilled => AppColors.warning,
+    ExpenseStatus.billed => AppColors.primaryLight,
+    ExpenseStatus.reimbursed => AppColors.success,
+    ExpenseStatus.nonBillable => AppColors.statusCancelled,
   };
 }
 

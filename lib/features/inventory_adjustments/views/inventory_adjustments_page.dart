@@ -131,14 +131,14 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           boxShadow: [
             BoxShadow(
-              color: Appcolors.primary.withValues(alpha: 0.35),
+              color: AppColors.primary.withValues(alpha: 0.35),
               blurRadius: Dimensions.radius15 * 1.07,
               offset: const Offset(0, 8),
             ),
           ],
         ),
         child: FloatingActionButton(
-          backgroundColor: Appcolors.primary,
+          backgroundColor: AppColors.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
           ),
@@ -178,7 +178,7 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
                   icon: _searchOpen
                       ? Icons.close_rounded
                       : Icons.search_rounded,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   onPressed: () => setState(() {
                     _searchOpen = !_searchOpen;
                     if (!_searchOpen) _searchController.clear();
@@ -190,13 +190,13 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
                     width: Dimensions.height45 * 0.9,
                     height: Dimensions.height45 * 0.9,
                     decoration: BoxDecoration(
-                      color: Appcolors.accent.withValues(alpha: 0.1),
+                      color: AppColors.accent.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                     ),
                     child: Icon(
                       Icons.more_vert_rounded,
                       size: Dimensions.iconSize24 - 4,
-                      color: Appcolors.accent,
+                      color: AppColors.accent,
                     ),
                   ),
                   shape: RoundedRectangleBorder(

@@ -165,7 +165,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                     appLog('🏦 Bank details added', name: 'CustomizeTemplate');
                   },
                   style: FilledButton.styleFrom(
-                    backgroundColor: Appcolors.primary,
+                    backgroundColor: AppColors.primary,
                     padding: EdgeInsets.symmetric(
                       vertical: Dimensions.height15,
                     ),
@@ -247,7 +247,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                   appLog('✍️ Signature updated', name: 'CustomizeTemplate');
                 },
                 style: FilledButton.styleFrom(
-                  backgroundColor: Appcolors.primary,
+                  backgroundColor: AppColors.primary,
                   padding: EdgeInsets.symmetric(vertical: Dimensions.height15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -272,7 +272,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          borderSide: const BorderSide(color: Appcolors.primary, width: 1.5),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
       ),
     );
@@ -286,7 +286,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text('Template saved successfully'),
-        backgroundColor: Appcolors.success,
+        backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -365,7 +365,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
         child: FilledButton(
           onPressed: _saveTemplate,
           style: FilledButton.styleFrom(
-            backgroundColor: Appcolors.primary,
+            backgroundColor: AppColors.primary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(Dimensions.radius15),
             ),
@@ -400,7 +400,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
               Icon(
                 Icons.description_outlined,
                 size: Dimensions.iconSize20,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
               SizedBox(width: Dimensions.width10 * 0.8),
               Text(
@@ -432,7 +432,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                 Container(
                   padding: EdgeInsets.all(Dimensions.width10 * 0.6),
                   decoration: BoxDecoration(
-                    color: Appcolors.primary.withValues(alpha: 0.08),
+                    color: AppColors.primary.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(
                       Dimensions.radius15 * 0.5,
                     ),
@@ -440,7 +440,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                   child: Icon(
                     Icons.edit_outlined,
                     size: Dimensions.iconSize16,
-                    color: Appcolors.primary,
+                    color: AppColors.primary,
                   ),
                 ),
               ],
@@ -456,7 +456,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
               Icon(
                 Icons.palette_outlined,
                 size: Dimensions.iconSize20,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
               SizedBox(width: Dimensions.width10 * 0.8),
               Text(
@@ -800,7 +800,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
           _buildSummaryRow(
             'Payment Made',
             '(-) 100.00',
-            valueColor: Appcolors.warn,
+            valueColor: AppColors.warn,
           ),
           SizedBox(height: Dimensions.height10 * 0.3),
           // Balance Due highlighted
@@ -1281,13 +1281,13 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                 width: Dimensions.height30,
                 height: Dimensions.height30,
                 decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   icon,
                   size: Dimensions.iconSize16,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                 ),
               ),
               SizedBox(width: Dimensions.width10 * 0.8),

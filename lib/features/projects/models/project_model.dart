@@ -14,10 +14,10 @@ extension ProjectStatusLabel on ProjectStatus {
 
 extension ProjectStatusColor on ProjectStatus {
   Color get color => switch (this) {
-    ProjectStatus.active => Appcolors.success,
-    ProjectStatus.onHold => Appcolors.warning,
-    ProjectStatus.completed => Appcolors.primaryLight,
-    ProjectStatus.cancelled => Appcolors.error,
+    ProjectStatus.active => AppColors.success,
+    ProjectStatus.onHold => AppColors.warning,
+    ProjectStatus.completed => AppColors.primaryLight,
+    ProjectStatus.cancelled => AppColors.error,
   };
 }
 

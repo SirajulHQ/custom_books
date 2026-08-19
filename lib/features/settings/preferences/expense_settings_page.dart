@@ -118,7 +118,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
               }
               Navigator.pop(ctx);
             },
-            child: Text('Add', style: TextStyle(color: Appcolors.primary)),
+            child: Text('Add', style: TextStyle(color: AppColors.primary)),
           ),
         ],
       ),
@@ -161,7 +161,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
                   ),
                 ),
                 trailing: _mileageUnit == option
-                    ? Icon(Icons.check, color: Appcolors.primary)
+                    ? Icon(Icons.check, color: AppColors.primary)
                     : null,
                 onTap: () {
                   setState(() => _mileageUnit = option);
@@ -211,7 +211,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
                   ),
                 ),
                 trailing: _mileageCategory == option
-                    ? Icon(Icons.check, color: Appcolors.primary)
+                    ? Icon(Icons.check, color: AppColors.primary)
                     : null,
                 onTap: () {
                   setState(() => _mileageCategory = option);
@@ -257,7 +257,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     SizedBox(height: Dimensions.height15),
@@ -285,7 +285,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10),
@@ -318,7 +318,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     SizedBox(height: Dimensions.height10),
@@ -440,7 +440,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
           IconButton(
             icon: Icon(
               Icons.delete_outline,
-              color: Appcolors.warn,
+              color: AppColors.warn,
               size: Dimensions.iconSize24,
             ),
             onPressed: () {
@@ -482,7 +482,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
           IconButton(
             icon: Icon(
               Icons.delete_outline,
-              color: Appcolors.warn,
+              color: AppColors.warn,
               size: Dimensions.iconSize24,
             ),
             onPressed: () {

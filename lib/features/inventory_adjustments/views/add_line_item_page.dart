@@ -228,7 +228,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.8,
                 fontWeight: FontWeight.w700,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
           ),
@@ -397,7 +397,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
                       child: Icon(
                         Icons.edit_rounded,
                         size: Dimensions.iconSize24 - 8,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ],

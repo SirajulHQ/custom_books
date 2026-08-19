@@ -111,7 +111,7 @@ class FilterBottomSheet<T> extends StatelessWidget {
 
                       decoration: BoxDecoration(
                         color: selected
-                            ? Appcolors.primary.withValues(
+                            ? AppColors.primary.withValues(
                                 alpha: 0.05,
                               )
                             : Colors.transparent,
@@ -122,7 +122,7 @@ class FilterBottomSheet<T> extends StatelessWidget {
 
                         border: Border.all(
                           color: selected
-                              ? Appcolors.primary
+                              ? AppColors.primary
                               : context.colors.border,
                           width: selected ? 2 : 1,
                         ),
@@ -142,7 +142,7 @@ class FilterBottomSheet<T> extends StatelessWidget {
                                   ? FontWeight.w600
                                   : FontWeight.w500,
                               color: selected
-                                  ? Appcolors.primary
+                                  ? AppColors.primary
                                   : context.colors.textPrimary,
                             ),
                           ),
@@ -150,7 +150,7 @@ class FilterBottomSheet<T> extends StatelessWidget {
                           if (selected)
                             Icon(
                               Icons.check_circle_rounded,
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                               size: Dimensions.iconSize24,
                             ),
                         ],

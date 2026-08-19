@@ -84,7 +84,7 @@ class FormTextStyles {
   static TextStyle label() => TextStyle(
     fontSize: Dimensions.font16 * 0.8,
     fontWeight: FontWeight.w600,
-    color: Appcolors.primary,
+    color: AppColors.primary,
   );
 
   static TextStyle value(BuildContext context) => TextStyle(
@@ -155,7 +155,7 @@ class FormNumberField extends StatelessWidget {
           fillColor: context.colors.surfaceLight,
           border: _border(context.colors.border),
           enabledBorder: _border(context.colors.border),
-          focusedBorder: _border(Appcolors.primary, width: 2),
+          focusedBorder: _border(AppColors.primary, width: 2),
           contentPadding: EdgeInsets.symmetric(
             horizontal: Dimensions.width15,
             vertical: Dimensions.height10,

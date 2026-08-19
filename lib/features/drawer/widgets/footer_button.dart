@@ -25,12 +25,12 @@ class FooterButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
         decoration: BoxDecoration(
           color: isDanger
-              ? Appcolors.warn.withValues(alpha: 0.1)
+              ? AppColors.warn.withValues(alpha: 0.1)
               : neutral.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           border: Border.all(
             color: isDanger
-                ? Appcolors.warn.withValues(alpha: 0.2)
+                ? AppColors.warn.withValues(alpha: 0.2)
                 : context.colors.border,
           ),
         ),
@@ -39,7 +39,7 @@ class FooterButton extends StatelessWidget {
             Icon(
               icon,
               size: Dimensions.iconSize24 * 0.85,
-              color: isDanger ? Appcolors.warn : neutral,
+              color: isDanger ? AppColors.warn : neutral,
             ),
             SizedBox(height: Dimensions.height10 / 2),
             Text(
@@ -47,7 +47,7 @@ class FooterButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.7,
                 fontWeight: FontWeight.w600,
-                color: isDanger ? Appcolors.warn : neutral,
+                color: isDanger ? AppColors.warn : neutral,
               ),
             ),
           ],

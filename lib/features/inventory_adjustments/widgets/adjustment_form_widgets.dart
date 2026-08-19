@@ -32,7 +32,7 @@ class AdjustmentRadioOption extends StatelessWidget {
             selected
                 ? Icons.radio_button_checked_rounded
                 : Icons.radio_button_off_rounded,
-            color: selected ? Appcolors.primary : context.colors.textTertiary,
+            color: selected ? AppColors.primary : context.colors.textTertiary,
             size: Dimensions.iconSize24 - 2,
           ),
           SizedBox(width: Dimensions.width10 / 2),
@@ -144,14 +144,14 @@ class AddLineItemButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: context.colors.card,
           borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: Appcolors.primary.withValues(alpha: 0.4)),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.4)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.add_circle_rounded,
-              color: Appcolors.primary,
+              color: AppColors.primary,
               size: Dimensions.iconSize24 - 2,
             ),
             SizedBox(width: Dimensions.width10 / 2),
@@ -160,7 +160,7 @@ class AddLineItemButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.9,
                 fontWeight: FontWeight.w700,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
           ],

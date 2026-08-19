@@ -65,7 +65,7 @@ class _TaxSettingsPageState extends State<TaxSettingsPage>
           data: Theme.of(context).copyWith(
             colorScheme: Theme.of(
               context,
-            ).colorScheme.copyWith(primary: Appcolors.primary),
+            ).colorScheme.copyWith(primary: AppColors.primary),
           ),
           child: child!,
         );
@@ -101,7 +101,7 @@ class _TaxSettingsPageState extends State<TaxSettingsPage>
               (option) => ListTile(
                 title: Text(option),
                 trailing: option == _reportingPeriod
-                    ? Icon(Icons.check_rounded, color: Appcolors.primary)
+                    ? Icon(Icons.check_rounded, color: AppColors.primary)
                     : null,
                 onTap: () => Navigator.pop(ctx, option),
               ),
@@ -170,7 +170,7 @@ class _TaxSettingsPageState extends State<TaxSettingsPage>
                                 value: _isRegistered,
                                 onChanged: (val) =>
                                     setState(() => _isRegistered = val),
-                                activeColor: Appcolors.primary,
+                                activeColor: AppColors.primary,
                               ),
                             ],
                           ),
@@ -235,7 +235,7 @@ class _TaxSettingsPageState extends State<TaxSettingsPage>
                                 onChanged: (val) => setState(
                                   () => _enableInternationalTrade = val,
                                 ),
-                                activeColor: Appcolors.primary,
+                                activeColor: AppColors.primary,
                               ),
                             ],
                           ),
@@ -378,7 +378,7 @@ class _TaxSettingsPageState extends State<TaxSettingsPage>
         borderSide: BorderSide(color: context.colors.border),
       ),
       focusedBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Appcolors.primary),
+        borderSide: BorderSide(color: AppColors.primary),
       ),
     );
   }

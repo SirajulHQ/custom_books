@@ -70,7 +70,7 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
           data: Theme.of(ctx).copyWith(
             colorScheme: Theme.of(
               ctx,
-            ).colorScheme.copyWith(primary: Appcolors.primary),
+            ).colorScheme.copyWith(primary: AppColors.primary),
           ),
           child: child!,
         );
@@ -99,7 +99,7 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
           data: Theme.of(ctx).copyWith(
             colorScheme: Theme.of(
               ctx,
-            ).colorScheme.copyWith(primary: Appcolors.primary),
+            ).colorScheme.copyWith(primary: AppColors.primary),
           ),
           child: child!,
         );
@@ -251,7 +251,7 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Appcolors.primary,
+                  backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: Dimensions.height15),
                   shape: RoundedRectangleBorder(

@@ -25,7 +25,7 @@ class BankingStripWidget extends StatelessWidget {
             padding: EdgeInsets.all(Dimensions.width15),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Appcolors.primary, Appcolors.primaryLight],
+                colors: [AppColors.primary, AppColors.primaryLight],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),

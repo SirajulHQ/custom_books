@@ -37,7 +37,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       subtitle: 'Quote viewed',
       time: '02 Jul 2026 02:41 PM',
       icon: Icons.visibility_outlined,
-      color: Appcolors.primary,
+      color: AppColors.primary,
       isRead: false,
     ),
     NotificationItem(
@@ -45,7 +45,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       subtitle: 'Overdue invoice',
       time: '01 Jul 2026 09:00 AM',
       icon: Icons.error_outline_rounded,
-      color: Appcolors.warn,
+      color: AppColors.warn,
       isRead: false,
     ),
     NotificationItem(
@@ -53,7 +53,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       subtitle: 'Payment received',
       time: '30 Jun 2026 04:15 PM',
       icon: Icons.check_circle_outline_rounded,
-      color: Appcolors.ok,
+      color: AppColors.ok,
       isRead: true,
     ),
     NotificationItem(
@@ -61,7 +61,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       subtitle: 'Upcoming bill',
       time: '29 Jun 2026 11:30 AM',
       icon: Icons.schedule_rounded,
-      color: Appcolors.warning,
+      color: AppColors.warning,
       isRead: true,
     ),
     NotificationItem(
@@ -69,7 +69,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       subtitle: 'Quote accepted',
       time: '27 Jun 2026 03:10 PM',
       icon: Icons.thumb_up_alt_outlined,
-      color: Appcolors.success,
+      color: AppColors.success,
       isRead: true,
     ),
   ];
@@ -129,7 +129,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.85,
                   fontWeight: FontWeight.w600,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                 ),
               ),
             ),

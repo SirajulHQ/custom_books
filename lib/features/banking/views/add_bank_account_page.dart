@@ -74,7 +74,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Please enter account name'),
-                          backgroundColor: Appcolors.error,
+                          backgroundColor: AppColors.error,
                         ),
                       );
                       return;
@@ -186,7 +186,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                               Text(
                                 ' *',
                                 style: TextStyle(
-                                  color: Appcolors.error,
+                                  color: AppColors.error,
                                   fontSize: Dimensions.font16 * 0.85,
                                 ),
                               ),
@@ -255,7 +255,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                           Container(
                             padding: EdgeInsets.all(Dimensions.width10 * 0.7),
                             decoration: BoxDecoration(
-                              color: Appcolors.primary.withValues(alpha: 0.1),
+                              color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(
                                 Dimensions.radius15 / 2,
                               ),
@@ -263,7 +263,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                             child: Icon(
                               Icons.account_balance_outlined,
                               size: Dimensions.iconSize16 * 1.2,
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                             ),
                           ),
                           SizedBox(width: Dimensions.width10),
@@ -317,7 +317,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                           Container(
                             padding: EdgeInsets.all(Dimensions.width10 * 0.7),
                             decoration: BoxDecoration(
-                              color: Appcolors.primary.withValues(alpha: 0.1),
+                              color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(
                                 Dimensions.radius15 / 2,
                               ),
@@ -325,7 +325,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                             child: Icon(
                               Icons.description_outlined,
                               size: Dimensions.iconSize16 * 1.2,
-                              color: Appcolors.primary,
+                              color: AppColors.primary,
                             ),
                           ),
                           SizedBox(width: Dimensions.width10),
@@ -370,7 +370,7 @@ class _AddBankAccountPageState extends State<AddBankAccountPage> {
                                     _makePrimary = value ?? false;
                                   });
                                 },
-                                activeColor: Appcolors.primary,
+                                activeColor: AppColors.primary,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
                                     Dimensions.radius15 * 0.27,

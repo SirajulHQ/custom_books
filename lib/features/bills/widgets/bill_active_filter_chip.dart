@@ -26,7 +26,7 @@ class BillActiveFilterChip extends StatelessWidget {
         vertical: Dimensions.height10 / 2,
       ),
       decoration: BoxDecoration(
-        color: Appcolors.primary.withValues(alpha: 0.07),
+        color: AppColors.primary.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(Dimensions.radius15),
       ),
       child: Row(
@@ -34,7 +34,7 @@ class BillActiveFilterChip extends StatelessWidget {
           Icon(
             Icons.filter_alt_rounded,
             size: Dimensions.iconSize16,
-            color: Appcolors.primary,
+            color: AppColors.primary,
           ),
           SizedBox(width: Dimensions.width10 / 2),
           Text(
@@ -42,7 +42,7 @@ class BillActiveFilterChip extends StatelessWidget {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.72,
               fontWeight: FontWeight.w600,
-              color: Appcolors.primary,
+              color: AppColors.primary,
             ),
           ),
           const Spacer(),
@@ -51,7 +51,7 @@ class BillActiveFilterChip extends StatelessWidget {
             child: Icon(
               Icons.close_rounded,
               size: Dimensions.iconSize16,
-              color: Appcolors.primary,
+              color: AppColors.primary,
             ),
           ),
         ],

@@ -193,7 +193,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
           borderRadius: BorderRadius.circular(Dimensions.radius15),
           boxShadow: [
             BoxShadow(
-              color: Appcolors.primary.withValues(alpha: 0.35),
+              color: AppColors.primary.withValues(alpha: 0.35),
               blurRadius: Dimensions.radius15 * 1.07,
               offset: const Offset(0, 8),
             ),
@@ -213,7 +213,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
               );
             }
           },
-          backgroundColor: Appcolors.primary,
+          backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -240,7 +240,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
               SizedBox(width: Dimensions.width10),
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
-                color: Appcolors.accent,
+                color: AppColors.accent,
                 onPressed: _openFilterSheet,
               ),
               SizedBox(width: Dimensions.width20),
@@ -285,7 +285,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(Dimensions.radius15),
                       borderSide: const BorderSide(
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                         width: 1.5,
                       ),
                     ),
@@ -352,7 +352,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
                   vertical: Dimensions.height10 / 2,
                 ),
                 decoration: BoxDecoration(
-                  color: Appcolors.primary.withValues(alpha: 0.07),
+                  color: AppColors.primary.withValues(alpha: 0.07),
                   borderRadius: BorderRadius.circular(Dimensions.radius15),
                 ),
                 child: Row(
@@ -360,7 +360,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
                     Icon(
                       Icons.filter_alt_rounded,
                       size: Dimensions.iconSize16,
-                      color: Appcolors.primary,
+                      color: AppColors.primary,
                     ),
                     SizedBox(width: Dimensions.width10 / 2),
                     Text(
@@ -368,7 +368,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.72,
                         fontWeight: FontWeight.w600,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                     const Spacer(),
@@ -377,7 +377,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
                       child: Icon(
                         Icons.close_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ],
@@ -397,7 +397,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
                               width: Dimensions.height45 * 1.6,
                               height: Dimensions.height45 * 1.6,
                               decoration: BoxDecoration(
-                                color: Appcolors.primary.withValues(
+                                color: AppColors.primary.withValues(
                                   alpha: 0.08,
                                 ),
                                 shape: BoxShape.circle,
@@ -405,7 +405,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
                               child: Icon(
                                 Icons.receipt_long_outlined,
                                 size: Dimensions.iconSize24 * 1.3,
-                                color: Appcolors.primary,
+                                color: AppColors.primary,
                               ),
                             ),
                             SizedBox(height: Dimensions.height15),
@@ -475,14 +475,14 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
             borderRadius: BorderRadius.circular(Dimensions.radius30),
             border: selected
                 ? Border.all(
-                    color: Appcolors.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     width: 1.5,
                   )
                 : null,
             boxShadow: selected
                 ? [
                     BoxShadow(
-                      color: Appcolors.primary.withValues(alpha: 0.08),
+                      color: AppColors.primary.withValues(alpha: 0.08),
                       blurRadius: Dimensions.radius15 * 0.53,
                       offset: const Offset(0, 2),
                     ),
@@ -496,7 +496,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
               fontSize: Dimensions.font16 * 0.72,
               fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
               color: selected
-                  ? Appcolors.primary
+                  ? AppColors.primary
                   : context.colors.textSecondary,
             ),
           ),
@@ -510,7 +510,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
       width: Dimensions.height45 * 0.9,
       height: Dimensions.height45 * 0.9,
       decoration: BoxDecoration(
-        color: (active ? Appcolors.accent : Appcolors.primary).withValues(
+        color: (active ? AppColors.accent : AppColors.primary).withValues(
           alpha: 0.1,
         ),
         borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -518,7 +518,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
       child: Icon(
         icon,
         size: Dimensions.iconSize24 - 4,
-        color: active ? Appcolors.accent : Appcolors.primary,
+        color: active ? AppColors.accent : AppColors.primary,
       ),
     );
   }

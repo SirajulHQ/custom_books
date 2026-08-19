@@ -12,8 +12,8 @@ extension ManualJournalStatusLabel on ManualJournalStatus {
 
 extension ManualJournalStatusColor on ManualJournalStatus {
   Color get color => switch (this) {
-    ManualJournalStatus.draft => Appcolors.statusDraft,
-    ManualJournalStatus.published => Appcolors.success,
+    ManualJournalStatus.draft => AppColors.statusDraft,
+    ManualJournalStatus.published => AppColors.success,
   };
 }
 

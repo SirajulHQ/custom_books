@@ -233,7 +233,7 @@ class _CustomersPageState extends State<CustomersPage> {
                   icon: _searchOpen
                       ? Icons.close_rounded
                       : Icons.search_rounded,
-                  color: Appcolors.primary,
+                  color: AppColors.primary,
                   onPressed: () {
                     appLog('🔍 Search tapped', name: 'CustomersPage');
                     setState(() {
@@ -287,7 +287,7 @@ class _CustomersPageState extends State<CustomersPage> {
             MaterialPageRoute(builder: (context) => const AddCustomerPage()),
           );
         },
-        backgroundColor: Appcolors.primary,
+        backgroundColor: AppColors.primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimensions.radius20),
         ),
@@ -333,7 +333,7 @@ class _CustomersPageState extends State<CustomersPage> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: BorderSide(color: Appcolors.primary, width: 1.5),
+            borderSide: BorderSide(color: AppColors.primary, width: 1.5),
           ),
         ),
       ),
@@ -372,12 +372,12 @@ class _CustomersPageState extends State<CustomersPage> {
                     color: context.colors.card,
                     borderRadius: BorderRadius.circular(Dimensions.radius30),
                     border: Border.all(
-                      color: Appcolors.primary.withValues(alpha: 0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Appcolors.primary.withValues(alpha: 0.08),
+                        color: AppColors.primary.withValues(alpha: 0.08),
                         blurRadius: Dimensions.radius15 * 0.53,
                         offset: const Offset(0, 2),
                       ),
@@ -392,14 +392,14 @@ class _CustomersPageState extends State<CustomersPage> {
                           fontSize: Dimensions.font16 * 0.8,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0.3,
-                          color: Appcolors.primary,
+                          color: AppColors.primary,
                         ),
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Icon(
                         Icons.keyboard_arrow_down_rounded,
                         size: Dimensions.iconSize16,
-                        color: Appcolors.primary,
+                        color: AppColors.primary,
                       ),
                     ],
                   ),
@@ -444,13 +444,13 @@ class _CustomersPageState extends State<CustomersPage> {
             Container(
               padding: EdgeInsets.all(Dimensions.width30),
               decoration: BoxDecoration(
-                color: Appcolors.primary.withValues(alpha: 0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.people_outline_rounded,
                 size: Dimensions.height45 * 1.5,
-                color: Appcolors.primary,
+                color: AppColors.primary,
               ),
             ),
             SizedBox(height: Dimensions.height20),
