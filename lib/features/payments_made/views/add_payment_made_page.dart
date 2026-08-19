@@ -6,7 +6,7 @@ import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/payments_made/models/payment_made_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddPaymentMadePage extends StatefulWidget {
   const AddPaymentMadePage({super.key});
@@ -207,9 +207,6 @@ class _AddPaymentMadePageState extends State<AddPaymentMadePage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,
@@ -260,7 +257,7 @@ class _AddPaymentMadePageState extends State<AddPaymentMadePage>
 
                   const RequiredLabel(text: 'Payment Date'),
                   SizedBox(height: Dimensions.height10 / 2),
-                  _dateField(dateFormat.format(_paymentDate), _pickDate),
+                  _dateField(formatDate(_paymentDate), _pickDate),
                   SizedBox(height: Dimensions.height20),
 
                   Text('Payment Mode', style: FormTextStyles.label()),

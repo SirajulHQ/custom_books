@@ -5,7 +5,7 @@ import 'package:custom_books/features/manual_journals/models/manual_journal_mode
 import 'package:custom_books/features/manual_journals/views/add_manual_journal_page.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class ManualJournalDetailsPage extends StatefulWidget {
   final ManualJournalModel journal;
@@ -35,7 +35,6 @@ class _ManualJournalDetailsPageState extends State<ManualJournalDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final journal = widget.journal;
     final statusColor = journal.status.color;
 
@@ -196,7 +195,7 @@ class _ManualJournalDetailsPageState extends State<ManualJournalDetailsPage>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        DateFormat('dd MMM yyyy').format(journal.journalDate),
+                        formatDate(journal.journalDate),
                         style: TextStyle(
                           fontSize: Dimensions.font20 * 0.95,
                           fontWeight: FontWeight.w800,

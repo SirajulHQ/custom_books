@@ -6,7 +6,7 @@ import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/purchase_orders/models/purchase_order_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddPurchaseOrderPage extends StatefulWidget {
   const AddPurchaseOrderPage({super.key});
@@ -165,9 +165,6 @@ class _AddPurchaseOrderPageState extends State<AddPurchaseOrderPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,
@@ -245,7 +242,7 @@ class _AddPurchaseOrderPageState extends State<AddPurchaseOrderPage>
 
                   const RequiredLabel(text: 'Order Date'),
                   SizedBox(height: Dimensions.height10 / 2),
-                  _dateField(dateFormat.format(_orderDate), () {
+                  _dateField(formatDate(_orderDate), () {
                     _pickDate(isDeliveryDate: false);
                   }),
                   SizedBox(height: Dimensions.height20),
@@ -254,7 +251,7 @@ class _AddPurchaseOrderPageState extends State<AddPurchaseOrderPage>
                   SizedBox(height: Dimensions.height10 / 2),
                   _dateField(
                     _expectedDeliveryDate != null
-                        ? dateFormat.format(_expectedDeliveryDate!)
+                        ? formatDate(_expectedDeliveryDate!)
                         : 'dd MMM yyyy',
                     () => _pickDate(isDeliveryDate: true),
                     isPlaceholder: _expectedDeliveryDate == null,

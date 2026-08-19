@@ -117,8 +117,6 @@ class _TaxSettingsPageState extends State<TaxSettingsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,
@@ -170,7 +168,7 @@ class _TaxSettingsPageState extends State<TaxSettingsPage>
                                 value: _isRegistered,
                                 onChanged: (val) =>
                                     setState(() => _isRegistered = val),
-                                activeColor: AppColors.primary,
+                                activeThumbColor: AppColors.primary,
                               ),
                             ],
                           ),
@@ -235,7 +233,7 @@ class _TaxSettingsPageState extends State<TaxSettingsPage>
                                 onChanged: (val) => setState(
                                   () => _enableInternationalTrade = val,
                                 ),
-                                activeColor: AppColors.primary,
+                                activeThumbColor: AppColors.primary,
                               ),
                             ],
                           ),

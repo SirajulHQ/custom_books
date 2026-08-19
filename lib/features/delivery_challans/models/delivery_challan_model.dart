@@ -39,8 +39,6 @@ extension DeliveryChallanSortFieldLabel on DeliveryChallanSortField {
   };
 }
 
-enum SortDirection { ascending, descending }
-
 class DeliveryChallanModel {
   final String id;
   final String challanNumber;

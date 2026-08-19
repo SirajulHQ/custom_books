@@ -9,7 +9,8 @@ import 'package:custom_books/features/vendor_credits/models/vendor_credit_model.
 import 'package:custom_books/features/vendor_credits/views/add_vendor_credit_page.dart';
 import 'package:custom_books/features/vendor_credits/views/vendor_credit_details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class VendorCreditsPage extends StatefulWidget {
   const VendorCreditsPage({super.key});
@@ -399,7 +400,6 @@ class _VendorCreditsPageState extends State<VendorCreditsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleCredits;
 
     return Scaffold(
@@ -768,7 +768,7 @@ class _VendorCreditsPageState extends State<VendorCreditsPage> {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
-                        DateFormat('dd MMM yyyy').format(credit.creditDate),
+                        formatDate(credit.creditDate),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
                           color: context.colors.textSecondary,

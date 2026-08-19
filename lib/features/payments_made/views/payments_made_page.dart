@@ -8,7 +8,8 @@ import 'package:custom_books/features/payments_made/models/payment_made_model.da
 import 'package:custom_books/features/payments_made/views/add_payment_made_page.dart';
 import 'package:custom_books/features/payments_made/views/payment_made_details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class PaymentsMadePage extends StatefulWidget {
   const PaymentsMadePage({super.key});
@@ -403,7 +404,6 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visiblePayments;
 
     return Scaffold(
@@ -759,7 +759,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
-                        DateFormat('dd MMM yyyy').format(payment.paymentDate),
+                        formatDate(payment.paymentDate),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
                           color: context.colors.textSecondary,

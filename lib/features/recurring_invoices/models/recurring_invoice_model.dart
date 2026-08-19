@@ -48,8 +48,6 @@ extension RecurringInvoiceSortFieldLabel on RecurringInvoiceSortField {
   };
 }
 
-enum SortDirection { ascending, descending }
-
 class RecurringInvoiceModel {
   final String id;
   final String profileName;

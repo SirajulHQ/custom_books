@@ -2,7 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/reports/models/report_type.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class ReportFilterSheet extends StatefulWidget {
   final ReportType reportType;
@@ -115,8 +115,6 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final fmt = DateFormat('dd MMM yyyy');
     final isAsOf = widget.reportType.dateMode == ReportDateMode.asOf;
     final isFinancial = widget.reportType.category == ReportCategory.financial;
 
@@ -156,7 +154,7 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
               _label('Report Date'),
               InkWell(
                 onTap: _pickAsOfDate,
-                child: _dateBox(fmt.format(_asOfDate)),
+                child: _dateBox(formatDate(_asOfDate)),
               ),
             ] else ...[
               _label('Date Range'),
@@ -171,14 +169,14 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
                   Expanded(
                     child: InkWell(
                       onTap: () => _pickDate(isStart: true),
-                      child: _dateBox(fmt.format(_startDate)),
+                      child: _dateBox(formatDate(_startDate)),
                     ),
                   ),
                   SizedBox(width: Dimensions.width10),
                   Expanded(
                     child: InkWell(
                       onTap: () => _pickDate(isStart: false),
-                      child: _dateBox(fmt.format(_endDate)),
+                      child: _dateBox(formatDate(_endDate)),
                     ),
                   ),
                 ],

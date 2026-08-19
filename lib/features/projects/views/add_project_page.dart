@@ -190,8 +190,6 @@ class _AddProjectPageState extends State<AddProjectPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,

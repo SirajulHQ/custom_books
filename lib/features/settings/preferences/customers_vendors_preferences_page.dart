@@ -56,8 +56,6 @@ class _CustomersVendorsPreferencesPageState
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       bottomNavigationBar: _buildSaveButton(),

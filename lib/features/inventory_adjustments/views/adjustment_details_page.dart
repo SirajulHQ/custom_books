@@ -234,7 +234,6 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final adjustment = widget.adjustment;
     final isDraft = adjustment.status == AdjustmentStatus.draft;
 

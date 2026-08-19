@@ -11,7 +11,8 @@ import 'package:custom_books/features/expenses/views/expense_details_page.dart';
 import 'package:custom_books/features/expenses/widgets/expense_filter_sheet.dart';
 import 'package:custom_books/features/expenses/widgets/expense_sort_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class ExpensesPage extends StatefulWidget {
   const ExpensesPage({super.key});
@@ -167,7 +168,6 @@ class _ExpensesPageState extends State<ExpensesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleExpenses;
 
     return Scaffold(
@@ -522,7 +522,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
-                        DateFormat('dd MMM yyyy').format(expense.expenseDate),
+                        formatDate(expense.expenseDate),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
                           color: context.colors.textSecondary,

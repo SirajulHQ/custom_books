@@ -11,8 +11,11 @@ class ImageHelper {
     Widget? errorWidget,
     Widget? loadingWidget,
   }) {
-    // Check if the image path is a network URL
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    final errorBuilder = errorWidget != null
+        ? (BuildContext ctx, Object err, StackTrace? st) => errorWidget
+        : _defaultErrorBuilder(width, height);
+
+    if (isNetworkImage(imagePath)) {
       return Image.network(
         imagePath,
         fit: fit,
@@ -24,49 +27,22 @@ class ImageHelper {
                 return loadingWidget;
               }
             : null,
-        errorBuilder: errorWidget != null
-            ? (context, error, stackTrace) => errorWidget
-            : (context, error, stackTrace) {
-                final colors = Theme.of(context).extension<AppThemeColors>()!;
-                return Container(
-                  width: width,
-                  height: height,
-                  color: colors.surfaceLight,
-                  child: Icon(
-                    Icons.image_not_supported,
-                    color: colors.textTertiary,
-                  ),
-                );
-              },
+        errorBuilder: errorBuilder,
       );
     } else {
-      // Use asset image for local assets
       return Image.asset(
         imagePath,
         fit: fit,
         width: width,
         height: height,
-        errorBuilder: errorWidget != null
-            ? (context, error, stackTrace) => errorWidget
-            : (context, error, stackTrace) {
-                final colors = Theme.of(context).extension<AppThemeColors>()!;
-                return Container(
-                  width: width,
-                  height: height,
-                  color: colors.surfaceLight,
-                  child: Icon(
-                    Icons.image_not_supported,
-                    color: colors.textTertiary,
-                  ),
-                );
-              },
+        errorBuilder: errorBuilder,
       );
     }
   }
 
   /// Returns the appropriate ImageProvider based on the image path
   static ImageProvider getImageProvider(String imagePath) {
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    if (isNetworkImage(imagePath)) {
       return NetworkImage(imagePath);
     } else {
       return AssetImage(imagePath);
@@ -76,5 +52,24 @@ class ImageHelper {
   /// Checks if the image path is a network URL
   static bool isNetworkImage(String imagePath) {
     return imagePath.startsWith('http://') || imagePath.startsWith('https://');
+  }
+
+  /// Default error placeholder widget for failed image loads.
+  static Widget Function(BuildContext, Object, StackTrace?) _defaultErrorBuilder(
+    double? width,
+    double? height,
+  ) {
+    return (context, error, stackTrace) {
+      final colors = Theme.of(context).extension<AppThemeColors>()!;
+      return Container(
+        width: width,
+        height: height,
+        color: colors.surfaceLight,
+        child: Icon(
+          Icons.image_not_supported,
+          color: colors.textTertiary,
+        ),
+      );
+    };
   }
 }

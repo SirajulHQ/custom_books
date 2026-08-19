@@ -612,7 +612,6 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     return Scaffold(
       backgroundColor: context.colors.background,
       appBar: CustomBackAppBar(

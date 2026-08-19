@@ -88,8 +88,6 @@ class _PreferencesPageState extends State<PreferencesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(

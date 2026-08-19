@@ -17,7 +17,6 @@ class SalesOrderFilterSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final options = <SalesOrderStatus?>[null, ...SalesOrderStatus.values];
     return SafeArea(
       top: false,

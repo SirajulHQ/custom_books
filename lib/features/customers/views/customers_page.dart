@@ -214,8 +214,6 @@ class _CustomersPageState extends State<CustomersPage> {
   @override
   Widget build(BuildContext context) {
     appLog('🏗️ Building CustomersPage', name: 'CustomersPage');
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'customers'),

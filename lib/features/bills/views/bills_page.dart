@@ -12,6 +12,7 @@ import 'package:custom_books/features/bills/widgets/bill_tab_button.dart';
 import 'package:custom_books/features/bills/widgets/bill_control_badge.dart';
 import 'package:custom_books/features/bills/widgets/bill_active_filter_chip.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class BillsPage extends StatefulWidget {
   final int initialTab;
@@ -180,7 +181,6 @@ class _BillsPageState extends State<BillsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleBills;
 
     return Scaffold(

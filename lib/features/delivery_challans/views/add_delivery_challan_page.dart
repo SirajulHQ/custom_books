@@ -5,7 +5,7 @@ import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/delivery_challans/models/delivery_challan_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddDeliveryChallanPage extends StatefulWidget {
   const AddDeliveryChallanPage({super.key});
@@ -210,9 +210,6 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return Scaffold(
       backgroundColor: context.colors.background,
       appBar: CustomBackAppBar(
@@ -367,7 +364,7 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          dateFormat.format(_challanDate),
+                          formatDate(_challanDate),
                           style: FormTextStyles.value(context),
                         ),
                         Icon(

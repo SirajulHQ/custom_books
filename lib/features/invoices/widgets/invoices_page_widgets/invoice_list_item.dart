@@ -4,7 +4,7 @@ import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
 import 'package:custom_books/features/invoices/views/invoice_details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class InvoiceListItem extends StatelessWidget {
   const InvoiceListItem({super.key, required this.invoice});
@@ -68,7 +68,7 @@ class InvoiceListItem extends StatelessWidget {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
-                        DateFormat('dd MMM yyyy').format(invoice.invoiceDate),
+                        formatDate(invoice.invoiceDate),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
                           color: context.colors.textSecondary,
@@ -103,7 +103,7 @@ class InvoiceListItem extends StatelessWidget {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
-                        'Due ${DateFormat('dd MMM yyyy').format(invoice.dueDate)}',
+                        'Due ${formatDate(invoice.dueDate)}',
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.68,
                           color: context.colors.textSecondary,

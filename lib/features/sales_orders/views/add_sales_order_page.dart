@@ -10,7 +10,7 @@ import 'package:custom_books/features/sales_orders/models/sales_order_model.dart
 import 'package:custom_books/features/sales_orders/views/add_sales_order_line_item_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddSalesOrderPage extends StatefulWidget {
   final int orderSequence;
@@ -371,9 +371,6 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,
@@ -549,7 +546,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            dateFormat.format(_salesOrderDate),
+                            formatDate(_salesOrderDate),
                             style: FormTextStyles.value(context),
                           ),
                           Icon(
@@ -582,7 +579,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                         children: [
                           Text(
                             _expectedShipmentDate != null
-                                ? dateFormat.format(_expectedShipmentDate!)
+                                ? formatDate(_expectedShipmentDate!)
                                 : 'dd MMM yyyy',
                             style: TextStyle(
                               fontSize: Dimensions.font16 * 0.9,
@@ -711,54 +708,51 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Tax', style: FormTextStyles.label()),
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () => setState(() => _taxInclusive = false),
-                            child: Row(
-                              children: [
-                                Radio<bool>(
-                                  value: false,
-                                  groupValue: _taxInclusive,
-                                  activeColor: AppColors.primary,
-                                  onChanged: (val) =>
-                                      setState(() => _taxInclusive = val!),
-                                ),
-                                Text(
-                                  'Exclusive',
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16 * 0.9,
-                                    fontWeight: FontWeight.w600,
-                                    color: context.colors.textPrimary,
+                      RadioGroup<bool>(
+                        groupValue: _taxInclusive,
+                        onChanged: (val) =>
+                            setState(() => _taxInclusive = val!),
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () => setState(() => _taxInclusive = false),
+                              child: Row(
+                                children: [
+                                  Radio<bool>(
+                                    value: false,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: Dimensions.width15),
-                          GestureDetector(
-                            onTap: () => setState(() => _taxInclusive = true),
-                            child: Row(
-                              children: [
-                                Radio<bool>(
-                                  value: true,
-                                  groupValue: _taxInclusive,
-                                  activeColor: AppColors.primary,
-                                  onChanged: (val) =>
-                                      setState(() => _taxInclusive = val!),
-                                ),
-                                Text(
-                                  'Inclusive',
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16 * 0.9,
-                                    fontWeight: FontWeight.w600,
-                                    color: context.colors.textPrimary,
+                                  Text(
+                                    'Exclusive',
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.9,
+                                      fontWeight: FontWeight.w600,
+                                      color: context.colors.textPrimary,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                            SizedBox(width: Dimensions.width15),
+                            GestureDetector(
+                              onTap: () => setState(() => _taxInclusive = true),
+                              child: Row(
+                                children: [
+                                  Radio<bool>(
+                                    value: true,
+                                  ),
+                                  Text(
+                                    'Inclusive',
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.9,
+                                      fontWeight: FontWeight.w600,
+                                      color: context.colors.textPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

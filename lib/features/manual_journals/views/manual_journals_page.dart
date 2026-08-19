@@ -9,7 +9,8 @@ import 'package:custom_books/features/manual_journals/models/manual_journal_mode
 import 'package:custom_books/features/manual_journals/views/add_manual_journal_page.dart';
 import 'package:custom_books/features/manual_journals/views/manual_journal_details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class ManualJournalsPage extends StatefulWidget {
   const ManualJournalsPage({super.key});
@@ -392,7 +393,6 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleJournals;
 
     return Scaffold(
@@ -749,7 +749,7 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
-                        DateFormat('dd MMM yyyy').format(journal.journalDate),
+                        formatDate(journal.journalDate),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
                           color: context.colors.textSecondary,

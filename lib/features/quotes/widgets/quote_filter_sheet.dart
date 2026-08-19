@@ -17,7 +17,6 @@ class QuoteFilterSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final options = <QuoteStatus?>[null, ...QuoteStatus.values];
     return SafeArea(
       top: false,

@@ -11,7 +11,7 @@ import 'package:custom_books/features/quotes/models/quote_model.dart';
 import 'package:custom_books/features/quotes/views/add_quote_line_item_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddQuotePage extends StatefulWidget {
   final int quoteSequence;
@@ -281,8 +281,6 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final format = DateFormat('dd MMM yyyy');
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,
@@ -381,7 +379,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                     child: IgnorePointer(
                       child: TextField(
                         controller: TextEditingController(
-                          text: format.format(_quoteDate),
+                          text: formatDate(_quoteDate),
                         ),
                         decoration: _decoration(
                           '',
@@ -398,7 +396,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                         controller: TextEditingController(
                           text: _expiryDate == null
                               ? ''
-                              : format.format(_expiryDate!),
+                              : formatDate(_expiryDate!),
                         ),
                         decoration: _decoration(
                           'dd MMM yyyy',

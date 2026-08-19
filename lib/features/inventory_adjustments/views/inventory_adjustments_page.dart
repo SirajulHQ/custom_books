@@ -9,6 +9,7 @@ import 'package:custom_books/features/inventory_adjustments/views/adjustment_det
 import 'package:custom_books/features/inventory_adjustments/widgets/inventory_adjustments_card_widgets.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/inventory_adjustments_page_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class InventoryAdjustmentsPage extends StatefulWidget {
   const InventoryAdjustmentsPage({super.key});
@@ -120,7 +121,6 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final items = _filteredAdjustments;
 
     return Scaffold(

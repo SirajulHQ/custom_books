@@ -37,8 +37,6 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     appLog('🏗️ Building SettingsPage', name: 'SettingsPage');
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'settings'),

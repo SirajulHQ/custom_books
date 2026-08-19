@@ -3,7 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/bills/models/bill_model.dart';
 import 'package:custom_books/features/bills/views/bill_details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class BillTile extends StatelessWidget {
   final BillModel bill;
@@ -65,7 +65,7 @@ class BillTile extends StatelessWidget {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
-                        DateFormat('dd MMM yyyy').format(bill.billDate),
+                        formatDate(bill.billDate),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
                           color: context.colors.textSecondary,
@@ -100,7 +100,7 @@ class BillTile extends StatelessWidget {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
-                        'Due ${DateFormat('dd MMM yyyy').format(bill.dueDate)}',
+                        'Due ${formatDate(bill.dueDate)}',
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
                           color: context.colors.textSecondary,

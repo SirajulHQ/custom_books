@@ -16,7 +16,6 @@ class CustomerFilterSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     return Container(
       decoration: BoxDecoration(
         color: context.colors.card,

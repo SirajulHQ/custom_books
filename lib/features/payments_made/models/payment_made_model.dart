@@ -1,3 +1,4 @@
+
 enum PaymentMode { cash, bankTransfer, card, cheque, upi }
 
 extension PaymentModeLabel on PaymentMode {
@@ -27,8 +28,6 @@ extension PaymentMadeSortFieldLabel on PaymentMadeSortField {
     PaymentMadeSortField.amount => 'Amount',
   };
 }
-
-enum SortDirection { ascending, descending }
 
 class PaymentMadeModel {
   final String id;

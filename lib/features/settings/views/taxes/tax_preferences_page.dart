@@ -28,8 +28,6 @@ class _TaxPreferencesPageState extends State<TaxPreferencesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(
@@ -66,7 +64,7 @@ class _TaxPreferencesPageState extends State<TaxPreferencesPage> {
                           value: _profitMarginScheme,
                           onChanged: (val) =>
                               setState(() => _profitMarginScheme = val),
-                          activeColor: AppColors.primary,
+                          activeThumbColor: AppColors.primary,
                         ),
                       ],
                     ),

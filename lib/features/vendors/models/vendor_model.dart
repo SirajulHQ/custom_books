@@ -28,8 +28,6 @@ extension VendorsSortFieldLabel on VendorsSortField {
   };
 }
 
-enum SortDirection { ascending, descending }
-
 class VendorModel {
   final String id;
   final String displayName;

@@ -9,6 +9,7 @@ import 'package:custom_books/features/projects/models/project_model.dart';
 import 'package:custom_books/features/projects/views/add_project_page.dart';
 import 'package:custom_books/features/projects/views/project_details_page.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class ProjectsPage extends StatefulWidget {
   const ProjectsPage({super.key});
@@ -395,7 +396,6 @@ class _ProjectsPageState extends State<ProjectsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleProjects;
 
     return Scaffold(

@@ -5,7 +5,8 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class AllFilesPage extends StatefulWidget {
   const AllFilesPage({super.key});
@@ -374,7 +375,6 @@ class _AllFilesPageState extends State<AllFilesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleDocuments;
 
     return Scaffold(
@@ -717,7 +717,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
                       ),
                       Flexible(
                         child: Text(
-                          DateFormat('dd MMM yyyy').format(doc.uploadedDate),
+                          formatDate(doc.uploadedDate),
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.7,

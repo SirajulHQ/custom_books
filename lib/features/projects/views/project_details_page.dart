@@ -5,7 +5,7 @@ import 'package:custom_books/features/projects/models/project_model.dart';
 import 'package:custom_books/features/projects/views/add_project_page.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class ProjectDetailsPage extends StatefulWidget {
   final ProjectModel project;
@@ -34,7 +34,6 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final project = widget.project;
     final statusColor = project.status.color;
 
@@ -193,7 +192,7 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        DateFormat('dd MMM yyyy').format(project.createdAt),
+                        formatDate(project.createdAt),
                         style: TextStyle(
                           fontSize: Dimensions.font20 * 0.95,
                           fontWeight: FontWeight.w800,

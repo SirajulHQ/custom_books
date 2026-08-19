@@ -5,7 +5,7 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/expenses/models/expense_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddExpensePage extends StatefulWidget {
   const AddExpensePage({super.key});
@@ -164,9 +164,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(
@@ -267,7 +264,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
 
                         const RequiredLabel(text: 'Expense Date'),
                         SizedBox(height: Dimensions.height10 / 2),
-                        _dateField(dateFormat.format(_expenseDate), _pickDate),
+                        _dateField(formatDate(_expenseDate), _pickDate),
                         SizedBox(height: Dimensions.height20),
 
                         Text('Reference#', style: FormTextStyles.label()),

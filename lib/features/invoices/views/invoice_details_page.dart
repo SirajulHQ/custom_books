@@ -34,7 +34,6 @@ class _InvoiceDetailsPageState extends State<InvoiceDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final invoice = widget.invoice;
 
     return Scaffold(

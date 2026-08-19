@@ -97,8 +97,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       appBar: AppBar(
@@ -148,7 +146,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 vertical: Dimensions.height20,
               ),
               itemCount: _notifications.length,
-              separatorBuilder: (_, __) =>
+              separatorBuilder: (_, _) =>
                   SizedBox(height: Dimensions.height10),
               itemBuilder: (_, i) => _NotificationCard(item: _notifications[i]),
             ),

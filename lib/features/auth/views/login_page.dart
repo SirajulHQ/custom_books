@@ -37,8 +37,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(

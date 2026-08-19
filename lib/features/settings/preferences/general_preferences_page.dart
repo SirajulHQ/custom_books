@@ -73,8 +73,6 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       bottomNavigationBar: _buildSaveButton(),

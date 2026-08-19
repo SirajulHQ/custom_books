@@ -232,8 +232,6 @@ class _ItemsPageState extends State<ItemsPage> {
   @override
   Widget build(BuildContext context) {
     appLog('🏗️ Building ItemsPage', name: 'ItemsPage');
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'items'),

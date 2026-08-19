@@ -28,8 +28,6 @@ extension ManualJournalSortFieldLabel on ManualJournalSortField {
   };
 }
 
-enum SortDirection { ascending, descending }
-
 class ManualJournalModel {
   final String id;
   final String journalNumber;

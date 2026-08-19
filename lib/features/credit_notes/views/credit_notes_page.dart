@@ -10,6 +10,7 @@ import 'package:custom_books/features/credit_notes/widgets/sort_bottom_sheet.dar
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class CreditNotesPage extends StatefulWidget {
   const CreditNotesPage({super.key});
@@ -182,7 +183,6 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleNotes;
 
     return Scaffold(
@@ -208,7 +208,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
             if (result != null && mounted) {
               setState(() => _notes.insert(0, result));
               ToastificationHelper.showSuccess(
-                context,
+                context, // ignore: use_build_context_synchronously
                 '${result.creditNoteNumber} created successfully',
               );
             }

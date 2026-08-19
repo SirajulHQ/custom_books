@@ -6,7 +6,7 @@ import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/time_entries/models/time_entry_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddTimeEntryPage extends StatefulWidget {
   const AddTimeEntryPage({super.key});
@@ -201,9 +201,6 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,
@@ -364,7 +361,7 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    dateFormat.format(_logDate),
+                                    formatDate(_logDate),
                                     style: FormTextStyles.value(context),
                                   ),
                                   Icon(
@@ -435,58 +432,54 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Billable', style: FormTextStyles.label()),
-                              Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () =>
-                                        setState(() => _isBillable = true),
-                                    child: Row(
-                                      children: [
-                                        Radio<bool>(
-                                          value: true,
-                                          groupValue: _isBillable,
-                                          activeColor: AppColors.primary,
-                                          onChanged: (val) => setState(
-                                            () => _isBillable = val!,
+                              RadioGroup<bool>(
+                                groupValue: _isBillable,
+                                onChanged: (val) => setState(
+                                  () => _isBillable = val!,
+                                ),
+                                child: Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () =>
+                                          setState(() => _isBillable = true),
+                                      child: Row(
+                                        children: [
+                                          Radio<bool>(
+                                            value: true,
                                           ),
-                                        ),
-                                        Text(
-                                          'Billable',
-                                          style: TextStyle(
-                                            fontSize: Dimensions.font16 * 0.9,
-                                            fontWeight: FontWeight.w600,
-                                            color: context.colors.textPrimary,
+                                          Text(
+                                            'Billable',
+                                            style: TextStyle(
+                                              fontSize: Dimensions.font16 * 0.9,
+                                              fontWeight: FontWeight.w600,
+                                              color: context.colors.textPrimary,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(width: Dimensions.width15),
-                                  GestureDetector(
-                                    onTap: () =>
-                                        setState(() => _isBillable = false),
-                                    child: Row(
-                                      children: [
-                                        Radio<bool>(
-                                          value: false,
-                                          groupValue: _isBillable,
-                                          activeColor: AppColors.primary,
-                                          onChanged: (val) => setState(
-                                            () => _isBillable = val!,
+                                    SizedBox(width: Dimensions.width15),
+                                    GestureDetector(
+                                      onTap: () =>
+                                          setState(() => _isBillable = false),
+                                      child: Row(
+                                        children: [
+                                          Radio<bool>(
+                                            value: false,
                                           ),
-                                        ),
-                                        Text(
-                                          'Non-billable',
-                                          style: TextStyle(
-                                            fontSize: Dimensions.font16 * 0.9,
-                                            fontWeight: FontWeight.w600,
-                                            color: context.colors.textPrimary,
+                                          Text(
+                                            'Non-billable',
+                                            style: TextStyle(
+                                              fontSize: Dimensions.font16 * 0.9,
+                                              fontWeight: FontWeight.w600,
+                                              color: context.colors.textPrimary,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
                           ),

@@ -58,8 +58,6 @@ class _NewTaxPageState extends State<NewTaxPage> with UnsavedChangesMixin {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,

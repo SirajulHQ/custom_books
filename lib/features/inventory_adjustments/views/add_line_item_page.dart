@@ -211,7 +211,6 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     appLog(
       '🏗️ Building AddLineItemPage - _selectedItem: ${_selectedItem?.name ?? "null"}',
       name: 'AddLineItem',

@@ -63,8 +63,6 @@ class _InvoiceSettingsPageState extends State<InvoiceSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(

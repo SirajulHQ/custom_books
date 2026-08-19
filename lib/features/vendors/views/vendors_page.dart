@@ -10,6 +10,7 @@ import 'package:custom_books/features/vendors/views/vendor_details_page.dart';
 import 'package:custom_books/features/vendors/widgets/vendor_filter_sheet.dart';
 import 'package:custom_books/features/vendors/widgets/vendor_sort_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class VendorsPage extends StatefulWidget {
   const VendorsPage({super.key});
@@ -173,7 +174,6 @@ class _VendorsPageState extends State<VendorsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleVendors;
 
     return Scaffold(

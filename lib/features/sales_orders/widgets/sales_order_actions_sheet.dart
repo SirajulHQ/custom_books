@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/sales_orders/models/sales_order_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class SalesOrderActionsSheet extends StatelessWidget {
   final SalesOrderModel order;
@@ -18,10 +19,7 @@ class SalesOrderActionsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final currencyFormat = NumberFormat.currency(symbol: '₹', decimalDigits: 2);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.fromLTRB(
@@ -76,7 +74,7 @@ class SalesOrderActionsSheet extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.height10 / 2),
             Text(
-              'Date: ${dateFormat.format(order.salesOrderDate)} | Total: ${currencyFormat.format(order.total)}',
+              'Date: ${formatDate(order.salesOrderDate)} | Total: ${currencyFormat.format(order.total)}',
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.8,
                 color: context.colors.textSecondary,

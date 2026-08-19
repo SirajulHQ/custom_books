@@ -87,8 +87,6 @@ class _SenderEmailPreferencesPageState
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       floatingActionButton: CustomAddButton(onPressed: _addNewSender),

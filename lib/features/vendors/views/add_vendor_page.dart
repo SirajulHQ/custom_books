@@ -72,8 +72,6 @@ class _AddVendorPageState extends State<AddVendorPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,

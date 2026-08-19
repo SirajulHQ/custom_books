@@ -30,8 +30,6 @@ extension DocumentSortFieldLabel on DocumentSortField {
   };
 }
 
-enum SortDirection { ascending, descending }
-
 class DocumentModel {
   final String id;
   final String fileName;

@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/expenses/models/expense_model.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class ExpenseSortSheet extends StatefulWidget {
   final ExpenseSortField selectedField;
@@ -32,7 +33,6 @@ class _ExpenseSortSheetState extends State<ExpenseSortSheet> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     return Container(
       margin: EdgeInsets.all(Dimensions.width15),
       padding: EdgeInsets.all(Dimensions.width20),

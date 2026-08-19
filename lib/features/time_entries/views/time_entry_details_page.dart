@@ -5,7 +5,7 @@ import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/time_entries/models/time_entry_model.dart';
 import 'package:custom_books/features/time_entries/views/add_time_entry_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class TimeEntryDetailsPage extends StatefulWidget {
   final TimeEntryModel entry;
@@ -144,7 +144,6 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final entry = widget.entry;
     final statusColor = entry.isBillable
         ? AppColors.success
@@ -208,7 +207,7 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        DateFormat('dd MMM yyyy').format(entry.logDate),
+                        formatDate(entry.logDate),
                         style: TextStyle(
                           fontSize: Dimensions.font20 * 0.95,
                           fontWeight: FontWeight.w800,
@@ -344,7 +343,7 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
               SizedBox(height: Dimensions.height15),
               DetailRow(
                 label: 'Log Date:',
-                value: DateFormat('dd MMM yyyy').format(entry.logDate),
+                value: formatDate(entry.logDate),
               ),
               SizedBox(height: Dimensions.height15),
               DetailRow(label: 'Duration:', value: entry.durationLabel),

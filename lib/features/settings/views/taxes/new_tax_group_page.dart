@@ -58,8 +58,6 @@ class _NewTaxGroupPageState extends State<NewTaxGroupPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,

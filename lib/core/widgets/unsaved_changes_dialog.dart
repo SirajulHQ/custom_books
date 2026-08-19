@@ -16,8 +16,6 @@ class UnsavedChangesDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return AlertDialog(
       backgroundColor: context.colors.card,
       shape: RoundedRectangleBorder(

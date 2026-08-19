@@ -1,3 +1,4 @@
+
 /// Status of an inventory adjustment entry.
 enum AdjustmentStatus { draft, completed }
 
@@ -29,8 +30,6 @@ extension AdjustmentSortFieldX on AdjustmentSortField {
     }
   }
 }
-
-enum SortDirection { ascending, descending }
 
 /// A single stock/inventory adjustment record.
 class InventoryAdjustment {

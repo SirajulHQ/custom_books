@@ -8,7 +8,8 @@ import 'package:custom_books/features/delivery_challans/views/add_delivery_chall
 import 'package:custom_books/features/delivery_challans/views/delivery_challan_details_page.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class DeliveryChallansPage extends StatefulWidget {
   const DeliveryChallansPage({super.key});
@@ -494,7 +495,6 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleChallans;
 
     return Scaffold(
@@ -871,7 +871,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
-                        DateFormat('dd MMM yyyy').format(challan.challanDate),
+                        formatDate(challan.challanDate),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
                           color: context.colors.textSecondary,

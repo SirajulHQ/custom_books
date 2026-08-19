@@ -39,8 +39,6 @@ extension CreditNoteSortFieldLabel on CreditNoteSortField {
   };
 }
 
-enum SortDirection { ascending, descending }
-
 class CreditNoteModel {
   final String id;
   final String creditNoteNumber;

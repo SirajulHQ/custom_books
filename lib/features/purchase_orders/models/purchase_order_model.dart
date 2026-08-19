@@ -39,8 +39,6 @@ extension PurchaseOrderSortFieldLabel on PurchaseOrderSortField {
   };
 }
 
-enum SortDirection { ascending, descending }
-
 class PurchaseOrderModel {
   final String id;
   final String purchaseOrderNumber;

@@ -32,8 +32,6 @@ extension ExpenseSortFieldLabel on ExpenseSortField {
   };
 }
 
-enum SortDirection { ascending, descending }
-
 class ExpenseModel {
   final String id;
   final String category;

@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/vendors/models/vendor_model.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class VendorSortSheet extends StatefulWidget {
   final VendorsSortField selectedField;
@@ -32,7 +33,6 @@ class _VendorSortSheetState extends State<VendorSortSheet> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     return Container(
       margin: EdgeInsets.all(Dimensions.width15),
       padding: EdgeInsets.all(Dimensions.width20),

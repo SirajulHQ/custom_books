@@ -11,7 +11,6 @@ class ItemThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final thumbnailSize = size ?? (Dimensions.height45 * 0.9);
 
     final fallback = Icon(
@@ -64,8 +63,6 @@ class ItemSearchField<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

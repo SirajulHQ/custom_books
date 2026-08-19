@@ -6,7 +6,7 @@ import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/credit_notes/models/credit_note_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddCreditNotePage extends StatefulWidget {
   const AddCreditNotePage({super.key});
@@ -161,9 +161,6 @@ class _AddCreditNotePageState extends State<AddCreditNotePage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,
@@ -322,7 +319,7 @@ class _AddCreditNotePageState extends State<AddCreditNotePage>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            dateFormat.format(_creditNoteDate),
+                            formatDate(_creditNoteDate),
                             style: FormTextStyles.value(context),
                           ),
                           Icon(

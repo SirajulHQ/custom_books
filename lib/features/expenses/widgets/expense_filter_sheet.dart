@@ -15,7 +15,6 @@ class ExpenseFilterSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     return Container(
       margin: EdgeInsets.all(Dimensions.width15),
       padding: EdgeInsets.all(Dimensions.width20),

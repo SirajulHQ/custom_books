@@ -151,8 +151,6 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
   @override
   Widget build(BuildContext context) {
     appLog('🏗️ Building CustomerDetailsPage', name: 'CustomerDetailsPage');
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(

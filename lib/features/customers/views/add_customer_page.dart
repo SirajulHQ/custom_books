@@ -103,8 +103,6 @@ class _AddCustomerPageState extends State<AddCustomerPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,

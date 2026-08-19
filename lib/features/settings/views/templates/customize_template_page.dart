@@ -298,8 +298,6 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(

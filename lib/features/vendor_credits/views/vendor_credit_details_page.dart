@@ -35,7 +35,6 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final credit = widget.credit;
     final statusColor = credit.status.color;
 

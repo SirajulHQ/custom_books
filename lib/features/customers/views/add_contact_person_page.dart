@@ -69,8 +69,6 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,

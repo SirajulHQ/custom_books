@@ -93,8 +93,6 @@ class _BankingPageState extends State<BankingPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'banking'),

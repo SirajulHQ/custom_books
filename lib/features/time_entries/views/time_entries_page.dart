@@ -7,7 +7,8 @@ import 'package:custom_books/features/time_entries/models/time_entry_model.dart'
 import 'package:custom_books/features/time_entries/views/add_time_entry_page.dart';
 import 'package:custom_books/features/time_entries/views/time_entry_details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class TimeEntriesPage extends StatefulWidget {
   const TimeEntriesPage({super.key});
@@ -393,7 +394,6 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleEntries;
 
     return Scaffold(
@@ -694,7 +694,7 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
                         ),
                       ),
                       Text(
-                        DateFormat('dd MMM yyyy').format(entry.logDate),
+                        formatDate(entry.logDate),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
                           color: context.colors.textSecondary,

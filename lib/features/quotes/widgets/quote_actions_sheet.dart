@@ -16,7 +16,6 @@ class QuoteActionsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     return SafeArea(
       top: false,
       child: Container(

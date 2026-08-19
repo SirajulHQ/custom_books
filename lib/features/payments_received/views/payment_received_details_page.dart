@@ -35,7 +35,6 @@ class _PaymentReceivedDetailsPageState extends State<PaymentReceivedDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final payment = widget.payment;
     const statusColor = AppColors.success;
 

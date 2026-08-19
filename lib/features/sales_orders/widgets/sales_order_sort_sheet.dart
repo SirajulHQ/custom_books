@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/sales_orders/models/sales_order_model.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 Future<void> showSalesOrderSortSheet(
   BuildContext context, {
@@ -53,7 +54,6 @@ class _SalesOrderSortSheetState extends State<SalesOrderSortSheet> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     return Container(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,

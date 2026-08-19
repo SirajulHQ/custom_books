@@ -35,7 +35,6 @@ class _BillDetailsPageState extends State<BillDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final bill = widget.bill;
     final statusColor = bill.status.color;
 

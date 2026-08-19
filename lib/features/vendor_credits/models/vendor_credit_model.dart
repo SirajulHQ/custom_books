@@ -39,8 +39,6 @@ extension VendorCreditSortFieldLabel on VendorCreditSortField {
   };
 }
 
-enum SortDirection { ascending, descending }
-
 class VendorCreditModel {
   final String id;
   final String creditNoteNumber;

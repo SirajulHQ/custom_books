@@ -41,8 +41,6 @@ extension SalesOrderSortFieldLabel on SalesOrderSortField {
   };
 }
 
-enum SortDirection { ascending, descending }
-
 class SalesOrderLineItem {
   final String id;
   final String itemName;

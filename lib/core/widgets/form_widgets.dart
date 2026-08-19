@@ -94,6 +94,50 @@ class FormTextStyles {
   );
 }
 
+class FormLabel extends StatelessWidget {
+  final String text;
+  final bool required;
+  final bool showInfo;
+  final VoidCallback? onInfoTap;
+
+  const FormLabel({
+    super.key,
+    required this.text,
+    this.required = false,
+    this.showInfo = false,
+    this.onInfoTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: Dimensions.height15,
+        bottom: Dimensions.height10 / 2,
+      ),
+      child: Row(
+        children: [
+          required
+              ? RequiredLabel(text: text.trim())
+              : Text(text.trim(), style: FormTextStyles.label()),
+          if (showInfo)
+            Padding(
+              padding: EdgeInsets.only(left: Dimensions.width10 / 2),
+              child: GestureDetector(
+                onTap: onInfoTap,
+                child: Icon(
+                  Icons.info_outline_rounded,
+                  size: Dimensions.iconSize24 - 7,
+                  color: context.colors.textSecondary,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 class FormNumberField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode? focusNode;

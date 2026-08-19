@@ -76,8 +76,6 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       floatingActionButton: CustomAddButton(onPressed: _addCurrency),

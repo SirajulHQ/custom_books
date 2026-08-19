@@ -6,7 +6,7 @@ import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/payments_received/models/payment_received_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddPaymentReceivedPage extends StatefulWidget {
   const AddPaymentReceivedPage({super.key});
@@ -213,9 +213,6 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,
@@ -333,7 +330,7 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            dateFormat.format(_paymentDate),
+                            formatDate(_paymentDate),
                             style: FormTextStyles.value(context),
                           ),
                           Icon(

@@ -52,8 +52,6 @@ class _TaxRatesPageState extends State<TaxRatesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       floatingActionButton: _buildAddButton(),

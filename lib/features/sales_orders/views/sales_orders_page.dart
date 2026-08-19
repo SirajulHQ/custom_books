@@ -11,7 +11,8 @@ import 'package:custom_books/features/sales_orders/widgets/sales_order_actions_s
 import 'package:custom_books/features/sales_orders/widgets/sales_order_filter_sheet.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_sort_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class SalesOrdersPage extends StatefulWidget {
   const SalesOrdersPage({super.key});
@@ -254,7 +255,6 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleOrders;
 
     return Scaffold(
@@ -628,7 +628,7 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
-                        DateFormat('dd MMM yyyy').format(order.salesOrderDate),
+                        formatDate(order.salesOrderDate),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
                           color: context.colors.textSecondary,

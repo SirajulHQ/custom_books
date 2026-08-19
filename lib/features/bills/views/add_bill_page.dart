@@ -7,7 +7,7 @@ import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/bills/models/bill_model.dart';
 import 'package:custom_books/features/bills/widgets/vendor_picker_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddBillPage extends StatefulWidget {
   const AddBillPage({super.key});
@@ -113,9 +113,6 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,
@@ -275,14 +272,14 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
 
                           const RequiredLabel(text: 'Bill Date'),
                           SizedBox(height: Dimensions.height10 / 2),
-                          _dateField(dateFormat.format(_billDate), () {
+                          _dateField(formatDate(_billDate), () {
                             _pickDate(isDueDate: false);
                           }),
                           SizedBox(height: Dimensions.height20),
 
                           const RequiredLabel(text: 'Due Date'),
                           SizedBox(height: Dimensions.height10 / 2),
-                          _dateField(dateFormat.format(_dueDate), () {
+                          _dateField(formatDate(_dueDate), () {
                             _pickDate(isDueDate: true);
                           }),
                         ],

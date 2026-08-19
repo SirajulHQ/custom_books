@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/apptheme/theme_controller.dart';
+import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/splash/views/splash_page.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,10 @@ class MyApp extends StatelessWidget {
           darkTheme: AppTheme.dark,
           themeMode: mode,
           home: const SplashPage(),
+          builder: (context, child) {
+            Dimensions.init(context);
+            return child ?? const SizedBox.shrink();
+          },
         );
       },
     );

@@ -63,8 +63,6 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.85,
@@ -148,8 +146,17 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
           ),
         ),
         SizedBox(height: Dimensions.height10),
-        _radioTile('Arabic', 'Arabic'),
-        _radioTile('English', 'English'),
+        RadioGroup<String>(
+          groupValue: _language,
+          onChanged: (v) => setState(() => _language = v!),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _radioTile('Arabic', 'Arabic'),
+              _radioTile('English', 'English'),
+            ],
+          ),
+        ),
 
         SizedBox(height: Dimensions.height15),
 
@@ -393,12 +400,16 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
 
         // Orientation
         _label('Orientation'),
-        Row(
-          children: [
-            _orientationRadio('Portrait'),
-            SizedBox(width: Dimensions.width20),
-            _orientationRadio('Landscape'),
-          ],
+        RadioGroup<String>(
+          groupValue: _orientation,
+          onChanged: (v) => setState(() => _orientation = v!),
+          child: Row(
+            children: [
+              _orientationRadio('Portrait'),
+              SizedBox(width: Dimensions.width20),
+              _orientationRadio('Landscape'),
+            ],
+          ),
         ),
 
         SizedBox(height: Dimensions.height20),
@@ -608,9 +619,6 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
             height: Dimensions.iconSize24,
             child: Radio<String>(
               value: value,
-              groupValue: _language,
-              onChanged: (v) => setState(() => _language = v!),
-              activeColor: AppColors.primary,
             ),
           ),
           SizedBox(width: Dimensions.width10),
@@ -634,9 +642,6 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
           height: Dimensions.iconSize24,
           child: Radio<String>(
             value: value,
-            groupValue: _orientation,
-            onChanged: (v) => setState(() => _orientation = v!),
-            activeColor: AppColors.primary,
           ),
         ),
         SizedBox(width: Dimensions.width10 / 2),

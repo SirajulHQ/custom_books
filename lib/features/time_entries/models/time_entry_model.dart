@@ -1,3 +1,4 @@
+
 enum TimeEntryStatus { billable, nonBillable }
 
 extension TimeEntryStatusLabel on TimeEntryStatus {
@@ -17,8 +18,6 @@ extension TimeEntrySortFieldLabel on TimeEntrySortField {
     TimeEntrySortField.duration => 'Duration',
   };
 }
-
-enum SortDirection { ascending, descending }
 
 class TimeEntryModel {
   final String id;

@@ -34,7 +34,6 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final expense = widget.expense;
     final statusColor = expense.status.color;
 

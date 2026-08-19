@@ -9,6 +9,7 @@ import 'package:custom_books/features/recurring_invoices/models/recurring_invoic
 import 'package:custom_books/features/recurring_invoices/views/add_recurring_invoice_page.dart';
 import 'package:custom_books/features/recurring_invoices/views/recurring_invoice_details_page.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class RecurringInvoicesPage extends StatefulWidget {
   const RecurringInvoicesPage({super.key});
@@ -490,7 +491,6 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleProfiles;
 
     return Scaffold(

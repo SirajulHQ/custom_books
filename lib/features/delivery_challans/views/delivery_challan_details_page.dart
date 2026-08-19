@@ -35,7 +35,6 @@ class _DeliveryChallanDetailsPageState extends State<DeliveryChallanDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final challan = widget.challan;
     final statusColor = challan.status.color;
 

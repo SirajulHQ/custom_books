@@ -6,7 +6,7 @@ import 'package:custom_books/features/reports/models/report_type.dart';
 import 'package:custom_books/features/reports/widgets/report_filter_sheet.dart';
 import 'package:custom_books/features/reports/widgets/report_export_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class ReportDetailPage extends StatefulWidget {
   final ReportType reportType;
@@ -78,17 +78,14 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   }
 
   String get _dateSubtitle {
-    final fmt = DateFormat('dd MMM yyyy');
     if (widget.reportType.dateMode == ReportDateMode.asOf) {
-      return 'As of ${fmt.format(_asOfDate)}';
+      return 'As of ${formatDate(_asOfDate)}';
     }
-    return 'From ${fmt.format(_startDate)} To ${fmt.format(_endDate)}';
+    return 'From ${formatDate(_startDate)} To ${formatDate(_endDate)}';
   }
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(

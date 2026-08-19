@@ -132,8 +132,6 @@ class _AddAddressPageState extends State<AddAddressPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,

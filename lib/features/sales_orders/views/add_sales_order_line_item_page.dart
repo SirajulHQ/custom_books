@@ -102,7 +102,6 @@ class _AddSalesOrderLineItemPageState extends State<AddSalesOrderLineItemPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,

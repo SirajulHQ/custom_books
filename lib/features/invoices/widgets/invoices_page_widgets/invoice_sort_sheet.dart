@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 enum InvoiceSortField {
   createdTime,
@@ -19,8 +20,6 @@ extension InvoiceSortFieldLabel on InvoiceSortField {
     InvoiceSortField.amount => 'Amount',
   };
 }
-
-enum SortDirection { ascending, descending }
 
 class InvoiceSortSheet extends StatefulWidget {
   final InvoiceSortField initialField;

@@ -16,8 +16,6 @@ class CustomerMoreOptionsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     Widget tile(IconData icon, String label, VoidCallback onTap) {
       return ListTile(
         leading: Icon(icon, color: AppColors.primary),

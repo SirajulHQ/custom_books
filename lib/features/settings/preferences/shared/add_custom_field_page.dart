@@ -129,8 +129,6 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,
@@ -329,7 +327,7 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
                             value: _isMandatory,
                             onChanged: (val) =>
                                 setState(() => _isMandatory = val),
-                            activeColor: Colors.white,
+                            activeThumbColor: Colors.white,
                             activeTrackColor: AppColors.primary,
                             inactiveThumbColor: Colors.white,
                             inactiveTrackColor: context.colors.border,
@@ -354,7 +352,7 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
                             value: _showInAllPdf,
                             onChanged: (val) =>
                                 setState(() => _showInAllPdf = val),
-                            activeColor: Colors.white,
+                            activeThumbColor: Colors.white,
                             activeTrackColor: AppColors.primary,
                             inactiveThumbColor: Colors.white,
                             inactiveTrackColor: context.colors.border,
@@ -375,30 +373,31 @@ class _AddCustomFieldPageState extends State<AddCustomFieldPage>
   Widget _buildRadioTile(String label, bool selected, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Radio<bool>(
-            value: true,
-            groupValue: selected ? true : null,
-            onChanged: (_) => onTap(),
-            activeColor: AppColors.primary,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          SizedBox(width: Dimensions.width10 / 2),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(top: Dimensions.height10),
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.85,
-                  color: context.colors.textPrimary,
+      child: RadioGroup<bool>(
+        groupValue: selected ? true : null,
+        onChanged: (_) => onTap(),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Radio<bool>(
+              value: true,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            SizedBox(width: Dimensions.width10 / 2),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(top: Dimensions.height10),
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.85,
+                    color: context.colors.textPrimary,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

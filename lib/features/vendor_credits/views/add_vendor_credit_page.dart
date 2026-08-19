@@ -6,7 +6,7 @@ import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/vendor_credits/models/vendor_credit_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddVendorCreditPage extends StatefulWidget {
   const AddVendorCreditPage({super.key});
@@ -152,9 +152,6 @@ class _AddVendorCreditPageState extends State<AddVendorCreditPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,
@@ -266,7 +263,7 @@ class _AddVendorCreditPageState extends State<AddVendorCreditPage>
                           SizedBox(height: Dimensions.height20),
                           const RequiredLabel(text: 'Credit Date'),
                           SizedBox(height: Dimensions.height10 / 2),
-                          _dateField(dateFormat.format(_creditDate), _pickDate),
+                          _dateField(formatDate(_creditDate), _pickDate),
                         ],
                       ),
                       SizedBox(height: Dimensions.height15),

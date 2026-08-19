@@ -9,7 +9,8 @@ import 'package:custom_books/features/purchase_orders/models/purchase_order_mode
 import 'package:custom_books/features/purchase_orders/views/add_purchase_order_page.dart';
 import 'package:custom_books/features/purchase_orders/views/purchase_order_details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class PurchaseOrdersPage extends StatefulWidget {
   const PurchaseOrdersPage({super.key});
@@ -402,7 +403,6 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleOrders;
 
     return Scaffold(
@@ -759,7 +759,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
                       ),
                       SizedBox(width: Dimensions.width10 / 2),
                       Text(
-                        DateFormat('dd MMM yyyy').format(order.orderDate),
+                        formatDate(order.orderDate),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.7,
                           color: context.colors.textSecondary,

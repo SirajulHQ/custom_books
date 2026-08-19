@@ -4,7 +4,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class ItemSettingsPage extends StatefulWidget {
   const ItemSettingsPage({super.key});
@@ -43,9 +43,6 @@ class _ItemSettingsPageState extends State<ItemSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(
@@ -96,7 +93,7 @@ class _ItemSettingsPageState extends State<ItemSettingsPage> {
                               value: _enableInventory,
                               onChanged: (val) =>
                                   setState(() => _enableInventory = val),
-                              activeColor: AppColors.primary,
+                              activeThumbColor: AppColors.primary,
                             ),
                           ],
                         ),
@@ -132,7 +129,7 @@ class _ItemSettingsPageState extends State<ItemSettingsPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    dateFormat.format(_inventoryStartDate),
+                                    formatDate(_inventoryStartDate),
                                     style: FormTextStyles.value(context),
                                   ),
                                   Icon(
@@ -163,7 +160,7 @@ class _ItemSettingsPageState extends State<ItemSettingsPage> {
                                 value: _notifyReorderPoint,
                                 onChanged: (val) =>
                                     setState(() => _notifyReorderPoint = val),
-                                activeColor: AppColors.primary,
+                                activeThumbColor: AppColors.primary,
                               ),
                             ],
                           ),

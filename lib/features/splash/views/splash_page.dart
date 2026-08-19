@@ -109,7 +109,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     return Scaffold(
       body: Container(
         width: double.infinity,

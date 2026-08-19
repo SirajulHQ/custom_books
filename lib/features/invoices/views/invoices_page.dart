@@ -10,6 +10,7 @@ import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/inv
 import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoice_sort_sheet.dart';
 import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoice_tabs_and_controls.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 
 class InvoicesPage extends StatefulWidget {
   final int initialTab;
@@ -179,7 +180,6 @@ class _InvoicesPageState extends State<InvoicesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final visibleList = _visibleInvoices;
 
     return Scaffold(

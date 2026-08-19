@@ -78,8 +78,6 @@ class _QuotesSettingsPageState extends State<QuotesSettingsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: onPopInvokedWithResult,

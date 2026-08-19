@@ -48,8 +48,6 @@ extension ProjectSortFieldLabel on ProjectSortField {
   };
 }
 
-enum SortDirection { ascending, descending }
-
 class ProjectModel {
   final String id;
   final String projectName;

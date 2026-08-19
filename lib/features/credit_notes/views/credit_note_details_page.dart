@@ -35,7 +35,6 @@ class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final note = widget.note;
     final statusColor = note.status.color;
 

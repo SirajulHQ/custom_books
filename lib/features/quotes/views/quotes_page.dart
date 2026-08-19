@@ -10,7 +10,7 @@ import 'package:custom_books/features/quotes/views/add_quote_page.dart';
 import 'package:custom_books/features/quotes/widgets/quote_actions_sheet.dart';
 import 'package:custom_books/features/quotes/widgets/quote_filter_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 enum QuoteSort {
   createdTime,
@@ -163,7 +163,7 @@ class _QuotesPageState extends State<QuotesPage> {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              Text(DateFormat('dd MMM yyyy').format(quote.quoteDate)),
+              Text(formatDate(quote.quoteDate)),
               if (quote.subject.isNotEmpty)
                 Padding(
                   padding: EdgeInsets.only(top: Dimensions.height10),
@@ -294,7 +294,6 @@ class _QuotesPageState extends State<QuotesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final quotes = _visibleQuotes;
     return Scaffold(
       backgroundColor: context.colors.background,
@@ -642,7 +641,7 @@ class _QuotesPageState extends State<QuotesPage> {
                     ),
                     SizedBox(width: Dimensions.width10 / 2),
                     Text(
-                      DateFormat('dd MMM yyyy').format(quote.quoteDate),
+                      formatDate(quote.quoteDate),
                       style: TextStyle(
                         fontSize: Dimensions.font16 * 0.7,
                         color: context.colors.textSecondary,
@@ -718,7 +717,6 @@ class _QuoteSortSheetState extends State<_QuoteSortSheet> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     return SafeArea(
       top: false,
       child: Container(

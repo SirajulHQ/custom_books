@@ -36,7 +36,6 @@ class _RecurringInvoiceDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final profile = widget.profile;
     final statusColor = profile.status.color;
 

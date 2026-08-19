@@ -33,8 +33,6 @@ extension BillSortFieldLabel on BillSortField {
   };
 }
 
-enum SortDirection { ascending, descending }
-
 class BillModel {
   final String id;
   final String billNumber;

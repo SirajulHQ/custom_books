@@ -35,8 +35,6 @@ class _VendorPortalSettingsPageState extends State<VendorPortalSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-
     return Scaffold(
       backgroundColor: context.colors.background,
       bottomNavigationBar: _buildSaveButton(),
@@ -166,7 +164,7 @@ class _VendorPortalSettingsPageState extends State<VendorPortalSettingsPage> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: Colors.white,
+            activeThumbColor: Colors.white,
             activeTrackColor: AppColors.primary,
             inactiveThumbColor: Colors.white,
             inactiveTrackColor: context.colors.border,

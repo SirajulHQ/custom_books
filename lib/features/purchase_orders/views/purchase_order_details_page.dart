@@ -35,7 +35,6 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
     final order = widget.order;
     final statusColor = order.status.color;
 

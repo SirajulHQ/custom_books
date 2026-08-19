@@ -5,7 +5,7 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/recurring_invoices/models/recurring_invoice_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddRecurringInvoicePage extends StatefulWidget {
   const AddRecurringInvoicePage({super.key});
@@ -193,9 +193,6 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    Dimensions.init(context);
-    final dateFormat = DateFormat('dd MMM yyyy');
-
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(
@@ -409,7 +406,7 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  dateFormat.format(_startDate),
+                                  formatDate(_startDate),
                                   style: FormTextStyles.value(context),
                                 ),
                                 Icon(
