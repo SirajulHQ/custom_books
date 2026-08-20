@@ -7,8 +7,8 @@ import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
-import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/custom_text_field.dart';
-import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/customer_information_card.dart';
+import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/invoice_text_field.dart';
+import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/invoice_customer_info_card.dart';
 import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/email_communications_card.dart';
 import 'package:custom_books/features/invoices/widgets/invoice_form_helpers.dart';
 import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/invoice_tax_and_line_item_section.dart';
@@ -206,7 +206,7 @@ class _NewInvoicePageState extends State<NewInvoicePage>
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     // Customer Information Card
-                    CustomerInformationCard(
+                    InvoiceCustomerInfoCard(
                       customerNameController: _customerNameController,
                       onClearCustomer: () =>
                           setState(() => _customerNameController.clear()),
@@ -250,14 +250,14 @@ class _NewInvoicePageState extends State<NewInvoicePage>
                       borderRadius: Dimensions.radius20,
                       showShadow: true,
                       children: [
-                        CustomTextField(
+                        InvoiceTextField(
                           label: 'Salesperson',
                           controller: _salespersonController,
                           placeholder: 'Select or Add Salesperson',
                           suffixIcon: Icons.keyboard_arrow_down_rounded,
                         ),
                         SizedBox(height: Dimensions.height20),
-                        CustomTextField(
+                        InvoiceTextField(
                           label: 'Subject',
                           controller: _subjectController,
                           placeholder: 'What is this invoice for?',

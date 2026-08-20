@@ -2,13 +2,13 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-class CustomDateField extends StatelessWidget {
+class InvoiceDateField extends StatelessWidget {
   final String label;
   final DateTime date;
   final bool isRequired;
   final ValueChanged<DateTime>? onDateSelected;
 
-  const CustomDateField({
+  const InvoiceDateField({
     super.key,
     required this.label,
     required this.date,
@@ -25,14 +25,15 @@ class CustomDateField extends StatelessWidget {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: AppColors.primary,
-              brightness: Theme.of(context).brightness,
-            ).copyWith(
-              primary: AppColors.primary,
-              onSurface: context.colors.textPrimary,
-              surface: context.colors.card,
-            ),
+            colorScheme:
+                ColorScheme.fromSeed(
+                  seedColor: AppColors.primary,
+                  brightness: Theme.of(context).brightness,
+                ).copyWith(
+                  primary: AppColors.primary,
+                  onSurface: context.colors.textPrimary,
+                  surface: context.colors.card,
+                ),
           ),
           child: child!,
         );
@@ -111,8 +112,18 @@ class CustomDateField extends StatelessWidget {
 
   static String _getMonthName(int month) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return months[month - 1];
   }

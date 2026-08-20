@@ -2,14 +2,14 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-class FilterBottomSheet<T> extends StatelessWidget {
+class CreditNoteFilterSheet<T> extends StatelessWidget {
   final String title;
   final List<T?> options;
   final T? selectedValue;
   final String Function(T?) labelBuilder;
   final ValueChanged<T?> onSelected;
 
-  const FilterBottomSheet({
+  const CreditNoteFilterSheet({
     super.key,
     required this.title,
     required this.options,
@@ -32,19 +32,14 @@ class FilterBottomSheet<T> extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-
             // Drag handle
             Container(
               width: Dimensions.width20 * 2,
               height: Dimensions.height10 * 0.4,
-              margin: EdgeInsets.symmetric(
-                vertical: Dimensions.height10,
-              ),
+              margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
               decoration: BoxDecoration(
                 color: context.colors.border,
-                borderRadius: BorderRadius.circular(
-                  Dimensions.radius30,
-                ),
+                borderRadius: BorderRadius.circular(Dimensions.radius30),
               ),
             ),
 
@@ -56,7 +51,6 @@ class FilterBottomSheet<T> extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-
                   Text(
                     title,
                     style: TextStyle(
@@ -90,7 +84,6 @@ class FilterBottomSheet<T> extends StatelessWidget {
                 ),
                 itemCount: options.length,
                 itemBuilder: (context, index) {
-
                   final item = options[index];
                   final selected = item == selectedValue;
 
@@ -101,9 +94,7 @@ class FilterBottomSheet<T> extends StatelessWidget {
                     },
 
                     child: Container(
-                      margin: EdgeInsets.only(
-                        bottom: Dimensions.height10,
-                      ),
+                      margin: EdgeInsets.only(bottom: Dimensions.height10),
                       padding: EdgeInsets.symmetric(
                         horizontal: Dimensions.width15,
                         vertical: Dimensions.height15,
@@ -111,9 +102,7 @@ class FilterBottomSheet<T> extends StatelessWidget {
 
                       decoration: BoxDecoration(
                         color: selected
-                            ? AppColors.primary.withValues(
-                                alpha: 0.05,
-                              )
+                            ? AppColors.primary.withValues(alpha: 0.05)
                             : Colors.transparent,
 
                         borderRadius: BorderRadius.circular(
@@ -129,11 +118,9 @@ class FilterBottomSheet<T> extends StatelessWidget {
                       ),
 
                       child: Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                         children: [
-
                           Text(
                             labelBuilder(item),
                             style: TextStyle(

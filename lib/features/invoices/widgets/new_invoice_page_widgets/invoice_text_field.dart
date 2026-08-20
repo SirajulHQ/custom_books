@@ -2,7 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class InvoiceTextField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
   final bool isRequired;
@@ -10,7 +10,7 @@ class CustomTextField extends StatelessWidget {
   final String? placeholder;
   final IconData? suffixIcon;
 
-  const CustomTextField({
+  const InvoiceTextField({
     super.key,
     required this.label,
     required this.controller,

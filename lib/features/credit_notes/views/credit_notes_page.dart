@@ -5,8 +5,8 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/credit_notes/models/credit_note_model.dart';
 import 'package:custom_books/features/credit_notes/views/add_credit_note_page.dart';
 import 'package:custom_books/features/credit_notes/widgets/credit_note_card.dart';
-import 'package:custom_books/features/credit_notes/widgets/filter_bottom_sheet.dart';
-import 'package:custom_books/features/credit_notes/widgets/sort_bottom_sheet.dart';
+import 'package:custom_books/features/credit_notes/widgets/credit_note_filter_sheet.dart';
+import 'package:custom_books/features/credit_notes/widgets/credit_note_sort_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
@@ -133,7 +133,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return FilterBottomSheet<CreditNoteStatus>(
+        return CreditNoteFilterSheet<CreditNoteStatus>(
           title: "Filter",
 
           options: [null, ...CreditNoteStatus.values],
@@ -160,7 +160,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        return SortBottomSheet<CreditNoteSortField>(
+        return CreditNoteSortSheet<CreditNoteSortField>(
           title: "Sort by",
           items: CreditNoteSortField.values,
           selectedItem: _sortField,

@@ -2,12 +2,12 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-class FilterButton extends StatelessWidget {
+class BankingFilterButton extends StatelessWidget {
   final String label;
   final IconData? icon;
   final VoidCallback onTap;
 
-  const FilterButton({
+  const BankingFilterButton({
     super.key,
     required this.label,
     this.icon,

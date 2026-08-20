@@ -2,14 +2,14 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
-import 'package:custom_books/features/invoices/widgets/custom_date_field.dart';
-import 'package:custom_books/features/invoices/widgets/custom_dropdown_field.dart';
-import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/custom_text_field.dart';
+import 'package:custom_books/features/invoices/widgets/invoice_date_field.dart';
+import 'package:custom_books/features/invoices/widgets/invoice_dropdown_field.dart';
+import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/invoice_text_field.dart';
 import 'package:custom_books/features/invoices/widgets/invoice_form_helpers.dart';
 import 'package:flutter/material.dart';
 
-class CustomerInformationCard extends StatelessWidget {
-  const CustomerInformationCard({
+class InvoiceCustomerInfoCard extends StatelessWidget {
+  const InvoiceCustomerInfoCard({
     super.key,
     required this.customerNameController,
     required this.onClearCustomer,
@@ -231,7 +231,7 @@ class CustomerInformationCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: Dimensions.height20),
-            CustomDropdownField(
+            InvoiceDropdownField(
               label: 'Place Of Supply',
               value: selectedPlaceOfSupply,
               options: placeOfSupplyOptions,
@@ -325,19 +325,19 @@ class CustomerInformationCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: Dimensions.height20),
-            CustomTextField(
+            InvoiceTextField(
               label: 'Order Number',
               controller: orderNumberController,
             ),
             SizedBox(height: Dimensions.height20),
-            CustomDateField(
+            InvoiceDateField(
               label: 'Invoice Date',
               date: invoiceDate,
               isRequired: true,
               onDateSelected: onInvoiceDateSelected,
             ),
             SizedBox(height: Dimensions.height20),
-            CustomDropdownField(
+            InvoiceDropdownField(
               label: 'Terms',
               value: selectedTerms,
               options: termsOptions,
@@ -346,7 +346,7 @@ class CustomerInformationCard extends StatelessWidget {
               // onShowSheet: _showDropdownSheet,
             ),
             SizedBox(height: Dimensions.height20),
-            CustomDateField(
+            InvoiceDateField(
               label: 'Due Date',
               date: dueDate,
               isRequired: true,

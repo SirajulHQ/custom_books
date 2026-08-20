@@ -2,13 +2,13 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-class SelectionSheet extends StatelessWidget {
+class BankingSelectionSheet extends StatelessWidget {
   final String title;
   final List<String> options;
   final String selectedOption;
   final ValueChanged<String> onSelected;
 
-  const SelectionSheet({
+  const BankingSelectionSheet({
     super.key,
     required this.title,
     required this.options,
@@ -28,7 +28,7 @@ class SelectionSheet extends StatelessWidget {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        return SelectionSheet(
+        return BankingSelectionSheet(
           title: title,
           options: options,
           selectedOption: selectedOption,

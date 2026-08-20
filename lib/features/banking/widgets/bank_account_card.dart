@@ -2,13 +2,13 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-class AccountCard extends StatelessWidget {
+class BankAccountCard extends StatelessWidget {
   final IconData icon;
   final Color iconBgColor;
   final String title;
   final String amount;
 
-  const AccountCard({
+  const BankAccountCard({
     super.key,
     required this.icon,
     required this.iconBgColor,

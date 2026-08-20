@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
+import 'package:custom_books/features/customers/widgets/add_contact_salutation_selecter.dart';
 import 'package:flutter/material.dart';
 
 class AddContactPersonPage extends StatefulWidget {
@@ -153,7 +154,20 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
                           children: [
                             Expanded(
                               flex: 1,
-                              child: _buildSalutationDropdown(),
+                              child: AddContactSalutationSelecter(
+                                selectedSalutation: _selectedSalutation,
+                                options: _salutationOptions,
+                                onSelected: (value) {
+                                  setState(() {
+                                    _selectedSalutation = value;
+                                  });
+
+                                  appLog(
+                                    '✅ Salutation selected: $value',
+                                    name: 'AddContactPersonPage',
+                                  );
+                                },
+                              ),
                             ),
                             SizedBox(width: Dimensions.width15),
                             Expanded(
@@ -233,172 +247,6 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
                 ]),
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSalutationDropdown() {
-    return GestureDetector(
-      onTap: () => _showSalutationBottomSheet(),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width15,
-          vertical: Dimensions.height15,
-        ),
-        decoration: BoxDecoration(
-          color: context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(
-            color: _selectedSalutation.isEmpty
-                ? context.colors.border
-                : AppColors.primary,
-            width: _selectedSalutation.isEmpty ? 1 : 2,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Text(
-                _selectedSalutation.isEmpty
-                    ? 'Salutation'
-                    : _selectedSalutation,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.85,
-                  color: _selectedSalutation.isEmpty
-                      ? context.colors.textTertiary
-                      : context.colors.textPrimary,
-                  fontWeight: _selectedSalutation.isEmpty
-                      ? FontWeight.w500
-                      : FontWeight.w600,
-                ),
-              ),
-            ),
-            Icon(
-              Icons.keyboard_arrow_down_rounded,
-              size: Dimensions.iconSize16 * 1.2,
-              color: context.colors.textSecondary,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showSalutationBottomSheet() {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: context.colors.card,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.radius20),
-        ),
-      ),
-      builder: (_) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width20,
-                vertical: Dimensions.height15,
-              ),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: context.colors.border, width: 1),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Select Salutation',
-                    style: TextStyle(
-                      fontSize: Dimensions.font20 * 0.85,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: Dimensions.iconSize24,
-                      color: context.colors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Options
-            ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.all(Dimensions.width20),
-              itemCount: _salutationOptions.length,
-              itemBuilder: (context, index) {
-                final option = _salutationOptions[index];
-                final isSelected = _selectedSalutation == option;
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() => _selectedSalutation = option);
-                    Navigator.pop(context);
-                    appLog(
-                      '✅ Salutation selected: $option',
-                      name: 'AddContactPersonPage',
-                    );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(bottom: Dimensions.height10),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Dimensions.width15,
-                      vertical: Dimensions.height15,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? AppColors.primary.withValues(alpha: 0.05)
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      border: Border.all(
-                        color: isSelected
-                            ? AppColors.primary
-                            : context.colors.border,
-                        width: isSelected ? 2 : 1,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          option,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w500,
-                            color: isSelected
-                                ? AppColors.primary
-                                : context.colors.textPrimary,
-                          ),
-                        ),
-                        if (isSelected)
-                          Icon(
-                            Icons.check_circle,
-                            color: AppColors.primary,
-                            size: Dimensions.iconSize24,
-                          ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: Dimensions.height10),
           ],
         ),
       ),

@@ -3,18 +3,17 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/customers/widgets/add_customer_page_widgets/salutation_selector.dart';
 import 'package:custom_books/features/customers/widgets/form_section_card.dart';
-import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/custom_text_field.dart';
+import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/invoice_text_field.dart';
 import 'package:flutter/material.dart';
 
-class CustomerInformationCard extends StatefulWidget {
-  const CustomerInformationCard({super.key});
+class AddCustomerInfoCard extends StatefulWidget {
+  const AddCustomerInfoCard({super.key});
 
   @override
-  State<CustomerInformationCard> createState() =>
-      _CustomerInformationCardState();
+  State<AddCustomerInfoCard> createState() => _AddCustomerInfoCardState();
 }
 
-class _CustomerInformationCardState extends State<CustomerInformationCard> {
+class _AddCustomerInfoCardState extends State<AddCustomerInfoCard> {
   String _selectedSalutation = '';
   String _phoneCountryCode = '+91';
   String _mobileCountryCode = '+91';
@@ -107,7 +106,7 @@ class _CustomerInformationCardState extends State<CustomerInformationCard> {
 
             Expanded(
               flex: 2,
-              child: CustomTextField(
+              child: InvoiceTextField(
                 label: 'First Name',
                 controller: _firstNameController,
               ),
@@ -117,18 +116,18 @@ class _CustomerInformationCardState extends State<CustomerInformationCard> {
 
         SizedBox(height: Dimensions.height20),
 
-        CustomTextField(label: 'Last Name', controller: _lastNameController),
+        InvoiceTextField(label: 'Last Name', controller: _lastNameController),
 
         SizedBox(height: Dimensions.height20),
 
-        CustomTextField(
+        InvoiceTextField(
           label: 'Company Name',
           controller: _companyNameController,
         ),
 
         SizedBox(height: Dimensions.height20),
 
-        CustomTextField(
+        InvoiceTextField(
           label: 'Display Name',
           controller: _displayNameController,
           isRequired: true,
@@ -137,7 +136,7 @@ class _CustomerInformationCardState extends State<CustomerInformationCard> {
 
         SizedBox(height: Dimensions.height20),
 
-        CustomTextField(
+        InvoiceTextField(
           label: 'Email Address',
           controller: _emailController,
           hasInfo: true,

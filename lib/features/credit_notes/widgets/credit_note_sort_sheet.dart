@@ -3,7 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
-class SortBottomSheet<T> extends StatelessWidget {
+class CreditNoteSortSheet<T> extends StatelessWidget {
   final String title;
   final List<T> items;
   final String Function(T) labelBuilder;
@@ -12,7 +12,7 @@ class SortBottomSheet<T> extends StatelessWidget {
   final ValueChanged<T> onItemChanged;
   final VoidCallback onApply;
 
-  const SortBottomSheet({
+  const CreditNoteSortSheet({
     super.key,
     required this.title,
     required this.items,

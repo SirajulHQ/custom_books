@@ -4,12 +4,12 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/banking/models/bank_account.dart';
 import 'package:custom_books/features/banking/views/add_bank_account_page.dart';
-import 'package:custom_books/features/banking/widgets/account_card.dart';
+import 'package:custom_books/features/banking/widgets/bank_account_card.dart';
 import 'package:custom_books/features/banking/widgets/banking_more_options_sheet.dart';
 import 'package:custom_books/features/banking/widgets/banking_summary_card.dart';
 import 'package:custom_books/features/banking/widgets/active_account_item.dart';
-import 'package:custom_books/features/banking/widgets/filter_button.dart';
-import 'package:custom_books/features/banking/widgets/selection_sheet.dart';
+import 'package:custom_books/features/banking/widgets/banking_filter_button.dart';
+import 'package:custom_books/features/banking/widgets/banking_selection_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -110,7 +110,7 @@ class _BankingPageState extends State<BankingPage> {
                   icon: Icons.filter_list_rounded,
                   color: AppColors.primary,
                   onPressed: () {
-                    SelectionSheet.show(
+                    BankingSelectionSheet.show(
                       context,
                       title: 'Select Account',
                       options: _accountFilterOptions,
@@ -168,10 +168,10 @@ class _BankingPageState extends State<BankingPage> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: FilterButton(
+                        child: BankingFilterButton(
                           label: _selectedAccountFilter,
                           onTap: () {
-                            SelectionSheet.show(
+                            BankingSelectionSheet.show(
                               context,
                               title: 'Select Account',
                               options: _accountFilterOptions,
@@ -187,11 +187,11 @@ class _BankingPageState extends State<BankingPage> {
                       ),
                       SizedBox(width: Dimensions.width10 * 0.4),
                       Expanded(
-                        child: FilterButton(
+                        child: BankingFilterButton(
                           label: _selectedDateFilter,
                           icon: Icons.calendar_today_rounded,
                           onTap: () {
-                            SelectionSheet.show(
+                            BankingSelectionSheet.show(
                               context,
                               title: 'Select Date Range',
                               options: _dateFilterOptions,
@@ -223,7 +223,7 @@ class _BankingPageState extends State<BankingPage> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: AccountCard(
+                      child: BankAccountCard(
                         icon: Icons.payments_rounded,
                         iconBgColor: AppColors.primary,
                         title: 'Cash In Hand',
@@ -232,7 +232,7 @@ class _BankingPageState extends State<BankingPage> {
                     ),
                     SizedBox(width: Dimensions.width15),
                     Expanded(
-                      child: AccountCard(
+                      child: BankAccountCard(
                         icon: Icons.account_balance_rounded,
                         iconBgColor: AppColors.success,
                         title: 'Bank Balance',

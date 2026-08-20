@@ -2,7 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-class CustomDropdownField extends StatelessWidget {
+class InvoiceDropdownField extends StatelessWidget {
   final String label;
   final String value;
   final List<String> options;
@@ -11,7 +11,7 @@ class CustomDropdownField extends StatelessWidget {
   // final void Function(String, String, List<String>, Function(String?)?)
   // onShowSheet;
 
-  const CustomDropdownField({
+  const InvoiceDropdownField({
     super.key,
     required this.label,
     required this.value,
