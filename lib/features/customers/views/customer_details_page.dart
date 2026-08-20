@@ -5,7 +5,12 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/views/add_customer_page.dart';
-import 'package:custom_books/features/customers/views/add_contact_person_page.dart';
+import 'package:custom_books/features/customers/widgets/customer_details_page_widgets/comments_tab.dart';
+import 'package:custom_books/features/customers/widgets/customer_details_page_widgets/contact_information_section.dart';
+import 'package:custom_books/features/customers/widgets/customer_details_page_widgets/contact_persons_section.dart';
+import 'package:custom_books/features/customers/widgets/customer_details_page_widgets/more_information_section.dart';
+import 'package:custom_books/features/customers/widgets/customer_details_page_widgets/receivables_section_card.dart';
+import 'package:custom_books/features/customers/widgets/customer_details_page_widgets/transactions_tab.dart';
 import 'package:custom_books/features/invoices/views/new_invoice_page.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,11 +28,6 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _commentController = TextEditingController();
-
-  // Track expansion state for each section
-  bool _isReceivablesExpanded = false;
-  bool _isMoreInfoExpanded = false;
-  bool _isContactPersonsExpanded = false;
 
   @override
   void initState() {
@@ -209,19 +209,153 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
             ),
 
             // Header Section
-            SliverToBoxAdapter(child: _buildHeaderSection()),
+            SliverToBoxAdapter(
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(Dimensions.width20),
+                decoration: BoxDecoration(
+                  color: context.colors.card,
+                  border: Border(
+                    bottom: BorderSide(color: context.colors.border, width: 1),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    // Receivables
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Receivables',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.75,
+                              color: context.colors.textTertiary,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          Text(
+                            '₹${widget.customer.receivables.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontSize: Dimensions.font26,
+                              fontWeight: FontWeight.w800,
+                              color: context.colors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    Container(
+                      height: Dimensions.height45,
+                      width: 1,
+                      color: context.colors.border,
+                    ),
+
+                    SizedBox(width: Dimensions.width20),
+
+                    // Unused Credits
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Unused Credits',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.75,
+                              color: context.colors.textTertiary,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          Text(
+                            '₹${widget.customer.unusedCredits.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontSize: Dimensions.font26,
+                              fontWeight: FontWeight.w800,
+                              color: context.colors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
             // Tab Bar
-            SliverToBoxAdapter(child: _buildTabBar()),
+            SliverToBoxAdapter(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: context.colors.card,
+                  border: Border(
+                    bottom: BorderSide(color: context.colors.border, width: 1),
+                  ),
+                ),
+                child: TabBar(
+                  controller: _tabController,
+                  labelColor: AppColors.primary,
+                  unselectedLabelColor: context.colors.textSecondary,
+                  labelStyle: TextStyle(
+                    fontSize: Dimensions.font16 * 0.8,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                  ),
+                  unselectedLabelStyle: TextStyle(
+                    fontSize: Dimensions.font16 * 0.8,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  indicatorColor: AppColors.primary,
+                  indicatorWeight: 3,
+                  tabs: const [
+                    Tab(text: 'DETAILS'),
+                    Tab(text: 'TRANSACTIONS'),
+                    Tab(text: 'COMMENTS'),
+                  ],
+                ),
+              ),
+            ),
 
             // Tab Bar View Content
             SliverFillRemaining(
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  _buildDetailsTab(),
-                  _buildTransactionsTab(),
-                  _buildCommentsTab(),
+                  SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        SizedBox(height: Dimensions.height20),
+
+                        // Contact Information Section
+                        ContactInformationSection(
+                          customer: widget.customer,
+                          onDial: _dial,
+                          onSendEmail: _sendEmail,
+                        ),
+
+                        // Receivables Section
+                        ReceivablesSectionCard(
+                          customer: widget.customer,
+                          onEditCustomer: _editCustomer,
+                        ),
+
+                        // More Information Section
+                        const MoreInformationSection(),
+
+                        // Contact Persons Section
+                        const ContactPersonsSection(),
+
+                        SizedBox(height: Dimensions.height30),
+                      ],
+                    ),
+                  ),
+                  const TransactionsTab(),
+                  const CommentsTab(),
                 ],
               ),
             ),
@@ -261,892 +395,6 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
           return const SizedBox.shrink();
         },
       ),
-    );
-  }
-
-  Widget _buildHeaderSection() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(Dimensions.width20),
-      decoration: BoxDecoration(
-        color: context.colors.card,
-        border: Border(
-          bottom: BorderSide(color: context.colors.border, width: 1),
-        ),
-      ),
-      child: Row(
-        children: [
-          // Receivables
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Receivables',
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.75,
-                    color: context.colors.textTertiary,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                SizedBox(height: Dimensions.height10 / 2),
-                Text(
-                  '₹${widget.customer.receivables.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    fontSize: Dimensions.font26,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          Container(
-            height: Dimensions.height45,
-            width: 1,
-            color: context.colors.border,
-          ),
-
-          SizedBox(width: Dimensions.width20),
-
-          // Unused Credits
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Unused Credits',
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.75,
-                    color: context.colors.textTertiary,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                SizedBox(height: Dimensions.height10 / 2),
-                Text(
-                  '₹${widget.customer.unusedCredits.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    fontSize: Dimensions.font26,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTabBar() {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.colors.card,
-        border: Border(
-          bottom: BorderSide(color: context.colors.border, width: 1),
-        ),
-      ),
-      child: TabBar(
-        controller: _tabController,
-        labelColor: AppColors.primary,
-        unselectedLabelColor: context.colors.textSecondary,
-        labelStyle: TextStyle(
-          fontSize: Dimensions.font16 * 0.8,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.5,
-        ),
-        unselectedLabelStyle: TextStyle(
-          fontSize: Dimensions.font16 * 0.8,
-          fontWeight: FontWeight.w600,
-        ),
-        indicatorColor: AppColors.primary,
-        indicatorWeight: 3,
-        tabs: const [
-          Tab(text: 'DETAILS'),
-          Tab(text: 'TRANSACTIONS'),
-          Tab(text: 'COMMENTS'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetailsTab() {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        children: [
-          SizedBox(height: Dimensions.height20),
-
-          // Contact Information Section
-          _buildContactInformationSection(),
-
-          // Receivables Section
-          _buildReceivablesSection(),
-
-          // More Information Section
-          _buildMoreInformationSection(),
-
-          // Contact Persons Section
-          _buildContactPersonsSection(),
-
-          SizedBox(height: Dimensions.height30),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContactInformationSection() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-      padding: EdgeInsets.all(Dimensions.width20),
-      decoration: BoxDecoration(
-        color: context.colors.card,
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: context.colors.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Section Title
-          Text(
-            'CONTACT INFORMATION',
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.7,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textTertiary,
-              letterSpacing: 1.2,
-            ),
-          ),
-          SizedBox(height: Dimensions.height20),
-
-          // Mobile
-          _buildContactInfoRow(
-            icon: Icons.phone_iphone_rounded,
-            iconColor: const Color(0xFF5C6BC0),
-            label: 'Mobile',
-            value: widget.customer.mobileNumber,
-            placeholder: 'Add mobile number',
-            onTap: () {
-              appLog('📱 Mobile tapped', name: 'CustomerDetailsPage');
-              _dial(widget.customer.mobileNumber);
-            },
-          ),
-
-          SizedBox(height: Dimensions.height20),
-
-          // Work Phone
-          _buildContactInfoRow(
-            icon: Icons.phone_rounded,
-            iconColor: const Color(0xFF5C6BC0),
-            label: 'Work Phone',
-            value: widget.customer.workPhone,
-            placeholder: 'Add work phone',
-            onTap: () {
-              appLog('☎️ Work Phone tapped', name: 'CustomerDetailsPage');
-              _dial(widget.customer.workPhone);
-            },
-          ),
-
-          SizedBox(height: Dimensions.height20),
-
-          // Email
-          _buildContactInfoRow(
-            icon: Icons.email_rounded,
-            iconColor: const Color(0xFF5C6BC0),
-            label: 'Email',
-            value: widget.customer.email,
-            placeholder: 'Add email',
-            onTap: () {
-              appLog('✉️ Email tapped', name: 'CustomerDetailsPage');
-              _sendEmail(widget.customer.email);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContactInfoRow({
-    required IconData icon,
-    required Color iconColor,
-    required String label,
-    String? value,
-    required String placeholder,
-    required VoidCallback onTap,
-  }) {
-    final hasValue = value != null && value.isNotEmpty;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Row(
-        children: [
-          // Icon
-          Container(
-            width: Dimensions.height45,
-            height: Dimensions.height45,
-            decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(Dimensions.radius15 / 1.5),
-            ),
-            child: Icon(icon, color: iconColor, size: Dimensions.iconSize24),
-          ),
-
-          SizedBox(width: Dimensions.width15),
-
-          // Label and Value/Placeholder
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.9,
-                    fontWeight: FontWeight.w700,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-                SizedBox(height: Dimensions.height10 / 3),
-                Text(
-                  hasValue ? value : placeholder,
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.8,
-                    color: hasValue
-                        ? context.colors.textSecondary
-                        : context.colors.textTertiary,
-                    fontWeight: hasValue ? FontWeight.w500 : FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReceivablesSection() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(
-        Dimensions.width20,
-        Dimensions.height15,
-        Dimensions.width20,
-        0,
-      ),
-      decoration: BoxDecoration(
-        color: context.colors.card,
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: context.colors.border),
-      ),
-      child: Column(
-        children: [
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _isReceivablesExpanded = !_isReceivablesExpanded;
-                });
-                appLog(
-                  '💰 Receivables section tapped: ${_isReceivablesExpanded ? "expanded" : "collapsed"}',
-                  name: 'CustomerDetailsPage',
-                );
-              },
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-              child: Padding(
-                padding: EdgeInsets.all(Dimensions.width20),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.account_balance_wallet_outlined,
-                      size: Dimensions.iconSize24,
-                      color: AppColors.primary,
-                    ),
-                    SizedBox(width: Dimensions.width15),
-                    Expanded(
-                      child: Text(
-                        'Receivables',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16,
-                          fontWeight: FontWeight.w700,
-                          color: context.colors.textPrimary,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      _isReceivablesExpanded
-                          ? Icons.keyboard_arrow_up_rounded
-                          : Icons.keyboard_arrow_down_rounded,
-                      size: Dimensions.iconSize24,
-                      color: context.colors.textSecondary,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          if (_isReceivablesExpanded) ...[
-            Divider(height: 1, color: context.colors.border),
-            Padding(
-              padding: EdgeInsets.all(Dimensions.width20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Currency Header
-                  Row(
-                    children: [
-                      Text(
-                        'UAE Dirham',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.9,
-                          fontWeight: FontWeight.w700,
-                          color: context.colors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(width: Dimensions.width10),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width10,
-                          vertical: Dimensions.height10 / 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius15 / 3,
-                          ),
-                        ),
-                        child: Text(
-                          '₹',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.7,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height15),
-
-                  // Receivables and Unused Credits
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Receivables',
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.8,
-                                color: context.colors.textTertiary,
-                              ),
-                            ),
-                            SizedBox(height: Dimensions.height10 / 2),
-                            Text(
-                              '₹${widget.customer.receivables.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.9,
-                                fontWeight: FontWeight.w700,
-                                color: context.colors.textPrimary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Unused Credits',
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.8,
-                                color: context.colors.textTertiary,
-                              ),
-                            ),
-                            SizedBox(height: Dimensions.height10 / 2),
-                            Text(
-                              '₹${widget.customer.unusedCredits.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.9,
-                                fontWeight: FontWeight.w700,
-                                color: context.colors.textPrimary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Enter Opening Balance Link
-                  GestureDetector(
-                    onTap: () {
-                      appLog(
-                        '💵 Enter Opening Balance tapped',
-                        name: 'CustomerDetailsPage',
-                      );
-                      _editCustomer();
-                    },
-                    child: Text(
-                      'Enter Opening Balance',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMoreInformationSection() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(
-        Dimensions.width20,
-        Dimensions.height15,
-        Dimensions.width20,
-        0,
-      ),
-      decoration: BoxDecoration(
-        color: context.colors.card,
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: context.colors.border),
-      ),
-      child: Column(
-        children: [
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _isMoreInfoExpanded = !_isMoreInfoExpanded;
-                });
-                appLog(
-                  'ℹ️ More Information section tapped: ${_isMoreInfoExpanded ? "expanded" : "collapsed"}',
-                  name: 'CustomerDetailsPage',
-                );
-              },
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-              child: Padding(
-                padding: EdgeInsets.all(Dimensions.width20),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.grid_view_rounded,
-                      size: Dimensions.iconSize24,
-                      color: AppColors.primary,
-                    ),
-                    SizedBox(width: Dimensions.width15),
-                    Expanded(
-                      child: Text(
-                        'More Information',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16,
-                          fontWeight: FontWeight.w700,
-                          color: context.colors.textPrimary,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      _isMoreInfoExpanded
-                          ? Icons.keyboard_arrow_up_rounded
-                          : Icons.keyboard_arrow_down_rounded,
-                      size: Dimensions.iconSize24,
-                      color: context.colors.textSecondary,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          if (_isMoreInfoExpanded) ...[
-            Divider(height: 1, color: context.colors.border),
-            Padding(
-              padding: EdgeInsets.all(Dimensions.width20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [_buildInfoRow('Payment Terms', 'Due on Receipt')],
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: Dimensions.height10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.8,
-              color: context.colors.textTertiary,
-            ),
-          ),
-          SizedBox(height: Dimensions.height10 / 3),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.9,
-              fontWeight: FontWeight.w600,
-              color: context.colors.textPrimary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContactPersonsSection() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(
-        Dimensions.width20,
-        Dimensions.height15,
-        Dimensions.width20,
-        0,
-      ),
-      decoration: BoxDecoration(
-        color: context.colors.card,
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(color: context.colors.border),
-      ),
-      child: Column(
-        children: [
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _isContactPersonsExpanded = !_isContactPersonsExpanded;
-                });
-                appLog(
-                  '👥 Contact Persons section tapped: ${_isContactPersonsExpanded ? "expanded" : "collapsed"}',
-                  name: 'CustomerDetailsPage',
-                );
-              },
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-              child: Padding(
-                padding: EdgeInsets.all(Dimensions.width20),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.person_outline_rounded,
-                      size: Dimensions.iconSize24,
-                      color: AppColors.primary,
-                    ),
-                    SizedBox(width: Dimensions.width15),
-                    Expanded(
-                      child: Text(
-                        'Contact Persons',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16,
-                          fontWeight: FontWeight.w700,
-                          color: context.colors.textPrimary,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      _isContactPersonsExpanded
-                          ? Icons.keyboard_arrow_up_rounded
-                          : Icons.keyboard_arrow_down_rounded,
-                      size: Dimensions.iconSize24,
-                      color: context.colors.textSecondary,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          if (_isContactPersonsExpanded) ...[
-            Divider(height: 1, color: context.colors.border),
-            Padding(
-              padding: EdgeInsets.all(Dimensions.width20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'You haven\'t added any contact persons for this contact yet.',
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.85,
-                      color: context.colors.textTertiary,
-                      height: 1.5,
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-                  GestureDetector(
-                    onTap: () {
-                      appLog(
-                        '➕ Add Contact Person tapped',
-                        name: 'CustomerDetailsPage',
-                      );
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const AddContactPersonPage(),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.add_circle_outline_rounded,
-                          color: AppColors.primary,
-                          size: Dimensions.iconSize24,
-                        ),
-                        SizedBox(width: Dimensions.width10),
-                        Text(
-                          'Add Contact Person',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.85,
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTransactionsTab() {
-    return Column(
-      children: [
-        // Transaction type dropdown and actions
-        Container(
-          padding: EdgeInsets.all(Dimensions.width20),
-          decoration: BoxDecoration(
-            color: context.colors.card,
-            border: Border(
-              bottom: BorderSide(color: context.colors.border, width: 1),
-            ),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: Dimensions.width15,
-                    vertical: Dimensions.height10,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: context.colors.border),
-                    borderRadius: BorderRadius.circular(
-                      Dimensions.radius15 / 1.5,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Invoice',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.85,
-                          fontWeight: FontWeight.w600,
-                          color: context.colors.textPrimary,
-                        ),
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        size: Dimensions.iconSize24,
-                        color: context.colors.textPrimary,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(width: Dimensions.width10),
-              IconButton(
-                icon: Icon(
-                  Icons.filter_list_rounded,
-                  size: Dimensions.iconSize24,
-                  color: context.colors.textSecondary,
-                ),
-                onPressed: () {
-                  appLog(
-                    '🔍 Filter button pressed',
-                    name: 'CustomerDetailsPage',
-                  );
-                  ToastificationHelper.showInfo(
-                    context,
-                    'There are no comments to filter yet.',
-                  );
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.sort_rounded,
-                  size: Dimensions.iconSize24,
-                  color: context.colors.textSecondary,
-                ),
-                onPressed: () {
-                  appLog('🔀 Sort button pressed', name: 'CustomerDetailsPage');
-                  ToastificationHelper.showInfo(
-                    context,
-                    'There are no comments to sort yet.',
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-
-        // Empty state
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: Dimensions.height45 * 3,
-                height: Dimensions.height45 * 3,
-                decoration: BoxDecoration(
-                  color: context.colors.surfaceLight,
-                  borderRadius: BorderRadius.circular(Dimensions.radius20),
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.description_outlined,
-                    size: Dimensions.height45 * 1.5,
-                    color: AppColors.primary.withValues(alpha: 0.5),
-                  ),
-                ),
-              ),
-              SizedBox(height: Dimensions.height20),
-              Text(
-                'Total Count',
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.8,
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: Dimensions.height30),
-              Text(
-                'No Invoices created so far.',
-                style: TextStyle(
-                  fontSize: Dimensions.font16,
-                  color: context.colors.textTertiary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCommentsTab() {
-    return Column(
-      children: [
-        // Empty state
-        Expanded(
-          child: Center(
-            child: Text(
-              'No comments yet.',
-              style: TextStyle(
-                fontSize: Dimensions.font16,
-                color: context.colors.textTertiary,
-              ),
-            ),
-          ),
-        ),
-
-        // Comment input
-        Container(
-          padding: EdgeInsets.all(Dimensions.width20),
-          decoration: BoxDecoration(
-            color: context.colors.card,
-            border: Border(
-              top: BorderSide(color: context.colors.border, width: 1),
-            ),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _commentController,
-                  decoration: InputDecoration(
-                    hintText: 'Type to add a comment',
-                    hintStyle: TextStyle(
-                      color: context.colors.textTertiary,
-                      fontSize: Dimensions.font16 * 0.85,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius30),
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius30),
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius30),
-                      borderSide: BorderSide(
-                        color: AppColors.primary,
-                        width: 2,
-                      ),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: Dimensions.width20,
-                      vertical: Dimensions.height15,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: Dimensions.width10),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                ),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.send_rounded,
-                    color: Colors.white,
-                    size: Dimensions.iconSize24 * 0.9,
-                  ),
-                  onPressed: () {
-                    if (_commentController.text.trim().isNotEmpty) {
-                      appLog(
-                        '💬 Comment sent: ${_commentController.text}',
-                        name: 'CustomerDetailsPage',
-                      );
-                      _commentController.clear();
-                      FocusScope.of(context).unfocus();
-                      ToastificationHelper.showSuccess(
-                        context,
-                        'Comment added.',
-                      );
-                    }
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

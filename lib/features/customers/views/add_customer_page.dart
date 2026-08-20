@@ -7,10 +7,10 @@ import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/views/add_address_page.dart';
 import 'package:custom_books/features/customers/views/add_contact_person_page.dart';
-import 'package:custom_books/features/customers/widgets/customer_custom_text_field.dart';
-import 'package:custom_books/features/customers/widgets/customer_information_card.dart';
+import 'package:custom_books/features/customers/widgets/add_customer_page_widgets/customer_custom_text_field.dart';
+import 'package:custom_books/features/customers/widgets/add_customer_page_widgets/customer_information_card.dart';
 import 'package:custom_books/features/customers/widgets/form_section_card.dart';
-import 'package:custom_books/features/customers/widgets/other_details_card.dart';
+import 'package:custom_books/features/customers/widgets/add_customer_page_widgets/other_details_card.dart';
 import 'package:flutter/material.dart';
 
 class AddCustomerPage extends StatefulWidget {

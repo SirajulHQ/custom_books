@@ -1,8 +1,8 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/features/customers/widgets/add_customer_page_widgets/salutation_selector.dart';
 import 'package:custom_books/features/customers/widgets/form_section_card.dart';
-import 'package:custom_books/features/customers/widgets/salutation_bottom_sheet.dart';
 import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -15,10 +15,10 @@ class CustomerInformationCard extends StatefulWidget {
 }
 
 class _CustomerInformationCardState extends State<CustomerInformationCard> {
+  String _selectedSalutation = '';
   String _phoneCountryCode = '+91';
   String _mobileCountryCode = '+91';
   String _customerType = 'Business';
-  String _selectedSalutation = '';
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -27,14 +27,6 @@ class _CustomerInformationCardState extends State<CustomerInformationCard> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
-
-  final List<String> _salutationOptions = [
-    'Mr.',
-    'Mrs.',
-    'Ms.',
-    'Miss.',
-    'Dr.',
-  ];
 
   @override
   void dispose() {
@@ -53,7 +45,26 @@ class _CustomerInformationCardState extends State<CustomerInformationCard> {
     return FormSectionCard(
       title: 'Customer Information',
       children: [
-        _buildSectionHeader('Customer Type', hasInfo: true),
+        Row(
+          children: [
+            Text(
+              "Customer Type",
+              style: TextStyle(
+                fontSize: Dimensions.font16 * 0.85,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+            if (true) ...[
+              SizedBox(width: Dimensions.width10 / 2),
+              Icon(
+                Icons.info_outline,
+                size: Dimensions.iconSize16,
+                color: context.colors.textTertiary,
+              ),
+            ],
+          ],
+        ),
         SizedBox(height: Dimensions.height10),
         Row(
           children: [
@@ -65,7 +76,32 @@ class _CustomerInformationCardState extends State<CustomerInformationCard> {
         SizedBox(height: Dimensions.height20),
         Row(
           children: [
-            Expanded(flex: 1, child: _buildSalutationDropdown()),
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Salutation',
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 0.85,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height10),
+
+                  SalutationSelector(
+                    selectedSalutation: _selectedSalutation,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedSalutation = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
 
             SizedBox(width: Dimensions.width15),
 
@@ -177,29 +213,6 @@ class _CustomerInformationCardState extends State<CustomerInformationCard> {
     );
   }
 
-  Widget _buildSectionHeader(String label, {bool hasInfo = false}) {
-    return Row(
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.85,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary,
-          ),
-        ),
-        if (hasInfo) ...[
-          SizedBox(width: Dimensions.width10 / 2),
-          Icon(
-            Icons.info_outline,
-            size: Dimensions.iconSize16,
-            color: context.colors.textTertiary,
-          ),
-        ],
-      ],
-    );
-  }
-
   Widget _buildPhoneField(
     String label,
     TextEditingController controller,
@@ -297,92 +310,6 @@ class _CustomerInformationCardState extends State<CustomerInformationCard> {
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildSalutationDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Salutation',
-          style: TextStyle(
-            fontSize: Dimensions.font16 * 0.85,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary,
-          ),
-        ),
-        SizedBox(height: Dimensions.height10),
-        GestureDetector(
-          onTap: () => _showSalutationBottomSheet(),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: Dimensions.width15,
-              vertical: Dimensions.height15,
-            ),
-            decoration: BoxDecoration(
-              color: context.colors.surfaceLight,
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-              border: Border.all(
-                color: _selectedSalutation.isEmpty
-                    ? context.colors.border
-                    : AppColors.primary,
-                width: _selectedSalutation.isEmpty ? 1 : 2,
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Text(
-                    _selectedSalutation.isEmpty ? '' : _selectedSalutation,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.85,
-                      color: _selectedSalutation.isEmpty
-                          ? context.colors.textTertiary
-                          : context.colors.textPrimary,
-                      fontWeight: _selectedSalutation.isEmpty
-                          ? FontWeight.w500
-                          : FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  size: Dimensions.iconSize16 * 1.2,
-                  color: context.colors.textSecondary,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _showSalutationBottomSheet() {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: context.colors.card,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.radius20),
-        ),
-      ),
-      builder: (_) {
-        return SalutationBottomSheet(
-          options: _salutationOptions,
-          selectedSalutation: _selectedSalutation,
-          onSelected: (value) {
-            setState(() {
-              _selectedSalutation = value;
-            });
-
-            appLog('✅ Salutation selected: $value', name: 'AddCustomerPage');
-          },
-        );
-      },
     );
   }
 }

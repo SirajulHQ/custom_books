@@ -5,10 +5,10 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
-import 'package:custom_books/features/customers/widgets/customer_card_widget.dart';
-import 'package:custom_books/features/customers/widgets/customer_filter_sheet.dart';
-import 'package:custom_books/features/customers/widgets/customer_sort_sheet.dart';
-import 'package:custom_books/features/customers/widgets/customer_more_options_sheet.dart';
+import 'package:custom_books/features/customers/widgets/customer_page_widgets/customer_card_widget.dart';
+import 'package:custom_books/features/customers/widgets/customer_page_widgets/customer_filter_sheet.dart';
+import 'package:custom_books/features/customers/widgets/customer_page_widgets/customer_sort_sheet.dart';
+import 'package:custom_books/features/customers/widgets/customer_page_widgets/customer_more_options_sheet.dart';
 import 'package:custom_books/features/customers/views/add_customer_page.dart';
 import 'package:flutter/material.dart';
 
