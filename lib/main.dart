@@ -26,7 +26,17 @@ class MyApp extends StatelessWidget {
           home: const SplashPage(),
           builder: (context, child) {
             Dimensions.init(context);
-            return child ?? const SizedBox.shrink();
+            // Clamp iOS Dynamic Type / Android font scaling so accessibility
+            // text-size settings can't overflow the fixed token-based layouts.
+            final mediaQuery = MediaQuery.of(context);
+            final clampedScaler = mediaQuery.textScaler.clamp(
+              minScaleFactor: 1.0,
+              maxScaleFactor: 1.3,
+            );
+            return MediaQuery(
+              data: mediaQuery.copyWith(textScaler: clampedScaler),
+              child: child ?? const SizedBox.shrink(),
+            );
           },
         );
       },

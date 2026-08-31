@@ -51,83 +51,89 @@ class _UsersPageState extends State<UsersPage> {
               title: 'Users',
               leadingType: AppBarLeadingType.back,
             ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final user = _users[index];
-                return Column(
-                  children: [
-                    ListTile(
-                      onTap: () {
-                        appLog('✏️ Edit user: ${user.name}', name: 'UsersPage');
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => EditUserPage(
-                              name: user.name,
-                              email: user.email,
-                              role: user.role,
+            SliverPadding(
+              padding: EdgeInsets.only(bottom: Dimensions.listBottomSpace),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final user = _users[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        onTap: () {
+                          appLog(
+                            '✏️ Edit user: ${user.name}',
+                            name: 'UsersPage',
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => EditUserPage(
+                                name: user.name,
+                                email: user.email,
+                                role: user.role,
+                              ),
                             ),
+                          );
+                        },
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width20,
+                          vertical: Dimensions.height10 / 2,
+                        ),
+                        leading: CircleAvatar(
+                          radius: Dimensions.radius20,
+                          backgroundColor: context.colors.surfaceLight,
+                          child: Icon(
+                            Icons.person_outline_rounded,
+                            color: context.colors.textSecondary,
+                            size: Dimensions.iconSize24,
                           ),
-                        );
-                      },
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                        vertical: Dimensions.height10 / 2,
-                      ),
-                      leading: CircleAvatar(
-                        radius: Dimensions.radius20,
-                        backgroundColor: context.colors.surfaceLight,
-                        child: Icon(
-                          Icons.person_outline_rounded,
-                          color: context.colors.textSecondary,
-                          size: Dimensions.iconSize24,
+                        ),
+                        title: Text(
+                          user.name,
+                          style: TextStyle(
+                            fontSize: Dimensions.font16,
+                            fontWeight: FontWeight.w600,
+                            color: context.colors.textPrimary,
+                          ),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              user.email,
+                              style: TextStyle(
+                                fontSize: Dimensions.font16 * 0.8,
+                                color: context.colors.textSecondary,
+                              ),
+                            ),
+                            Text(
+                              user.role,
+                              style: TextStyle(
+                                fontSize: Dimensions.font16 * 0.75,
+                                color: context.colors.textTertiary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        trailing: Text(
+                          user.status,
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.75,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.ok,
+                          ),
                         ),
                       ),
-                      title: Text(
-                        user.name,
-                        style: TextStyle(
-                          fontSize: Dimensions.font16,
-                          fontWeight: FontWeight.w600,
-                          color: context.colors.textPrimary,
-                        ),
+                      Divider(
+                        height: 1,
+                        color: context.colors.border,
+                        indent: Dimensions.width20,
+                        endIndent: Dimensions.width20,
                       ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            user.email,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.8,
-                              color: context.colors.textSecondary,
-                            ),
-                          ),
-                          Text(
-                            user.role,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.75,
-                              color: context.colors.textTertiary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      trailing: Text(
-                        user.status,
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.75,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.ok,
-                        ),
-                      ),
-                    ),
-                    Divider(
-                      height: 1,
-                      color: context.colors.border,
-                      indent: Dimensions.width20,
-                      endIndent: Dimensions.width20,
-                    ),
-                  ],
-                );
-              }, childCount: _users.length),
+                    ],
+                  );
+                }, childCount: _users.length),
+              ),
             ),
           ],
         ),

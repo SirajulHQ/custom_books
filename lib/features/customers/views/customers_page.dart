@@ -273,7 +273,11 @@ class _CustomersPageState extends State<CustomersPage> {
                     ),
             ),
 
-            SliverToBoxAdapter(child: SizedBox(height: Dimensions.height30)),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: Dimensions.height30 + Dimensions.listBottomSpace,
+              ),
+            ),
           ],
         ),
       ),

@@ -433,8 +433,11 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
                   : RefreshIndicator(
                       onRefresh: () async => setState(() {}),
                       child: ListView.builder(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width20,
+                        padding: EdgeInsets.fromLTRB(
+                          Dimensions.width20,
+                          0,
+                          Dimensions.width20,
+                          Dimensions.listBottomSpace,
                         ),
                         physics: const AlwaysScrollableScrollPhysics(
                           parent: BouncingScrollPhysics(),

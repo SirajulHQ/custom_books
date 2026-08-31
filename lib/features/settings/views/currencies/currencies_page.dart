@@ -150,75 +150,78 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
             ),
 
             // Currency List
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final currency = _currencies[index];
-                return Column(
-                  children: [
-                    ListTile(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                        vertical: Dimensions.height10 / 2,
-                      ),
-                      title: Row(
-                        children: [
-                          Text(
-                            currency.code,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16,
-                              fontWeight: FontWeight.w700,
-                              color: context.colors.textPrimary,
-                            ),
-                          ),
-                          if (currency.isBase) ...[
-                            SizedBox(width: Dimensions.width10),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width10,
-                                vertical: Dimensions.height10 * 0.2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.ok.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(
-                                  Dimensions.radius15,
-                                ),
-                              ),
-                              child: Text(
-                                'BASE CURRENCY',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.6,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.ok,
-                                ),
+            SliverPadding(
+              padding: EdgeInsets.only(bottom: Dimensions.listBottomSpace),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final currency = _currencies[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width20,
+                          vertical: Dimensions.height10 / 2,
+                        ),
+                        title: Row(
+                          children: [
+                            Text(
+                              currency.code,
+                              style: TextStyle(
+                                fontSize: Dimensions.font16,
+                                fontWeight: FontWeight.w700,
+                                color: context.colors.textPrimary,
                               ),
                             ),
+                            if (currency.isBase) ...[
+                              SizedBox(width: Dimensions.width10),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: Dimensions.width10,
+                                  vertical: Dimensions.height10 * 0.2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.ok.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(
+                                    Dimensions.radius15,
+                                  ),
+                                ),
+                                child: Text(
+                                  'BASE CURRENCY',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.6,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.ok,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ],
-                        ],
-                      ),
-                      subtitle: Text(
-                        currency.name,
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.8,
-                          color: context.colors.textSecondary,
+                        ),
+                        subtitle: Text(
+                          currency.name,
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.8,
+                            color: context.colors.textSecondary,
+                          ),
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(
+                            Icons.more_horiz_rounded,
+                            color: context.colors.textSecondary,
+                          ),
+                          onPressed: () => _showCurrencyOptions(currency),
                         ),
                       ),
-                      trailing: IconButton(
-                        icon: Icon(
-                          Icons.more_horiz_rounded,
-                          color: context.colors.textSecondary,
-                        ),
-                        onPressed: () => _showCurrencyOptions(currency),
+                      Divider(
+                        height: 1,
+                        color: context.colors.border,
+                        indent: Dimensions.width20,
+                        endIndent: Dimensions.width20,
                       ),
-                    ),
-                    Divider(
-                      height: 1,
-                      color: context.colors.border,
-                      indent: Dimensions.width20,
-                      endIndent: Dimensions.width20,
-                    ),
-                  ],
-                );
-              }, childCount: _currencies.length),
+                    ],
+                  );
+                }, childCount: _currencies.length),
+              ),
             ),
           ],
         ),

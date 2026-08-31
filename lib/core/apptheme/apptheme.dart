@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// Static brand & status color constants.
@@ -142,6 +143,19 @@ class AppTheme {
         surfaceTintColor: colors.background,
         foregroundColor: colors.textPrimary,
         elevation: 0,
+        // Status-bar icon contrast. On iOS statusBarBrightness drives the
+        // icon color; on a light background we want dark icons and vice versa.
+        systemOverlayStyle: brightness == Brightness.light
+            ? const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.light,
+              )
+            : const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.light,
+                statusBarBrightness: Brightness.dark,
+              ),
       ),
       cardColor: colors.card,
       dialogTheme: DialogThemeData(backgroundColor: colors.card),

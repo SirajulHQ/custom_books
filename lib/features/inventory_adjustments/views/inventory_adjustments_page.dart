@@ -282,7 +282,11 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
                   ),
                 ),
               ),
-            SliverToBoxAdapter(child: SizedBox(height: Dimensions.height30)),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: Dimensions.height30 + Dimensions.listBottomSpace,
+              ),
+            ),
           ],
         ),
       ),

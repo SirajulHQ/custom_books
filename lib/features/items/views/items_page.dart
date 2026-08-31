@@ -295,7 +295,11 @@ class _ItemsPageState extends State<ItemsPage> {
                     ),
             ),
 
-            SliverToBoxAdapter(child: SizedBox(height: Dimensions.height30)),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: Dimensions.height30 + Dimensions.listBottomSpace,
+              ),
+            ),
           ],
         ),
       ),

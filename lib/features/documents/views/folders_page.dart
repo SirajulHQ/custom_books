@@ -278,7 +278,7 @@ class _FoldersPageState extends State<FoldersPage> {
                         Dimensions.width20,
                         Dimensions.height15,
                         Dimensions.width20,
-                        Dimensions.height30 * 2,
+                        Dimensions.height30 * 2 + Dimensions.listBottomSpace,
                       ),
                       physics: const BouncingScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

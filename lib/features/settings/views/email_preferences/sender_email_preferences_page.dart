@@ -100,7 +100,12 @@ class _SenderEmailPreferencesPageState
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.all(Dimensions.width15),
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width15,
+                  Dimensions.width15,
+                  Dimensions.width15,
+                  Dimensions.width15 + Dimensions.listBottomSpace,
+                ),
                 child: Column(
                   children: [
                     // Public Domains Card
