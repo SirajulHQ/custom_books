@@ -52,7 +52,9 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage>
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const AddExpensePage()),
+                MaterialPageRoute(
+                  builder: (_) => AddExpensePage(existing: widget.expense),
+                ),
               );
             },
           ),

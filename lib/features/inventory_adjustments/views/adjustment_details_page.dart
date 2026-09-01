@@ -252,7 +252,10 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const NewAdjustmentPage()),
+                MaterialPageRoute(
+                  builder: (_) =>
+                      NewAdjustmentPage(existing: widget.adjustment),
+                ),
               );
             },
           ),

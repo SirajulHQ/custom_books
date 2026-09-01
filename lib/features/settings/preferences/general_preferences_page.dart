@@ -57,8 +57,37 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
   bool _addSalesperson = true;
 
   // Organization Address Format
-  final String _orgAddressFormat =
+  String _orgAddressFormat =
       '{ORGANIZATION.POSTAL_CODE}\n\${ORGANIZATION.COUNTRY}\n\${ORGANIZATION.TRN_LABEL} \$\n{ORGANIZATION.TRN_VALUE}\n\${ORGANIZATION.PHONE}\n\${ORGANIZATION.EMAIL}\n\${ORGANIZATION.WEBSITE}';
+
+  // Placeholder tokens that can be inserted into the address format.
+  static const Map<String, String> _orgPlaceholders = {
+    'Organization Name': r'${ORGANIZATION.NAME}',
+    'Street Address': r'${ORGANIZATION.ADDRESS}',
+    'City': r'${ORGANIZATION.CITY}',
+    'State': r'${ORGANIZATION.STATE}',
+    'Postal Code': r'${ORGANIZATION.POSTAL_CODE}',
+    'Country': r'${ORGANIZATION.COUNTRY}',
+    'Phone': r'${ORGANIZATION.PHONE}',
+    'Email': r'${ORGANIZATION.EMAIL}',
+    'Website': r'${ORGANIZATION.WEBSITE}',
+    'TRN': r'${ORGANIZATION.TRN_VALUE}',
+  };
+
+  // Sample values used to render a human-readable preview.
+  static const Map<String, String> _previewValues = {
+    r'${ORGANIZATION.NAME}': 'Acme Trading LLC',
+    r'${ORGANIZATION.ADDRESS}': '123 Market Street',
+    r'${ORGANIZATION.CITY}': 'Dubai',
+    r'${ORGANIZATION.STATE}': 'Dubai',
+    r'${ORGANIZATION.POSTAL_CODE}': '00000',
+    r'${ORGANIZATION.COUNTRY}': 'United Arab Emirates',
+    r'${ORGANIZATION.PHONE}': '+971 4 123 4567',
+    r'${ORGANIZATION.EMAIL}': 'hello@acme.com',
+    r'${ORGANIZATION.WEBSITE}': 'www.acme.com',
+    r'${ORGANIZATION.TRN_LABEL}': 'TRN',
+    r'${ORGANIZATION.TRN_VALUE}': '100123456700003',
+  };
 
   @override
   void initState() {
@@ -69,6 +98,125 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
   void _save() {
     appLog('💾 Save General Preferences', name: 'GeneralPreferences');
     Navigator.pop(context);
+  }
+
+  void _insertPlaceholder() {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      backgroundColor: context.colors.card,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.width20,
+            vertical: Dimensions.height10,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Insert Placeholder',
+                style: TextStyle(
+                  fontSize: Dimensions.font16,
+                  fontWeight: FontWeight.w800,
+                  color: context.colors.textPrimary,
+                ),
+              ),
+              SizedBox(height: Dimensions.height10),
+              Wrap(
+                spacing: Dimensions.width10,
+                runSpacing: Dimensions.height10,
+                children: _orgPlaceholders.entries.map((entry) {
+                  return ActionChip(
+                    label: Text(entry.key),
+                    labelStyle: TextStyle(
+                      fontSize: Dimensions.font16 * 0.8,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.08),
+                    side: BorderSide(
+                      color: AppColors.primary.withValues(alpha: 0.3),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(sheetContext);
+                      setState(() {
+                        _orgAddressFormat =
+                            '$_orgAddressFormat\n${entry.value}';
+                      });
+                    },
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: Dimensions.height15),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _previewAddressFormat() {
+    var rendered = _orgAddressFormat;
+    _previewValues.forEach((token, value) {
+      rendered = rendered.replaceAll(token, value);
+    });
+
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: context.colors.card,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Dimensions.radius20),
+        ),
+        title: Text(
+          'Address Preview',
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: Dimensions.font20 * 0.9,
+            color: context.colors.textPrimary,
+          ),
+        ),
+        content: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(Dimensions.width15),
+          decoration: BoxDecoration(
+            color: context.colors.surfaceLight,
+            borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
+            border: Border.all(color: context.colors.border),
+          ),
+          child: Text(
+            rendered,
+            style: TextStyle(
+              fontSize: Dimensions.font16 * 0.85,
+              height: 1.5,
+              color: context.colors.textPrimary,
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              'Close',
+              style: TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -254,12 +402,12 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
                             _buildActionLink(
                               Icons.add_circle_outline_rounded,
                               'Insert Placeholders',
-                              () {},
+                              _insertPlaceholder,
                             ),
                             _buildActionLink(
                               Icons.visibility_outlined,
                               'Preview',
-                              () {},
+                              _previewAddressFormat,
                             ),
                           ],
                         ),

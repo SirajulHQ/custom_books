@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddBillPage extends StatefulWidget {
-  const AddBillPage({super.key});
+  final BillModel? existing;
+
+  const AddBillPage({super.key, this.existing});
 
   @override
   State<AddBillPage> createState() => _AddBillPageState();
@@ -34,7 +36,16 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
   @override
   void initState() {
     super.initState();
-    _billNumController.text = 'BILL-00043';
+    if (widget.existing != null) {
+      final b = widget.existing!;
+      _billNumController.text = b.billNumber;
+      _amountController.text = b.total.toStringAsFixed(2);
+      _vendorName = b.vendorName.isEmpty ? null : b.vendorName;
+      _billDate = b.billDate;
+      _dueDate = b.dueDate;
+    } else {
+      _billNumController.text = 'BILL-00043';
+    }
     _billNumController.addListener(markDirty);
     _amountController.addListener(markDirty);
   }
@@ -123,7 +134,7 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
             physics: const BouncingScrollPhysics(),
             slivers: [
               CustomSliverAppBar(
-                title: 'New Bill',
+                title: widget.existing == null ? 'New Bill' : 'Edit Bill',
                 leadingType: AppBarLeadingType.back,
                 onLeadingPressed: () => onPopInvokedWithResult(false, null),
                 actions: [

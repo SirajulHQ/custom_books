@@ -54,7 +54,8 @@ class _PaymentReceivedDetailsPageState extends State<PaymentReceivedDetailsPage>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => const AddPaymentReceivedPage(),
+                  builder: (_) =>
+                      AddPaymentReceivedPage(existing: widget.payment),
                 ),
               );
             },

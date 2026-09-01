@@ -51,7 +51,9 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const AddVendorPage()),
+                      MaterialPageRoute(
+                        builder: (_) => AddVendorPage(existing: widget.vendor),
+                      ),
                     );
                   },
                 ),

@@ -6,11 +6,14 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddItemPage extends StatefulWidget {
-  const AddItemPage({super.key});
+  final ItemModel? existing;
+
+  const AddItemPage({super.key, this.existing});
 
   @override
   State<AddItemPage> createState() => _AddItemPageState();
@@ -173,6 +176,18 @@ class _AddItemPageState extends State<AddItemPage> {
   final String _selectedValuationMethod = 'FIFO (First In First Out)';
 
   @override
+  void initState() {
+    super.initState();
+    final existing = widget.existing;
+    if (existing != null) {
+      _itemNameController.text = existing.name;
+      _skuController.text = existing.sku ?? '';
+      _sellingPriceController.text = existing.salesPrice.toStringAsFixed(2);
+      _costPriceController.text = existing.purchasePrice.toStringAsFixed(2);
+    }
+  }
+
+  @override
   void dispose() {
     _itemNameController.dispose();
     _skuController.dispose();
@@ -196,7 +211,7 @@ class _AddItemPageState extends State<AddItemPage> {
           slivers: [
             // App Bar
             CustomSliverAppBar(
-              title: 'New Item',
+              title: widget.existing == null ? 'New Item' : 'Edit Item',
               subtitle: 'Fill in the details below',
               leadingType: AppBarLeadingType.back,
               onLeadingPressed: () {

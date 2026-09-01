@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddPaymentMadePage extends StatefulWidget {
-  const AddPaymentMadePage({super.key});
+  final PaymentMadeModel? existing;
+
+  const AddPaymentMadePage({super.key, this.existing});
 
   @override
   State<AddPaymentMadePage> createState() => _AddPaymentMadePageState();
@@ -36,6 +38,15 @@ class _AddPaymentMadePageState extends State<AddPaymentMadePage>
   void initState() {
     super.initState();
     _paymentNumController.text = 'PM-00022';
+    final existing = widget.existing;
+    if (existing != null) {
+      _paymentNumController.text = existing.paymentNumber;
+      _referenceController.text = existing.referenceNumber;
+      _amountController.text = existing.amount.toStringAsFixed(2);
+      _vendorName = existing.vendorName;
+      _paymentDate = existing.paymentDate;
+      _mode = existing.mode;
+    }
     _paymentNumController.addListener(markDirty);
     _referenceController.addListener(markDirty);
     _amountController.addListener(markDirty);
@@ -213,7 +224,7 @@ class _AddPaymentMadePageState extends State<AddPaymentMadePage>
       child: Scaffold(
         backgroundColor: context.colors.background,
         appBar: CustomBackAppBar(
-          title: 'New Payment',
+          title: widget.existing == null ? 'New Payment' : 'Edit Payment',
           backgroundColor: context.colors.card,
           onLeadingPressed: () => onPopInvokedWithResult(false, null),
           actions: [

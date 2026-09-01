@@ -14,7 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class NewAdjustmentPage extends StatefulWidget {
-  const NewAdjustmentPage({super.key});
+  final InventoryAdjustment? existing;
+
+  const NewAdjustmentPage({super.key, this.existing});
 
   @override
   State<NewAdjustmentPage> createState() => _NewAdjustmentPageState();
@@ -503,6 +505,16 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    final existing = widget.existing;
+    if (existing != null) {
+      _date = existing.date;
+      _reason = _reasons.contains(existing.reason) ? existing.reason : null;
+    }
+  }
+
+  @override
   void dispose() {
     _referenceController.dispose();
     _descriptionController.dispose();
@@ -615,7 +627,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
     return Scaffold(
       backgroundColor: context.colors.background,
       appBar: CustomBackAppBar(
-        title: 'New Adjustment',
+        title: widget.existing == null ? 'New Adjustment' : 'Edit Adjustment',
         actions: [
           TextButton(
             onPressed: _save,

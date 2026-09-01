@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
+import 'package:custom_books/features/documents/views/document_details_page.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
@@ -98,6 +99,21 @@ class _DocumentsInboxPageState extends State<DocumentsInboxPage> {
 
   void _upload() {
     ToastificationHelper.showSuccess(context, 'Upload coming soon');
+  }
+
+  void _openDocument(DocumentModel doc) {
+    Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => DocumentDetailsPage(
+          document: doc,
+          onDelete: () {
+            setState(() => _documents.removeWhere((d) => d.id == doc.id));
+            ToastificationHelper.showSuccess(context, 'Document deleted');
+          },
+        ),
+      ),
+    );
   }
 
   void _openSortSheet() {
@@ -471,7 +487,7 @@ class _DocumentsInboxPageState extends State<DocumentsInboxPage> {
   Widget _documentTile(DocumentModel doc) {
     return InkWell(
       borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => ToastificationHelper.showSuccess(context, doc.fileName),
+      onTap: () => _openDocument(doc),
       child: Container(
         margin: EdgeInsets.only(bottom: Dimensions.height10),
         padding: EdgeInsets.all(Dimensions.width15),

@@ -54,7 +54,8 @@ class _ManualJournalDetailsPageState extends State<ManualJournalDetailsPage>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const AddManualJournalPage(),
+                  builder: (context) =>
+                      AddManualJournalPage(existing: widget.journal),
                 ),
               );
             },

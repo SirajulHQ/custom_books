@@ -14,8 +14,9 @@ import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddSalesOrderPage extends StatefulWidget {
   final int orderSequence;
+  final SalesOrderModel? existing;
 
-  const AddSalesOrderPage({super.key, this.orderSequence = 313});
+  const AddSalesOrderPage({super.key, this.orderSequence = 313, this.existing});
 
   @override
   State<AddSalesOrderPage> createState() => _AddSalesOrderPageState();
@@ -65,8 +66,24 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
   @override
   void initState() {
     super.initState();
-    _salesOrderNumController.text =
-        'SO-${widget.orderSequence.toString().padLeft(5, '0')}';
+    final existing = widget.existing;
+    if (existing != null) {
+      _salesOrderNumController.text = existing.salesOrderNumber;
+      _customerController.text = existing.customerName;
+      _referenceController.text = existing.referenceNumber;
+      _deliveryMethodController.text = existing.deliveryMethod;
+      _notesController.text = existing.customerNotes;
+      _termsController.text = existing.termsAndConditions;
+      _salesOrderDate = existing.salesOrderDate;
+      _expectedShipmentDate = existing.expectedShipmentDate;
+      _paymentTerms = existing.paymentTerms;
+      _salesperson = existing.salesperson.isEmpty ? null : existing.salesperson;
+      _taxInclusive = existing.taxInclusive;
+      _lineItems.addAll(existing.lineItems);
+    } else {
+      _salesOrderNumController.text =
+          'SO-${widget.orderSequence.toString().padLeft(5, '0')}';
+    }
     _customerController.addListener(markDirty);
     _salesOrderNumController.addListener(markDirty);
     _referenceController.addListener(markDirty);
@@ -377,7 +394,9 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
       child: Scaffold(
         backgroundColor: context.colors.background,
         appBar: CustomBackAppBar(
-          title: 'New Sales Order',
+          title: widget.existing == null
+              ? 'New Sales Order'
+              : 'Edit Sales Order',
           backgroundColor: context.colors.card,
           onLeadingPressed: () => onPopInvokedWithResult(false, null),
           actions: [
@@ -715,12 +734,11 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                         child: Row(
                           children: [
                             GestureDetector(
-                              onTap: () => setState(() => _taxInclusive = false),
+                              onTap: () =>
+                                  setState(() => _taxInclusive = false),
                               child: Row(
                                 children: [
-                                  Radio<bool>(
-                                    value: false,
-                                  ),
+                                  Radio<bool>(value: false),
                                   Text(
                                     'Exclusive',
                                     style: TextStyle(
@@ -737,9 +755,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                               onTap: () => setState(() => _taxInclusive = true),
                               child: Row(
                                 children: [
-                                  Radio<bool>(
-                                    value: true,
-                                  ),
+                                  Radio<bool>(value: true),
                                   Text(
                                     'Inclusive',
                                     style: TextStyle(

@@ -160,6 +160,46 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
     Navigator.pop(context);
   }
 
+  void _showFieldInfo(String title, String message) {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: context.colors.card,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Dimensions.radius20),
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: Dimensions.font20 * 0.9,
+            color: context.colors.textPrimary,
+          ),
+        ),
+        content: Text(
+          message,
+          style: TextStyle(
+            fontSize: Dimensions.font16 * 0.9,
+            height: 1.5,
+            color: context.colors.textSecondary,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              'Got it',
+              style: TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<String?> _selectFromSheet(
     String title,
     List<String> options,
@@ -330,7 +370,10 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
                               const RequiredLabel(text: 'Portal Name'),
                               SizedBox(width: Dimensions.width10 / 2),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () => _showFieldInfo(
+                                  'Portal Name',
+                                  'Your portal name forms part of the unique URL your customers use to access their client portal. It must be unique across all organizations.',
+                                ),
                                 child: Icon(
                                   Icons.info_outline_rounded,
                                   size: Dimensions.iconSize16,
@@ -355,7 +398,10 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
                                   size: Dimensions.iconSize24,
                                   color: context.colors.textSecondary,
                                 ),
-                                onPressed: () {},
+                                onPressed: () => _showFieldInfo(
+                                  'Portal Settings',
+                                  'Configure how your client portal URL appears. Portal configuration options will be available here.',
+                                ),
                               ),
                             ],
                           ),
@@ -379,7 +425,10 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
                               Text('Industry', style: FormTextStyles.label()),
                               SizedBox(width: Dimensions.width10 / 2),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () => _showFieldInfo(
+                                  'Industry',
+                                  'Choose the industry your organization belongs to. This helps tailor default settings and reports to your business type.',
+                                ),
                                 child: Icon(
                                   Icons.info_outline_rounded,
                                   size: Dimensions.iconSize16,
@@ -438,7 +487,10 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
                               ),
                               SizedBox(width: Dimensions.width10 / 2),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () => _showFieldInfo(
+                                  'Organization Address',
+                                  'This address appears on your transactions and communications. You can choose to reflect updates across existing transactions.',
+                                ),
                                 child: Icon(
                                   Icons.info_outline_rounded,
                                   size: Dimensions.iconSize16,

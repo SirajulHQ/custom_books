@@ -7,6 +7,7 @@ import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/sales_orders/models/sales_order_model.dart';
 import 'package:custom_books/features/sales_orders/views/add_sales_order_page.dart';
+import 'package:custom_books/features/sales_orders/views/sales_order_details_page.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_actions_sheet.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_filter_sheet.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_sort_sheet.dart';
@@ -243,12 +244,43 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
             'Status updated to ${newStatus.label}',
           );
         },
-        onDelete: () {
-          setState(() {
-            _orders.removeWhere((o) => o.id == order.id);
-          });
-          ToastificationHelper.showSuccess(context, 'Sales Order deleted');
-        },
+        onDelete: () => _deleteOrder(order),
+      ),
+    );
+  }
+
+  void _changeOrderStatus(SalesOrderModel order, SalesOrderStatus newStatus) {
+    setState(() {
+      final idx = _orders.indexWhere((o) => o.id == order.id);
+      if (idx != -1) {
+        _orders[idx] = _orders[idx].copyWith(
+          status: newStatus,
+          isInvoiced: newStatus == SalesOrderStatus.invoiced,
+        );
+      }
+    });
+    ToastificationHelper.showSuccess(
+      context,
+      'Status updated to ${newStatus.label}',
+    );
+  }
+
+  void _deleteOrder(SalesOrderModel order) {
+    setState(() {
+      _orders.removeWhere((o) => o.id == order.id);
+    });
+    ToastificationHelper.showSuccess(context, 'Sales Order deleted');
+  }
+
+  void _openOrderDetails(SalesOrderModel order) {
+    Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SalesOrderDetailsPage(
+          order: order,
+          onStatusChanged: (newStatus) => _changeOrderStatus(order, newStatus),
+          onDelete: () => _deleteOrder(order),
+        ),
       ),
     );
   }
@@ -583,7 +615,8 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
   Widget _salesOrderTile(SalesOrderModel order) {
     return InkWell(
       borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => _openOrderActions(order),
+      onTap: () => _openOrderDetails(order),
+      onLongPress: () => _openOrderActions(order),
       child: Container(
         margin: EdgeInsets.only(bottom: Dimensions.height10),
         padding: EdgeInsets.all(Dimensions.width15),

@@ -53,7 +53,9 @@ class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const AddCreditNotePage()),
+                MaterialPageRoute(
+                  builder: (_) => AddCreditNotePage(existing: widget.note),
+                ),
               );
             },
           ),

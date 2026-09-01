@@ -54,7 +54,8 @@ class _DeliveryChallanDetailsPageState extends State<DeliveryChallanDetailsPage>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => const AddDeliveryChallanPage(),
+                  builder: (_) =>
+                      AddDeliveryChallanPage(existing: widget.challan),
                 ),
               );
             },

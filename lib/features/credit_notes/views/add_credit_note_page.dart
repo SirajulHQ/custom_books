@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddCreditNotePage extends StatefulWidget {
-  const AddCreditNotePage({super.key});
+  final CreditNoteModel? existing;
+
+  const AddCreditNotePage({super.key, this.existing});
 
   @override
   State<AddCreditNotePage> createState() => _AddCreditNotePageState();
@@ -35,7 +37,16 @@ class _AddCreditNotePageState extends State<AddCreditNotePage>
   @override
   void initState() {
     super.initState();
-    _creditNoteNumController.text = 'CN-00016';
+    if (widget.existing != null) {
+      final n = widget.existing!;
+      _creditNoteNumController.text = n.creditNoteNumber;
+      _customerController.text = n.customerName;
+      _referenceController.text = n.referenceNumber;
+      _amountController.text = n.total.toStringAsFixed(2);
+      _creditNoteDate = n.creditNoteDate;
+    } else {
+      _creditNoteNumController.text = 'CN-00016';
+    }
     _customerController.addListener(markDirty);
     _creditNoteNumController.addListener(markDirty);
     _referenceController.addListener(markDirty);
@@ -167,7 +178,9 @@ class _AddCreditNotePageState extends State<AddCreditNotePage>
       child: Scaffold(
         backgroundColor: context.colors.background,
         appBar: CustomBackAppBar(
-          title: 'New Credit Note',
+          title: widget.existing == null
+              ? 'New Credit Note'
+              : 'Edit Credit Note',
           backgroundColor: context.colors.card,
           onLeadingPressed: () => onPopInvokedWithResult(false, null),
           actions: [

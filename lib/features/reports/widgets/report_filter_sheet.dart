@@ -46,6 +46,29 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
   late String _filterAccounts;
   late String _compareWith;
   String _datePreset = 'This Month';
+  String _asOfPreset = 'Today';
+
+  static const List<String> _dateRangePresets = [
+    'Today',
+    'This Week',
+    'This Month',
+    'This Quarter',
+    'This Year',
+    'Previous Week',
+    'Previous Month',
+    'Previous Quarter',
+    'Previous Year',
+    'Custom',
+  ];
+
+  static const List<String> _asOfPresets = [
+    'Today',
+    'End of this Week',
+    'End of this Month',
+    'End of Previous Month',
+    'End of this Quarter',
+    'End of this Year',
+  ];
 
   @override
   void initState() {
@@ -108,9 +131,193 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
     if (picked != null) {
       setState(() {
         _asOfDate = picked;
-        _datePreset = 'Custom';
+        _asOfPreset = 'Custom';
       });
     }
+  }
+
+  DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
+
+  DateTime _quarterStart(DateTime ref) {
+    final startMonth = ((ref.month - 1) ~/ 3) * 3 + 1;
+    return DateTime(ref.year, startMonth, 1);
+  }
+
+  void _applyDateRangePreset(String preset) {
+    final now = _dateOnly(DateTime.now());
+    DateTime start;
+    DateTime end;
+
+    switch (preset) {
+      case 'Today':
+        start = now;
+        end = now;
+        break;
+      case 'This Week':
+        start = now.subtract(Duration(days: now.weekday - 1));
+        end = start.add(const Duration(days: 6));
+        break;
+      case 'This Month':
+        start = DateTime(now.year, now.month, 1);
+        end = DateTime(now.year, now.month + 1, 0);
+        break;
+      case 'This Quarter':
+        start = _quarterStart(now);
+        end = DateTime(start.year, start.month + 3, 0);
+        break;
+      case 'This Year':
+        start = DateTime(now.year, 1, 1);
+        end = DateTime(now.year, 12, 31);
+        break;
+      case 'Previous Week':
+        final thisWeekStart = now.subtract(Duration(days: now.weekday - 1));
+        start = thisWeekStart.subtract(const Duration(days: 7));
+        end = thisWeekStart.subtract(const Duration(days: 1));
+        break;
+      case 'Previous Month':
+        start = DateTime(now.year, now.month - 1, 1);
+        end = DateTime(now.year, now.month, 0);
+        break;
+      case 'Previous Quarter':
+        final thisQuarterStart = _quarterStart(now);
+        start = DateTime(thisQuarterStart.year, thisQuarterStart.month - 3, 1);
+        end = DateTime(thisQuarterStart.year, thisQuarterStart.month, 0);
+        break;
+      case 'Previous Year':
+        start = DateTime(now.year - 1, 1, 1);
+        end = DateTime(now.year - 1, 12, 31);
+        break;
+      case 'Custom':
+      default:
+        setState(() => _datePreset = 'Custom');
+        return;
+    }
+
+    setState(() {
+      _datePreset = preset;
+      _startDate = start;
+      _endDate = end;
+    });
+  }
+
+  void _applyAsOfPreset(String preset) {
+    final now = _dateOnly(DateTime.now());
+    DateTime asOf;
+
+    switch (preset) {
+      case 'Today':
+        asOf = now;
+        break;
+      case 'End of this Week':
+        asOf = now
+            .subtract(Duration(days: now.weekday - 1))
+            .add(const Duration(days: 6));
+        break;
+      case 'End of this Month':
+        asOf = DateTime(now.year, now.month + 1, 0);
+        break;
+      case 'End of Previous Month':
+        asOf = DateTime(now.year, now.month, 0);
+        break;
+      case 'End of this Quarter':
+        final qStart = _quarterStart(now);
+        asOf = DateTime(qStart.year, qStart.month + 3, 0);
+        break;
+      case 'End of this Year':
+        asOf = DateTime(now.year, 12, 31);
+        break;
+      default:
+        return;
+    }
+
+    setState(() {
+      _asOfPreset = preset;
+      _asOfDate = asOf;
+    });
+  }
+
+  Future<void> _showPresetPicker({
+    required String title,
+    required List<String> options,
+    required String selected,
+    required ValueChanged<String> onSelected,
+  }) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: context.colors.card,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.width20,
+            vertical: Dimensions.height15,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: Dimensions.height10),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: Dimensions.font16,
+                    fontWeight: FontWeight.w800,
+                    color: context.colors.textPrimary,
+                  ),
+                ),
+              ),
+              ...options.map((option) {
+                final isSelected = option == selected;
+                return InkWell(
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    onSelected(option);
+                  },
+                  borderRadius: BorderRadius.circular(Dimensions.radius15),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: Dimensions.height15 * 0.7,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          isSelected
+                              ? Icons.radio_button_checked_rounded
+                              : Icons.radio_button_unchecked_rounded,
+                          size: Dimensions.iconSize24 * 0.9,
+                          color: isSelected
+                              ? AppColors.primary
+                              : context.colors.textTertiary,
+                        ),
+                        SizedBox(width: Dimensions.width15),
+                        Text(
+                          option,
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.9,
+                            fontWeight: isSelected
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                            color: isSelected
+                                ? AppColors.primary
+                                : context.colors.textPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+              SizedBox(height: Dimensions.height10),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -147,8 +354,13 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
               _label('As of Date'),
               _dropdownTile(
                 icon: Icons.calendar_today_rounded,
-                value: 'Today',
-                onTap: () {},
+                value: _asOfPreset,
+                onTap: () => _showPresetPicker(
+                  title: 'As of Date',
+                  options: _asOfPresets,
+                  selected: _asOfPreset,
+                  onSelected: _applyAsOfPreset,
+                ),
               ),
               SizedBox(height: Dimensions.height10),
               _label('Report Date'),
@@ -161,7 +373,12 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
               _dropdownTile(
                 icon: Icons.calendar_today_rounded,
                 value: _datePreset,
-                onTap: () {},
+                onTap: () => _showPresetPicker(
+                  title: 'Date Range',
+                  options: _dateRangePresets,
+                  selected: _datePreset,
+                  onSelected: _applyDateRangePreset,
+                ),
               ),
               SizedBox(height: Dimensions.height10),
               Row(

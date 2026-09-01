@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddManualJournalPage extends StatefulWidget {
-  const AddManualJournalPage({super.key});
+  final ManualJournalModel? existing;
+
+  const AddManualJournalPage({super.key, this.existing});
 
   @override
   State<AddManualJournalPage> createState() => _AddManualJournalPageState();
@@ -21,6 +23,19 @@ class _AddManualJournalPageState extends State<AddManualJournalPage> {
   final _notesController = TextEditingController();
 
   DateTime _journalDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existing != null) {
+      final j = widget.existing!;
+      _journalNumberController.text = j.journalNumber;
+      _referenceController.text = j.referenceNumber;
+      _amountController.text = j.amount.toStringAsFixed(2);
+      _notesController.text = j.notes;
+      _journalDate = j.journalDate;
+    }
+  }
 
   @override
   void dispose() {
@@ -76,7 +91,9 @@ class _AddManualJournalPageState extends State<AddManualJournalPage> {
     return Scaffold(
       backgroundColor: context.colors.background,
       appBar: CustomBackAppBar(
-        title: 'New Manual Journal',
+        title: widget.existing == null
+            ? 'New Manual Journal'
+            : 'Edit Manual Journal',
         backgroundColor: context.colors.card,
         actions: [
           TextButton(

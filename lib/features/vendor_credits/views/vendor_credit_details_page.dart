@@ -57,7 +57,8 @@ class _VendorCreditDetailsPageState extends State<VendorCreditDetailsPage>
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const AddVendorCreditPage(),
+                            builder: (_) =>
+                                AddVendorCreditPage(existing: widget.credit),
                           ),
                         ),
                       ),

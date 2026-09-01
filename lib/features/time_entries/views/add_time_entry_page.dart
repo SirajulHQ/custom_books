@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddTimeEntryPage extends StatefulWidget {
-  const AddTimeEntryPage({super.key});
+  final TimeEntryModel? existing;
+
+  const AddTimeEntryPage({super.key, this.existing});
 
   @override
   State<AddTimeEntryPage> createState() => _AddTimeEntryPageState();
@@ -38,6 +40,17 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
   @override
   void initState() {
     super.initState();
+    final existing = widget.existing;
+    if (existing != null) {
+      _project = existing.projectName;
+      _taskNameController.text = existing.taskName;
+      _userName = existing.userName;
+      _logDate = existing.logDate;
+      _hoursController.text = (existing.durationMinutes ~/ 60).toString();
+      _minutesController.text = (existing.durationMinutes % 60).toString();
+      _isBillable = existing.isBillable;
+      _notesController.text = existing.notes;
+    }
     _taskNameController.addListener(markDirty);
     _hoursController.addListener(markDirty);
     _minutesController.addListener(markDirty);
@@ -211,7 +224,9 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
             physics: const BouncingScrollPhysics(),
             slivers: [
               CustomSliverAppBar(
-                title: 'New Time Entry',
+                title: widget.existing == null
+                    ? 'New Time Entry'
+                    : 'Edit Time Entry',
                 leadingType: AppBarLeadingType.back,
                 onLeadingPressed: () => onPopInvokedWithResult(false, null),
                 actions: [
@@ -434,9 +449,8 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                               Text('Billable', style: FormTextStyles.label()),
                               RadioGroup<bool>(
                                 groupValue: _isBillable,
-                                onChanged: (val) => setState(
-                                  () => _isBillable = val!,
-                                ),
+                                onChanged: (val) =>
+                                    setState(() => _isBillable = val!),
                                 child: Row(
                                   children: [
                                     GestureDetector(
@@ -444,9 +458,7 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                                           setState(() => _isBillable = true),
                                       child: Row(
                                         children: [
-                                          Radio<bool>(
-                                            value: true,
-                                          ),
+                                          Radio<bool>(value: true),
                                           Text(
                                             'Billable',
                                             style: TextStyle(
@@ -464,9 +476,7 @@ class _AddTimeEntryPageState extends State<AddTimeEntryPage>
                                           setState(() => _isBillable = false),
                                       child: Row(
                                         children: [
-                                          Radio<bool>(
-                                            value: false,
-                                          ),
+                                          Radio<bool>(value: false),
                                           Text(
                                             'Non-billable',
                                             style: TextStyle(

@@ -43,6 +43,58 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
     );
   }
 
+  void _sortCurrencies({required bool byName}) {
+    setState(() {
+      _currencies.sort((a, b) {
+        // Keep base currency pinned to the top.
+        if (a.isBase != b.isBase) return a.isBase ? -1 : 1;
+        return byName
+            ? a.name.toLowerCase().compareTo(b.name.toLowerCase())
+            : a.code.compareTo(b.code);
+      });
+    });
+  }
+
+  void _showPageOptions() {
+    appLog('⋯ Currencies page options', name: 'Currencies');
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      backgroundColor: context.colors.card,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.sort_by_alpha_rounded),
+              title: const Text('Sort by Currency Code'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _sortCurrencies(byName: false);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.sort_rounded),
+              title: const Text('Sort by Currency Name'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _sortCurrencies(byName: true);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.add_rounded),
+              title: const Text('Add New Currency'),
+              onTap: () {
+                Navigator.pop(ctx);
+                _addCurrency();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showCurrencyOptions(_CurrencyItem currency) {
     appLog('⋯ Options for ${currency.code}', name: 'Currencies');
     showModalBottomSheet(
@@ -89,7 +141,7 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
               actions: [
                 AppBarIconButton(
                   icon: Icons.more_vert_rounded,
-                  onPressed: () {},
+                  onPressed: _showPageOptions,
                 ),
                 SizedBox(width: Dimensions.width10),
               ],

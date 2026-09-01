@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddRecurringInvoicePage extends StatefulWidget {
-  const AddRecurringInvoicePage({super.key});
+  final RecurringInvoiceModel? existing;
+
+  const AddRecurringInvoicePage({super.key, this.existing});
 
   @override
   State<AddRecurringInvoicePage> createState() =>
@@ -30,6 +32,19 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
     'Nabeel',
     'Tech Geum',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    final existing = widget.existing;
+    if (existing != null) {
+      _profileNameController.text = existing.profileName;
+      _customerController.text = existing.customerName;
+      _amountController.text = existing.amount.toStringAsFixed(2);
+      _startDate = existing.startDate;
+      _frequency = existing.frequency;
+    }
+  }
 
   @override
   void dispose() {
@@ -200,7 +215,9 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             CustomSliverAppBar(
-              title: 'New Recurring Invoice',
+              title: widget.existing == null
+                  ? 'New Recurring Invoice'
+                  : 'Edit Recurring Invoice',
               leadingType: AppBarLeadingType.back,
               actions: [
                 AppBarElevatedButton(

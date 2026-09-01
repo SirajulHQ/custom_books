@@ -8,7 +8,9 @@ import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:flutter/material.dart';
 
 class AddProjectPage extends StatefulWidget {
-  const AddProjectPage({super.key});
+  final ProjectModel? existing;
+
+  const AddProjectPage({super.key, this.existing});
 
   @override
   State<AddProjectPage> createState() => _AddProjectPageState();
@@ -33,6 +35,14 @@ class _AddProjectPageState extends State<AddProjectPage>
   @override
   void initState() {
     super.initState();
+    final existing = widget.existing;
+    if (existing != null) {
+      _projectNameController.text = existing.projectName;
+      _customerController.text = existing.customerName;
+      _rateController.text = existing.rate.toStringAsFixed(2);
+      _budgetHoursController.text = existing.budgetHours.toStringAsFixed(1);
+      _billingMethod = existing.billingMethod;
+    }
     _projectNameController.addListener(markDirty);
     _customerController.addListener(markDirty);
     _rateController.addListener(markDirty);
@@ -196,7 +206,7 @@ class _AddProjectPageState extends State<AddProjectPage>
       child: Scaffold(
         backgroundColor: context.colors.background,
         appBar: CustomBackAppBar(
-          title: 'New Project',
+          title: widget.existing == null ? 'New Project' : 'Edit Project',
           backgroundColor: context.colors.card,
           onLeadingPressed: () => onPopInvokedWithResult(false, null),
           actions: [

@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddVendorCreditPage extends StatefulWidget {
-  const AddVendorCreditPage({super.key});
+  final VendorCreditModel? existing;
+
+  const AddVendorCreditPage({super.key, this.existing});
 
   @override
   State<AddVendorCreditPage> createState() => _AddVendorCreditPageState();
@@ -35,6 +37,14 @@ class _AddVendorCreditPageState extends State<AddVendorCreditPage>
   void initState() {
     super.initState();
     _creditNoteNumController.text = 'VCN-00016';
+    if (widget.existing != null) {
+      final c = widget.existing!;
+      _creditNoteNumController.text = c.creditNoteNumber;
+      _referenceController.text = c.referenceNumber;
+      _amountController.text = c.total.toStringAsFixed(2);
+      _vendorName = c.vendorName;
+      _creditDate = c.creditDate;
+    }
     _creditNoteNumController.addListener(markDirty);
     _referenceController.addListener(markDirty);
     _amountController.addListener(markDirty);
@@ -162,7 +172,9 @@ class _AddVendorCreditPageState extends State<AddVendorCreditPage>
             physics: const BouncingScrollPhysics(),
             slivers: [
               CustomSliverAppBar(
-                title: 'New Vendor Credit',
+                title: widget.existing == null
+                    ? 'New Vendor Credit'
+                    : 'Edit Vendor Credit',
                 leadingType: AppBarLeadingType.back,
                 onLeadingPressed: () => onPopInvokedWithResult(false, null),
                 actions: [

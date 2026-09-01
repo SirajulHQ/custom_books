@@ -53,7 +53,9 @@ class _BillDetailsPageState extends State<BillDetailsPage>
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const AddBillPage()),
+                MaterialPageRoute(
+                  builder: (_) => AddBillPage(existing: widget.bill),
+                ),
               );
             },
           ),

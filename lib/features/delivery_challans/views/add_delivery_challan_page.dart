@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddDeliveryChallanPage extends StatefulWidget {
-  const AddDeliveryChallanPage({super.key});
+  final DeliveryChallanModel? existing;
+
+  const AddDeliveryChallanPage({super.key, this.existing});
 
   @override
   State<AddDeliveryChallanPage> createState() => _AddDeliveryChallanPageState();
@@ -41,6 +43,15 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage> {
   void initState() {
     super.initState();
     _challanNumController.text = 'DC-00043';
+    if (widget.existing != null) {
+      final c = widget.existing!;
+      _challanNumController.text = c.challanNumber;
+      _customerController.text = c.customerName;
+      _referenceController.text = c.referenceNumber;
+      _amountController.text = c.total.toStringAsFixed(2);
+      _challanDate = c.challanDate;
+      _type = c.type;
+    }
   }
 
   @override
@@ -213,7 +224,9 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage> {
     return Scaffold(
       backgroundColor: context.colors.background,
       appBar: CustomBackAppBar(
-        title: 'New Delivery Challan',
+        title: widget.existing == null
+            ? 'New Delivery Challan'
+            : 'Edit Delivery Challan',
         backgroundColor: context.colors.card,
         actions: [
           TextButton(

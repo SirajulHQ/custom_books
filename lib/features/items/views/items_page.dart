@@ -9,6 +9,7 @@ import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:custom_books/features/items/widgets/item_card_widget.dart';
 import 'package:custom_books/features/items/widgets/items_filter_sheet.dart';
 import 'package:custom_books/features/items/views/add_item_page.dart';
+import 'package:custom_books/features/items/views/item_details_page.dart';
 import 'package:flutter/material.dart';
 
 class ItemsPage extends StatefulWidget {
@@ -287,9 +288,27 @@ class _ItemsPageState extends State<ItemsPage> {
                   ? SliverToBoxAdapter(child: _buildEmptyState())
                   : SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
+                        final item = _filteredItems[index];
                         return Padding(
                           padding: EdgeInsets.only(bottom: Dimensions.height15),
-                          child: ItemCardWidget(item: _filteredItems[index]),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius20,
+                            ),
+                            onTap: () {
+                              appLog(
+                                '👁️ Item tapped: ${item.name}',
+                                name: 'ItemsPage',
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ItemDetailsPage(item: item),
+                                ),
+                              );
+                            },
+                            child: ItemCardWidget(item: item),
+                          ),
                         );
                       }, childCount: _filteredItems.length),
                     ),

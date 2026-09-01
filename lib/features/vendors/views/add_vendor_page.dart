@@ -8,7 +8,9 @@ import 'package:custom_books/features/vendors/models/vendor_model.dart';
 import 'package:flutter/material.dart';
 
 class AddVendorPage extends StatefulWidget {
-  const AddVendorPage({super.key});
+  final VendorModel? existing;
+
+  const AddVendorPage({super.key, this.existing});
 
   @override
   State<AddVendorPage> createState() => _AddVendorPageState();
@@ -25,6 +27,14 @@ class _AddVendorPageState extends State<AddVendorPage>
   @override
   void initState() {
     super.initState();
+    if (widget.existing != null) {
+      final v = widget.existing!;
+      _displayNameController.text = v.displayName;
+      _companyNameController.text = v.companyName;
+      _emailController.text = v.email;
+      _phoneController.text = v.phone;
+      _openingBalanceController.text = v.payables.toStringAsFixed(2);
+    }
     _displayNameController.addListener(markDirty);
     _companyNameController.addListener(markDirty);
     _emailController.addListener(markDirty);
@@ -82,7 +92,7 @@ class _AddVendorPageState extends State<AddVendorPage>
             physics: const BouncingScrollPhysics(),
             slivers: [
               CustomSliverAppBar(
-                title: 'New Vendor',
+                title: widget.existing == null ? 'New Vendor' : 'Edit Vendor',
                 leadingType: AppBarLeadingType.back,
                 onLeadingPressed: () => onPopInvokedWithResult(false, null),
                 actions: [

@@ -52,7 +52,9 @@ class _PaymentMadeDetailsPageState extends State<PaymentMadeDetailsPage>
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const AddPaymentMadePage()),
+                MaterialPageRoute(
+                  builder: (_) => AddPaymentMadePage(existing: widget.payment),
+                ),
               );
             },
           ),

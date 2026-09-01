@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddExpensePage extends StatefulWidget {
-  const AddExpensePage({super.key});
+  final ExpenseModel? existing;
+
+  const AddExpensePage({super.key, this.existing});
 
   @override
   State<AddExpensePage> createState() => _AddExpensePageState();
@@ -38,6 +40,19 @@ class _AddExpensePageState extends State<AddExpensePage> {
     'Al Noor Co',
     'Prime Distributors',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existing != null) {
+      final e = widget.existing!;
+      _category = e.category.isEmpty ? null : e.category;
+      _vendorName = e.vendorName.isEmpty ? null : e.vendorName;
+      _expenseDate = e.expenseDate;
+      _referenceController.text = e.referenceNumber;
+      _amountController.text = e.amount.toStringAsFixed(2);
+    }
+  }
 
   @override
   void dispose() {
@@ -171,7 +186,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
           physics: const BouncingScrollPhysics(),
           slivers: [
             CustomSliverAppBar(
-              title: 'New Expense',
+              title: widget.existing == null ? 'New Expense' : 'Edit Expense',
               leadingType: AppBarLeadingType.back,
               actions: [
                 AppBarElevatedButton(

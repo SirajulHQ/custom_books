@@ -24,11 +24,28 @@ class _CustomersVendorsPreferencesPageState
   bool _allowDuplicates = true;
   bool _enableCreditLimit = false;
 
-  final String _billingAddressFormat =
+  String _billingAddressFormat =
       '\${CONTACT.CONTACT_DISPLAYNAME}\n\${CONTACT.CONTACT_ADDRESS}\n\${CONTACT.CONTACT_CITY}\n\${CONTACT.CONTACT_CODE} \$\n{CONTACT.CONTACT_STATE}\n\${CONTACT.CONTACT_COUNTRY}\n\${CONTACT.TRN_LABEL} \${CONTACT.TRN}';
 
-  final String _shippingAddressFormat =
+  String _shippingAddressFormat =
       '\${CONTACT.CONTACT_ADDRESS}\n\${CONTACT.CONTACT_CITY}\n\${CONTACT.CONTACT_CODE} \$\n{CONTACT.CONTACT_STATE}\n\${CONTACT.CONTACT_COUNTRY}\n\${CONTACT.TRN_LABEL} \${CONTACT.TRN}';
+
+  // Placeholder tokens that can be inserted into the address formats.
+  static const Map<String, String> _addressPlaceholders = {
+    'Display Name': r'${CONTACT.CONTACT_DISPLAYNAME}',
+    'Attention': r'${CONTACT.CONTACT_ATTENTION}',
+    'Address': r'${CONTACT.CONTACT_ADDRESS}',
+    'City': r'${CONTACT.CONTACT_CITY}',
+    'State': r'${CONTACT.CONTACT_STATE}',
+    'Zip Code': r'${CONTACT.CONTACT_CODE}',
+    'Country': r'${CONTACT.CONTACT_COUNTRY}',
+    'Phone': r'${CONTACT.CONTACT_PHONE}',
+    'Fax': r'${CONTACT.CONTACT_FAX}',
+    'TRN': r'${CONTACT.TRN}',
+  };
+
+  // In-memory custom fields (Field Customization tab).
+  final List<_CustomField> _customFields = [];
 
   @override
   void initState() {
@@ -52,6 +69,186 @@ class _CustomersVendorsPreferencesPageState
       name: 'CustomersVendorsPreferences',
     );
     Navigator.pop(context);
+  }
+
+  void _insertPlaceholder({required bool isBilling}) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      backgroundColor: context.colors.card,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: Dimensions.width20,
+            vertical: Dimensions.height10,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Insert Placeholder',
+                style: TextStyle(
+                  fontSize: Dimensions.font16,
+                  fontWeight: FontWeight.w800,
+                  color: context.colors.textPrimary,
+                ),
+              ),
+              SizedBox(height: Dimensions.height10),
+              Wrap(
+                spacing: Dimensions.width10,
+                runSpacing: Dimensions.height10,
+                children: _addressPlaceholders.entries.map((entry) {
+                  return ActionChip(
+                    label: Text(entry.key),
+                    labelStyle: TextStyle(
+                      fontSize: Dimensions.font16 * 0.8,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.08),
+                    side: BorderSide(
+                      color: AppColors.primary.withValues(alpha: 0.3),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(sheetContext);
+                      setState(() {
+                        if (isBilling) {
+                          _billingAddressFormat =
+                              '$_billingAddressFormat\n${entry.value}';
+                        } else {
+                          _shippingAddressFormat =
+                              '$_shippingAddressFormat\n${entry.value}';
+                        }
+                      });
+                    },
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: Dimensions.height15),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showAddCustomFieldSheet() {
+    appLog('➕ Add custom field tapped', name: 'CustomersVendorsPreferences');
+    final labelController = TextEditingController();
+    String selectedType = _CustomField.types.first;
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      backgroundColor: context.colors.card,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
+      ),
+      builder: (sheetContext) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: Dimensions.width20,
+            right: Dimensions.width20,
+            top: Dimensions.height10,
+            bottom:
+                MediaQuery.of(sheetContext).viewInsets.bottom +
+                Dimensions.height20,
+          ),
+          child: StatefulBuilder(
+            builder: (ctx, setSheetState) => Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'New Custom Field',
+                  style: TextStyle(
+                    fontSize: Dimensions.font16,
+                    fontWeight: FontWeight.w800,
+                    color: context.colors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: Dimensions.height15),
+                TextField(
+                  controller: labelController,
+                  autofocus: true,
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.9,
+                    color: context.colors.textPrimary,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: 'Field Label',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    ),
+                  ),
+                ),
+                SizedBox(height: Dimensions.height15),
+                DropdownButtonFormField<String>(
+                  initialValue: selectedType,
+                  decoration: InputDecoration(
+                    labelText: 'Data Type',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    ),
+                  ),
+                  items: _CustomField.types
+                      .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                      .toList(),
+                  onChanged: (v) =>
+                      setSheetState(() => selectedType = v ?? selectedType),
+                ),
+                SizedBox(height: Dimensions.height20),
+                SizedBox(
+                  width: double.infinity,
+                  height: Dimensions.height45,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius30,
+                        ),
+                      ),
+                      elevation: 0,
+                    ),
+                    onPressed: () {
+                      final label = labelController.text.trim();
+                      if (label.isEmpty) return;
+                      Navigator.pop(sheetContext);
+                      setState(() {
+                        _customFields.add(
+                          _CustomField(label: label, type: selectedType),
+                        );
+                      });
+                    },
+                    child: Text(
+                      'Add Field',
+                      style: TextStyle(
+                        fontSize: Dimensions.font16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ).whenComplete(labelController.dispose);
   }
 
   @override
@@ -235,7 +432,7 @@ class _CustomersVendorsPreferencesPageState
               _buildActionLink(
                 Icons.add_circle_outline_rounded,
                 'Insert Placeholders',
-                () {},
+                () => _insertPlaceholder(isBilling: true),
               ),
             ],
           ),
@@ -276,7 +473,7 @@ class _CustomersVendorsPreferencesPageState
               _buildActionLink(
                 Icons.add_circle_outline_rounded,
                 'Insert Placeholders',
-                () {},
+                () => _insertPlaceholder(isBilling: false),
               ),
             ],
           ),
@@ -290,31 +487,92 @@ class _CustomersVendorsPreferencesPageState
   Widget _buildFieldCustomizationTab() {
     return Stack(
       children: [
-        Center(
-          child: Padding(
-            padding: EdgeInsets.all(Dimensions.width30),
-            child: Text(
-              "Do you have information that doesn't go under any existing field? Go ahead and create a field.",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.9,
-                color: context.colors.textSecondary,
-                height: 1.5,
+        if (_customFields.isEmpty)
+          Center(
+            child: Padding(
+              padding: EdgeInsets.all(Dimensions.width30),
+              child: Text(
+                "Do you have information that doesn't go under any existing field? Go ahead and create a field.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.9,
+                  color: context.colors.textSecondary,
+                  height: 1.5,
+                ),
               ),
             ),
-          ),
-        ),
-        Positioned(
-          bottom: Dimensions.height30,
-          right: Dimensions.width20,
-          child: CustomAddButton(
-            onPressed: () {
-              appLog(
-                '➕ Add custom field tapped',
-                name: 'CustomersVendorsPreferences',
+          )
+        else
+          ListView.separated(
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(
+              Dimensions.width15,
+              Dimensions.height15,
+              Dimensions.width15,
+              Dimensions.height45 * 2,
+            ),
+            itemCount: _customFields.length,
+            separatorBuilder: (_, _) => SizedBox(height: Dimensions.height10),
+            itemBuilder: (context, index) {
+              final field = _customFields[index];
+              return Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width15,
+                  vertical: Dimensions.height10,
+                ),
+                decoration: BoxDecoration(
+                  color: context.colors.card,
+                  borderRadius: BorderRadius.circular(Dimensions.radius15),
+                  border: Border.all(color: context.colors.border),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.label_outline_rounded,
+                      size: Dimensions.iconSize24,
+                      color: AppColors.primary,
+                    ),
+                    SizedBox(width: Dimensions.width15),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            field.label,
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.9,
+                              fontWeight: FontWeight.w700,
+                              color: context.colors.textPrimary,
+                            ),
+                          ),
+                          Text(
+                            field.type,
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.75,
+                              color: context.colors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete_outline_rounded,
+                        color: AppColors.warn,
+                        size: Dimensions.iconSize24 * 0.9,
+                      ),
+                      onPressed: () =>
+                          setState(() => _customFields.removeAt(index)),
+                    ),
+                  ],
+                ),
               );
             },
           ),
+        Positioned(
+          bottom: Dimensions.height30,
+          right: Dimensions.width20,
+          child: CustomAddButton(onPressed: _showAddCustomFieldSheet),
         ),
       ],
     );
@@ -471,4 +729,21 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant _TabBarDelegate oldDelegate) =>
       tabBar != oldDelegate.tabBar;
+}
+
+class _CustomField {
+  final String label;
+  final String type;
+
+  const _CustomField({required this.label, required this.type});
+
+  static const List<String> types = [
+    'Text',
+    'Number',
+    'Decimal',
+    'Amount',
+    'Date',
+    'Checkbox',
+    'Dropdown',
+  ];
 }

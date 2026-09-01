@@ -53,7 +53,9 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage>
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const AddPurchaseOrderPage()),
+                MaterialPageRoute(
+                  builder: (_) => AddPurchaseOrderPage(existing: widget.order),
+                ),
               );
             },
           ),

@@ -58,7 +58,8 @@ class _RecurringInvoiceDetailsPageState
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const AddRecurringInvoicePage(),
+                            builder: (_) =>
+                                AddRecurringInvoicePage(existing: profile),
                           ),
                         ),
                       ),

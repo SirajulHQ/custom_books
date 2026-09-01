@@ -52,7 +52,10 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const AddProjectPage()),
+                MaterialPageRoute(
+                  builder: (context) =>
+                      AddProjectPage(existing: widget.project),
+                ),
               );
             },
           ),

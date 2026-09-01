@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddPurchaseOrderPage extends StatefulWidget {
-  const AddPurchaseOrderPage({super.key});
+  final PurchaseOrderModel? existing;
+
+  const AddPurchaseOrderPage({super.key, this.existing});
 
   @override
   State<AddPurchaseOrderPage> createState() => _AddPurchaseOrderPageState();
@@ -36,6 +38,15 @@ class _AddPurchaseOrderPageState extends State<AddPurchaseOrderPage>
   void initState() {
     super.initState();
     _purchaseOrderNumController.text = 'PO-00043';
+    if (widget.existing != null) {
+      final o = widget.existing!;
+      _purchaseOrderNumController.text = o.purchaseOrderNumber;
+      _referenceController.text = o.referenceNumber;
+      _amountController.text = o.total.toStringAsFixed(2);
+      _vendorName = o.vendorName;
+      _orderDate = o.orderDate;
+      _expectedDeliveryDate = o.expectedDeliveryDate;
+    }
     _purchaseOrderNumController.addListener(markDirty);
     _referenceController.addListener(markDirty);
     _amountController.addListener(markDirty);
@@ -171,7 +182,9 @@ class _AddPurchaseOrderPageState extends State<AddPurchaseOrderPage>
       child: Scaffold(
         backgroundColor: context.colors.background,
         appBar: CustomBackAppBar(
-          title: 'New Purchase Order',
+          title: widget.existing == null
+              ? 'New Purchase Order'
+              : 'Edit Purchase Order',
           backgroundColor: context.colors.card,
           onLeadingPressed: () => onPopInvokedWithResult(false, null),
           actions: [

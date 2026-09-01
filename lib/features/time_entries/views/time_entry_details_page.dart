@@ -170,7 +170,8 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const AddTimeEntryPage(),
+                              builder: (context) =>
+                                  AddTimeEntryPage(existing: widget.entry),
                             ),
                           );
                         },
@@ -341,10 +342,7 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
               SizedBox(height: Dimensions.height15),
               DetailRow(label: 'User:', value: entry.userName),
               SizedBox(height: Dimensions.height15),
-              DetailRow(
-                label: 'Log Date:',
-                value: formatDate(entry.logDate),
-              ),
+              DetailRow(label: 'Log Date:', value: formatDate(entry.logDate)),
               SizedBox(height: Dimensions.height15),
               DetailRow(label: 'Duration:', value: entry.durationLabel),
               SizedBox(height: Dimensions.height15),
