@@ -3,9 +3,11 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
+import 'package:custom_books/features/documents/widgets/document_filter_sheet.dart';
+import 'package:custom_books/features/documents/widgets/document_sort_sheet.dart';
+import 'package:custom_books/features/documents/widgets/document_page_widgets.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
 class AllFilesPage extends StatefulWidget {
@@ -127,79 +129,11 @@ class _AllFilesPageState extends State<AllFilesPage> {
       isScrollControlled: true,
       backgroundColor: context.colors.card,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.radius20),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(Dimensions.radius20)),
       ),
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(Dimensions.width20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Filter by Type',
-                  style: TextStyle(
-                    fontSize: Dimensions.font20 * 0.85,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-                SizedBox(height: Dimensions.height15),
-                _filterOption('All Types', null),
-                ...DocumentType.values.map((t) => _filterOption(t.label, t)),
-                SizedBox(height: Dimensions.height10),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _filterOption(String label, DocumentType? type) {
-    final selected = _typeFilter == type;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () {
-        setState(() => _typeFilter = type);
-        Navigator.pop(context);
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width15,
-          vertical: Dimensions.height10,
-        ),
-        decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(
-            color: selected ? AppColors.primary : context.colors.border,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              type == null ? Icons.folder_copy_rounded : type.iconData,
-              size: Dimensions.iconSize16 + 2,
-              color: selected ? AppColors.primary : context.colors.textTertiary,
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: context.colors.textPrimary,
-              ),
-            ),
-          ],
-        ),
+      builder: (_) => DocumentFilterSheet(
+        selectedType: _typeFilter,
+        onSelected: (type) => setState(() => _typeFilter = type),
       ),
     );
   }
@@ -210,165 +144,15 @@ class _AllFilesPageState extends State<AllFilesPage> {
       isScrollControlled: true,
       backgroundColor: context.colors.card,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.radius20),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(Dimensions.radius20)),
       ),
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setSheet) {
-            return SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(Dimensions.width20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Sort By',
-                      style: TextStyle(
-                        fontSize: Dimensions.font20 * 0.85,
-                        fontWeight: FontWeight.w800,
-                        color: context.colors.textPrimary,
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height15),
-                    ...DocumentSortField.values.map((field) {
-                      final selected = _sortField == field;
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                        onTap: () {
-                          setState(() => _sortField = field);
-                          setSheet(() {});
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            bottom: Dimensions.height10 / 2,
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.width15,
-                            vertical: Dimensions.height10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: selected
-                                ? AppColors.primary.withValues(alpha: 0.08)
-                                : context.colors.surfaceLight,
-                            borderRadius: BorderRadius.circular(
-                              Dimensions.radius15,
-                            ),
-                            border: Border.all(
-                              color: selected
-                                  ? AppColors.primary
-                                  : context.colors.border,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                selected
-                                    ? Icons.radio_button_checked_rounded
-                                    : Icons.radio_button_off_rounded,
-                                size: Dimensions.iconSize16 + 2,
-                                color: selected
-                                    ? AppColors.primary
-                                    : context.colors.textTertiary,
-                              ),
-                              SizedBox(width: Dimensions.width10),
-                              Text(
-                                field.label,
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.8,
-                                  fontWeight: selected
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                  color: context.colors.textPrimary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-                    SizedBox(height: Dimensions.height10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _directionButton(
-                            'Ascending',
-                            Icons.arrow_upward_rounded,
-                            SortDirection.ascending,
-                            setSheet,
-                          ),
-                        ),
-                        SizedBox(width: Dimensions.width10),
-                        Expanded(
-                          child: _directionButton(
-                            'Descending',
-                            Icons.arrow_downward_rounded,
-                            SortDirection.descending,
-                            setSheet,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height10),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _directionButton(
-    String label,
-    IconData icon,
-    SortDirection direction,
-    StateSetter setSheet,
-  ) {
-    final selected = _sortDirection == direction;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () {
-        setState(() => _sortDirection = direction);
-        setSheet(() {});
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-        decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(
-            color: selected ? AppColors.primary : context.colors.border,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: Dimensions.iconSize16 + 2,
-              color: selected ? AppColors.primary : context.colors.textTertiary,
-            ),
-            SizedBox(width: Dimensions.width10 / 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.75,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? AppColors.primary
-                    : context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
+      builder: (_) => DocumentSortSheet(
+        selectedField: _sortField,
+        selectedDirection: _sortDirection,
+        onApply: (field, direction) => setState(() {
+          _sortField = field;
+          _sortDirection = direction;
+        }),
       ),
     );
   }
@@ -574,7 +358,10 @@ class _AllFilesPageState extends State<AllFilesPage> {
                         ),
                         itemCount: visibleList.length,
                         itemBuilder: (context, index) =>
-                            _documentTile(visibleList[index]),
+                            DocumentTile(
+                              doc: visibleList[index],
+                              onTap: () => ToastificationHelper.showSuccess(context, visibleList[index].fileName),
+                            ),
                       ),
                     ),
             ),
@@ -646,100 +433,4 @@ class _AllFilesPageState extends State<AllFilesPage> {
     );
   }
 
-  Widget _documentTile(DocumentModel doc) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => ToastificationHelper.showSuccess(context, doc.fileName),
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10),
-        padding: EdgeInsets.all(Dimensions.width15),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: context.colors.border),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: Dimensions.height45 * 0.78,
-              height: Dimensions.height45 * 0.78,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
-              ),
-              child: Icon(
-                doc.fileType.iconData,
-                color: AppColors.primary,
-                size: Dimensions.iconSize24 - 4,
-              ),
-            ),
-            SizedBox(width: Dimensions.width15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    doc.fileName,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.95,
-                      fontWeight: FontWeight.w700,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      Text(
-                        doc.fileType.label,
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textSecondary,
-                        ),
-                      ),
-                      Text(
-                        '  •  ',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textTertiary,
-                        ),
-                      ),
-                      Text(
-                        formatBytes(doc.sizeBytes),
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textSecondary,
-                        ),
-                      ),
-                      Text(
-                        '  •  ',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textTertiary,
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          formatDate(doc.uploadedDate),
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.7,
-                            color: context.colors.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: context.colors.textTertiary,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

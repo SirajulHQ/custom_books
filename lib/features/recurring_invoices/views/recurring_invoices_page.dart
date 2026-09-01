@@ -3,11 +3,13 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
-import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/recurring_invoices/models/recurring_invoice_model.dart';
 import 'package:custom_books/features/recurring_invoices/views/add_recurring_invoice_page.dart';
 import 'package:custom_books/features/recurring_invoices/views/recurring_invoice_details_page.dart';
+import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoice_filter_sheet.dart';
+import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoice_sort_sheet.dart';
+import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoice_page_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -146,346 +148,26 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) {
-        final options = <RecurringInvoiceStatus?>[
-          null,
-          ...RecurringInvoiceStatus.values,
-        ];
-        return SafeArea(
-          top: false,
-          child: Container(
-            decoration: BoxDecoration(
-              color: context.colors.card,
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(Dimensions.radius20),
-              ),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: Dimensions.width20 * 2,
-                  height: Dimensions.height10 * 0.4,
-                  margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-                  decoration: BoxDecoration(
-                    color: context.colors.border,
-                    borderRadius: BorderRadius.circular(Dimensions.radius30),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: Dimensions.width20,
-                    vertical: Dimensions.height10,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Filter',
-                        style: TextStyle(
-                          fontSize: Dimensions.font20,
-                          fontWeight: FontWeight.bold,
-                          color: context.colors.textPrimary,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Icon(
-                          Icons.close_rounded,
-                          size: Dimensions.iconSize24,
-                          color: context.colors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.fromLTRB(
-                      Dimensions.width20,
-                      Dimensions.height10,
-                      Dimensions.width20,
-                      Dimensions.height20,
-                    ),
-                    itemCount: options.length,
-                    itemBuilder: (context, index) {
-                      final status = options[index];
-                      final selected = status == _statusFilter;
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() => _statusFilter = status);
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: Dimensions.height10),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.width15,
-                            vertical: Dimensions.height15,
-                          ),
-                          decoration: BoxDecoration(
-                            color: selected
-                                ? AppColors.primary.withValues(alpha: 0.05)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(
-                              Dimensions.radius15,
-                            ),
-                            border: Border.all(
-                              color: selected
-                                  ? AppColors.primary
-                                  : context.colors.border,
-                              width: selected ? 2 : 1,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                status?.label ?? 'All Statuses',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16,
-                                  fontWeight: selected
-                                      ? FontWeight.w600
-                                      : FontWeight.w500,
-                                  color: selected
-                                      ? AppColors.primary
-                                      : context.colors.textPrimary,
-                                ),
-                              ),
-                              if (selected)
-                                Icon(
-                                  Icons.check_circle_rounded,
-                                  color: AppColors.primary,
-                                  size: Dimensions.iconSize24,
-                                ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+      builder: (_) => RecurringInvoiceFilterSheet(
+        selectedStatus: _statusFilter,
+        onSelected: (status) => setState(() => _statusFilter = status),
+      ),
     );
   }
 
   void _openSortSheet() {
-    var field = _sortField;
-    var direction = _sortDirection;
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setSheetState) {
-            return Container(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              decoration: BoxDecoration(
-                color: context.colors.card,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(Dimensions.radius20 * 1.2),
-                ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: Dimensions.width20 * 2,
-                    height: Dimensions.height10 * 0.4,
-                    margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-                    decoration: BoxDecoration(
-                      color: context.colors.border,
-                      borderRadius: BorderRadius.circular(Dimensions.radius30),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Dimensions.width20,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Sort by',
-                          style: TextStyle(
-                            fontSize: Dimensions.font20,
-                            fontWeight: FontWeight.w800,
-                            color: context.colors.textPrimary,
-                          ),
-                        ),
-                        InkWell(
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius15,
-                          ),
-                          onTap: () => Navigator.pop(context),
-                          child: Container(
-                            padding: EdgeInsets.all(Dimensions.width10 * 0.6),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(
-                                Dimensions.radius15,
-                              ),
-                            ),
-                            child: Icon(
-                              Icons.close_rounded,
-                              size: Dimensions.iconSize16,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height15),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Dimensions.width20,
-                    ),
-                    child: Column(
-                      children: RecurringInvoiceSortField.values.map((f) {
-                        final selected = f == field;
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: Dimensions.height10),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(
-                              Dimensions.radius15,
-                            ),
-                            onTap: () {
-                              setSheetState(() {
-                                if (field == f) {
-                                  direction =
-                                      direction == SortDirection.ascending
-                                      ? SortDirection.descending
-                                      : SortDirection.ascending;
-                                } else {
-                                  field = f;
-                                  direction = SortDirection.descending;
-                                }
-                              });
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: Dimensions.width15,
-                                vertical: Dimensions.height15 * 0.75,
-                              ),
-                              decoration: BoxDecoration(
-                                color: selected
-                                    ? AppColors.primary.withValues(alpha: 0.06)
-                                    : context.colors.card,
-                                borderRadius: BorderRadius.circular(
-                                  Dimensions.radius15,
-                                ),
-                                border: Border.all(
-                                  color: selected
-                                      ? AppColors.primary
-                                      : context.colors.border,
-                                  width: selected ? 1.5 : 1,
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    selected
-                                        ? Icons.radio_button_checked_rounded
-                                        : Icons.radio_button_off_rounded,
-                                    size: Dimensions.iconSize24 - 4,
-                                    color: selected
-                                        ? AppColors.primary
-                                        : context.colors.textTertiary,
-                                  ),
-                                  SizedBox(width: Dimensions.width10),
-                                  Expanded(
-                                    child: Text(
-                                      f.label,
-                                      style: TextStyle(
-                                        fontSize: Dimensions.font16 * 0.9,
-                                        fontWeight: selected
-                                            ? FontWeight.w700
-                                            : FontWeight.w500,
-                                        color: context.colors.textPrimary,
-                                      ),
-                                    ),
-                                  ),
-                                  if (selected)
-                                    Icon(
-                                      direction == SortDirection.ascending
-                                          ? Icons.arrow_upward_rounded
-                                          : Icons.arrow_downward_rounded,
-                                      size: Dimensions.iconSize16,
-                                      color: AppColors.primary,
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height15),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(
-                      Dimensions.width20,
-                      Dimensions.height15,
-                      Dimensions.width20,
-                      Dimensions.height20,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(color: context.colors.border),
-                      ),
-                    ),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          setState(() {
-                            _sortField = field;
-                            _sortDirection = direction;
-                          });
-                          Navigator.pop(context);
-                        },
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.primary,
-                          side: const BorderSide(
-                            color: AppColors.primary,
-                            width: 1.5,
-                          ),
-                          backgroundColor: Colors.transparent,
-                          padding: EdgeInsets.symmetric(
-                            vertical: Dimensions.height15 * 0.9,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              Dimensions.radius15,
-                            ),
-                          ),
-                          elevation: 0,
-                        ),
-                        child: Text(
-                          'Sort',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.9,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
+      builder: (_) => RecurringInvoiceSortSheet(
+        selectedField: _sortField,
+        selectedDirection: _sortDirection,
+        onApply: (field, direction) => setState(() {
+          _sortField = field;
+          _sortDirection = direction;
+        }),
+      ),
     );
   }
 
@@ -732,8 +414,17 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
                         parent: BouncingScrollPhysics(),
                       ),
                       itemCount: visibleList.length,
-                      itemBuilder: (context, index) =>
-                          _profileTile(visibleList[index]),
+                      itemBuilder: (context, index) => RecurringInvoiceTile(
+                        profile: visibleList[index],
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RecurringInvoiceDetailsPage(
+                              profile: visibleList[index],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
           ),
@@ -802,110 +493,6 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
         icon,
         size: Dimensions.iconSize24 - 4,
         color: active ? AppColors.accent : AppColors.primary,
-      ),
-    );
-  }
-
-  Widget _profileTile(RecurringInvoiceModel profile) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => RecurringInvoiceDetailsPage(profile: profile),
-        ),
-      ),
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10),
-        padding: EdgeInsets.all(Dimensions.width15),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: context.colors.border),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: Dimensions.height45 * 0.78,
-              height: Dimensions.height45 * 0.78,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
-              ),
-              child: Icon(
-                Icons.autorenew_rounded,
-                color: AppColors.primary,
-                size: Dimensions.iconSize24 - 4,
-              ),
-            ),
-            SizedBox(width: Dimensions.width15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    profile.profileName,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.95,
-                      fontWeight: FontWeight.w700,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.person_outline_rounded,
-                        size: Dimensions.iconSize16 - 2,
-                        color: context.colors.textTertiary,
-                      ),
-                      SizedBox(width: Dimensions.width10 / 2),
-                      Flexible(
-                        child: Text(
-                          profile.customerName,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.7,
-                            color: context.colors.textSecondary,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        '  •  ',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textTertiary,
-                        ),
-                      ),
-                      Text(
-                        profile.frequency.label,
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  StatusChip(
-                    color: profile.status.color,
-                    label: profile.status.label,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              '₹${profile.amount.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.9,
-                fontWeight: FontWeight.w800,
-                color: AppColors.primary,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

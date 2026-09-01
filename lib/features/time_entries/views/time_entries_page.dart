@@ -7,8 +7,10 @@ import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/time_entries/models/time_entry_model.dart';
 import 'package:custom_books/features/time_entries/views/add_time_entry_page.dart';
 import 'package:custom_books/features/time_entries/views/time_entry_details_page.dart';
+import 'package:custom_books/features/time_entries/widgets/time_entry_filter_sheet.dart';
+import 'package:custom_books/features/time_entries/widgets/time_entry_sort_sheet.dart';
+import 'package:custom_books/features/time_entries/widgets/time_entry_page_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
 class TimeEntriesPage extends StatefulWidget {
@@ -148,78 +150,9 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
           top: Radius.circular(Dimensions.radius20),
         ),
       ),
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(Dimensions.width20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Filter by Type',
-                  style: TextStyle(
-                    fontSize: Dimensions.font20 * 0.85,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-                SizedBox(height: Dimensions.height15),
-                _filterOption('All Types', null),
-                _filterOption('Billable', true),
-                _filterOption('Non-billable', false),
-                SizedBox(height: Dimensions.height10),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _filterOption(String label, bool? value) {
-    final selected = _billableFilter == value;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () {
-        setState(() => _billableFilter = value);
-        Navigator.pop(context);
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width15,
-          vertical: Dimensions.height10,
-        ),
-        decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(
-            color: selected ? AppColors.primary : context.colors.border,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              selected
-                  ? Icons.radio_button_checked_rounded
-                  : Icons.radio_button_off_rounded,
-              size: Dimensions.iconSize16 + 2,
-              color: selected ? AppColors.primary : context.colors.textTertiary,
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: context.colors.textPrimary,
-              ),
-            ),
-          ],
-        ),
+      builder: (_) => TimeEntryFilterSheet(
+        selectedBillable: _billableFilter,
+        onSelected: (value) => setState(() => _billableFilter = value),
       ),
     );
   }
@@ -234,161 +167,13 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
           top: Radius.circular(Dimensions.radius20),
         ),
       ),
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setSheet) {
-            return SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(Dimensions.width20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Sort By',
-                      style: TextStyle(
-                        fontSize: Dimensions.font20 * 0.85,
-                        fontWeight: FontWeight.w800,
-                        color: context.colors.textPrimary,
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height15),
-                    ...TimeEntrySortField.values.map((field) {
-                      final selected = _sortField == field;
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                        onTap: () {
-                          setState(() => _sortField = field);
-                          setSheet(() {});
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            bottom: Dimensions.height10 / 2,
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.width15,
-                            vertical: Dimensions.height10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: selected
-                                ? AppColors.primary.withValues(alpha: 0.08)
-                                : context.colors.surfaceLight,
-                            borderRadius: BorderRadius.circular(
-                              Dimensions.radius15,
-                            ),
-                            border: Border.all(
-                              color: selected
-                                  ? AppColors.primary
-                                  : context.colors.border,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                selected
-                                    ? Icons.radio_button_checked_rounded
-                                    : Icons.radio_button_off_rounded,
-                                size: Dimensions.iconSize16 + 2,
-                                color: selected
-                                    ? AppColors.primary
-                                    : context.colors.textTertiary,
-                              ),
-                              SizedBox(width: Dimensions.width10),
-                              Text(
-                                field.label,
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.8,
-                                  fontWeight: selected
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                  color: context.colors.textPrimary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-                    SizedBox(height: Dimensions.height10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _directionButton(
-                            'Ascending',
-                            Icons.arrow_upward_rounded,
-                            SortDirection.ascending,
-                            setSheet,
-                          ),
-                        ),
-                        SizedBox(width: Dimensions.width10),
-                        Expanded(
-                          child: _directionButton(
-                            'Descending',
-                            Icons.arrow_downward_rounded,
-                            SortDirection.descending,
-                            setSheet,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height10),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _directionButton(
-    String label,
-    IconData icon,
-    SortDirection direction,
-    StateSetter setSheet,
-  ) {
-    final selected = _sortDirection == direction;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () {
-        setState(() => _sortDirection = direction);
-        setSheet(() {});
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-        decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(
-            color: selected ? AppColors.primary : context.colors.border,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: Dimensions.iconSize16 + 2,
-              color: selected ? AppColors.primary : context.colors.textTertiary,
-            ),
-            SizedBox(width: Dimensions.width10 / 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.75,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? AppColors.primary
-                    : context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
+      builder: (_) => TimeEntrySortSheet(
+        selectedField: _sortField,
+        selectedDirection: _sortDirection,
+        onApply: (field, direction) => setState(() {
+          _sortField = field;
+          _sortDirection = direction;
+        }),
       ),
     );
   }
@@ -545,7 +330,16 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
                 ),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
-                    (context, index) => _entryTile(visibleList[index]),
+                    (context, index) => TimeEntryTile(
+                      entry: visibleList[index],
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              TimeEntryDetailsPage(entry: visibleList[index]),
+                        ),
+                      ),
+                    ),
                     childCount: visibleList.length,
                   ),
                 ),
@@ -660,130 +454,6 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
         icon,
         size: Dimensions.iconSize24 - 4,
         color: active ? AppColors.accent : AppColors.primary,
-      ),
-    );
-  }
-
-  Widget _entryTile(TimeEntryModel entry) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TimeEntryDetailsPage(entry: entry),
-        ),
-      ),
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10),
-        padding: EdgeInsets.all(Dimensions.width15),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: context.colors.border),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: Dimensions.height45 * 0.78,
-              height: Dimensions.height45 * 0.78,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
-              ),
-              child: Icon(
-                Icons.access_time_rounded,
-                color: AppColors.primary,
-                size: Dimensions.iconSize24 - 4,
-              ),
-            ),
-            SizedBox(width: Dimensions.width15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    entry.taskName,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.95,
-                      fontWeight: FontWeight.w700,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.folder_open_rounded,
-                        size: Dimensions.iconSize16 - 2,
-                        color: context.colors.textTertiary,
-                      ),
-                      SizedBox(width: Dimensions.width10 / 2),
-                      Flexible(
-                        child: Text(
-                          entry.projectName,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.7,
-                            color: context.colors.textSecondary,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        '  •  ',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textTertiary,
-                        ),
-                      ),
-                      Text(
-                        formatDate(entry.logDate),
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  _billableChip(entry.isBillable),
-                ],
-              ),
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              entry.durationLabel,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.9,
-                fontWeight: FontWeight.w800,
-                color: AppColors.primary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _billableChip(bool isBillable) {
-    final color = isBillable ? AppColors.success : context.colors.textTertiary;
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width10,
-        vertical: Dimensions.height10 * 0.2,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(Dimensions.radius30),
-      ),
-      child: Text(
-        isBillable ? 'BILLABLE' : 'NON-BILLABLE',
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.6,
-          color: color,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
-        ),
       ),
     );
   }

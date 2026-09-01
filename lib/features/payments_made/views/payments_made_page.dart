@@ -7,8 +7,10 @@ import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/payments_made/models/payment_made_model.dart';
 import 'package:custom_books/features/payments_made/views/add_payment_made_page.dart';
 import 'package:custom_books/features/payments_made/views/payment_made_details_page.dart';
+import 'package:custom_books/features/payments_made/widgets/payment_made_filter_sheet.dart';
+import 'package:custom_books/features/payments_made/widgets/payment_made_sort_sheet.dart';
+import 'package:custom_books/features/payments_made/widgets/payment_made_page_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
 class PaymentsMadePage extends StatefulWidget {
@@ -148,80 +150,9 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        margin: EdgeInsets.all(Dimensions.width15),
-        padding: EdgeInsets.all(Dimensions.width20),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.circular(Dimensions.radius20),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Filter by Payment Mode',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.95,
-                fontWeight: FontWeight.w800,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-            _filterOption('All Modes', null),
-            for (final mode in PaymentMode.values)
-              _filterOption(mode.label, mode),
-            SizedBox(height: Dimensions.height10),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _filterOption(String label, PaymentMode? mode) {
-    final selected = _modeFilter == mode;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () {
-        setState(() => _modeFilter = mode);
-        Navigator.pop(context);
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width15,
-          vertical: Dimensions.height10,
-        ),
-        decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: selected
-              ? Border.all(color: AppColors.primary.withValues(alpha: 0.4))
-              : null,
-        ),
-        child: Row(
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? AppColors.primary
-                    : context.colors.textPrimary,
-              ),
-            ),
-            const Spacer(),
-            if (selected)
-              Icon(
-                Icons.check_rounded,
-                size: Dimensions.iconSize16,
-                color: AppColors.primary,
-              ),
-          ],
-        ),
+      builder: (_) => PaymentMadeFilterSheet(
+        selectedMode: _modeFilter,
+        onSelected: (mode) => setState(() => _modeFilter = mode),
       ),
     );
   }
@@ -231,173 +162,13 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setSheetState) {
-          return Container(
-            margin: EdgeInsets.all(Dimensions.width15),
-            padding: EdgeInsets.all(Dimensions.width20),
-            decoration: BoxDecoration(
-              color: context.colors.card,
-              borderRadius: BorderRadius.circular(Dimensions.radius20),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Sort By',
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.95,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-                SizedBox(height: Dimensions.height15),
-                for (final field in PaymentMadeSortField.values)
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: () => setSheetState(() => _sortField = field),
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width15,
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _sortField == field
-                            ? AppColors.primary.withValues(alpha: 0.08)
-                            : context.colors.surfaceLight,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            field.label,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.8,
-                              fontWeight: _sortField == field
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              color: _sortField == field
-                                  ? AppColors.primary
-                                  : context.colors.textPrimary,
-                            ),
-                          ),
-                          const Spacer(),
-                          if (_sortField == field)
-                            Icon(
-                              Icons.check_rounded,
-                              size: Dimensions.iconSize16,
-                              color: AppColors.primary,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                SizedBox(height: Dimensions.height10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _directionButton(
-                        'Ascending',
-                        Icons.arrow_upward_rounded,
-                        SortDirection.ascending,
-                        setSheetState,
-                      ),
-                    ),
-                    SizedBox(width: Dimensions.width10),
-                    Expanded(
-                      child: _directionButton(
-                        'Descending',
-                        Icons.arrow_downward_rounded,
-                        SortDirection.descending,
-                        setSheetState,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: Dimensions.height15),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      setState(() {});
-                      Navigator.pop(context);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      side: const BorderSide(
-                        color: AppColors.primary,
-                        width: 1.5,
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                    ),
-                    child: const Text('Apply'),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _directionButton(
-    String label,
-    IconData icon,
-    SortDirection direction,
-    void Function(void Function()) setSheetState,
-  ) {
-    final selected = _sortDirection == direction;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => setSheetState(() => _sortDirection = direction),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-        decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: selected
-              ? Border.all(color: AppColors.primary.withValues(alpha: 0.4))
-              : null,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: Dimensions.iconSize16,
-              color: selected
-                  ? AppColors.primary
-                  : context.colors.textSecondary,
-            ),
-            SizedBox(width: Dimensions.width10 / 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.75,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? AppColors.primary
-                    : context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
+      builder: (_) => PaymentMadeSortSheet(
+        selectedField: _sortField,
+        selectedDirection: _sortDirection,
+        onApply: (field, direction) => setState(() {
+          _sortField = field;
+          _sortDirection = direction;
+        }),
       ),
     );
   }
@@ -631,8 +402,17 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                           parent: BouncingScrollPhysics(),
                         ),
                         itemCount: visibleList.length,
-                        itemBuilder: (context, index) =>
-                            _paymentTile(visibleList[index]),
+                        itemBuilder: (context, index) => PaymentMadeTile(
+                          payment: visibleList[index],
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => PaymentMadeDetailsPage(
+                                payment: visibleList[index],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
             ),
@@ -702,129 +482,6 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
         icon,
         size: Dimensions.iconSize24 - 4,
         color: active ? AppColors.accent : AppColors.primary,
-      ),
-    );
-  }
-
-  Widget _paymentTile(PaymentMadeModel payment) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => PaymentMadeDetailsPage(payment: payment),
-        ),
-      ),
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10),
-        padding: EdgeInsets.all(Dimensions.width15),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: context.colors.border),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: Dimensions.height45 * 0.78,
-              height: Dimensions.height45 * 0.78,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
-              ),
-              child: Icon(
-                Icons.payments_outlined,
-                color: AppColors.primary,
-                size: Dimensions.iconSize24 - 4,
-              ),
-            ),
-            SizedBox(width: Dimensions.width15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    payment.vendorName,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.95,
-                      fontWeight: FontWeight.w700,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_today_rounded,
-                        size: Dimensions.iconSize16 - 2,
-                        color: context.colors.textTertiary,
-                      ),
-                      SizedBox(width: Dimensions.width10 / 2),
-                      Text(
-                        formatDate(payment.paymentDate),
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textSecondary,
-                        ),
-                      ),
-                      Text(
-                        '  •  ',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textTertiary,
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          payment.paymentNumber,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.7,
-                            color: context.colors.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  _modeChip(payment.mode),
-                ],
-              ),
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              '₹${payment.amount.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.9,
-                fontWeight: FontWeight.w800,
-                color: AppColors.primary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _modeChip(PaymentMode mode) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width10,
-        vertical: Dimensions.height10 * 0.2,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.primaryLight.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(Dimensions.radius30),
-      ),
-      child: Text(
-        mode.label,
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.6,
-          color: AppColors.primaryLight,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
-        ),
       ),
     );
   }

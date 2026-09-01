@@ -3,13 +3,14 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
-import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/purchase_orders/models/purchase_order_model.dart';
 import 'package:custom_books/features/purchase_orders/views/add_purchase_order_page.dart';
 import 'package:custom_books/features/purchase_orders/views/purchase_order_details_page.dart';
+import 'package:custom_books/features/purchase_orders/widgets/purchase_order_filter_sheet.dart';
+import 'package:custom_books/features/purchase_orders/widgets/purchase_order_sort_sheet.dart';
+import 'package:custom_books/features/purchase_orders/widgets/purchase_order_page_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
 class PurchaseOrdersPage extends StatefulWidget {
@@ -147,80 +148,9 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        margin: EdgeInsets.all(Dimensions.width15),
-        padding: EdgeInsets.all(Dimensions.width20),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.circular(Dimensions.radius20),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Filter by Status',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.95,
-                fontWeight: FontWeight.w800,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-            _filterOption('All Purchase Orders', null),
-            for (final status in PurchaseOrderStatus.values)
-              _filterOption(status.label, status),
-            SizedBox(height: Dimensions.height10),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _filterOption(String label, PurchaseOrderStatus? status) {
-    final selected = _statusFilter == status;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () {
-        setState(() => _statusFilter = status);
-        Navigator.pop(context);
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width15,
-          vertical: Dimensions.height10,
-        ),
-        decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: selected
-              ? Border.all(color: AppColors.primary.withValues(alpha: 0.4))
-              : null,
-        ),
-        child: Row(
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? AppColors.primary
-                    : context.colors.textPrimary,
-              ),
-            ),
-            const Spacer(),
-            if (selected)
-              Icon(
-                Icons.check_rounded,
-                size: Dimensions.iconSize16,
-                color: AppColors.primary,
-              ),
-          ],
-        ),
+      builder: (_) => PurchaseOrderFilterSheet(
+        selectedStatus: _statusFilter,
+        onSelected: (status) => setState(() => _statusFilter = status),
       ),
     );
   }
@@ -230,173 +160,13 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setSheetState) {
-          return Container(
-            margin: EdgeInsets.all(Dimensions.width15),
-            padding: EdgeInsets.all(Dimensions.width20),
-            decoration: BoxDecoration(
-              color: context.colors.card,
-              borderRadius: BorderRadius.circular(Dimensions.radius20),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Sort By',
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.95,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-                SizedBox(height: Dimensions.height15),
-                for (final field in PurchaseOrderSortField.values)
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: () => setSheetState(() => _sortField = field),
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width15,
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _sortField == field
-                            ? AppColors.primary.withValues(alpha: 0.08)
-                            : context.colors.surfaceLight,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            field.label,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.8,
-                              fontWeight: _sortField == field
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              color: _sortField == field
-                                  ? AppColors.primary
-                                  : context.colors.textPrimary,
-                            ),
-                          ),
-                          const Spacer(),
-                          if (_sortField == field)
-                            Icon(
-                              Icons.check_rounded,
-                              size: Dimensions.iconSize16,
-                              color: AppColors.primary,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                SizedBox(height: Dimensions.height10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _directionButton(
-                        'Ascending',
-                        Icons.arrow_upward_rounded,
-                        SortDirection.ascending,
-                        setSheetState,
-                      ),
-                    ),
-                    SizedBox(width: Dimensions.width10),
-                    Expanded(
-                      child: _directionButton(
-                        'Descending',
-                        Icons.arrow_downward_rounded,
-                        SortDirection.descending,
-                        setSheetState,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: Dimensions.height15),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      setState(() {});
-                      Navigator.pop(context);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      side: const BorderSide(
-                        color: AppColors.primary,
-                        width: 1.5,
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                    ),
-                    child: const Text('Apply'),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _directionButton(
-    String label,
-    IconData icon,
-    SortDirection direction,
-    void Function(void Function()) setSheetState,
-  ) {
-    final selected = _sortDirection == direction;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => setSheetState(() => _sortDirection = direction),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-        decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: selected
-              ? Border.all(color: AppColors.primary.withValues(alpha: 0.4))
-              : null,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: Dimensions.iconSize16,
-              color: selected
-                  ? AppColors.primary
-                  : context.colors.textSecondary,
-            ),
-            SizedBox(width: Dimensions.width10 / 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.75,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? AppColors.primary
-                    : context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
+      builder: (_) => PurchaseOrderSortSheet(
+        selectedField: _sortField,
+        selectedDirection: _sortDirection,
+        onApply: (field, direction) => setState(() {
+          _sortField = field;
+          _sortDirection = direction;
+        }),
       ),
     );
   }
@@ -631,8 +401,17 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
                           parent: BouncingScrollPhysics(),
                         ),
                         itemCount: visibleList.length,
-                        itemBuilder: (context, index) =>
-                            _purchaseOrderTile(visibleList[index]),
+                        itemBuilder: (context, index) => PurchaseOrderTile(
+                          order: visibleList[index],
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => PurchaseOrderDetailsPage(
+                                order: visibleList[index],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
             ),
@@ -702,110 +481,6 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
         icon,
         size: Dimensions.iconSize24 - 4,
         color: active ? AppColors.accent : AppColors.primary,
-      ),
-    );
-  }
-
-  Widget _purchaseOrderTile(PurchaseOrderModel order) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => PurchaseOrderDetailsPage(order: order),
-        ),
-      ),
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10),
-        padding: EdgeInsets.all(Dimensions.width15),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: context.colors.border),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: Dimensions.height45 * 0.78,
-              height: Dimensions.height45 * 0.78,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
-              ),
-              child: Icon(
-                Icons.assignment_outlined,
-                color: AppColors.primary,
-                size: Dimensions.iconSize24 - 4,
-              ),
-            ),
-            SizedBox(width: Dimensions.width15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    order.vendorName,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.95,
-                      fontWeight: FontWeight.w700,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_today_rounded,
-                        size: Dimensions.iconSize16 - 2,
-                        color: context.colors.textTertiary,
-                      ),
-                      SizedBox(width: Dimensions.width10 / 2),
-                      Text(
-                        formatDate(order.orderDate),
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textSecondary,
-                        ),
-                      ),
-                      Text(
-                        '  •  ',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textTertiary,
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          order.purchaseOrderNumber,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.7,
-                            color: context.colors.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  StatusChip(
-                    color: order.status.color,
-                    label: order.status.label,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              '₹${order.total.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.9,
-                fontWeight: FontWeight.w800,
-                color: AppColors.primary,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
