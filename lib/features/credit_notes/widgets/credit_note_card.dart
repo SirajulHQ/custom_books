@@ -1,26 +1,28 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/features/credit_notes/models/credit_note_model.dart';
 import 'package:flutter/material.dart';
 
 class CreditNoteCard extends StatelessWidget {
-  final dynamic note;
+  final CreditNoteModel note;
   final Color statusColor;
-  final String Function(String) formatDate;
 
   const CreditNoteCard({
     super.key,
     required this.note,
     required this.statusColor,
-    required this.formatDate,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      margin: EdgeInsets.only(bottom: Dimensions.height15),
       padding: EdgeInsets.all(Dimensions.width20),
       decoration: BoxDecoration(
         color: context.colors.card,
+        borderRadius: BorderRadius.circular(Dimensions.radius15),
         boxShadow: [
           BoxShadow(
             color: const Color(0x08000000),
@@ -51,9 +53,7 @@ class CreditNoteCard extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(
-                    Dimensions.radius30,
-                  ),
+                  borderRadius: BorderRadius.circular(Dimensions.radius30),
                 ),
                 child: Text(
                   note.status.label,

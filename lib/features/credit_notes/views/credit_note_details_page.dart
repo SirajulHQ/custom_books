@@ -1,5 +1,4 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
-import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/features/credit_notes/models/credit_note_model.dart';
@@ -175,11 +174,7 @@ class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
         child: Column(
           children: [
             // Header section
-            CreditNoteCard(
-              note: note,
-              statusColor: statusColor,
-              formatDate: (dateStr) => formatDate(DateTime.parse(dateStr)),
-            ),
+            CreditNoteCard(note: note, statusColor: statusColor),
             SizedBox(height: Dimensions.height15),
 
             // Tabs

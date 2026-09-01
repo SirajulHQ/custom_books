@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
+import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/time_entries/models/time_entry_model.dart';
 import 'package:custom_books/features/time_entries/views/add_time_entry_page.dart';
@@ -21,7 +22,7 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
   final TextEditingController _searchController = TextEditingController();
 
   int _selectedTab = 0; // 0: All, 1: Billable, 2: Non-billable
-  final bool _searchOpen = false;
+  bool _searchOpen = false;
   bool? _billableFilter;
   TimeEntrySortField _sortField = TimeEntrySortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -400,118 +401,157 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'time_entries'),
       floatingActionButton: CustomAddButton(onPressed: _addNewEntry),
-      body: Column(
-        children: [
-          if (_searchOpen)
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                Dimensions.width20,
-                Dimensions.height10,
-                Dimensions.width20,
-                Dimensions.height15,
-              ),
-              child: TextField(
-                controller: _searchController,
-                autofocus: true,
-                onChanged: (_) => setState(() {}),
-                style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-                decoration: InputDecoration(
-                  hintText: 'Search by task, project or user',
-                  hintStyle: TextStyle(color: context.colors.textTertiary),
-                  prefixIcon: Icon(
-                    Icons.search_rounded,
-                    color: context.colors.textTertiary,
-                  ),
-                  filled: true,
-                  fillColor: context.colors.card,
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: Dimensions.height10,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: BorderSide(color: context.colors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    borderSide: const BorderSide(
-                      color: AppColors.primary,
-                      width: 1.5,
-                    ),
-                  ),
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // App Bar
+            CustomSliverAppBar(
+              title: 'Time Entries',
+              subtitle:
+                  '${visibleList.length} entr${visibleList.length == 1 ? 'y' : 'ies'}',
+              leadingType: AppBarLeadingType.menu,
+              actions: [
+                AppBarIconButton(
+                  icon: _searchOpen
+                      ? Icons.close_rounded
+                      : Icons.search_rounded,
+                  color: AppColors.primary,
+                  onPressed: () {
+                    setState(() {
+                      _searchOpen = !_searchOpen;
+                      if (!_searchOpen) _searchController.clear();
+                    });
+                  },
                 ),
-              ),
-            ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              Dimensions.width20,
-              Dimensions.height10 / 2,
-              Dimensions.width20,
-              Dimensions.height15,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(Dimensions.height10 * 0.4),
-                    decoration: BoxDecoration(
-                      color: context.colors.surfaceLight,
-                      borderRadius: BorderRadius.circular(Dimensions.radius30),
-                    ),
-                    child: Row(
-                      children: [
-                        _tabButton('All', 0),
-                        _tabButton('Billable', 1),
-                        _tabButton('Non-billable', 2),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: Dimensions.width10),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: _openFilterSheet,
-                  child: _controlBadge(
-                    _billableFilter == null
-                        ? Icons.filter_list_rounded
-                        : Icons.filter_alt_rounded,
-                    active: _billableFilter != null,
-                  ),
-                ),
-                SizedBox(width: Dimensions.width10 / 2),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: _openSortSheet,
-                  child: _controlBadge(Icons.swap_vert_rounded),
-                ),
+                SizedBox(width: Dimensions.width20),
               ],
             ),
-          ),
-          Expanded(
-            child: visibleList.isEmpty
-                ? _emptyState()
-                : RefreshIndicator(
-                    onRefresh: () async => setState(() {}),
-                    child: ListView.builder(
-                      padding: EdgeInsets.fromLTRB(
-                        Dimensions.width20,
-                        0,
-                        Dimensions.width20,
-                        Dimensions.listBottomSpace,
+
+            // Search Field
+            if (_searchOpen)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    Dimensions.width20,
+                    0,
+                    Dimensions.width20,
+                    Dimensions.height15,
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    autofocus: true,
+                    onChanged: (_) => setState(() {}),
+                    style: TextStyle(fontSize: Dimensions.font16 * 0.85),
+                    decoration: InputDecoration(
+                      hintText: 'Search by task, project or user',
+                      hintStyle: TextStyle(color: context.colors.textTertiary),
+                      prefixIcon: Icon(
+                        Icons.search_rounded,
+                        color: context.colors.textTertiary,
                       ),
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
+                      filled: true,
+                      fillColor: context.colors.card,
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height10,
                       ),
-                      itemCount: visibleList.length,
-                      itemBuilder: (context, index) =>
-                          _entryTile(visibleList[index]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15,
+                        ),
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15,
+                        ),
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15,
+                        ),
+                        borderSide: const BorderSide(
+                          color: AppColors.primary,
+                          width: 1.5,
+                        ),
+                      ),
                     ),
                   ),
-          ),
-        ],
+                ),
+              ),
+
+            // Filter / Sort bar
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  Dimensions.height10 / 2,
+                  Dimensions.width20,
+                  Dimensions.height15,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(Dimensions.height10 * 0.4),
+                        decoration: BoxDecoration(
+                          color: context.colors.surfaceLight,
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radius30,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            _tabButton('All', 0),
+                            _tabButton('Billable', 1),
+                            _tabButton('Non-billable', 2),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: Dimensions.width10),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      onTap: _openFilterSheet,
+                      child: _controlBadge(
+                        _billableFilter == null
+                            ? Icons.filter_list_rounded
+                            : Icons.filter_alt_rounded,
+                        active: _billableFilter != null,
+                      ),
+                    ),
+                    SizedBox(width: Dimensions.width10 / 2),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      onTap: _openSortSheet,
+                      child: _controlBadge(Icons.swap_vert_rounded),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // List or empty state
+            if (visibleList.isEmpty)
+              SliverFillRemaining(child: _emptyState())
+            else
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(
+                  Dimensions.width20,
+                  0,
+                  Dimensions.width20,
+                  Dimensions.listBottomSpace,
+                ),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => _entryTile(visibleList[index]),
+                    childCount: visibleList.length,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

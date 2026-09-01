@@ -4,11 +4,11 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/credit_notes/models/credit_note_model.dart';
 import 'package:custom_books/features/credit_notes/views/add_credit_note_page.dart';
+import 'package:custom_books/features/credit_notes/views/credit_note_details_page.dart';
 import 'package:custom_books/features/credit_notes/widgets/credit_note_card.dart';
 import 'package:custom_books/features/credit_notes/widgets/credit_note_filter_sheet.dart';
 import 'package:custom_books/features/credit_notes/widgets/credit_note_sort_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
-import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -446,11 +446,23 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
                         itemBuilder: (context, index) {
                           final note = visibleList[index];
                           final status = note.status;
-                          return CreditNoteCard(
-                            note: note,
-                            statusColor: status.color,
-                            formatDate: (dateStr) =>
-                                formatDate(DateTime.parse(dateStr)),
+                          return InkWell(
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15,
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      CreditNoteDetailsPage(note: note),
+                                ),
+                              );
+                            },
+                            child: CreditNoteCard(
+                              note: note,
+                              statusColor: status.color,
+                            ),
                           );
                         },
                       ),
