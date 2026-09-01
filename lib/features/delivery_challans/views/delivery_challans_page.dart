@@ -5,6 +5,7 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/delivery_challans/models/delivery_challan_model.dart';
 import 'package:custom_books/features/delivery_challans/views/add_delivery_challan_page.dart';
 import 'package:custom_books/features/delivery_challans/widgets/delivery_challan_card.dart';
+import 'package:custom_books/features/delivery_challans/views/delivery_challan_details_page.dart';
 import 'package:custom_books/features/delivery_challans/widgets/delivery_challan_filter_sheet.dart';
 import 'package:custom_books/features/delivery_challans/widgets/delivery_challan_sort_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
@@ -429,9 +430,22 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                           parent: BouncingScrollPhysics(),
                         ),
                         itemCount: visibleList.length,
-                        itemBuilder: (context, index) =>
-                            // _challanTile(visibleList[index]),
-                            DeliveryChallanCard(challan: visibleList[index]),
+                        itemBuilder: (context, index) => InkWell(
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radius15,
+                          ),
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => DeliveryChallanDetailsPage(
+                                challan: visibleList[index],
+                              ),
+                            ),
+                          ),
+                          child: DeliveryChallanCard(
+                            challan: visibleList[index],
+                          ),
+                        ),
                       ),
                     ),
             ),
