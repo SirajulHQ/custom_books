@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/reports/models/report_type.dart';
 import 'package:flutter/material.dart';
 
@@ -114,7 +115,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
         SizedBox(height: Dimensions.height15),
 
         // File name
-        _label('Export File Name'),
+        Padding(padding: EdgeInsets.only(bottom: Dimensions.height10 / 2), child: Text('Export File Name', style: FormTextStyles.sectionLabel(context))),
         SizedBox(height: Dimensions.height10 / 2),
         _textField(_fileNameController, ''),
 
@@ -372,7 +373,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
           ),
         ),
         SizedBox(height: Dimensions.height15),
-        _label('Table Density'),
+        Padding(padding: EdgeInsets.only(bottom: Dimensions.height10 / 2), child: Text('Table Density', style: FormTextStyles.sectionLabel(context))),
         _buildLayoutDropdown(
           value: _tableDensity,
           items: ['Classic', 'Compact', 'Comfortable'],
@@ -389,7 +390,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
         SizedBox(height: Dimensions.height20),
 
         // Paper Size
-        _label('Paper Size'),
+        Padding(padding: EdgeInsets.only(bottom: Dimensions.height10 / 2), child: Text('Paper Size', style: FormTextStyles.sectionLabel(context))),
         _buildLayoutDropdown(
           value: _paperSize,
           items: ['A4', 'Letter', 'Legal'],
@@ -399,7 +400,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
         SizedBox(height: Dimensions.height15),
 
         // Orientation
-        _label('Orientation'),
+        Padding(padding: EdgeInsets.only(bottom: Dimensions.height10 / 2), child: Text('Orientation', style: FormTextStyles.sectionLabel(context))),
         RadioGroup<String>(
           groupValue: _orientation,
           onChanged: (v) => setState(() => _orientation = v!),
@@ -415,7 +416,7 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
         SizedBox(height: Dimensions.height20),
 
         // Margins
-        _label('Margins'),
+        Padding(padding: EdgeInsets.only(bottom: Dimensions.height10 / 2), child: Text('Margins', style: FormTextStyles.sectionLabel(context))),
         _marginField('Top', _marginTop, (v) {
           setState(() => _marginTop = double.tryParse(v) ?? _marginTop);
         }),
@@ -526,19 +527,6 @@ class _ReportExportDialogState extends State<ReportExportDialog> {
     );
   }
 
-  Widget _label(String text) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.85,
-          fontWeight: FontWeight.w600,
-          color: context.colors.textPrimary,
-        ),
-      ),
-    );
-  }
 
   Widget _textField(TextEditingController controller, String hint) {
     return TextField(

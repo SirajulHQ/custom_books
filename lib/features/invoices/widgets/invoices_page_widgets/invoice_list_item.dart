@@ -1,10 +1,10 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
-import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
+import 'package:custom_books/core/widgets/document_list_tile.dart';
 import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
 import 'package:custom_books/features/invoices/views/invoice_details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:custom_books/core/utils/date_formatter.dart';
 
 class InvoiceListItem extends StatelessWidget {
   const InvoiceListItem({super.key, required this.invoice});
@@ -13,122 +13,22 @@ class InvoiceListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
+    return DocumentListTile(
+      leadingIcon: Icons.description_outlined,
+      leadingColor: AppColors.primary,
+      primaryText: invoice.customerName,
+      date: formatDate(invoice.invoiceDate),
+      documentNumber: invoice.invoiceNumber,
+      subDate: 'Due ${formatDate(invoice.dueDate)}',
+      statusWidget: StatusChip(
+        color: invoice.status.color,
+        label: invoice.status.label,
+      ),
+      amount: '₹${invoice.total.toStringAsFixed(2)}',
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => InvoiceDetailsPage(invoice: invoice),
-        ),
-      ),
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10),
-        padding: EdgeInsets.all(Dimensions.width15),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: context.colors.border),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: Dimensions.height45 * 0.78,
-              height: Dimensions.height45 * 0.78,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
-              ),
-              child: Icon(
-                Icons.description_outlined,
-                color: AppColors.primary,
-                size: Dimensions.iconSize24 - 4,
-              ),
-            ),
-            SizedBox(width: Dimensions.width15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    invoice.customerName,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.95,
-                      fontWeight: FontWeight.w700,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_today_rounded,
-                        size: Dimensions.iconSize16 - 2,
-                        color: context.colors.textTertiary,
-                      ),
-                      SizedBox(width: Dimensions.width10 / 2),
-                      Text(
-                        formatDate(invoice.invoiceDate),
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textSecondary,
-                        ),
-                      ),
-                      Text(
-                        '  •  ',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textTertiary,
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          invoice.invoiceNumber,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.7,
-                            color: context.colors.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.event_busy_rounded,
-                        size: Dimensions.iconSize16 - 2,
-                        color: context.colors.textTertiary,
-                      ),
-                      SizedBox(width: Dimensions.width10 / 2),
-                      Text(
-                        'Due ${formatDate(invoice.dueDate)}',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.68,
-                          color: context.colors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  StatusChip(
-                    color: invoice.status.color,
-                    label: invoice.status.label,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              '₹${invoice.total.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.9,
-                fontWeight: FontWeight.w800,
-                color: AppColors.primary,
-              ),
-            ),
-          ],
         ),
       ),
     );

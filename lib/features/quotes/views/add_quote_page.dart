@@ -219,57 +219,6 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
     if (value != null && value.isNotEmpty) setState(() => _quoteNumber = value);
   }
 
-  InputDecoration _decoration(String hint, {Widget? suffix}) => InputDecoration(
-    hintText: hint,
-    hintStyle: TextStyle(
-      color: context.colors.textTertiary,
-      fontSize: Dimensions.font16 * 0.82,
-    ),
-    suffixIcon: suffix,
-    filled: true,
-    fillColor: context.colors.surfaceLight,
-    contentPadding: EdgeInsets.symmetric(
-      horizontal: Dimensions.width15,
-      vertical: Dimensions.height15,
-    ),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      borderSide: BorderSide(color: context.colors.border),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      borderSide: BorderSide(color: context.colors.border),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      borderSide: BorderSide(color: AppColors.primary, width: 1.5),
-    ),
-  );
-
-  Widget _label(String text, {bool required = false, bool info = false}) =>
-      Padding(
-        padding: EdgeInsets.only(
-          top: Dimensions.height15,
-          bottom: Dimensions.height10 / 2,
-        ),
-        child: Row(
-          children: [
-            required
-                ? RequiredLabel(text: text.trim())
-                : Text(text.trim(), style: FormTextStyles.label()),
-            if (info)
-              Padding(
-                padding: EdgeInsets.only(left: Dimensions.width10 / 2),
-                child: Icon(
-                  Icons.info_outline_rounded,
-                  size: Dimensions.iconSize24 - 7,
-                  color: context.colors.textSecondary,
-                ),
-              ),
-          ],
-        ),
-      );
-
   Widget _card(List<Widget> children) => Padding(
     padding: EdgeInsets.only(bottom: Dimensions.height15),
     child: FormCard(
@@ -340,15 +289,13 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
             child: Column(
               children: [
                 _card([
-                  _label('Customer Name ', required: true),
+                  FormLabel(text: 'Customer Name ', required: true),
                   InkWell(
                     onTap: _selectCustomer,
                     child: IgnorePointer(
                       child: TextField(
                         controller: _customer,
-                        decoration: _decoration(
-                          'Start typing to select a Customer',
-                          suffix: IconButton(
+                        decoration: FormTextStyles.inputDecoration(context, 'Start typing to select a Customer', suffixIcon: IconButton(
                             icon: const Icon(Icons.add),
                             onPressed: _selectCustomer,
                           ),
@@ -356,24 +303,22 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                       ),
                     ),
                   ),
-                  _label('Quote # ', required: true),
+                  FormLabel(text: 'Quote # ', required: true),
                   TextField(
                     controller: TextEditingController(text: _quoteNumber),
                     readOnly: true,
-                    decoration: _decoration(
-                      '',
-                      suffix: IconButton(
+                    decoration: FormTextStyles.inputDecoration(context, 'e.g. QT-00001', suffixIcon: IconButton(
                         icon: const Icon(Icons.settings),
                         onPressed: _configureNumber,
                       ),
                     ),
                   ),
-                  _label('Reference#'),
+                  FormLabel(text: 'Reference#'),
                   TextField(
                     controller: _reference,
-                    decoration: _decoration(''),
+                    decoration: FormTextStyles.inputDecoration(context, ''),
                   ),
-                  _label('Quote Date ', required: true),
+                  FormLabel(text: 'Quote Date ', required: true),
                   InkWell(
                     onTap: () => _pickDate(false),
                     child: IgnorePointer(
@@ -381,14 +326,12 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                         controller: TextEditingController(
                           text: formatDate(_quoteDate),
                         ),
-                        decoration: _decoration(
-                          '',
-                          suffix: const Icon(Icons.calendar_today_outlined),
+                        decoration: FormTextStyles.inputDecoration(context, 'Select date', suffixIcon: const Icon(Icons.calendar_today_outlined),
                         ),
                       ),
                     ),
                   ),
-                  _label('Expiry Date'),
+                  FormLabel(text: 'Expiry Date'),
                   InkWell(
                     onTap: () => _pickDate(true),
                     child: IgnorePointer(
@@ -398,19 +341,17 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                               ? ''
                               : formatDate(_expiryDate!),
                         ),
-                        decoration: _decoration(
-                          'dd MMM yyyy',
-                          suffix: const Icon(Icons.calendar_today_outlined),
+                        decoration: FormTextStyles.inputDecoration(context, 'Select date', suffixIcon: const Icon(Icons.calendar_today_outlined),
                         ),
                       ),
                     ),
                   ),
                 ]),
                 _card([
-                  _label('Salesperson'),
+                  FormLabel(text: 'Salesperson'),
                   DropdownButtonFormField<String>(
                     initialValue: _salesperson,
-                    decoration: _decoration('Select or Add Salesperson'),
+                    decoration: FormTextStyles.inputDecoration(context, 'Select or Add Salesperson'),
                     items: _salespeople
                         .map(
                           (value) => DropdownMenuItem(
@@ -421,10 +362,10 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                         .toList(),
                     onChanged: (value) => setState(() => _salesperson = value),
                   ),
-                  _label('Project Name'),
+                  FormLabel(text: 'Project Name'),
                   DropdownButtonFormField<String>(
                     initialValue: _project,
-                    decoration: _decoration('Select a Project'),
+                    decoration: FormTextStyles.inputDecoration(context, 'Select a Project'),
                     items: const [
                       DropdownMenuItem(
                         value: 'Website Redesign',
@@ -447,10 +388,10 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                         style: TextStyle(fontSize: Dimensions.font16 * 0.75),
                       ),
                     ),
-                  _label('Subject', info: true),
+                  FormLabel(text: 'Subject', showInfo: true),
                   TextField(
                     controller: _subject,
-                    decoration: _decoration('What is this quote for?'),
+                    decoration: FormTextStyles.inputDecoration(context, 'What is this quote for?'),
                   ),
                 ]),
                 _card([
@@ -523,18 +464,16 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
                   ],
                 ]),
                 _card([
-                  _label('Customer Notes'),
+                  FormLabel(text: 'Customer Notes'),
                   TextField(
                     controller: _notes,
-                    decoration: _decoration(
-                      'Looking forward for your business.',
-                    ),
+                    decoration: FormTextStyles.inputDecoration(context, 'Looking forward for your business.'),
                   ),
-                  _label('Terms & Conditions'),
+                  FormLabel(text: 'Terms & Conditions'),
                   TextField(
                     controller: _terms,
                     maxLines: 2,
-                    decoration: _decoration(''),
+                    decoration: FormTextStyles.inputDecoration(context, ''),
                   ),
                 ]),
                 _card([
@@ -755,3 +694,5 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
     ),
   );
 }
+
+

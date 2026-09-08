@@ -92,6 +92,52 @@ class FormTextStyles {
     fontWeight: FontWeight.w500,
     color: context.colors.textPrimary,
   );
+
+  /// Neutral section label for use in bottom sheets and dialogs.
+  ///
+  /// Unlike [label] (which uses [AppColors.primary]), this uses the theme's
+  /// [AppThemeColors.textPrimary] — appropriate for non-form section headers.
+  static TextStyle sectionLabel(BuildContext context) => TextStyle(
+    fontSize: Dimensions.font16 * 0.85,
+    fontWeight: FontWeight.w600,
+    color: context.colors.textPrimary,
+  );
+
+  /// Standard [InputDecoration] used across all form pages.
+  ///
+  /// Pass [suffixIcon] for pickers, dropdowns or clear buttons.
+  static InputDecoration inputDecoration(
+    BuildContext context,
+    String hint, {
+    Widget? suffixIcon,
+  }) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(
+        color: context.colors.textTertiary,
+        fontSize: Dimensions.font16 * 0.82,
+      ),
+      suffixIcon: suffixIcon,
+      filled: true,
+      fillColor: context.colors.surfaceLight,
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: Dimensions.width15,
+        vertical: Dimensions.height15,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Dimensions.radius15),
+        borderSide: BorderSide(color: context.colors.border),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Dimensions.radius15),
+        borderSide: BorderSide(color: context.colors.border),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Dimensions.radius15),
+        borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+      ),
+    );
+  }
 }
 
 class FormLabel extends StatelessWidget {

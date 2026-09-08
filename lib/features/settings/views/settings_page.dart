@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/settings_tile.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/settings/views/organization_profile_page.dart';
 import 'package:custom_books/features/settings/views/switch_organization_page.dart';
@@ -58,7 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   SizedBox(height: Dimensions.height15),
 
                   // ── Organization Section ────────────────────────────
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.business_rounded,
                     label: 'Organization Profile',
                     onTap: () {
@@ -74,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.swap_horiz_rounded,
                     label: 'Switch Organization',
                     onTap: () {
@@ -90,7 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.people_outline_rounded,
                     label: 'Users',
                     onTap: () {
@@ -101,7 +102,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.tune_rounded,
                     label: 'Preferences',
                     onTap: () {
@@ -118,7 +119,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _buildDivider(),
 
                   // ── Finance Section ─────────────────────────────────
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.currency_exchange_rounded,
                     label: 'Currencies',
                     onTap: () {
@@ -131,7 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.percent_rounded,
                     label: 'Taxes',
                     onTap: () {
@@ -142,7 +143,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.description_outlined,
                     label: 'PDF Template Customization',
                     onTap: () {
@@ -158,7 +159,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.payment_rounded,
                     label: 'Online Payment Gateways',
                     onTap: () {
@@ -174,7 +175,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.mark_email_read_outlined,
                     label: 'Sender Email Preferences',
                     onTap: () {
@@ -194,7 +195,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _buildDivider(),
 
                   // ── App Preferences Section ─────────────────────────
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.phone_android_rounded,
                     label: 'Opening Screen - Default',
                     onTap: () {
@@ -207,7 +208,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.image_outlined,
                     label: 'Image upload resolution',
                     onTap: () {
@@ -223,7 +224,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.security_rounded,
                     label: 'Privacy & Security',
                     onTap: () {
@@ -243,7 +244,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _buildDivider(),
 
                   // ── Support Section ─────────────────────────────────
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.chat_bubble_outline_rounded,
                     label: 'Feedback',
                     onTap: () {
@@ -254,7 +255,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.share_outlined,
                     label: 'Share',
                     onTap: () {
@@ -262,7 +263,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       _shareApp();
                     },
                   ),
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.star_border_rounded,
                     label: 'Rate App',
                     onTap: () {
@@ -270,7 +271,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       _rateApp();
                     },
                   ),
-                  _buildSettingsTile(
+                  SettingsTile(
                     icon: Icons.help_outline_rounded,
                     label: 'About',
                     onTap: () {
@@ -305,43 +306,6 @@ class _SettingsPageState extends State<SettingsPage> {
     launchUrl(
       Uri.parse('market://details?id=com.example.custom_books'),
       mode: LaunchMode.externalApplication,
-    );
-  }
-
-  Widget _buildSettingsTile({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: Dimensions.height20,
-          horizontal: Dimensions.width10,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              size: Dimensions.iconSize24,
-              color: context.colors.textSecondary,
-            ),
-            SizedBox(width: Dimensions.width20),
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: Dimensions.font16,
-                  fontWeight: FontWeight.w500,
-                  color: context.colors.textPrimary,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

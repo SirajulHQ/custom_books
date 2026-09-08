@@ -7,7 +7,6 @@ import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
-import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/sales_orders/models/sales_order_model.dart';
 import 'package:custom_books/features/sales_orders/views/add_sales_order_page.dart';
@@ -15,8 +14,8 @@ import 'package:custom_books/features/sales_orders/views/sales_order_details_pag
 import 'package:custom_books/features/sales_orders/widgets/sales_order_actions_sheet.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_filter_sheet.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_sort_sheet.dart';
+import 'package:custom_books/features/sales_orders/widgets/sales_order_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
 class SalesOrdersPage extends StatefulWidget {
@@ -375,8 +374,11 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
                               parent: BouncingScrollPhysics(),
                             ),
                             itemCount: visibleList.length,
-                            itemBuilder: (context, index) =>
-                                _salesOrderTile(visibleList[index]),
+                            itemBuilder: (context, index) => SalesOrderTile(
+                              order: visibleList[index],
+                              onTap: () => _openOrderDetails(visibleList[index]),
+                              onLongPress: () => _openOrderActions(visibleList[index]),
+                            ),
                           ),
                         ),
                 ),
@@ -388,144 +390,4 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
     );
   }
 
-  Widget _salesOrderTile(SalesOrderModel order) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () => _openOrderDetails(order),
-      onLongPress: () => _openOrderActions(order),
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10),
-        padding: EdgeInsets.all(Dimensions.width15),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: context.colors.border),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: Dimensions.height45 * 0.78,
-              height: Dimensions.height45 * 0.78,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15 - 4),
-              ),
-              child: Icon(
-                Icons.shopping_bag_outlined,
-                color: AppColors.primary,
-                size: Dimensions.iconSize24 - 4,
-              ),
-            ),
-            SizedBox(width: Dimensions.width15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    order.customerName,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.95,
-                      fontWeight: FontWeight.w700,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_today_rounded,
-                        size: Dimensions.iconSize16 - 2,
-                        color: context.colors.textTertiary,
-                      ),
-                      SizedBox(width: Dimensions.width10 / 2),
-                      Text(
-                        formatDate(order.salesOrderDate),
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textSecondary,
-                        ),
-                      ),
-                      Text(
-                        '  •  ',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textTertiary,
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          order.salesOrderNumber,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.7,
-                            color: context.colors.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      StatusChip(
-                        color: order.status.color,
-                        label: order.status.label,
-                      ),
-                      SizedBox(width: Dimensions.width10 / 2),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width10 * 0.7,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: context.colors.surfaceLight,
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius30,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: Dimensions.width10 * 0.6,
-                              height: Dimensions.height10 * 0.6,
-                              decoration: BoxDecoration(
-                                color: order.isInvoiced
-                                    ? AppColors.success
-                                    : context.colors.textTertiary,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            SizedBox(width: Dimensions.width10 / 3),
-                            Text(
-                              order.isInvoiced ? 'Invoiced' : 'Invoiced',
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.6,
-                                color: context.colors.textSecondary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              '₹${order.total.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.9,
-                fontWeight: FontWeight.w800,
-                color: AppColors.primary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

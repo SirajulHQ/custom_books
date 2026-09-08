@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/reports/models/report_type.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
@@ -351,7 +352,7 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
 
             // Date selection
             if (isAsOf) ...[
-              _label('As of Date'),
+              Padding(padding: EdgeInsets.only(bottom: Dimensions.height10 / 2), child: Text('As of Date', style: FormTextStyles.sectionLabel(context))),
               _dropdownTile(
                 icon: Icons.calendar_today_rounded,
                 value: _asOfPreset,
@@ -363,13 +364,13 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
                 ),
               ),
               SizedBox(height: Dimensions.height10),
-              _label('Report Date'),
+              Padding(padding: EdgeInsets.only(bottom: Dimensions.height10 / 2), child: Text('Report Date', style: FormTextStyles.sectionLabel(context))),
               InkWell(
                 onTap: _pickAsOfDate,
                 child: _dateBox(formatDate(_asOfDate)),
               ),
             ] else ...[
-              _label('Date Range'),
+              Padding(padding: EdgeInsets.only(bottom: Dimensions.height10 / 2), child: Text('Date Range', style: FormTextStyles.sectionLabel(context))),
               _dropdownTile(
                 icon: Icons.calendar_today_rounded,
                 value: _datePreset,
@@ -404,14 +405,14 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
 
             // Report Basis (financial only)
             if (isFinancial) ...[
-              _label('Report Basis'),
+              Padding(padding: EdgeInsets.only(bottom: Dimensions.height10 / 2), child: Text('Report Basis', style: FormTextStyles.sectionLabel(context))),
               _buildDropdown(
                 value: _reportBasis,
                 items: ['Cash', 'Accrual'],
                 onChanged: (v) => setState(() => _reportBasis = v!),
               ),
               SizedBox(height: Dimensions.height15),
-              _label('Filter Accounts'),
+              Padding(padding: EdgeInsets.only(bottom: Dimensions.height10 / 2), child: Text('Filter Accounts', style: FormTextStyles.sectionLabel(context))),
               _buildDropdown(
                 value: _filterAccounts,
                 items: ['Accounts Without Zero Balance', 'All Accounts'],
@@ -440,7 +441,7 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
                 ),
               ),
               SizedBox(height: Dimensions.height15),
-              _label('Compare With'),
+              Padding(padding: EdgeInsets.only(bottom: Dimensions.height10 / 2), child: Text('Compare With', style: FormTextStyles.sectionLabel(context))),
               _buildDropdown(
                 value: _compareWith,
                 items: ['None', 'Previous Period', 'Previous Year'],
@@ -489,19 +490,6 @@ class _ReportFilterSheetState extends State<ReportFilterSheet> {
     );
   }
 
-  Widget _label(String text) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: Dimensions.font16 * 0.85,
-          fontWeight: FontWeight.w600,
-          color: context.colors.textPrimary,
-        ),
-      ),
-    );
-  }
 
   Widget _dateBox(String text) {
     return Container(
