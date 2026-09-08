@@ -4,7 +4,9 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
+import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:custom_books/features/items/widgets/item_card_widget.dart';
@@ -278,7 +280,13 @@ class _ItemsPageState extends State<ItemsPage> {
             SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
               sliver: _filteredItems.isEmpty
-                  ? SliverToBoxAdapter(child: _buildEmptyState())
+                  ? const SliverToBoxAdapter(
+                      child: EmptyStateWidget(
+                        icon: Icons.inventory_2_outlined,
+                        title: 'No items found',
+                        subtitle: 'Tap the + button to add your first item',
+                      ),
+                    )
                   : SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final item = _filteredItems[index];
@@ -328,42 +336,10 @@ class _ItemsPageState extends State<ItemsPage> {
   }
 
   Widget _buildSearchField() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        Dimensions.width20,
-        0,
-        Dimensions.width20,
-        Dimensions.height15,
-      ),
-      child: TextField(
-        controller: _searchController,
-        autofocus: true,
-        onChanged: (_) => setState(() {}),
-        style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-        decoration: InputDecoration(
-          hintText: 'Search by name or SKU',
-          hintStyle: TextStyle(color: context.colors.textTertiary),
-          prefixIcon: Icon(
-            Icons.search_rounded,
-            color: context.colors.textTertiary,
-          ),
-          filled: true,
-          fillColor: context.colors.card,
-          contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: BorderSide(color: context.colors.border),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: BorderSide(color: context.colors.border),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: BorderSide(color: AppColors.primary, width: 1.5),
-          ),
-        ),
-      ),
+    return ListSearchField(
+      controller: _searchController,
+      hintText: 'Search by name or SKU',
+      onChanged: (_) => setState(() {}),
     );
   }
 
@@ -460,49 +436,6 @@ class _ItemsPageState extends State<ItemsPage> {
                   color: context.colors.textSecondary,
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(Dimensions.width30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(Dimensions.width30),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.inventory_2_outlined,
-                size: Dimensions.height45 * 1.5,
-                color: AppColors.primary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height20),
-            Text(
-              'No items found',
-              style: TextStyle(
-                fontSize: Dimensions.font20,
-                fontWeight: FontWeight.w700,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height10),
-            Text(
-              'Tap the + button to add your first item',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.85,
-                color: context.colors.textTertiary,
-              ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),

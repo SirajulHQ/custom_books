@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -45,18 +46,7 @@ class CostPriceEditor extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Drag handle
-          Center(
-            child: Container(
-              width: Dimensions.width20 * 2,
-              height: Dimensions.height10 * 0.4,
-              margin: EdgeInsets.only(bottom: Dimensions.height15),
-              decoration: BoxDecoration(
-                color: context.colors.border,
-                borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.13),
-              ),
-            ),
-          ),
+          const Center(child: BottomSheetDragHandle()),
 
           // Header with title and save button
           Row(

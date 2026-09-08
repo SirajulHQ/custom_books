@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
@@ -236,7 +237,11 @@ class _FoldersPageState extends State<FoldersPage> {
               ),
             Expanded(
               child: visibleList.isEmpty
-                  ? _emptyState()
+                  ? const EmptyStateWidget(
+                      icon: Icons.folder_rounded,
+                      title: 'No folders found',
+                      subtitle: 'Tap the + button to create a new folder.',
+                    )
                   : GridView.builder(
                       padding: EdgeInsets.fromLTRB(
                         Dimensions.width20,
@@ -255,50 +260,6 @@ class _FoldersPageState extends State<FoldersPage> {
                       itemBuilder: (context, index) =>
                           _folderCard(visibleList[index]),
                     ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _emptyState() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: Dimensions.height45 * 1.6,
-              height: Dimensions.height45 * 1.6,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.folder_rounded,
-                size: Dimensions.iconSize24 * 1.3,
-                color: AppColors.primary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-            Text(
-              'No folders found',
-              style: TextStyle(
-                fontSize: Dimensions.font16,
-                fontWeight: FontWeight.w700,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height10 / 2),
-            Text(
-              'Tap the + button to create a new folder.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.75,
-                color: context.colors.textSecondary,
-              ),
             ),
           ],
         ),

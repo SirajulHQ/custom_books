@@ -1,10 +1,14 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
-import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
+import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
+import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
@@ -277,20 +281,20 @@ class _QuotesPageState extends State<QuotesPage> {
   }
 
   void _showSortSheet() {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _QuoteSortSheet(
-        initialField: _sort,
-        initialAscending: _ascending,
-        onApply: (field, ascending) {
-          setState(() {
-            _sort = field;
-            _ascending = ascending;
-          });
-        },
-      ),
+    GenericSortSheet.show<QuoteSort>(
+      context,
+      fields: QuoteSort.values,
+      initialField: _sort,
+      initialDirection: _ascending
+          ? SortDirection.ascending
+          : SortDirection.descending,
+      labelBuilder: (f) => f.label,
+      onApply: (field, direction) {
+        setState(() {
+          _sort = field;
+          _ascending = direction == SortDirection.ascending;
+        });
+      },
     );
   }
 
@@ -335,143 +339,28 @@ class _QuotesPageState extends State<QuotesPage> {
                 hintText: 'Search by customer, quote or reference',
                 onChanged: (_) => setState(() {}),
               ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                Dimensions.width20,
-                0,
-                Dimensions.width20,
-                Dimensions.height15,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(Dimensions.height10 * 0.4),
-                      decoration: BoxDecoration(
-                        color: context.colors.surfaceLight,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius30,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          _tabButton('All', 0),
-                          _tabButton('Draft', 1),
-                          _tabButton('Sent', 2),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: Dimensions.width10),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: _showFilterSheet,
-                    child: _controlBadge(
-                      _statusFilter == null
-                          ? Icons.filter_list_rounded
-                          : Icons.filter_alt_rounded,
-                      active: _statusFilter != null,
-                    ),
-                  ),
-                  SizedBox(width: Dimensions.width10 / 2),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: _showSortSheet,
-                    child: _controlBadge(Icons.swap_vert_rounded),
-                  ),
-                ],
-              ),
+            ListControlBar(
+              tabs: const ['All', 'Draft', 'Sent'],
+              selectedTab: _tab,
+              onTabSelected: (i) => setState(() {
+                _tab = i;
+                _statusFilter = null;
+              }),
+              filterActive: _statusFilter != null,
+              onFilterTap: _showFilterSheet,
+              onSortTap: _showSortSheet,
             ),
             if (_statusFilter != null)
-              Container(
-                margin: EdgeInsets.fromLTRB(
-                  Dimensions.width20,
-                  0,
-                  Dimensions.width20,
-                  Dimensions.height10,
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.width15,
-                  vertical: Dimensions.height10 / 2,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.07),
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.filter_alt_rounded,
-                      size: Dimensions.iconSize16,
-                      color: AppColors.primary,
-                    ),
-                    SizedBox(width: Dimensions.width10 / 2),
-                    Text(
-                      'Status: ${_statusFilter!.label}',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.72,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const Spacer(),
-                    InkWell(
-                      onTap: () => setState(() => _statusFilter = null),
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: Dimensions.iconSize16,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
+              ActiveFilterBanner(
+                label: 'Status: ${_statusFilter!.label}',
+                onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
               child: quotes.isEmpty
-                  ? Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width20,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: Dimensions.height45 * 1.6,
-                              height: Dimensions.height45 * 1.6,
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(
-                                  alpha: 0.08,
-                                ),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.request_quote_rounded,
-                                size: Dimensions.iconSize24 * 1.3,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            SizedBox(height: Dimensions.height15),
-                            Text(
-                              'No quotes found',
-                              style: TextStyle(
-                                fontSize: Dimensions.font16,
-                                fontWeight: FontWeight.w700,
-                                color: context.colors.textPrimary,
-                              ),
-                            ),
-                            SizedBox(height: Dimensions.height10 / 2),
-                            Text(
-                              'Tap the + button to create a new quote.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.75,
-                                color: context.colors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                  ? const EmptyStateWidget(
+                      icon: Icons.request_quote_rounded,
+                      title: 'No quotes found',
+                      subtitle: 'Tap the + button to create a new quote.',
                     )
                   : RefreshIndicator(
                       onRefresh: () async => setState(() {}),
@@ -496,68 +385,6 @@ class _QuotesPageState extends State<QuotesPage> {
       ),
     );
   }
-
-  Widget _tabButton(String label, int index) {
-    final selected = _tab == index;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() {
-          _tab = index;
-          _statusFilter = null;
-        }),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-          decoration: BoxDecoration(
-            color: selected ? context.colors.card : Colors.transparent,
-            borderRadius: BorderRadius.circular(Dimensions.radius30),
-            border: selected
-                ? Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    width: 1.5,
-                  )
-                : null,
-            boxShadow: selected
-                ? [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.08),
-                      blurRadius: Dimensions.radius15 * 0.53,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : null,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.72,
-              fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
-              color: selected
-                  ? AppColors.primary
-                  : context.colors.textSecondary,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _controlBadge(IconData icon, {bool active = false}) => Container(
-    width: Dimensions.height45 * 0.9,
-    height: Dimensions.height45 * 0.9,
-    decoration: BoxDecoration(
-      color: (active ? AppColors.accent : AppColors.primary).withValues(
-        alpha: 0.1,
-      ),
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-    ),
-    child: Icon(
-      icon,
-      size: Dimensions.iconSize24 - 4,
-      color: active ? AppColors.accent : AppColors.primary,
-    ),
-  );
 
   Widget _quoteTile(QuoteModel quote) => InkWell(
     borderRadius: BorderRadius.circular(Dimensions.radius15),
@@ -655,283 +482,4 @@ class _QuotesPageState extends State<QuotesPage> {
       ),
     ),
   );
-}
-
-class _QuoteSortSheet extends StatefulWidget {
-  final QuoteSort initialField;
-  final bool initialAscending;
-  final void Function(QuoteSort field, bool ascending) onApply;
-
-  const _QuoteSortSheet({
-    required this.initialField,
-    required this.initialAscending,
-    required this.onApply,
-  });
-
-  @override
-  State<_QuoteSortSheet> createState() => _QuoteSortSheetState();
-}
-
-class _QuoteSortSheetState extends State<_QuoteSortSheet> {
-  late QuoteSort _field;
-  late bool _ascending;
-
-  @override
-  void initState() {
-    super.initState();
-    _field = widget.initialField;
-    _ascending = widget.initialAscending;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Container(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.sizeOf(context).height * 0.9,
-        ),
-        decoration: BoxDecoration(
-          color: context.colors.card,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(Dimensions.radius20 * 1.2),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const BottomSheetDragHandle(),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Sort by',
-                    style: TextStyle(
-                      fontSize: Dimensions.font20,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      padding: EdgeInsets.all(Dimensions.width10 * 0.6),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: Dimensions.iconSize16,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-            Flexible(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-                child: Column(
-                  children: [
-                    ...QuoteSort.values.map(_sortOption),
-                    Container(
-                      padding: EdgeInsets.all(Dimensions.width15 * 0.8),
-                      decoration: BoxDecoration(
-                        color: AppColors.accent.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.info_outline_rounded,
-                            size: Dimensions.iconSize16,
-                            color: AppColors.accent,
-                          ),
-                          SizedBox(width: Dimensions.width10),
-                          Expanded(
-                            child: Text(
-                              'Tap a selection again to switch between ascending and descending order.',
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.7,
-                                color: context.colors.textSecondary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height15),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(
-                Dimensions.width20,
-                Dimensions.height15,
-                Dimensions.width20,
-                Dimensions.height20,
-              ),
-              decoration: BoxDecoration(
-                color: context.colors.card,
-                border: Border(top: BorderSide(color: context.colors.border)),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'SORT SELECTED',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.6,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.5,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height10 * 0.2),
-                        Text(
-                          '${_field.label} (${_ascending ? 'Ascending' : 'Descending'})',
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.85,
-                            fontWeight: FontWeight.w700,
-                            color: context.colors.textPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: Dimensions.width15),
-                  OutlinedButton(
-                    onPressed: () {
-                      widget.onApply(_field, _ascending);
-                      Navigator.pop(context);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      side: const BorderSide(
-                        color: AppColors.primary,
-                        width: 1.5,
-                      ),
-                      backgroundColor: Colors.transparent,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20 * 1.2,
-                        vertical: Dimensions.height15 * 0.8,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Text(
-                      'Sort',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.9,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _sortOption(QuoteSort field) {
-    final selected = field == _field;
-    return Padding(
-      padding: EdgeInsets.only(bottom: Dimensions.height10),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-        onTap: () {
-          setState(() {
-            if (_field == field) {
-              _ascending = !_ascending;
-            } else {
-              _field = field;
-              _ascending = false;
-            }
-          });
-        },
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: Dimensions.width15,
-            vertical: Dimensions.height15 * 0.75,
-          ),
-          decoration: BoxDecoration(
-            color: selected
-                ? AppColors.primary.withValues(alpha: 0.06)
-                : context.colors.card,
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            border: Border.all(
-              color: selected ? AppColors.primary : context.colors.border,
-              width: selected ? 1.5 : 1,
-            ),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                selected
-                    ? Icons.radio_button_checked_rounded
-                    : Icons.radio_button_off_rounded,
-                size: Dimensions.iconSize24 - 4,
-                color: selected
-                    ? AppColors.primary
-                    : context.colors.textTertiary,
-              ),
-              SizedBox(width: Dimensions.width10),
-              Expanded(
-                child: Text(
-                  field.label,
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.9,
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-              ),
-              if (selected) ...[
-                Text(
-                  _ascending ? 'Ascending' : 'Descending',
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.75,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                  ),
-                ),
-                SizedBox(width: Dimensions.width10 / 2),
-                Icon(
-                  _ascending
-                      ? Icons.arrow_upward_rounded
-                      : Icons.arrow_downward_rounded,
-                  size: Dimensions.iconSize16,
-                  color: AppColors.primary,
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

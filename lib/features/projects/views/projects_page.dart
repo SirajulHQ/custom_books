@@ -1,9 +1,12 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/projects/models/project_model.dart';
 import 'package:custom_books/features/projects/views/add_project_page.dart';
@@ -223,100 +226,29 @@ class _ProjectsPageState extends State<ProjectsPage> {
                 hintText: 'Search by project or customer',
                 onChanged: (_) => setState(() {}),
               ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                Dimensions.width20,
-                Dimensions.height10 / 2,
-                Dimensions.width20,
-                Dimensions.height15,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(Dimensions.height10 * 0.4),
-                      decoration: BoxDecoration(
-                        color: context.colors.surfaceLight,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius30,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          _tabButton('All', 0),
-                          _tabButton('Active', 1),
-                          _tabButton('Completed', 2),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: Dimensions.width10),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: _openFilterSheet,
-                    child: _controlBadge(
-                      _statusFilter == null
-                          ? Icons.filter_list_rounded
-                          : Icons.filter_alt_rounded,
-                      active: _statusFilter != null,
-                    ),
-                  ),
-                  SizedBox(width: Dimensions.width10 / 2),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: _openSortSheet,
-                    child: _controlBadge(Icons.swap_vert_rounded),
-                  ),
-                ],
-              ),
+            ListControlBar(
+              tabs: const ['All', 'Active', 'Completed'],
+              selectedTab: _selectedTab,
+              onTabSelected: (i) => setState(() {
+                _selectedTab = i;
+                _statusFilter = null;
+              }),
+              filterActive: _statusFilter != null,
+              onFilterTap: _openFilterSheet,
+              onSortTap: _openSortSheet,
             ),
             if (_statusFilter != null)
-              Container(
-                margin: EdgeInsets.fromLTRB(
-                  Dimensions.width20,
-                  0,
-                  Dimensions.width20,
-                  Dimensions.height10,
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.width15,
-                  vertical: Dimensions.height10 / 2,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.07),
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.filter_alt_rounded,
-                      size: Dimensions.iconSize16,
-                      color: AppColors.primary,
-                    ),
-                    SizedBox(width: Dimensions.width10 / 2),
-                    Text(
-                      'Status: ${_statusFilter!.label}',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.72,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const Spacer(),
-                    InkWell(
-                      onTap: () => setState(() => _statusFilter = null),
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: Dimensions.iconSize16,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
+              ActiveFilterBanner(
+                label: 'Status: ${_statusFilter!.label}',
+                onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
               child: visibleList.isEmpty
-                  ? _emptyState()
+                  ? const EmptyStateWidget(
+                      icon: Icons.work_outline_rounded,
+                      title: 'No projects found',
+                      subtitle: 'Tap the + button to create a new project.',
+                    )
                   : RefreshIndicator(
                       onRefresh: () async => setState(() {}),
                       child: ListView.builder(
@@ -346,114 +278,6 @@ class _ProjectsPageState extends State<ProjectsPage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _emptyState() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: Dimensions.height45 * 1.6,
-              height: Dimensions.height45 * 1.6,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.work_outline_rounded,
-                size: Dimensions.iconSize24 * 1.3,
-                color: AppColors.primary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-            Text(
-              'No projects found',
-              style: TextStyle(
-                fontSize: Dimensions.font16,
-                fontWeight: FontWeight.w700,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height10 / 2),
-            Text(
-              'Tap the + button to create a new project.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.75,
-                color: context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _tabButton(String label, int index) {
-    final selected = _selectedTab == index;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() {
-          _selectedTab = index;
-          _statusFilter = null;
-        }),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-          decoration: BoxDecoration(
-            color: selected ? context.colors.card : Colors.transparent,
-            borderRadius: BorderRadius.circular(Dimensions.radius30),
-            border: selected
-                ? Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    width: 1.5,
-                  )
-                : null,
-            boxShadow: selected
-                ? [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.08),
-                      blurRadius: Dimensions.radius15 * 0.53,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : null,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.72,
-              fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
-              color: selected
-                  ? AppColors.primary
-                  : context.colors.textSecondary,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _controlBadge(IconData icon, {bool active = false}) {
-    return Container(
-      width: Dimensions.height45 * 0.9,
-      height: Dimensions.height45 * 0.9,
-      decoration: BoxDecoration(
-        color: (active ? AppColors.accent : AppColors.primary).withValues(
-          alpha: 0.1,
-        ),
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-      ),
-      child: Icon(
-        icon,
-        size: Dimensions.iconSize24 - 4,
-        color: active ? AppColors.accent : AppColors.primary,
       ),
     );
   }

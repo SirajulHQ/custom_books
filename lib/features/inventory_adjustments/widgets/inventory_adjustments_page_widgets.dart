@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/features/inventory_adjustments/models/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/sort_by_sheet_widget.dart';
 import 'package:flutter/material.dart';
@@ -49,42 +50,10 @@ class AdjustmentsSearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        Dimensions.width20,
-        0,
-        Dimensions.width20,
-        Dimensions.height15,
-      ),
-      child: TextField(
-        controller: controller,
-        autofocus: true,
-        onChanged: (_) => onChanged(),
-        style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-        decoration: InputDecoration(
-          hintText: 'Search by reason or person',
-          hintStyle: TextStyle(color: context.colors.textTertiary),
-          prefixIcon: Icon(
-            Icons.search_rounded,
-            color: context.colors.textTertiary,
-          ),
-          filled: true,
-          fillColor: context.colors.card,
-          contentPadding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: BorderSide(color: context.colors.border),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: BorderSide(color: context.colors.border),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: BorderSide(color: AppColors.primary, width: 1.5),
-          ),
-        ),
-      ),
+    return ListSearchField(
+      controller: controller,
+      hintText: 'Search by reason or person',
+      onChanged: (_) => onChanged(),
     );
   }
 }

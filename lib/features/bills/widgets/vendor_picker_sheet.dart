@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:flutter/material.dart';
 
 class VendorPickerSheet extends StatelessWidget {
@@ -13,6 +14,7 @@ class VendorPickerSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          const BottomSheetDragHandle(),
           Padding(
             padding: EdgeInsets.all(Dimensions.width15),
             child: Text(
