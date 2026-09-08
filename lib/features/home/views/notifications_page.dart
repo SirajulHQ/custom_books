@@ -76,25 +76,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   bool get _hasUnread => _notifications.any((n) => !n.isRead);
 
-  void _markAllRead() {
-    setState(() {
-      _notifications.replaceRange(
-        0,
-        _notifications.length,
-        _notifications.map(
-          (n) => NotificationItem(
-            title: n.title,
-            subtitle: n.subtitle,
-            time: n.time,
-            icon: n.icon,
-            color: n.color,
-            isRead: true,
-          ),
-        ),
-      );
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,7 +102,22 @@ class _NotificationsPageState extends State<NotificationsPage> {
         actions: [
           if (_hasUnread)
             TextButton(
-              onPressed: _markAllRead,
+              onPressed: () {
+                _notifications.replaceRange(
+                  0,
+                  _notifications.length,
+                  _notifications.map(
+                    (n) => NotificationItem(
+                      title: n.title,
+                      subtitle: n.subtitle,
+                      time: n.time,
+                      icon: n.icon,
+                      color: n.color,
+                      isRead: true,
+                    ),
+                  ),
+                );
+              },
               child: Text(
                 'Mark all read',
                 style: TextStyle(
@@ -139,152 +135,137 @@ class _NotificationsPageState extends State<NotificationsPage> {
         ),
       ),
       body: _notifications.isEmpty
-          ? _buildEmptyState(context)
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.notifications_off_outlined,
+                    size: Dimensions.iconSize24 * 2.5,
+                    color: context.colors.textTertiary,
+                  ),
+                  SizedBox(height: Dimensions.height20),
+                  Text(
+                    'You\'re all caught up',
+                    style: TextStyle(
+                      fontSize: Dimensions.font20,
+                      fontWeight: FontWeight.w700,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  Text(
+                    'New alerts about invoices, payments and\nreminders will show up here.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 0.85,
+                      color: context.colors.textSecondary,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+              ),
+            )
           : ListView.separated(
               padding: EdgeInsets.symmetric(
                 horizontal: Dimensions.width20,
                 vertical: Dimensions.height20,
               ),
               itemCount: _notifications.length,
-              separatorBuilder: (_, _) =>
-                  SizedBox(height: Dimensions.height10),
-              itemBuilder: (_, i) => _NotificationCard(item: _notifications[i]),
-            ),
-    );
-  }
-
-  Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.notifications_off_outlined,
-            size: Dimensions.iconSize24 * 2.5,
-            color: context.colors.textTertiary,
-          ),
-          SizedBox(height: Dimensions.height20),
-          Text(
-            'You\'re all caught up',
-            style: TextStyle(
-              fontSize: Dimensions.font20,
-              fontWeight: FontWeight.w700,
-              color: context.colors.textPrimary,
-            ),
-          ),
-          SizedBox(height: Dimensions.height10 / 2),
-          Text(
-            'New alerts about invoices, payments and\nreminders will show up here.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.85,
-              color: context.colors.textSecondary,
-              height: 1.5,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Single notification card ───────────────────────────────────────────────────
-class _NotificationCard extends StatelessWidget {
-  final NotificationItem item;
-
-  const _NotificationCard({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(Dimensions.width15),
-      decoration: BoxDecoration(
-        color: item.isRead
-            ? context.colors.card
-            : item.color.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-        border: Border.all(
-          color: item.isRead
-              ? context.colors.border
-              : item.color.withValues(alpha: 0.25),
-          width: item.isRead ? 1 : 1.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: context.colors.border.withValues(alpha: 0.5),
-            blurRadius: Dimensions.radius15 * 0.4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Icon badge
-          Container(
-            width: Dimensions.iconSize24 * 1.75,
-            height: Dimensions.iconSize24 * 1.75,
-            decoration: BoxDecoration(
-              color: item.color.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              item.icon,
-              color: item.color,
-              size: Dimensions.iconSize24,
-            ),
-          ),
-          SizedBox(width: Dimensions.width15),
-          // Content
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.title,
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.92,
-                    fontWeight: item.isRead ? FontWeight.w500 : FontWeight.w700,
-                    color: context.colors.textPrimary,
-                    height: 1.4,
+              separatorBuilder: (_, _) => SizedBox(height: Dimensions.height10),
+              itemBuilder: (_, i) => Container(
+                padding: EdgeInsets.all(Dimensions.width15),
+                decoration: BoxDecoration(
+                  color: _notifications[i].isRead
+                      ? context.colors.card
+                      : _notifications[i].color.withValues(alpha: 0.04),
+                  borderRadius: BorderRadius.circular(Dimensions.radius15),
+                  border: Border.all(
+                    color: _notifications[i].isRead
+                        ? context.colors.border
+                        : _notifications[i].color.withValues(alpha: 0.25),
+                    width: _notifications[i].isRead ? 1 : 1.5,
                   ),
-                ),
-                SizedBox(height: Dimensions.height10 / 2),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.access_time_rounded,
-                      size: Dimensions.iconSize16 * 0.85,
-                      color: context.colors.textTertiary,
-                    ),
-                    SizedBox(width: Dimensions.width10 / 3),
-                    Text(
-                      item.time,
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.75,
-                        color: context.colors.textTertiary,
-                      ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: context.colors.border.withValues(alpha: 0.5),
+                      blurRadius: Dimensions.radius15 * 0.4,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-          // Unread dot
-          if (!item.isRead)
-            Padding(
-              padding: EdgeInsets.only(left: Dimensions.width10 / 2),
-              child: Container(
-                width: Dimensions.width10 * 0.8,
-                height: Dimensions.height10 * 0.8,
-                decoration: BoxDecoration(
-                  color: item.color,
-                  shape: BoxShape.circle,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Icon badge
+                    Container(
+                      width: Dimensions.iconSize24 * 1.75,
+                      height: Dimensions.iconSize24 * 1.75,
+                      decoration: BoxDecoration(
+                        color: _notifications[i].color.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        _notifications[i].icon,
+                        color: _notifications[i].color,
+                        size: Dimensions.iconSize24,
+                      ),
+                    ),
+                    SizedBox(width: Dimensions.width15),
+                    // Content
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _notifications[i].title,
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.92,
+                              fontWeight: _notifications[i].isRead
+                                  ? FontWeight.w500
+                                  : FontWeight.w700,
+                              color: context.colors.textPrimary,
+                              height: 1.4,
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.access_time_rounded,
+                                size: Dimensions.iconSize16 * 0.85,
+                                color: context.colors.textTertiary,
+                              ),
+                              SizedBox(width: Dimensions.width10 / 3),
+                              Text(
+                                _notifications[i].time,
+                                style: TextStyle(
+                                  fontSize: Dimensions.font16 * 0.75,
+                                  color: context.colors.textTertiary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Unread dot
+                    if (!_notifications[i].isRead)
+                      Padding(
+                        padding: EdgeInsets.only(left: Dimensions.width10 / 2),
+                        child: Container(
+                          width: Dimensions.width10 * 0.8,
+                          height: Dimensions.height10 * 0.8,
+                          decoration: BoxDecoration(
+                            color: _notifications[i].color,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
-        ],
-      ),
     );
   }
 }

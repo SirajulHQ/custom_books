@@ -1,5 +1,4 @@
-import 'package:custom_books/core/apptheme/apptheme.dart';
-import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:flutter/material.dart';
 
 class TimeEntryFilterSheet extends StatelessWidget {
@@ -14,108 +13,16 @@ class TimeEntryFilterSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.all(Dimensions.width20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Filter by Type',
-              style: TextStyle(
-                fontSize: Dimensions.font20 * 0.85,
-                fontWeight: FontWeight.w800,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-            _FilterOption(
-              label: 'All Entries',
-              isSelected: selectedBillable == null,
-              onTap: () {
-                onSelected(null);
-                Navigator.pop(context);
-              },
-            ),
-            _FilterOption(
-              label: 'BILLABLE',
-              isSelected: selectedBillable == true,
-              onTap: () {
-                onSelected(true);
-                Navigator.pop(context);
-              },
-            ),
-            _FilterOption(
-              label: 'NON-BILLABLE',
-              isSelected: selectedBillable == false,
-              onTap: () {
-                onSelected(false);
-                Navigator.pop(context);
-              },
-            ),
-            SizedBox(height: Dimensions.height10),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FilterOption extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _FilterOption({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.only(bottom: Dimensions.height10 / 2),
-        padding: EdgeInsets.symmetric(
-          horizontal: Dimensions.width15,
-          vertical: Dimensions.height10,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : context.colors.border,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              isSelected
-                  ? Icons.radio_button_checked_rounded
-                  : Icons.radio_button_off_rounded,
-              size: Dimensions.iconSize16 + 2,
-              color: isSelected
-                  ? AppColors.primary
-                  : context.colors.textTertiary,
-            ),
-            SizedBox(width: Dimensions.width10),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: context.colors.textPrimary,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return FilterSheet<bool>(
+      title: 'Filter by Type',
+      compact: true,
+      style: FilterOptionStyle.radio,
+      options: const [null, true, false],
+      selectedValue: selectedBillable,
+      labelBuilder: (b) => b == null
+          ? 'All Entries'
+          : (b ? 'BILLABLE' : 'NON-BILLABLE'),
+      onSelected: onSelected,
     );
   }
 }

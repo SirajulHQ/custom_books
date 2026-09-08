@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/status_chip.dart';
+import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/quotes/models/quote_model.dart';
 import 'package:custom_books/features/quotes/views/add_quote_page.dart';
@@ -328,47 +329,10 @@ class _QuotesPageState extends State<QuotesPage> {
         body: Column(
           children: [
             if (_searchOpen)
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                  Dimensions.width20,
-                  Dimensions.height10,
-                  Dimensions.width20,
-                  Dimensions.height15,
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  autofocus: true,
-                  onChanged: (_) => setState(() {}),
-                  style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-                  decoration: InputDecoration(
-                    hintText: 'Search by customer, quote or reference',
-                    hintStyle: TextStyle(color: context.colors.textTertiary),
-                    prefixIcon: Icon(
-                      Icons.search_rounded,
-                      color: context.colors.textTertiary,
-                    ),
-                    filled: true,
-                    fillColor: context.colors.card,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      borderSide: const BorderSide(
-                        color: AppColors.primary,
-                        width: 1.5,
-                      ),
-                    ),
-                  ),
-                ),
+              ListSearchField(
+                controller: _searchController,
+                hintText: 'Search by customer, quote or reference',
+                onChanged: (_) => setState(() {}),
               ),
             Padding(
               padding: EdgeInsets.fromLTRB(

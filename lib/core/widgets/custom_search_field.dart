@@ -140,3 +140,74 @@ class _CustomSearchFieldState extends State<CustomSearchField> {
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// ListSearchField
+// ---------------------------------------------------------------------------
+/// Lightweight, stateless search field used on every list page.
+/// Replicates the verbatim inline TextField pattern (same 3 OutlineInputBorder
+/// variants, card fill, search prefix icon). Only [hintText], [controller],
+/// and [onChanged] differ between pages.
+///
+/// [topPadding] defaults to [Dimensions.height10]; pass `0` for pages that
+/// use a `_buildSearchField()` helper with no top gap.
+class ListSearchField extends StatelessWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final ValueChanged<String> onChanged;
+  final double? topPadding;
+
+  const ListSearchField({
+    super.key,
+    required this.controller,
+    required this.hintText,
+    required this.onChanged,
+    this.topPadding,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        Dimensions.width20,
+        topPadding ?? Dimensions.height10,
+        Dimensions.width20,
+        Dimensions.height15,
+      ),
+      child: TextField(
+        controller: controller,
+        autofocus: true,
+        onChanged: onChanged,
+        style: TextStyle(fontSize: Dimensions.font16 * 0.85),
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: TextStyle(color: context.colors.textTertiary),
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            color: context.colors.textTertiary,
+          ),
+          filled: true,
+          fillColor: context.colors.card,
+          contentPadding: EdgeInsets.symmetric(
+            vertical: Dimensions.height10,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderSide: BorderSide(color: context.colors.border),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderSide: BorderSide(color: context.colors.border),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderSide: const BorderSide(
+              color: AppColors.primary,
+              width: 1.5,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

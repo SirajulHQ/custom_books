@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
 import 'package:custom_books/features/documents/widgets/document_filter_sheet.dart';
@@ -215,47 +216,10 @@ class _AllFilesPageState extends State<AllFilesPage> {
         body: Column(
           children: [
             if (_searchOpen)
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                  Dimensions.width20,
-                  Dimensions.height10,
-                  Dimensions.width20,
-                  Dimensions.height15,
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  autofocus: true,
-                  onChanged: (_) => setState(() {}),
-                  style: TextStyle(fontSize: Dimensions.font16 * 0.85),
-                  decoration: InputDecoration(
-                    hintText: 'Search by file or folder',
-                    hintStyle: TextStyle(color: context.colors.textTertiary),
-                    prefixIcon: Icon(
-                      Icons.search_rounded,
-                      color: context.colors.textTertiary,
-                    ),
-                    filled: true,
-                    fillColor: context.colors.card,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      borderSide: const BorderSide(
-                        color: AppColors.primary,
-                        width: 1.5,
-                      ),
-                    ),
-                  ),
-                ),
+              ListSearchField(
+                controller: _searchController,
+                hintText: 'Search by file or folder',
+                onChanged: (_) => setState(() {}),
               ),
             Padding(
               padding: EdgeInsets.fromLTRB(
