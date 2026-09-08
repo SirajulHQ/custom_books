@@ -37,13 +37,9 @@ class DatePickerField extends StatelessWidget {
       onTap: () => _pickDate(context),
       borderRadius: BorderRadius.circular(Dimensions.radius15),
       child: Container(
-        padding: EdgeInsets.symmetric(
-          vertical: Dimensions.height10,
-        ),
+        padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
         decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: context.colors.border),
-          ),
+          border: Border(bottom: BorderSide(color: context.colors.border)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

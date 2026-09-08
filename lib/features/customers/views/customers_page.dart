@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/widgets/customer_page_widgets/customer_card_widget.dart';
@@ -260,7 +261,14 @@ class _CustomersPageState extends State<CustomersPage> {
             SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
               sliver: _filteredCustomers.isEmpty
-                  ? SliverToBoxAdapter(child: _buildEmptyState())
+                  ? const SliverToBoxAdapter(
+                      child: EmptyStateWidget(
+                        icon: Icons.people_outline_rounded,
+                        title: 'No customers found',
+                        subtitle:
+                            'Tap the + button to add your first customer.',
+                      ),
+                    )
                   : SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         return Padding(
@@ -429,49 +437,6 @@ class _CustomersPageState extends State<CustomersPage> {
                   color: context.colors.textSecondary,
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(Dimensions.width30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(Dimensions.width30),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.people_outline_rounded,
-                size: Dimensions.height45 * 1.5,
-                color: AppColors.primary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height20),
-            Text(
-              'No customers found',
-              style: TextStyle(
-                fontSize: Dimensions.font20,
-                fontWeight: FontWeight.w700,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height10),
-            Text(
-              'Tap the + button to add your first customer',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.85,
-                color: context.colors.textTertiary,
-              ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),

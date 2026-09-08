@@ -1,9 +1,12 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/time_entries/models/time_entry_model.dart';
 import 'package:custom_books/features/time_entries/views/add_time_entry_page.dart';
@@ -227,58 +230,37 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
 
             // Filter / Sort bar
             SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  Dimensions.width20,
-                  Dimensions.height10 / 2,
-                  Dimensions.width20,
-                  Dimensions.height15,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.all(Dimensions.height10 * 0.4),
-                        decoration: BoxDecoration(
-                          color: context.colors.surfaceLight,
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius30,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            _tabButton('All', 0),
-                            _tabButton('Billable', 1),
-                            _tabButton('Non-billable', 2),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: Dimensions.width10),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      onTap: _openFilterSheet,
-                      child: _controlBadge(
-                        _billableFilter == null
-                            ? Icons.filter_list_rounded
-                            : Icons.filter_alt_rounded,
-                        active: _billableFilter != null,
-                      ),
-                    ),
-                    SizedBox(width: Dimensions.width10 / 2),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      onTap: _openSortSheet,
-                      child: _controlBadge(Icons.swap_vert_rounded),
-                    ),
-                  ],
-                ),
+              child: ListControlBar(
+                tabs: const ['All', 'Billable', 'Non-billable'],
+                selectedTab: _selectedTab,
+                onTabSelected: (index) => setState(() {
+                  _selectedTab = index;
+                  _billableFilter = null;
+                }),
+                filterActive: _billableFilter != null,
+                onFilterTap: _openFilterSheet,
+                onSortTap: _openSortSheet,
               ),
             ),
 
+            // Active billable filter banner
+            if (_billableFilter != null)
+              SliverToBoxAdapter(
+                child: ActiveFilterBanner(
+                  label: _billableFilter! ? 'Billable: Yes' : 'Billable: No',
+                  onClear: () => setState(() => _billableFilter = null),
+                ),
+              ),
+
             // List or empty state
             if (visibleList.isEmpty)
-              SliverFillRemaining(child: _emptyState())
+              const SliverFillRemaining(
+                child: EmptyStateWidget(
+                  icon: Icons.access_time_rounded,
+                  title: 'No time entries found',
+                  subtitle: 'Tap the + button to log time.',
+                ),
+              )
             else
               SliverPadding(
                 padding: EdgeInsets.fromLTRB(
@@ -305,114 +287,6 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
               ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _emptyState() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: Dimensions.height45 * 1.6,
-              height: Dimensions.height45 * 1.6,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.access_time_rounded,
-                size: Dimensions.iconSize24 * 1.3,
-                color: AppColors.primary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-            Text(
-              'No time entries found',
-              style: TextStyle(
-                fontSize: Dimensions.font16,
-                fontWeight: FontWeight.w700,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height10 / 2),
-            Text(
-              'Tap the + button to log time.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.75,
-                color: context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _tabButton(String label, int index) {
-    final selected = _selectedTab == index;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() {
-          _selectedTab = index;
-          _billableFilter = null;
-        }),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-          decoration: BoxDecoration(
-            color: selected ? context.colors.card : Colors.transparent,
-            borderRadius: BorderRadius.circular(Dimensions.radius30),
-            border: selected
-                ? Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    width: 1.5,
-                  )
-                : null,
-            boxShadow: selected
-                ? [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.08),
-                      blurRadius: Dimensions.radius15 * 0.53,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : null,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: Dimensions.font16 * 0.68,
-              fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
-              color: selected
-                  ? AppColors.primary
-                  : context.colors.textSecondary,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _controlBadge(IconData icon, {bool active = false}) {
-    return Container(
-      width: Dimensions.height45 * 0.9,
-      height: Dimensions.height45 * 0.9,
-      decoration: BoxDecoration(
-        color: (active ? AppColors.accent : AppColors.primary).withValues(
-          alpha: 0.1,
-        ),
-        borderRadius: BorderRadius.circular(Dimensions.radius15),
-      ),
-      child: Icon(
-        icon,
-        size: Dimensions.iconSize24 - 4,
-        color: active ? AppColors.accent : AppColors.primary,
       ),
     );
   }

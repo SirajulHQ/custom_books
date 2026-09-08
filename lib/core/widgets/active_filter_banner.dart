@@ -2,11 +2,15 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-class BillActiveFilterChip extends StatelessWidget {
+/// A pill-shaped banner shown below the tab row when a filter is active.
+///
+/// [label] is the full display string, e.g. `'Status: Overdue'`.
+/// [onClear] is called when the user taps the ✕ icon.
+class ActiveFilterBanner extends StatelessWidget {
   final String label;
   final VoidCallback onClear;
 
-  const BillActiveFilterChip({
+  const ActiveFilterBanner({
     super.key,
     required this.label,
     required this.onClear,
@@ -38,7 +42,7 @@ class BillActiveFilterChip extends StatelessWidget {
           ),
           SizedBox(width: Dimensions.width10 / 2),
           Text(
-            'Status: $label',
+            label,
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.72,
               fontWeight: FontWeight.w600,

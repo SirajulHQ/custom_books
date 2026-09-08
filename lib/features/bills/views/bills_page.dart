@@ -1,17 +1,16 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/bills/models/bill_model.dart';
 import 'package:custom_books/features/bills/views/add_bill_page.dart';
 import 'package:custom_books/features/bills/widgets/bill_filter_sheet.dart';
 import 'package:custom_books/features/bills/widgets/bill_sort_sheet.dart';
 import 'package:custom_books/features/bills/widgets/bills_list_body.dart';
-import 'package:custom_books/features/bills/widgets/bill_tab_button.dart';
-import 'package:custom_books/features/bills/widgets/bill_control_badge.dart';
-import 'package:custom_books/features/bills/widgets/bill_active_filter_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -241,87 +240,20 @@ class _BillsPageState extends State<BillsPage> {
                 hintText: 'Search by vendor or bill number',
                 onChanged: (_) => setState(() {}),
               ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                Dimensions.width20,
-                Dimensions.height10 / 2,
-                Dimensions.width20,
-                Dimensions.height15,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(Dimensions.height10 * 0.4),
-                      decoration: BoxDecoration(
-                        color: context.colors.surfaceLight,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius30,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          BillTabButton(
-                            label: 'All',
-                            selected: _selectedTab == 0,
-                            onTap: () => setState(() {
-                              _selectedTab = 0;
-                              _statusFilter = null;
-                            }),
-                          ),
-                          BillTabButton(
-                            label: 'Open',
-                            selected: _selectedTab == 1,
-                            onTap: () => setState(() {
-                              _selectedTab = 1;
-                              _statusFilter = null;
-                            }),
-                          ),
-                          BillTabButton(
-                            label: 'Overdue',
-                            selected: _selectedTab == 2,
-                            onTap: () => setState(() {
-                              _selectedTab = 2;
-                              _statusFilter = null;
-                            }),
-                          ),
-                          BillTabButton(
-                            label: 'Paid',
-                            selected: _selectedTab == 3,
-                            onTap: () => setState(() {
-                              _selectedTab = 3;
-                              _statusFilter = null;
-                            }),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: Dimensions.width10),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: _openFilterSheet,
-                    child: BillControlBadge(
-                      icon: _statusFilter == null
-                          ? Icons.filter_list_rounded
-                          : Icons.filter_alt_rounded,
-                      active: _statusFilter != null,
-                    ),
-                  ),
-                  SizedBox(width: Dimensions.width10 / 2),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: _openSortSheet,
-                    child: const BillControlBadge(
-                      icon: Icons.swap_vert_rounded,
-                    ),
-                  ),
-                ],
-              ),
+            ListControlBar(
+              tabs: const ['All', 'Open', 'Overdue', 'Paid'],
+              selectedTab: _selectedTab,
+              onTabSelected: (index) => setState(() {
+                _selectedTab = index;
+                _statusFilter = null;
+              }),
+              filterActive: _statusFilter != null,
+              onFilterTap: _openFilterSheet,
+              onSortTap: _openSortSheet,
             ),
             if (_statusFilter != null)
-              BillActiveFilterChip(
-                label: _statusFilter!.label,
+              ActiveFilterBanner(
+                label: 'Status: ${_statusFilter!.label}',
                 onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(

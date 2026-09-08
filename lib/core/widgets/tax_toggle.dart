@@ -61,8 +61,9 @@ class TaxToggle extends StatelessWidget {
             style: TextStyle(
               fontSize: Dimensions.font16 * 0.8,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-              color:
-                  selected ? AppColors.primary : context.colors.textSecondary,
+              color: selected
+                  ? AppColors.primary
+                  : context.colors.textSecondary,
             ),
           ),
         ),

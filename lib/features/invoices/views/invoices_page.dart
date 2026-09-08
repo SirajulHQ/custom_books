@@ -1,15 +1,17 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
 import 'package:custom_books/features/invoices/views/new_invoice_page.dart';
 import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoice_filter_sheet.dart';
 import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoice_list_item.dart';
 import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoice_sort_sheet.dart';
-import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoice_tabs_and_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -222,106 +224,28 @@ class _InvoicesPageState extends State<InvoicesPage> {
                 hintText: 'Search by customer or invoice number',
                 onChanged: (_) => setState(() {}),
               ),
-            InvoiceTabsAndControls(
+            ListControlBar(
+              tabs: const ['All', 'Draft', 'Overdue', 'Paid'],
               selectedTab: _selectedTab,
               onTabSelected: (index) => setState(() {
                 _selectedTab = index;
                 _statusFilter = null;
               }),
-              statusFilter: _statusFilter,
+              filterActive: _statusFilter != null,
               onFilterTap: _openFilterSheet,
               onSortTap: _openSortSheet,
             ),
             if (_statusFilter != null)
-              Container(
-                margin: EdgeInsets.fromLTRB(
-                  Dimensions.width20,
-                  0,
-                  Dimensions.width20,
-                  Dimensions.height10,
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.width15,
-                  vertical: Dimensions.height10 / 2,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.07),
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.filter_alt_rounded,
-                      size: Dimensions.iconSize16,
-                      color: AppColors.primary,
-                    ),
-                    SizedBox(width: Dimensions.width10 / 2),
-                    Text(
-                      'Status: ${_statusFilter!.label}',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.72,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const Spacer(),
-                    InkWell(
-                      onTap: () => setState(() => _statusFilter = null),
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: Dimensions.iconSize16,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
+              ActiveFilterBanner(
+                label: 'Status: ${_statusFilter!.label}',
+                onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
               child: visibleList.isEmpty
-                  ? Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width20,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: Dimensions.height45 * 1.6,
-                              height: Dimensions.height45 * 1.6,
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(
-                                  alpha: 0.08,
-                                ),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.description_outlined,
-                                size: Dimensions.iconSize24 * 1.3,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            SizedBox(height: Dimensions.height15),
-                            Text(
-                              'No invoices found',
-                              style: TextStyle(
-                                fontSize: Dimensions.font16,
-                                fontWeight: FontWeight.w700,
-                                color: context.colors.textPrimary,
-                              ),
-                            ),
-                            SizedBox(height: Dimensions.height10 / 2),
-                            Text(
-                              'Tap the + button to create a new invoice.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.75,
-                                color: context.colors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                  ? const EmptyStateWidget(
+                      icon: Icons.description_outlined,
+                      title: 'No invoices found',
+                      subtitle: 'Tap the + button to create a new invoice.',
                     )
                   : RefreshIndicator(
                       onRefresh: () async => setState(() {}),

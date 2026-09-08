@@ -54,9 +54,7 @@ class AttachmentsCard extends StatelessWidget {
           child: DashedBorder(
             child: Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                vertical: Dimensions.height15,
-              ),
+              padding: EdgeInsets.symmetric(vertical: Dimensions.height15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -80,40 +78,40 @@ class AttachmentsCard extends StatelessWidget {
           ),
         ),
         ...attachments.asMap().entries.map(
-              (entry) => Container(
-                margin: EdgeInsets.only(top: Dimensions.height10),
-                decoration: BoxDecoration(
-                  color: context.colors.surfaceLight,
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                ),
-                child: ListTile(
-                  dense: true,
-                  leading: Icon(
-                    Icons.attach_file_rounded,
-                    color: AppColors.primary,
-                  ),
-                  title: Text(
-                    entry.value.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.8,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.close_rounded),
-                    onPressed: () => onRemoveFile(entry.key),
-                  ),
+          (entry) => Container(
+            margin: EdgeInsets.only(top: Dimensions.height10),
+            decoration: BoxDecoration(
+              color: context.colors.surfaceLight,
+              borderRadius: BorderRadius.circular(Dimensions.radius15),
+            ),
+            child: ListTile(
+              dense: true,
+              leading: Icon(
+                Icons.attach_file_rounded,
+                color: AppColors.primary,
+              ),
+              title: Text(
+                entry.value.name,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.8,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
+              trailing: IconButton(
+                icon: const Icon(Icons.close_rounded),
+                onPressed: () => onRemoveFile(entry.key),
+              ),
             ),
+          ),
+        ),
       ],
     );
   }
 
   TextStyle _labelStyle() => TextStyle(
-        fontSize: Dimensions.font16 * 0.8,
-        fontWeight: FontWeight.w600,
-        color: AppColors.primary,
-      );
+    fontSize: Dimensions.font16 * 0.8,
+    fontWeight: FontWeight.w600,
+    color: AppColors.primary,
+  );
 }
