@@ -1,4 +1,4 @@
-import 'package:custom_books/core/apptheme/apptheme.dart';
+﻿import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
@@ -6,6 +6,7 @@ import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
 import 'package:custom_books/features/documents/views/document_details_page.dart';
+import 'package:custom_books/features/documents/widgets/document_sort_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
@@ -121,167 +122,14 @@ class _DocumentsInboxPageState extends State<DocumentsInboxPage> {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: context.colors.card,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.radius20),
-        ),
-      ),
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setSheet) {
-            return SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(Dimensions.width20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Sort By',
-                      style: TextStyle(
-                        fontSize: Dimensions.font20 * 0.85,
-                        fontWeight: FontWeight.w800,
-                        color: context.colors.textPrimary,
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height15),
-                    ...DocumentSortField.values.map((field) {
-                      final selected = _sortField == field;
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                        onTap: () {
-                          setState(() => _sortField = field);
-                          setSheet(() {});
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            bottom: Dimensions.height10 / 2,
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.width15,
-                            vertical: Dimensions.height10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: selected
-                                ? AppColors.primary.withValues(alpha: 0.08)
-                                : context.colors.surfaceLight,
-                            borderRadius: BorderRadius.circular(
-                              Dimensions.radius15,
-                            ),
-                            border: Border.all(
-                              color: selected
-                                  ? AppColors.primary
-                                  : context.colors.border,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                selected
-                                    ? Icons.radio_button_checked_rounded
-                                    : Icons.radio_button_off_rounded,
-                                size: Dimensions.iconSize16 + 2,
-                                color: selected
-                                    ? AppColors.primary
-                                    : context.colors.textTertiary,
-                              ),
-                              SizedBox(width: Dimensions.width10),
-                              Text(
-                                field.label,
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.8,
-                                  fontWeight: selected
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                  color: context.colors.textPrimary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-                    SizedBox(height: Dimensions.height10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _directionButton(
-                            'Ascending',
-                            Icons.arrow_upward_rounded,
-                            SortDirection.ascending,
-                            setSheet,
-                          ),
-                        ),
-                        SizedBox(width: Dimensions.width10),
-                        Expanded(
-                          child: _directionButton(
-                            'Descending',
-                            Icons.arrow_downward_rounded,
-                            SortDirection.descending,
-                            setSheet,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height10),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _directionButton(
-    String label,
-    IconData icon,
-    SortDirection direction,
-    StateSetter setSheet,
-  ) {
-    final selected = _sortDirection == direction;
-    return InkWell(
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: () {
-        setState(() => _sortDirection = direction);
-        setSheet(() {});
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
-        decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary.withValues(alpha: 0.08)
-              : context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(
-            color: selected ? AppColors.primary : context.colors.border,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: Dimensions.iconSize16 + 2,
-              color: selected ? AppColors.primary : context.colors.textTertiary,
-            ),
-            SizedBox(width: Dimensions.width10 / 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.75,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? AppColors.primary
-                    : context.colors.textSecondary,
-              ),
-            ),
-          ],
-        ),
+      backgroundColor: Colors.transparent,
+      builder: (_) => DocumentSortSheet(
+        selectedField: _sortField,
+        selectedDirection: _sortDirection,
+        onApply: (field, direction) => setState(() {
+          _sortField = field;
+          _sortDirection = direction;
+        }),
       ),
     );
   }

@@ -2,41 +2,12 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-// ---------------------------------------------------------------------------
-// FilterOptionStyle
-// ---------------------------------------------------------------------------
-/// Controls the visual appearance of each option row in a [FilterSheet].
 enum FilterOptionStyle {
-  /// Outlined card with check-circle icon — used by invoices, quotes, etc.
   border,
-
-  /// Filled surface card with small check icon — used by bills, vendors, etc.
   card,
-
-  /// Radio-button icon prefix — used by purchase orders, vendor credits, etc.
   radio,
 }
 
-// ---------------------------------------------------------------------------
-// FilterSheet<T>
-// ---------------------------------------------------------------------------
-/// Generic status/filter bottom sheet.
-///
-/// Each feature's outer class keeps its own name & constructor; its [build]
-/// simply delegates here, eliminating the duplicate [_FilterHeader] and
-/// [_FilterOption] private classes that were copied verbatim across 20 files.
-///
-/// **Parameters**
-/// - [title]         : header text (e.g. `'Filter'`, `'Filter by Status'`)
-/// - [options]       : `List<T?>` — `null` entry = "All" option
-/// - [selectedValue] : currently selected value
-/// - [labelBuilder]  : converts a value to display string
-/// - [onSelected]    : callback when user taps an option
-/// - [onClose]       : optional close handler; defaults to `Navigator.pop`
-/// - [sectionLabel]  : optional uppercase section label (e.g. `'DEFAULT FILTERS'`)
-/// - [style]         : option row visual; defaults to [FilterOptionStyle.border]
-/// - [compact]       : if true, renders as a floating card (margin + full border-radius)
-///                     instead of a standard bottom sheet (top-rounded + SafeArea)
 class FilterSheet<T> extends StatelessWidget {
   final String title;
   final List<T?> options;

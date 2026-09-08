@@ -162,23 +162,22 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
     }
   }
 
-  void _openSortSheet() async {
-    final result = await showModalBottomSheet<SortSheetResult>(
+  void _openSortSheet() {
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => DeliveryChallanSortSheet(
         selectedField: _sortField,
         selectedDirection: _sortDirection,
+        onApply: (field, direction) {
+          setState(() {
+            _sortField = field;
+            _sortDirection = direction;
+          });
+        },
       ),
     );
-
-    if (result != null && mounted) {
-      setState(() {
-        _sortField = result.field;
-        _sortDirection = result.direction;
-      });
-    }
   }
 
   @override

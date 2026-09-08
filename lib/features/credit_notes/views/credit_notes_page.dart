@@ -7,8 +7,8 @@ import 'package:custom_books/features/credit_notes/models/credit_note_model.dart
 import 'package:custom_books/features/credit_notes/views/add_credit_note_page.dart';
 import 'package:custom_books/features/credit_notes/views/credit_note_details_page.dart';
 import 'package:custom_books/features/credit_notes/widgets/credit_note_card.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/features/credit_notes/widgets/credit_note_filter_sheet.dart';
-import 'package:custom_books/features/credit_notes/widgets/credit_note_sort_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -27,7 +27,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
   bool _searchOpen = false;
   CreditNoteStatus? _statusFilter;
   CreditNoteSortField _sortField = CreditNoteSortField.createdTime;
-  final SortDirection _sortDirection = SortDirection.descending;
+  SortDirection _sortDirection = SortDirection.descending;
 
   late List<CreditNoteModel> _notes;
 
@@ -161,21 +161,16 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        return CreditNoteSortSheet<CreditNoteSortField>(
-          title: "Sort by",
-          items: CreditNoteSortField.values,
-          selectedItem: _sortField,
-          direction: _sortDirection,
-          labelBuilder: (item) => item.label,
-
-          onItemChanged: (field) {
+        return GenericSortSheet<CreditNoteSortField>(
+          fields: CreditNoteSortField.values,
+          initialField: _sortField,
+          initialDirection: _sortDirection,
+          labelBuilder: (f) => f.label,
+          onApply: (field, direction) {
             setState(() {
               _sortField = field;
+              _sortDirection = direction;
             });
-          },
-
-          onApply: () {
-            setState(() {});
           },
         );
       },
