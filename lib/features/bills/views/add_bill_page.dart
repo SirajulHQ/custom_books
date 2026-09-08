@@ -1,13 +1,14 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/bills/models/bill_model.dart';
 import 'package:custom_books/features/bills/widgets/vendor_picker_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:custom_books/core/utils/date_formatter.dart';
 
 class AddBillPage extends StatefulWidget {
   final BillModel? existing;
@@ -160,19 +161,7 @@ class _AddBillPageState extends State<AddBillPage> with UnsavedChangesMixin {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Container(
-                                width: Dimensions.width20 * 2,
-                                height: Dimensions.height10 * 0.4,
-                                margin: EdgeInsets.symmetric(
-                                  vertical: Dimensions.height10,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: context.colors.border,
-                                  borderRadius: BorderRadius.circular(
-                                    Dimensions.radius30,
-                                  ),
-                                ),
-                              ),
+                              const BottomSheetDragHandle(),
                               ListTile(
                                 leading: Icon(
                                   Icons.save_rounded,

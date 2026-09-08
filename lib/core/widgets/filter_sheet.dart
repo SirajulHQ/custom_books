@@ -1,12 +1,10 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_header.dart';
 import 'package:flutter/material.dart';
 
-enum FilterOptionStyle {
-  border,
-  card,
-  radio,
-}
+enum FilterOptionStyle { border, card, radio }
 
 class FilterSheet<T> extends StatelessWidget {
   final String title;
@@ -79,55 +77,12 @@ class _BottomSheetLayout<T> extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Drag handle
-            if (showHandle)
-              Container(
-                width: Dimensions.width20 * 2,
-                height: Dimensions.height10 * 0.4,
-                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-                decoration: BoxDecoration(
-                  color: context.colors.border,
-                  borderRadius: BorderRadius.circular(Dimensions.radius30),
-                ),
-              ),
+            if (showHandle) const BottomSheetDragHandle(),
             // Header row
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: Dimensions.width20,
-                vertical: sheet.showHeaderBorder
-                    ? Dimensions.height15
-                    : Dimensions.height10,
-              ),
-              decoration: sheet.showHeaderBorder
-                  ? BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: context.colors.border,
-                          width: 1,
-                        ),
-                      ),
-                    )
-                  : null,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    sheet.title,
-                    style: TextStyle(
-                      fontSize: Dimensions.font20,
-                      fontWeight: FontWeight.bold,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => sheet._close(context),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: Dimensions.iconSize24,
-                      color: context.colors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
+            BottomSheetHeader(
+              title: sheet.title,
+              onClose: () => sheet._close(context),
+              showBorder: sheet.showHeaderBorder,
             ),
             // Optional section label
             if (sheet.sectionLabel != null)
@@ -261,11 +216,20 @@ class FilterOptionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (style) {
       case FilterOptionStyle.border:
-        return _BorderOption(label: label, isSelected: isSelected, onTap: onTap);
+        return _BorderOption(
+          label: label,
+          isSelected: isSelected,
+          onTap: onTap,
+        );
       case FilterOptionStyle.card:
         return _CardOption(label: label, isSelected: isSelected, onTap: onTap);
       case FilterOptionStyle.radio:
-        return _RadioOption(label: label, icon: icon, isSelected: isSelected, onTap: onTap);
+        return _RadioOption(
+          label: label,
+          icon: icon,
+          isSelected: isSelected,
+          onTap: onTap,
+        );
     }
   }
 }
@@ -309,7 +273,9 @@ class _BorderOption extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? AppColors.primary : context.colors.textPrimary,
+                color: isSelected
+                    ? AppColors.primary
+                    : context.colors.textPrimary,
               ),
             ),
             if (isSelected)
@@ -363,7 +329,9 @@ class _CardOption extends StatelessWidget {
               style: TextStyle(
                 fontSize: Dimensions.font16 * 0.8,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? AppColors.primary : context.colors.textPrimary,
+                color: isSelected
+                    ? AppColors.primary
+                    : context.colors.textPrimary,
               ),
             ),
             const Spacer(),
@@ -420,7 +388,9 @@ class _RadioOption extends StatelessWidget {
                   ? Icons.radio_button_checked_rounded
                   : Icons.radio_button_off_rounded,
               size: Dimensions.iconSize16 + 2,
-              color: isSelected ? AppColors.primary : context.colors.textTertiary,
+              color: isSelected
+                  ? AppColors.primary
+                  : context.colors.textTertiary,
             ),
             SizedBox(width: Dimensions.width10),
             if (icon != null) ...[

@@ -1,6 +1,8 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_header.dart';
 import 'package:flutter/material.dart';
 
 class GenericSortSheet<F> extends StatefulWidget {
@@ -135,48 +137,13 @@ class _BottomSheetLayout<F> extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Drag handle
-          Container(
-            width: Dimensions.width20 * 2,
-            height: Dimensions.height10 * 0.4,
-            margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-            decoration: BoxDecoration(
-              color: context.colors.border,
-              borderRadius: BorderRadius.circular(Dimensions.radius30),
-            ),
-          ),
+          const BottomSheetDragHandle(),
 
           // Header
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  sheet.title,
-                  style: TextStyle(
-                    fontSize: Dimensions.font20,
-                    fontWeight: FontWeight.w800,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    padding: EdgeInsets.all(Dimensions.width10 * 0.6),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    ),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: Dimensions.iconSize16,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          BottomSheetHeader(
+            title: sheet.title,
+            onClose: () => Navigator.pop(context),
+            usePillCloseButton: true,
           ),
 
           SizedBox(height: Dimensions.height15),

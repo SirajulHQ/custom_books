@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/views/add_customer_page.dart';
@@ -114,15 +115,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: Dimensions.width20 * 2,
-                height: Dimensions.height10 * 0.4,
-                margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-                decoration: BoxDecoration(
-                  color: context.colors.border,
-                  borderRadius: BorderRadius.circular(Dimensions.radius30),
-                ),
-              ),
+              const BottomSheetDragHandle(),
               tile(Icons.edit_outlined, 'Edit customer', _editCustomer),
               tile(
                 Icons.share_outlined,

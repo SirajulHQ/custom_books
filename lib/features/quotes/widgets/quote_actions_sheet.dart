@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_header.dart';
 import 'package:flutter/material.dart';
 
 class QuoteActionsSheet extends StatelessWidget {
@@ -28,7 +29,11 @@ class QuoteActionsSheet extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _ActionsHeader(onClose: onClose),
+            BottomSheetHeader(
+              title: 'More Options',
+              onClose: onClose,
+              showBorder: true,
+            ),
             Container(
               width: double.infinity,
               padding: EdgeInsets.fromLTRB(
@@ -70,46 +75,6 @@ class QuoteActionsSheet extends StatelessWidget {
             SizedBox(height: Dimensions.height20),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ActionsHeader extends StatelessWidget {
-  final VoidCallback onClose;
-
-  const _ActionsHeader({required this.onClose});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Dimensions.width20,
-        vertical: Dimensions.height15,
-      ),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: context.colors.border)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'More Options',
-            style: TextStyle(
-              fontSize: Dimensions.font20,
-              fontWeight: FontWeight.bold,
-              color: context.colors.textPrimary,
-            ),
-          ),
-          GestureDetector(
-            onTap: onClose,
-            child: Icon(
-              Icons.close_rounded,
-              size: Dimensions.iconSize24,
-              color: context.colors.textSecondary,
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:flutter/material.dart';
 
 void showInvoiceMoreOptionsSheet(
@@ -21,15 +22,7 @@ void showInvoiceMoreOptionsSheet(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: Dimensions.width20 * 2,
-            height: Dimensions.height10 * 0.4,
-            margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-            decoration: BoxDecoration(
-              color: ctx.colors.border,
-              borderRadius: BorderRadius.circular(Dimensions.radius30),
-            ),
-          ),
+          const BottomSheetDragHandle(),
           _moreOptionTile(
             ctx,
             Icons.remove_red_eye_outlined,
@@ -41,34 +34,24 @@ void showInvoiceMoreOptionsSheet(
               );
             },
           ),
-          _moreOptionTile(
-            ctx,
-            Icons.send_rounded,
-            'Save and send',
-            () {
-              if (customerNameController.text.trim().isEmpty) {
-                ToastificationHelper.showError(
-                  context,
-                  'Please select a customer before sending.',
-                );
-                return;
-              }
-              ToastificationHelper.showSuccess(
+          _moreOptionTile(ctx, Icons.send_rounded, 'Save and send', () {
+            if (customerNameController.text.trim().isEmpty) {
+              ToastificationHelper.showError(
                 context,
-                'Invoice saved and sent.',
+                'Please select a customer before sending.',
               );
-              Navigator.pop(context);
-            },
-          ),
-          _moreOptionTile(
-            ctx,
-            Icons.refresh_rounded,
-            'Reset form',
-            () {
-              onResetForm();
-              ToastificationHelper.showInfo(context, 'Form reset.');
-            },
-          ),
+              return;
+            }
+            ToastificationHelper.showSuccess(
+              context,
+              'Invoice saved and sent.',
+            );
+            Navigator.pop(context);
+          }),
+          _moreOptionTile(ctx, Icons.refresh_rounded, 'Reset form', () {
+            onResetForm();
+            ToastificationHelper.showInfo(context, 'Form reset.');
+          }),
           SizedBox(height: Dimensions.height20),
         ],
       ),

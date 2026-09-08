@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:flutter/material.dart';
 
 class BankingMoreOptionsSheet extends StatelessWidget {
@@ -41,15 +42,7 @@ class BankingMoreOptionsSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: Dimensions.width20 * 2,
-            height: Dimensions.height10 * 0.4,
-            margin: EdgeInsets.symmetric(vertical: Dimensions.height10),
-            decoration: BoxDecoration(
-              color: context.colors.border,
-              borderRadius: BorderRadius.circular(Dimensions.radius30),
-            ),
-          ),
+          const BottomSheetDragHandle(),
           _buildTile(
             context,
             icon: Icons.refresh_rounded,
