@@ -5,7 +5,7 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/banking/models/bank_account.dart';
 import 'package:custom_books/features/banking/views/add_bank_account_page.dart';
 import 'package:custom_books/features/banking/widgets/bank_account_card.dart';
-import 'package:custom_books/features/banking/widgets/banking_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/features/banking/widgets/banking_summary_card.dart';
 import 'package:custom_books/features/banking/widgets/active_account_item.dart';
 import 'package:custom_books/features/banking/widgets/banking_filter_button.dart';
@@ -128,21 +128,32 @@ class _BankingPageState extends State<BankingPage> {
                   icon: Icons.more_vert_rounded,
                   color: AppColors.accent,
                   onPressed: () {
-                    BankingMoreOptionsSheet.show(
+                    MoreOptionsSheet.show(
                       context,
-                      onRefresh: () {
-                        setState(() {});
-                        ToastificationHelper.showSuccess(
-                          context,
-                          'Banking refreshed.',
-                        );
-                      },
-                      onExportStatement: () {
-                        ToastificationHelper.showInfo(
-                          context,
-                          'Exporting statements is coming soon.',
-                        );
-                      },
+                      sectionLabel: 'BANKING ACTIONS',
+                      items: [
+                        MoreOptionsItem(
+                          icon: Icons.file_download_outlined,
+                          title: 'Export Statement',
+                          subtitle: 'Export your bank account statement',
+                          onTap: () => ToastificationHelper.showInfo(
+                            context,
+                            'Exporting statements is coming soon.',
+                          ),
+                        ),
+                        MoreOptionsItem(
+                          icon: Icons.refresh_rounded,
+                          title: 'Refresh',
+                          subtitle: 'Reload the latest banking data',
+                          onTap: () {
+                            setState(() {});
+                            ToastificationHelper.showSuccess(
+                              context,
+                              'Banking refreshed.',
+                            );
+                          },
+                        ),
+                      ],
                     );
                   },
                 ),

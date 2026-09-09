@@ -14,7 +14,7 @@ import 'package:custom_books/features/recurring_invoices/views/recurring_invoice
 import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoice_filter_sheet.dart';
 import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoice_sort_sheet.dart';
 import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoice_page_widgets.dart';
-import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoices_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -149,13 +149,26 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
   }
 
   void _showMoreOptions() {
-    RecurringInvoicesMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () => ToastificationHelper.showSuccess(
-        context,
-        'Recurring invoice profiles exported',
-      ),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'RECURRING INVOICE ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Profiles',
+          subtitle: 'Export the current recurring invoice profiles',
+          onTap: () => ToastificationHelper.showSuccess(
+            context,
+            'Recurring invoice profiles exported',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest recurring invoice profiles',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

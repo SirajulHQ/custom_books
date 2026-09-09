@@ -14,7 +14,7 @@ import 'package:custom_books/features/expenses/views/add_expense_page.dart';
 import 'package:custom_books/features/expenses/views/expense_details_page.dart';
 import 'package:custom_books/features/expenses/widgets/expense_filter_sheet.dart';
 import 'package:custom_books/features/expenses/widgets/expense_sort_sheet.dart';
-import 'package:custom_books/features/expenses/widgets/expenses_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -142,11 +142,24 @@ class _ExpensesPageState extends State<ExpensesPage> {
   }
 
   void _showMoreOptions() {
-    ExpensesMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () =>
-          ToastificationHelper.showSuccess(context, 'Expenses exported'),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'EXPENSE ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Expenses',
+          subtitle: 'Export the current expense list',
+          onTap: () =>
+              ToastificationHelper.showSuccess(context, 'Expenses exported'),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest expenses',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

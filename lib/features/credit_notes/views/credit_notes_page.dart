@@ -12,7 +12,7 @@ import 'package:custom_books/features/credit_notes/views/credit_note_details_pag
 import 'package:custom_books/features/credit_notes/widgets/credit_note_card.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/features/credit_notes/widgets/credit_note_filter_sheet.dart';
-import 'package:custom_books/features/credit_notes/widgets/credit_notes_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -133,11 +133,26 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
   }
 
   void _showMoreOptions() {
-    CreditNotesMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () =>
-          ToastificationHelper.showSuccess(context, 'Credit notes exported'),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'CREDIT NOTE ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Credit Notes',
+          subtitle: 'Export the current credit note list',
+          onTap: () => ToastificationHelper.showSuccess(
+            context,
+            'Credit notes exported',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest credit notes',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

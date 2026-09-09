@@ -12,7 +12,7 @@ import 'package:custom_books/features/delivery_challans/widgets/delivery_challan
 import 'package:custom_books/features/delivery_challans/views/delivery_challan_details_page.dart';
 import 'package:custom_books/features/delivery_challans/widgets/delivery_challan_filter_sheet.dart';
 import 'package:custom_books/features/delivery_challans/widgets/delivery_challan_sort_sheet.dart';
-import 'package:custom_books/features/delivery_challans/widgets/delivery_challans_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -152,17 +152,35 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
   }
 
   void _showMoreOptions() {
-    DeliveryChallansMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () => ToastificationHelper.showSuccess(
-        context,
-        'Delivery challans exported',
-      ),
-      onPrint: () => ToastificationHelper.showInfo(
-        context,
-        'Printing delivery challans is coming soon.',
-      ),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'DELIVERY CHALLAN ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Delivery Challans',
+          subtitle: 'Export the current delivery challan list',
+          onTap: () => ToastificationHelper.showSuccess(
+            context,
+            'Delivery challans exported',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.print_outlined,
+          title: 'Print',
+          subtitle: 'Print delivery challan documents',
+          onTap: () => ToastificationHelper.showInfo(
+            context,
+            'Printing delivery challans is coming soon.',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest delivery challans',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

@@ -8,7 +8,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
 import 'package:custom_books/features/documents/views/document_details_page.dart';
 import 'package:custom_books/features/documents/widgets/document_sort_sheet.dart';
-import 'package:custom_books/features/documents/widgets/documents_inbox_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
@@ -121,10 +121,23 @@ class _DocumentsInboxPageState extends State<DocumentsInboxPage> {
   }
 
   void _showMoreOptions() {
-    DocumentsInboxMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onUpload: _upload,
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'INBOX ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.upload_file_rounded,
+          title: 'Upload Document',
+          subtitle: 'Add a new document to your inbox',
+          onTap: _upload,
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest documents',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

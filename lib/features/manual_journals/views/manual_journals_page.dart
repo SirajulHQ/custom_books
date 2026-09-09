@@ -14,7 +14,7 @@ import 'package:custom_books/features/manual_journals/views/manual_journal_detai
 import 'package:custom_books/features/manual_journals/widgets/manual_journal_filter_sheet.dart';
 import 'package:custom_books/features/manual_journals/widgets/manual_journal_sort_sheet.dart';
 import 'package:custom_books/features/manual_journals/widgets/manual_journal_page_widgets.dart';
-import 'package:custom_books/features/manual_journals/widgets/manual_journals_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -142,11 +142,26 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
   }
 
   void _showMoreOptions() {
-    ManualJournalsMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () =>
-          ToastificationHelper.showSuccess(context, 'Manual journals exported'),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'JOURNAL ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Journals',
+          subtitle: 'Export the current manual journal list',
+          onTap: () => ToastificationHelper.showSuccess(
+            context,
+            'Manual journals exported',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest manual journals',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

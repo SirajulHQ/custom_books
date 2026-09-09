@@ -14,7 +14,7 @@ import 'package:custom_books/features/payments_received/views/payment_received_d
 import 'package:custom_books/features/payments_received/widgets/payment_received_filter_sheet.dart';
 import 'package:custom_books/features/payments_received/widgets/payment_received_sort_sheet.dart';
 import 'package:custom_books/features/payments_received/widgets/payment_received_page_widgets.dart';
-import 'package:custom_books/features/payments_received/widgets/payments_received_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -157,15 +157,33 @@ class _PaymentsReceivedPageState extends State<PaymentsReceivedPage> {
   }
 
   void _showMoreOptions() {
-    PaymentsReceivedMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () =>
-          ToastificationHelper.showSuccess(context, 'Payments exported'),
-      onGenerateStatement: () => ToastificationHelper.showInfo(
-        context,
-        'Generate statement is coming soon.',
-      ),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'PAYMENT ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Payments',
+          subtitle: 'Export the current payment list',
+          onTap: () =>
+              ToastificationHelper.showSuccess(context, 'Payments exported'),
+        ),
+        MoreOptionsItem(
+          icon: Icons.receipt_outlined,
+          title: 'Generate Statement',
+          subtitle: 'Generate a payment receipt statement',
+          onTap: () => ToastificationHelper.showInfo(
+            context,
+            'Generate statement is coming soon.',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest payments',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

@@ -11,7 +11,7 @@ import 'package:custom_books/features/bills/views/add_bill_page.dart';
 import 'package:custom_books/features/bills/widgets/bill_filter_sheet.dart';
 import 'package:custom_books/features/bills/widgets/bill_sort_sheet.dart';
 import 'package:custom_books/features/bills/widgets/bills_list_body.dart';
-import 'package:custom_books/features/bills/widgets/bills_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -151,11 +151,24 @@ class _BillsPageState extends State<BillsPage> {
   }
 
   void _showMoreOptions() {
-    BillsMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () =>
-          ToastificationHelper.showSuccess(context, 'Bills exported'),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'BILL ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Bills',
+          subtitle: 'Export the current bill list',
+          onTap: () =>
+              ToastificationHelper.showSuccess(context, 'Bills exported'),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest bills',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

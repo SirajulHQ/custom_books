@@ -14,7 +14,7 @@ import 'package:custom_books/features/vendor_credits/views/vendor_credit_details
 import 'package:custom_books/features/vendor_credits/widgets/vendor_credit_filter_sheet.dart';
 import 'package:custom_books/features/vendor_credits/widgets/vendor_credit_sort_sheet.dart';
 import 'package:custom_books/features/vendor_credits/widgets/vendor_credit_page_widgets.dart';
-import 'package:custom_books/features/vendor_credits/widgets/vendor_credits_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -146,11 +146,26 @@ class _VendorCreditsPageState extends State<VendorCreditsPage> {
   }
 
   void _showMoreOptions() {
-    VendorCreditsMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () =>
-          ToastificationHelper.showSuccess(context, 'Vendor credits exported'),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'VENDOR CREDIT ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Vendor Credits',
+          subtitle: 'Export the current vendor credit list',
+          onTap: () => ToastificationHelper.showSuccess(
+            context,
+            'Vendor credits exported',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest vendor credits',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

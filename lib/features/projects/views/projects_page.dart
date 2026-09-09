@@ -14,7 +14,7 @@ import 'package:custom_books/features/projects/views/project_details_page.dart';
 import 'package:custom_books/features/projects/widgets/project_filter_sheet.dart';
 import 'package:custom_books/features/projects/widgets/project_sort_sheet.dart';
 import 'package:custom_books/features/projects/widgets/project_page_widgets.dart';
-import 'package:custom_books/features/projects/widgets/projects_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -148,11 +148,24 @@ class _ProjectsPageState extends State<ProjectsPage> {
   }
 
   void _showMoreOptions() {
-    ProjectsMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () =>
-          ToastificationHelper.showSuccess(context, 'Projects exported'),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'PROJECT ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Projects',
+          subtitle: 'Export the current project list',
+          onTap: () =>
+              ToastificationHelper.showSuccess(context, 'Projects exported'),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest projects',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

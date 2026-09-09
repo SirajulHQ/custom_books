@@ -8,7 +8,7 @@ import 'package:custom_books/features/documents/models/document_model.dart';
 import 'package:custom_books/features/documents/widgets/document_filter_sheet.dart';
 import 'package:custom_books/features/documents/widgets/document_sort_sheet.dart';
 import 'package:custom_books/features/documents/widgets/document_page_widgets.dart';
-import 'package:custom_books/features/documents/widgets/all_files_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -127,10 +127,23 @@ class _AllFilesPageState extends State<AllFilesPage> {
   }
 
   void _showMoreOptions() {
-    AllFilesMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onUpload: _upload,
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'FILE ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.upload_file_rounded,
+          title: 'Upload File',
+          subtitle: 'Add a new file to your documents',
+          onTap: _upload,
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest files',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

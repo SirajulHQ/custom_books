@@ -14,7 +14,7 @@ import 'package:custom_books/features/purchase_orders/views/purchase_order_detai
 import 'package:custom_books/features/purchase_orders/widgets/purchase_order_filter_sheet.dart';
 import 'package:custom_books/features/purchase_orders/widgets/purchase_order_sort_sheet.dart';
 import 'package:custom_books/features/purchase_orders/widgets/purchase_order_page_widgets.dart';
-import 'package:custom_books/features/purchase_orders/widgets/purchase_orders_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -149,11 +149,26 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
   }
 
   void _showMoreOptions() {
-    PurchaseOrdersMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () =>
-          ToastificationHelper.showSuccess(context, 'Purchase orders exported'),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'PURCHASE ORDER ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Purchase Orders',
+          subtitle: 'Export the current purchase order list',
+          onTap: () => ToastificationHelper.showSuccess(
+            context,
+            'Purchase orders exported',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest purchase orders',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

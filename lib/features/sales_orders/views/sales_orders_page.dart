@@ -14,7 +14,7 @@ import 'package:custom_books/features/sales_orders/views/sales_order_details_pag
 import 'package:custom_books/features/sales_orders/widgets/sales_order_actions_sheet.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_filter_sheet.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_sort_sheet.dart';
-import 'package:custom_books/features/sales_orders/widgets/sales_orders_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -192,11 +192,26 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
   }
 
   void _showMoreOptions() {
-    SalesOrdersMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () =>
-          ToastificationHelper.showSuccess(context, 'Sales orders exported'),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'SALES ORDER ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Sales Orders',
+          subtitle: 'Export the current sales order list',
+          onTap: () => ToastificationHelper.showSuccess(
+            context,
+            'Sales orders exported',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest sales orders',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

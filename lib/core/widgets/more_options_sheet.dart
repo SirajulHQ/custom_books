@@ -3,37 +3,84 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/bottom_sheet_header.dart';
 import 'package:flutter/material.dart';
 
-class ExpensesMoreOptionsSheet extends StatelessWidget {
-  final VoidCallback onExport;
-  final VoidCallback onRefresh;
+/// A single action item shown inside [MoreOptionsSheet].
+class MoreOptionsItem {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const MoreOptionsItem({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+}
+
+/// Generic reusable "More Options" bottom sheet that follows the app-wide
+/// card-row design (icon in tinted container · title + subtitle · chevron).
+///
+/// Usage:
+/// ```dart
+/// MoreOptionsSheet.show(
+///   context,
+///   sectionLabel: 'INVOICE ACTIONS',
+///   items: [
+///     MoreOptionsItem(
+///       icon: Icons.file_download_outlined,
+///       title: 'Export Invoices',
+///       subtitle: 'Export the current invoice list',
+///       onTap: () => ...,
+///     ),
+///     MoreOptionsItem(
+///       icon: Icons.refresh_rounded,
+///       title: 'Refresh',
+///       subtitle: 'Reload the latest invoices',
+///       onTap: () => ...,
+///     ),
+///   ],
+/// );
+/// ```
+class MoreOptionsSheet extends StatelessWidget {
+  final String sectionLabel;
+  final List<MoreOptionsItem> items;
   final VoidCallback onClose;
 
-  const ExpensesMoreOptionsSheet({
+  const MoreOptionsSheet({
     super.key,
-    required this.onExport,
-    required this.onRefresh,
+    required this.sectionLabel,
+    required this.items,
     required this.onClose,
   });
 
+  /// Opens the sheet as a transparent modal bottom sheet.
+  /// Each item's [onTap] is wrapped to dismiss the sheet first.
   static void show(
     BuildContext context, {
-    required VoidCallback onExport,
-    required VoidCallback onRefresh,
+    required String sectionLabel,
+    required List<MoreOptionsItem> items,
   }) {
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (sheetContext) => ExpensesMoreOptionsSheet(
+      builder: (sheetContext) => MoreOptionsSheet(
+        sectionLabel: sectionLabel,
         onClose: () => Navigator.pop(sheetContext),
-        onExport: () {
-          Navigator.pop(sheetContext);
-          onExport();
-        },
-        onRefresh: () {
-          Navigator.pop(sheetContext);
-          onRefresh();
-        },
+        items: items
+            .map(
+              (item) => MoreOptionsItem(
+                icon: item.icon,
+                title: item.title,
+                subtitle: item.subtitle,
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  item.onTap();
+                },
+              ),
+            )
+            .toList(),
       ),
     );
   }
@@ -66,7 +113,7 @@ class ExpensesMoreOptionsSheet extends StatelessWidget {
                 Dimensions.height10,
               ),
               child: Text(
-                'EXPENSE ACTIONS',
+                sectionLabel,
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.7,
                   fontWeight: FontWeight.w600,
@@ -79,19 +126,10 @@ class ExpensesMoreOptionsSheet extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
               child: Column(
                 children: [
-                  _ActionOption(
-                    icon: Icons.file_download_outlined,
-                    title: 'Export Expenses',
-                    subtitle: 'Export the current expense list',
-                    onTap: onExport,
-                  ),
-                  SizedBox(height: Dimensions.height10),
-                  _ActionOption(
-                    icon: Icons.refresh_rounded,
-                    title: 'Refresh',
-                    subtitle: 'Reload the latest expenses',
-                    onTap: onRefresh,
-                  ),
+                  for (int i = 0; i < items.length; i++) ...[
+                    _MoreOptionsItemTile(item: items[i]),
+                    if (i < items.length - 1) SizedBox(height: Dimensions.height10),
+                  ],
                 ],
               ),
             ),
@@ -103,24 +141,16 @@ class ExpensesMoreOptionsSheet extends StatelessWidget {
   }
 }
 
-class _ActionOption extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
+class _MoreOptionsItemTile extends StatelessWidget {
+  final MoreOptionsItem item;
 
-  const _ActionOption({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
+  const _MoreOptionsItemTile({required this.item});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(Dimensions.radius15),
-      onTap: onTap,
+      onTap: item.onTap,
       child: Container(
         padding: EdgeInsets.all(Dimensions.width15),
         decoration: BoxDecoration(
@@ -138,7 +168,7 @@ class _ActionOption extends StatelessWidget {
                 borderRadius: BorderRadius.circular(Dimensions.radius15 - 3),
               ),
               child: Icon(
-                icon,
+                item.icon,
                 size: Dimensions.iconSize24 - 4,
                 color: AppColors.primary,
               ),
@@ -149,7 +179,7 @@ class _ActionOption extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    item.title,
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.9,
                       fontWeight: FontWeight.w700,
@@ -158,7 +188,7 @@ class _ActionOption extends StatelessWidget {
                   ),
                   SizedBox(height: Dimensions.height10 / 4),
                   Text(
-                    subtitle,
+                    item.subtitle,
                     style: TextStyle(
                       fontSize: Dimensions.font16 * 0.7,
                       color: context.colors.textSecondary,

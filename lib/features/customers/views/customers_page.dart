@@ -10,7 +10,7 @@ import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/widgets/customer_page_widgets/customer_card_widget.dart';
 import 'package:custom_books/features/customers/widgets/customer_page_widgets/customer_filter_sheet.dart';
 import 'package:custom_books/features/customers/widgets/customer_page_widgets/customer_sort_sheet.dart';
-import 'package:custom_books/features/customers/widgets/customer_page_widgets/customer_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/features/customers/views/add_customer_page.dart';
 import 'package:flutter/material.dart';
 
@@ -156,20 +156,38 @@ class _CustomersPageState extends State<CustomersPage> {
 
   void _showMoreOptions() {
     appLog('⋮ More options tapped', name: 'CustomersPage');
-    CustomerMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onRefresh: () {
-        setState(() {});
-        ToastificationHelper.showSuccess(context, 'Customers refreshed.');
-      },
-      onImport: () => ToastificationHelper.showInfo(
-        context,
-        'Importing customers is coming soon.',
-      ),
-      onExport: () => ToastificationHelper.showInfo(
-        context,
-        'Exporting customers is coming soon.',
-      ),
+      sectionLabel: 'CUSTOMER ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.upload_file_outlined,
+          title: 'Import Customers',
+          subtitle: 'Import customers from a file',
+          onTap: () => ToastificationHelper.showInfo(
+            context,
+            'Importing customers is coming soon.',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Customers',
+          subtitle: 'Export the current customer list',
+          onTap: () => ToastificationHelper.showInfo(
+            context,
+            'Exporting customers is coming soon.',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest customers',
+          onTap: () {
+            setState(() {});
+            ToastificationHelper.showSuccess(context, 'Customers refreshed.');
+          },
+        ),
+      ],
     );
   }
 

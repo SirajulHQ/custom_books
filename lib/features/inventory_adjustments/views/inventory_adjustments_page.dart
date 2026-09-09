@@ -7,7 +7,7 @@ import 'package:custom_books/features/inventory_adjustments/models/inventory_adj
 import 'package:custom_books/features/inventory_adjustments/views/add_adjustment_page.dart';
 import 'package:custom_books/features/inventory_adjustments/views/adjustment_details_page.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/inventory_adjustments_card_widgets.dart';
-import 'package:custom_books/features/inventory_adjustments/widgets/inventory_adjustments_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/inventory_adjustments_page_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -110,20 +110,38 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
   }
 
   void _showMoreOptions() {
-    InventoryAdjustmentsMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () => ToastificationHelper.showInfo(
-        context,
-        'Exporting adjustments is coming soon.',
-      ),
-      onPrint: () => ToastificationHelper.showInfo(
-        context,
-        'Printing adjustments is coming soon.',
-      ),
-      onRefresh: () {
-        setState(() {});
-        ToastificationHelper.showSuccess(context, 'Adjustments refreshed.');
-      },
+      sectionLabel: 'ADJUSTMENT ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Adjustments',
+          subtitle: 'Export the current adjustment list',
+          onTap: () => ToastificationHelper.showInfo(
+            context,
+            'Exporting adjustments is coming soon.',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.print_outlined,
+          title: 'Print',
+          subtitle: 'Print inventory adjustment documents',
+          onTap: () => ToastificationHelper.showInfo(
+            context,
+            'Printing adjustments is coming soon.',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest adjustments',
+          onTap: () {
+            setState(() {});
+            ToastificationHelper.showSuccess(context, 'Adjustments refreshed.');
+          },
+        ),
+      ],
     );
   }
 

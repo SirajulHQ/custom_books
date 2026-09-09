@@ -13,7 +13,7 @@ import 'package:custom_books/features/vendors/views/add_vendor_page.dart';
 import 'package:custom_books/features/vendors/views/vendor_details_page.dart';
 import 'package:custom_books/features/vendors/widgets/vendor_filter_sheet.dart';
 import 'package:custom_books/features/vendors/widgets/vendor_sort_sheet.dart';
-import 'package:custom_books/features/vendors/widgets/vendors_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -148,15 +148,33 @@ class _VendorsPageState extends State<VendorsPage> {
   }
 
   void _showMoreOptions() {
-    VendorsMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onImport: () => ToastificationHelper.showInfo(
-        context,
-        'Importing vendors is coming soon.',
-      ),
-      onExport: () =>
-          ToastificationHelper.showSuccess(context, 'Vendors exported'),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'VENDOR ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.upload_file_outlined,
+          title: 'Import Vendors',
+          subtitle: 'Import vendors from a file',
+          onTap: () => ToastificationHelper.showInfo(
+            context,
+            'Importing vendors is coming soon.',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Vendors',
+          subtitle: 'Export the current vendor list',
+          onTap: () =>
+              ToastificationHelper.showSuccess(context, 'Vendors exported'),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest vendors',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

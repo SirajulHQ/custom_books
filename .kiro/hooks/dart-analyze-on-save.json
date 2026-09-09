@@ -4,12 +4,13 @@
     {
       "name": "Flutter Analyze on Save",
       "trigger": "PostFileSave",
-      "description": "Runs flutter analyze whenever a .dart file is saved to catch issues early",
-      "matcher": "\\.dart$",
       "action": {
         "type": "command",
         "command": "flutter analyze"
-      }
+      },
+      "description": "Runs flutter analyze whenever a .dart file is saved to catch issues early",
+      "matcher": "\\.dart$",
+      "enabled": true
     }
   ]
 }

@@ -14,7 +14,7 @@ import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/quotes/models/quote_model.dart';
 import 'package:custom_books/features/quotes/views/add_quote_page.dart';
-import 'package:custom_books/features/quotes/widgets/quote_actions_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/features/quotes/widgets/quote_filter_sheet.dart';
 import 'package:flutter/material.dart';
 
@@ -243,21 +243,24 @@ class _QuotesPageState extends State<QuotesPage> {
   }
 
   void _showActionsSheet() {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (sheetContext) => QuoteActionsSheet(
-        onClose: () => Navigator.pop(sheetContext),
-        onExport: () {
-          Navigator.pop(sheetContext);
-          ToastificationHelper.showSuccess(context, 'Quotes exported');
-        },
-        onRefresh: () {
-          Navigator.pop(sheetContext);
-          setState(() {});
-        },
-      ),
+    MoreOptionsSheet.show(
+      context,
+      sectionLabel: 'QUOTE ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Quotes',
+          subtitle: 'Export the current quote list',
+          onTap: () =>
+              ToastificationHelper.showSuccess(context, 'Quotes exported'),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest quotes',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

@@ -14,7 +14,7 @@ import 'package:custom_books/features/payments_made/views/payment_made_details_p
 import 'package:custom_books/features/payments_made/widgets/payment_made_filter_sheet.dart';
 import 'package:custom_books/features/payments_made/widgets/payment_made_sort_sheet.dart';
 import 'package:custom_books/features/payments_made/widgets/payment_made_page_widgets.dart';
-import 'package:custom_books/features/payments_made/widgets/payments_made_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -151,11 +151,26 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
   }
 
   void _showMoreOptions() {
-    PaymentsMadeMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () =>
-          ToastificationHelper.showSuccess(context, 'Payments made exported'),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'PAYMENT ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Payments Made',
+          subtitle: 'Export the current payment list',
+          onTap: () => ToastificationHelper.showSuccess(
+            context,
+            'Payments made exported',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest payments made',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 

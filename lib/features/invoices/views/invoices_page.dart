@@ -12,7 +12,7 @@ import 'package:custom_books/features/invoices/views/new_invoice_page.dart';
 import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoice_filter_sheet.dart';
 import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoice_list_item.dart';
 import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoice_sort_sheet.dart';
-import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoices_more_options_sheet.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -162,15 +162,33 @@ class _InvoicesPageState extends State<InvoicesPage> {
   }
 
   void _showMoreOptions() {
-    InvoicesMoreOptionsSheet.show(
+    MoreOptionsSheet.show(
       context,
-      onExport: () =>
-          ToastificationHelper.showSuccess(context, 'Invoices exported'),
-      onSendReminders: () => ToastificationHelper.showInfo(
-        context,
-        'Payment reminders is coming soon.',
-      ),
-      onRefresh: () => setState(() {}),
+      sectionLabel: 'INVOICE ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.file_download_outlined,
+          title: 'Export Invoices',
+          subtitle: 'Export the current invoice list',
+          onTap: () =>
+              ToastificationHelper.showSuccess(context, 'Invoices exported'),
+        ),
+        MoreOptionsItem(
+          icon: Icons.notifications_outlined,
+          title: 'Send Payment Reminders',
+          subtitle: 'Send reminders for overdue invoices',
+          onTap: () => ToastificationHelper.showInfo(
+            context,
+            'Payment reminders is coming soon.',
+          ),
+        ),
+        MoreOptionsItem(
+          icon: Icons.refresh_rounded,
+          title: 'Refresh',
+          subtitle: 'Reload the latest invoices',
+          onTap: () => setState(() {}),
+        ),
+      ],
     );
   }
 
