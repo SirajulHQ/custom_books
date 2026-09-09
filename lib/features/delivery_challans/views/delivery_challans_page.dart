@@ -5,12 +5,12 @@ import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/features/delivery_challans/models/delivery_challan_model.dart';
 import 'package:custom_books/features/delivery_challans/views/add_delivery_challan_page.dart';
 import 'package:custom_books/features/delivery_challans/widgets/delivery_challan_card.dart';
 import 'package:custom_books/features/delivery_challans/views/delivery_challan_details_page.dart';
-import 'package:custom_books/features/delivery_challans/widgets/delivery_challan_filter_sheet.dart';
 import 'package:custom_books/features/delivery_challans/widgets/delivery_challan_sort_sheet.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
@@ -189,7 +189,14 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => DeliveryChallanFilterSheet(selectedStatus: _statusFilter),
+      builder: (_) => FilterSheet<DeliveryChallanStatus>(
+      title: 'Filter',
+      options: const [null, ...DeliveryChallanStatus.values],
+      selectedValue: _statusFilter,
+      labelBuilder: (status) => status?.label ?? 'All Statuses',
+      onSelected: (status) => Navigator.pop(context, status),
+      onClose: () => Navigator.pop(context),
+    ),
     );
 
     if (result != null || _statusFilter != null) {
