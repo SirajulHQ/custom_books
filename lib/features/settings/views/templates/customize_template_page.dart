@@ -1,9 +1,11 @@
+import 'dart:typed_data';
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/settings/views/templates/template_preview_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:signature/signature.dart';
 
 class CustomizeTemplatePage extends StatefulWidget {
   final String templateType;
@@ -23,7 +25,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
   late String _templateName;
   int _selectedThemeIndex = 0;
   String? _bankDetails;
-  String? _signatureLabel;
+  Uint8List? _signatureImage;
 
   final List<Color> _themeColors = [
     const Color(0xFF0D47A1), // Blue
@@ -184,82 +186,229 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
   }
 
   void _editSignature() {
-    final signatureCtrl = TextEditingController(text: _signatureLabel ?? '');
+    final signatureController = SignatureController(
+      penStrokeWidth: 2.5,
+      penColor: Colors.black,
+      exportBackgroundColor: Colors.white,
+    );
+
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(Dimensions.radius20),
         ),
       ),
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(
-          left: Dimensions.width20,
-          right: Dimensions.width20,
-          top: Dimensions.height20,
-          bottom: MediaQuery.of(ctx).viewInsets.bottom + Dimensions.height20,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Drag handle
-            Center(
-              child: Container(
-                width: Dimensions.width30 * 1.5,
-                height: 4,
-                margin: EdgeInsets.only(bottom: Dimensions.height15),
-                decoration: BoxDecoration(
-                  color: context.colors.border,
-                  borderRadius: BorderRadius.circular(2),
-                ),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setSheetState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: Dimensions.width20,
+                right: Dimensions.width20,
+                top: Dimensions.height20,
+                bottom:
+                    MediaQuery.of(ctx).viewInsets.bottom + Dimensions.height20,
               ),
-            ),
-            Text(
-              'Edit Signature',
-              style: TextStyle(
-                fontSize: Dimensions.font20,
-                fontWeight: FontWeight.w700,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height20),
-            _buildTextField(signatureCtrl, 'Authorized Signatory Name'),
-            SizedBox(height: Dimensions.height15),
-            Text(
-              'Signature will appear at the bottom of the PDF',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                color: context.colors.textTertiary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height20),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () {
-                  setState(() {
-                    _signatureLabel = signatureCtrl.text.trim().isEmpty
-                        ? null
-                        : signatureCtrl.text.trim();
-                  });
-                  Navigator.pop(ctx);
-                  appLog('✍️ Signature updated', name: 'CustomizeTemplate');
-                },
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding: EdgeInsets.symmetric(vertical: Dimensions.height15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Drag handle
+                  Center(
+                    child: Container(
+                      width: Dimensions.width30 * 1.5,
+                      height: 4,
+                      margin: EdgeInsets.only(bottom: Dimensions.height15),
+                      decoration: BoxDecoration(
+                        color: context.colors.border,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
                   ),
-                ),
-                child: const Text('Save Signature'),
+                  // Title row with Clear button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Draw Signature',
+                        style: TextStyle(
+                          fontSize: Dimensions.font20,
+                          fontWeight: FontWeight.w700,
+                          color: context.colors.textPrimary,
+                        ),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          signatureController.clear();
+                          setSheetState(() {});
+                        },
+                        icon: Icon(
+                          Icons.refresh_outlined,
+                          size: Dimensions.iconSize16,
+                          color: context.colors.textSecondary,
+                        ),
+                        label: Text(
+                          'Clear',
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.85,
+                            color: context.colors.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: Dimensions.height10),
+                  // Canvas area — 3–4× the height of a normal text field (~56px → 200px)
+                  Container(
+                    width: double.infinity,
+                    height: Dimensions.height52 * 3.8,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(Dimensions.radius15),
+                      border: Border.all(color: AppColors.primary, width: 1.5),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        Dimensions.radius15 - 1.5,
+                      ),
+                      child: Stack(
+                        children: [
+                          Signature(
+                            controller: signatureController,
+                            backgroundColor: Colors.white,
+                          ),
+                          // Hint text — only shown when canvas is empty
+                          ListenableBuilder(
+                            listenable: signatureController,
+                            builder: (_, a) {
+                              if (signatureController.isNotEmpty) {
+                                return const SizedBox.shrink();
+                              }
+                              return Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.draw_outlined,
+                                      size: Dimensions.iconSize20 * 1.5,
+                                      color: Colors.grey.shade300,
+                                    ),
+                                    SizedBox(height: Dimensions.height10 * 0.5),
+                                    Text(
+                                      'Sign here',
+                                      style: TextStyle(
+                                        fontSize: Dimensions.font16 * 0.85,
+                                        color: Colors.grey.shade400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height10 * 0.6),
+                  Text(
+                    'Signature will appear at the bottom of the PDF',
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 0.78,
+                      color: context.colors.textTertiary,
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height20),
+                  Row(
+                    children: [
+                      // Remove signature button (only shown when one exists)
+                      if (_signatureImage != null) ...[
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {
+                              setState(() => _signatureImage = null);
+                              Navigator.pop(ctx);
+                              appLog(
+                                '🗑️ Signature removed',
+                                name: 'CustomizeTemplate',
+                              );
+                            },
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: Dimensions.height15,
+                              ),
+                              side: BorderSide(color: context.colors.border),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  Dimensions.radius15,
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              'Remove',
+                              style: TextStyle(
+                                color: context.colors.textSecondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: Dimensions.width15),
+                      ],
+                      Expanded(
+                        flex: 2,
+                        child: ListenableBuilder(
+                          listenable: signatureController,
+                          builder: (_, child) {
+                            final hasDrawing = signatureController.isNotEmpty;
+                            return FilledButton(
+                              onPressed: hasDrawing
+                                  ? () async {
+                                      final imageData =
+                                          await signatureController
+                                              .toPngBytes();
+                                      if (imageData != null) {
+                                        setState(
+                                          () => _signatureImage = imageData,
+                                        );
+                                      }
+                                      if (ctx.mounted) Navigator.pop(ctx);
+                                      appLog(
+                                        '✍️ Signature drawn and saved',
+                                        name: 'CustomizeTemplate',
+                                      );
+                                    }
+                                  : null,
+                              style: FilledButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                disabledBackgroundColor: AppColors.primary
+                                    .withValues(alpha: 0.35),
+                                disabledForegroundColor: Colors.white
+                                    .withValues(alpha: 0.6),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: Dimensions.height15,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    Dimensions.radius15,
+                                  ),
+                                ),
+                              ),
+                              child: const Text('Save Signature'),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ),
-    );
+            );
+          },
+        );
+      },
+    ).whenComplete(() => signatureController.dispose());
   }
 
   Widget _buildTextField(TextEditingController controller, String label) {
@@ -965,27 +1114,27 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
           ],
 
           // Signature (if added)
-          if (_signatureLabel != null) ...[
+          if (_signatureImage != null) ...[
             Divider(color: Colors.grey.shade200, height: 1),
             SizedBox(height: Dimensions.height10 * 0.8),
             Align(
               alignment: Alignment.centerRight,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // Drawn signature image
+                  Image.memory(
+                    _signatureImage!,
+                    width: Dimensions.height45 * 2.8,
+                    height: Dimensions.height45 * 1.2,
+                    fit: BoxFit.contain,
+                  ),
                   // Signature line
                   Container(
-                    width: Dimensions.height45 * 2.2,
+                    width: Dimensions.height45 * 2.8,
                     height: 1,
                     color: TemplatePreviewColors.divider,
-                    margin: EdgeInsets.only(bottom: Dimensions.height10 * 0.5),
-                  ),
-                  Text(
-                    _signatureLabel!,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.52,
-                      fontWeight: FontWeight.w500,
-                      color: TemplatePreviewColors.medium,
-                    ),
+                    margin: EdgeInsets.only(bottom: Dimensions.height10 * 0.4),
                   ),
                   Text(
                     'Authorized Signatory',
