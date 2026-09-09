@@ -7,6 +7,7 @@ import 'package:custom_books/features/inventory_adjustments/models/inventory_adj
 import 'package:custom_books/features/inventory_adjustments/views/add_adjustment_page.dart';
 import 'package:custom_books/features/inventory_adjustments/views/adjustment_details_page.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/inventory_adjustments_card_widgets.dart';
+import 'package:custom_books/features/inventory_adjustments/widgets/inventory_adjustments_more_options_sheet.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/inventory_adjustments_page_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -108,6 +109,24 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
     return list;
   }
 
+  void _showMoreOptions() {
+    InventoryAdjustmentsMoreOptionsSheet.show(
+      context,
+      onExport: () => ToastificationHelper.showInfo(
+        context,
+        'Exporting adjustments is coming soon.',
+      ),
+      onPrint: () => ToastificationHelper.showInfo(
+        context,
+        'Printing adjustments is coming soon.',
+      ),
+      onRefresh: () {
+        setState(() {});
+        ToastificationHelper.showSuccess(context, 'Adjustments refreshed.');
+      },
+    );
+  }
+
   AdjustmentListMode get _listMode {
     switch (_selectedTab) {
       case 1:
@@ -185,51 +204,10 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
                   }),
                 ),
                 SizedBox(width: Dimensions.width10),
-                PopupMenuButton<String>(
-                  icon: Container(
-                    width: Dimensions.height45 * 0.9,
-                    height: Dimensions.height45 * 0.9,
-                    decoration: BoxDecoration(
-                      color: AppColors.accent.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    ),
-                    child: Icon(
-                      Icons.more_vert_rounded,
-                      size: Dimensions.iconSize24 - 4,
-                      color: AppColors.accent,
-                    ),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  ),
-                  onSelected: (value) {
-                    switch (value) {
-                      case 'export':
-                        ToastificationHelper.showInfo(
-                          context,
-                          'Exporting adjustments is coming soon.',
-                        );
-                        break;
-                      case 'print':
-                        ToastificationHelper.showInfo(
-                          context,
-                          'Printing adjustments is coming soon.',
-                        );
-                        break;
-                      case 'refresh':
-                        setState(() {});
-                        ToastificationHelper.showSuccess(
-                          context,
-                          'Adjustments refreshed.',
-                        );
-                        break;
-                    }
-                  },
-                  itemBuilder: (context) => const [
-                    PopupMenuItem(value: 'export', child: Text('Export')),
-                    PopupMenuItem(value: 'print', child: Text('Print')),
-                    PopupMenuItem(value: 'refresh', child: Text('Refresh')),
-                  ],
+                AppBarIconButton(
+                  icon: Icons.more_vert_rounded,
+                  color: AppColors.accent,
+                  onPressed: _showMoreOptions,
                 ),
                 SizedBox(width: Dimensions.width20),
               ],

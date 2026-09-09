@@ -14,6 +14,7 @@ import 'package:custom_books/features/purchase_orders/views/purchase_order_detai
 import 'package:custom_books/features/purchase_orders/widgets/purchase_order_filter_sheet.dart';
 import 'package:custom_books/features/purchase_orders/widgets/purchase_order_sort_sheet.dart';
 import 'package:custom_books/features/purchase_orders/widgets/purchase_order_page_widgets.dart';
+import 'package:custom_books/features/purchase_orders/widgets/purchase_orders_more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -147,6 +148,15 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
     }
   }
 
+  void _showMoreOptions() {
+    PurchaseOrdersMoreOptionsSheet.show(
+      context,
+      onExport: () =>
+          ToastificationHelper.showSuccess(context, 'Purchase orders exported'),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet<void>(
       context: context,
@@ -203,7 +213,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],
@@ -238,7 +248,8 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
                   ? const EmptyStateWidget(
                       icon: Icons.assignment_outlined,
                       title: 'No purchase orders found',
-                      subtitle: 'Tap the + button to create a new purchase order.',
+                      subtitle:
+                          'Tap the + button to create a new purchase order.',
                     )
                   : RefreshIndicator(
                       onRefresh: () async => setState(() {}),
@@ -272,5 +283,4 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
       ),
     );
   }
-
 }

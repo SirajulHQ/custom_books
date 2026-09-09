@@ -3,40 +3,38 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/bottom_sheet_header.dart';
 import 'package:flutter/material.dart';
 
-class BankingMoreOptionsSheet extends StatelessWidget {
+class DocumentsInboxMoreOptionsSheet extends StatelessWidget {
+  final VoidCallback onUpload;
   final VoidCallback onRefresh;
-  final VoidCallback onExportStatement;
   final VoidCallback onClose;
 
-  const BankingMoreOptionsSheet({
+  const DocumentsInboxMoreOptionsSheet({
     super.key,
+    required this.onUpload,
     required this.onRefresh,
-    required this.onExportStatement,
     required this.onClose,
   });
 
   static void show(
     BuildContext context, {
+    required VoidCallback onUpload,
     required VoidCallback onRefresh,
-    required VoidCallback onExportStatement,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (sheetContext) {
-        return BankingMoreOptionsSheet(
-          onClose: () => Navigator.pop(sheetContext),
-          onRefresh: () {
-            Navigator.pop(sheetContext);
-            onRefresh();
-          },
-          onExportStatement: () {
-            Navigator.pop(sheetContext);
-            onExportStatement();
-          },
-        );
-      },
+      builder: (sheetContext) => DocumentsInboxMoreOptionsSheet(
+        onClose: () => Navigator.pop(sheetContext),
+        onUpload: () {
+          Navigator.pop(sheetContext);
+          onUpload();
+        },
+        onRefresh: () {
+          Navigator.pop(sheetContext);
+          onRefresh();
+        },
+      ),
     );
   }
 
@@ -68,7 +66,7 @@ class BankingMoreOptionsSheet extends StatelessWidget {
                 Dimensions.height10,
               ),
               child: Text(
-                'BANKING ACTIONS',
+                'INBOX ACTIONS',
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.7,
                   fontWeight: FontWeight.w600,
@@ -82,16 +80,16 @@ class BankingMoreOptionsSheet extends StatelessWidget {
               child: Column(
                 children: [
                   _ActionOption(
-                    icon: Icons.file_download_outlined,
-                    title: 'Export Statement',
-                    subtitle: 'Export your bank account statement',
-                    onTap: onExportStatement,
+                    icon: Icons.upload_file_rounded,
+                    title: 'Upload Document',
+                    subtitle: 'Add a new document to your inbox',
+                    onTap: onUpload,
                   ),
                   SizedBox(height: Dimensions.height10),
                   _ActionOption(
                     icon: Icons.refresh_rounded,
                     title: 'Refresh',
-                    subtitle: 'Reload the latest banking data',
+                    subtitle: 'Reload the latest documents',
                     onTap: onRefresh,
                   ),
                 ],

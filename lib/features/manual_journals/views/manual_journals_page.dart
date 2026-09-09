@@ -14,6 +14,7 @@ import 'package:custom_books/features/manual_journals/views/manual_journal_detai
 import 'package:custom_books/features/manual_journals/widgets/manual_journal_filter_sheet.dart';
 import 'package:custom_books/features/manual_journals/widgets/manual_journal_sort_sheet.dart';
 import 'package:custom_books/features/manual_journals/widgets/manual_journal_page_widgets.dart';
+import 'package:custom_books/features/manual_journals/widgets/manual_journals_more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -140,6 +141,15 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
     }
   }
 
+  void _showMoreOptions() {
+    ManualJournalsMoreOptionsSheet.show(
+      context,
+      onExport: () =>
+          ToastificationHelper.showSuccess(context, 'Manual journals exported'),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet<void>(
       context: context,
@@ -206,7 +216,7 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],
@@ -275,5 +285,4 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
       ),
     );
   }
-
 }

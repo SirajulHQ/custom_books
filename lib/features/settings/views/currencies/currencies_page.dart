@@ -59,37 +59,173 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
     appLog('⋯ Currencies page options', name: 'Currencies');
     showModalBottomSheet<void>(
       context: context,
-      showDragHandle: true,
-      backgroundColor: context.colors.card,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.sort_by_alpha_rounded),
-              title: const Text('Sort by Currency Code'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _sortCurrencies(byName: false);
-              },
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return SafeArea(
+          top: false,
+          child: Container(
+            decoration: BoxDecoration(
+              color: context.colors.card,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(Dimensions.radius20),
+              ),
             ),
-            ListTile(
-              leading: const Icon(Icons.sort_rounded),
-              title: const Text('Sort by Currency Name'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _sortCurrencies(byName: true);
-              },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Dimensions.width20,
+                    vertical: Dimensions.height15,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'More Options',
+                        style: TextStyle(
+                          fontSize: Dimensions.font20,
+                          fontWeight: FontWeight.bold,
+                          color: context.colors.textPrimary,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(sheetContext),
+                        child: Icon(
+                          Icons.close_rounded,
+                          size: Dimensions.iconSize24,
+                          color: context.colors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(height: 1, color: context.colors.border),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.fromLTRB(
+                    Dimensions.width20,
+                    Dimensions.height20,
+                    Dimensions.width20,
+                    Dimensions.height10,
+                  ),
+                  child: Text(
+                    'CURRENCY ACTIONS',
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 0.7,
+                      fontWeight: FontWeight.w600,
+                      color: context.colors.textTertiary,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                  child: Column(
+                    children: [
+                      _buildOption(
+                        sheetContext,
+                        icon: Icons.sort_by_alpha_rounded,
+                        title: 'Sort by Currency Code',
+                        subtitle: 'Arrange currencies alphabetically by code',
+                        onTap: () => _sortCurrencies(byName: false),
+                      ),
+                      SizedBox(height: Dimensions.height10),
+                      _buildOption(
+                        sheetContext,
+                        icon: Icons.sort_rounded,
+                        title: 'Sort by Currency Name',
+                        subtitle: 'Arrange currencies alphabetically by name',
+                        onTap: () => _sortCurrencies(byName: true),
+                      ),
+                      SizedBox(height: Dimensions.height10),
+                      _buildOption(
+                        sheetContext,
+                        icon: Icons.add_rounded,
+                        title: 'Add New Currency',
+                        subtitle: 'Add a new currency to your organisation',
+                        onTap: _addCurrency,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: Dimensions.height20),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.add_rounded),
-              title: const Text('Add New Currency'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _addCurrency();
-              },
-            ),
-          ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildOption(
+    BuildContext sheetContext, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return Builder(
+      builder: (context) => InkWell(
+        borderRadius: BorderRadius.circular(Dimensions.radius15),
+        onTap: () {
+          Navigator.pop(sheetContext);
+          onTap();
+        },
+        child: Container(
+          padding: EdgeInsets.all(Dimensions.width15),
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            border: Border.all(color: context.colors.border),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: Dimensions.height45 * 0.9,
+                height: Dimensions.height45 * 0.9,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(Dimensions.radius15 - 3),
+                ),
+                child: Icon(
+                  icon,
+                  size: Dimensions.iconSize24 - 4,
+                  color: AppColors.primary,
+                ),
+              ),
+              SizedBox(width: Dimensions.width15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.9,
+                        fontWeight: FontWeight.w700,
+                        color: context.colors.textPrimary,
+                      ),
+                    ),
+                    SizedBox(height: Dimensions.height10 / 4),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: Dimensions.font16 * 0.7,
+                        color: context.colors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: Dimensions.iconSize24 - 4,
+                color: context.colors.textTertiary,
+              ),
+            ],
+          ),
         ),
       ),
     );

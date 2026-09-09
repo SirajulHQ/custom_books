@@ -156,22 +156,19 @@ class _CustomersPageState extends State<CustomersPage> {
 
   void _showMoreOptions() {
     appLog('⋮ More options tapped', name: 'CustomersPage');
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (_) => CustomerMoreOptionsSheet(
-        onRefresh: () {
-          setState(() {});
-          ToastificationHelper.showSuccess(context, 'Customers refreshed.');
-        },
-        onImport: () => ToastificationHelper.showInfo(
-          context,
-          'Importing customers is coming soon.',
-        ),
-        onExport: () => ToastificationHelper.showInfo(
-          context,
-          'Exporting customers is coming soon.',
-        ),
+    CustomerMoreOptionsSheet.show(
+      context,
+      onRefresh: () {
+        setState(() {});
+        ToastificationHelper.showSuccess(context, 'Customers refreshed.');
+      },
+      onImport: () => ToastificationHelper.showInfo(
+        context,
+        'Importing customers is coming soon.',
+      ),
+      onExport: () => ToastificationHelper.showInfo(
+        context,
+        'Exporting customers is coming soon.',
       ),
     );
   }

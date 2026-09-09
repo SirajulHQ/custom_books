@@ -13,6 +13,7 @@ import 'package:custom_books/features/vendors/views/add_vendor_page.dart';
 import 'package:custom_books/features/vendors/views/vendor_details_page.dart';
 import 'package:custom_books/features/vendors/widgets/vendor_filter_sheet.dart';
 import 'package:custom_books/features/vendors/widgets/vendor_sort_sheet.dart';
+import 'package:custom_books/features/vendors/widgets/vendors_more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -146,6 +147,19 @@ class _VendorsPageState extends State<VendorsPage> {
     }
   }
 
+  void _showMoreOptions() {
+    VendorsMoreOptionsSheet.show(
+      context,
+      onImport: () => ToastificationHelper.showInfo(
+        context,
+        'Importing vendors is coming soon.',
+      ),
+      onExport: () =>
+          ToastificationHelper.showSuccess(context, 'Vendors exported'),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet<void>(
       context: context,
@@ -204,7 +218,7 @@ class _VendorsPageState extends State<VendorsPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],
@@ -266,7 +280,6 @@ class _VendorsPageState extends State<VendorsPage> {
       ),
     );
   }
-
 
   String _initials(String name) {
     final parts = name.trim().split(RegExp(r'\s+'));

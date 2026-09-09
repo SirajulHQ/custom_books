@@ -14,6 +14,7 @@ import 'package:custom_books/features/expenses/views/add_expense_page.dart';
 import 'package:custom_books/features/expenses/views/expense_details_page.dart';
 import 'package:custom_books/features/expenses/widgets/expense_filter_sheet.dart';
 import 'package:custom_books/features/expenses/widgets/expense_sort_sheet.dart';
+import 'package:custom_books/features/expenses/widgets/expenses_more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -140,6 +141,15 @@ class _ExpensesPageState extends State<ExpensesPage> {
     }
   }
 
+  void _showMoreOptions() {
+    ExpensesMoreOptionsSheet.show(
+      context,
+      onExport: () =>
+          ToastificationHelper.showSuccess(context, 'Expenses exported'),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet<void>(
       context: context,
@@ -198,7 +208,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],
@@ -258,7 +268,6 @@ class _ExpensesPageState extends State<ExpensesPage> {
       ),
     );
   }
-
 
   Widget _expenseTile(ExpenseModel expense) {
     return InkWell(

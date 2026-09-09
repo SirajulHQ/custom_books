@@ -14,6 +14,7 @@ import 'package:custom_books/features/recurring_invoices/views/recurring_invoice
 import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoice_filter_sheet.dart';
 import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoice_sort_sheet.dart';
 import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoice_page_widgets.dart';
+import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoices_more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -147,6 +148,17 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
     }
   }
 
+  void _showMoreOptions() {
+    RecurringInvoicesMoreOptionsSheet.show(
+      context,
+      onExport: () => ToastificationHelper.showSuccess(
+        context,
+        'Recurring invoice profiles exported',
+      ),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet<void>(
       context: context,
@@ -203,7 +215,7 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],
@@ -239,10 +251,10 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
           SliverFillRemaining(
             child: visibleList.isEmpty
                 ? const EmptyStateWidget(
-                icon: Icons.autorenew_rounded,
-                title: 'No recurring invoices found',
-                subtitle: 'Tap the + button to create a new profile.',
-              )
+                    icon: Icons.autorenew_rounded,
+                    title: 'No recurring invoices found',
+                    subtitle: 'Tap the + button to create a new profile.',
+                  )
                 : RefreshIndicator(
                     onRefresh: () async => setState(() {}),
                     child: ListView.builder(
@@ -274,5 +286,4 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
       ),
     );
   }
-
 }

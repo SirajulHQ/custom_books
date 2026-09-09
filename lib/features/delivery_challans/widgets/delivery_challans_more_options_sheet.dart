@@ -3,40 +3,45 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/bottom_sheet_header.dart';
 import 'package:flutter/material.dart';
 
-class BankingMoreOptionsSheet extends StatelessWidget {
+class DeliveryChallansMoreOptionsSheet extends StatelessWidget {
+  final VoidCallback onExport;
+  final VoidCallback onPrint;
   final VoidCallback onRefresh;
-  final VoidCallback onExportStatement;
   final VoidCallback onClose;
 
-  const BankingMoreOptionsSheet({
+  const DeliveryChallansMoreOptionsSheet({
     super.key,
+    required this.onExport,
+    required this.onPrint,
     required this.onRefresh,
-    required this.onExportStatement,
     required this.onClose,
   });
 
   static void show(
     BuildContext context, {
+    required VoidCallback onExport,
+    required VoidCallback onPrint,
     required VoidCallback onRefresh,
-    required VoidCallback onExportStatement,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (sheetContext) {
-        return BankingMoreOptionsSheet(
-          onClose: () => Navigator.pop(sheetContext),
-          onRefresh: () {
-            Navigator.pop(sheetContext);
-            onRefresh();
-          },
-          onExportStatement: () {
-            Navigator.pop(sheetContext);
-            onExportStatement();
-          },
-        );
-      },
+      builder: (sheetContext) => DeliveryChallansMoreOptionsSheet(
+        onClose: () => Navigator.pop(sheetContext),
+        onExport: () {
+          Navigator.pop(sheetContext);
+          onExport();
+        },
+        onPrint: () {
+          Navigator.pop(sheetContext);
+          onPrint();
+        },
+        onRefresh: () {
+          Navigator.pop(sheetContext);
+          onRefresh();
+        },
+      ),
     );
   }
 
@@ -68,7 +73,7 @@ class BankingMoreOptionsSheet extends StatelessWidget {
                 Dimensions.height10,
               ),
               child: Text(
-                'BANKING ACTIONS',
+                'DELIVERY CHALLAN ACTIONS',
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.7,
                   fontWeight: FontWeight.w600,
@@ -83,15 +88,22 @@ class BankingMoreOptionsSheet extends StatelessWidget {
                 children: [
                   _ActionOption(
                     icon: Icons.file_download_outlined,
-                    title: 'Export Statement',
-                    subtitle: 'Export your bank account statement',
-                    onTap: onExportStatement,
+                    title: 'Export Delivery Challans',
+                    subtitle: 'Export the current delivery challan list',
+                    onTap: onExport,
+                  ),
+                  SizedBox(height: Dimensions.height10),
+                  _ActionOption(
+                    icon: Icons.print_outlined,
+                    title: 'Print',
+                    subtitle: 'Print delivery challan documents',
+                    onTap: onPrint,
                   ),
                   SizedBox(height: Dimensions.height10),
                   _ActionOption(
                     icon: Icons.refresh_rounded,
                     title: 'Refresh',
-                    subtitle: 'Reload the latest banking data',
+                    subtitle: 'Reload the latest delivery challans',
                     onTap: onRefresh,
                   ),
                 ],

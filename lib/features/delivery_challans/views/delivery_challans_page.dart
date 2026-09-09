@@ -12,6 +12,7 @@ import 'package:custom_books/features/delivery_challans/widgets/delivery_challan
 import 'package:custom_books/features/delivery_challans/views/delivery_challan_details_page.dart';
 import 'package:custom_books/features/delivery_challans/widgets/delivery_challan_filter_sheet.dart';
 import 'package:custom_books/features/delivery_challans/widgets/delivery_challan_sort_sheet.dart';
+import 'package:custom_books/features/delivery_challans/widgets/delivery_challans_more_options_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -150,6 +151,21 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
     }
   }
 
+  void _showMoreOptions() {
+    DeliveryChallansMoreOptionsSheet.show(
+      context,
+      onExport: () => ToastificationHelper.showSuccess(
+        context,
+        'Delivery challans exported',
+      ),
+      onPrint: () => ToastificationHelper.showInfo(
+        context,
+        'Printing delivery challans is coming soon.',
+      ),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() async {
     final result = await showModalBottomSheet<DeliveryChallanStatus?>(
       context: context,
@@ -231,7 +247,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],

@@ -8,6 +8,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
 import 'package:custom_books/features/documents/views/document_details_page.dart';
 import 'package:custom_books/features/documents/widgets/document_sort_sheet.dart';
+import 'package:custom_books/features/documents/widgets/documents_inbox_more_options_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
@@ -119,6 +120,14 @@ class _DocumentsInboxPageState extends State<DocumentsInboxPage> {
     );
   }
 
+  void _showMoreOptions() {
+    DocumentsInboxMoreOptionsSheet.show(
+      context,
+      onUpload: _upload,
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openSortSheet() {
     showModalBottomSheet<void>(
       context: context,
@@ -167,7 +176,7 @@ class _DocumentsInboxPageState extends State<DocumentsInboxPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openSortSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],

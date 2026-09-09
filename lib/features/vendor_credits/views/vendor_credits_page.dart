@@ -14,6 +14,7 @@ import 'package:custom_books/features/vendor_credits/views/vendor_credit_details
 import 'package:custom_books/features/vendor_credits/widgets/vendor_credit_filter_sheet.dart';
 import 'package:custom_books/features/vendor_credits/widgets/vendor_credit_sort_sheet.dart';
 import 'package:custom_books/features/vendor_credits/widgets/vendor_credit_page_widgets.dart';
+import 'package:custom_books/features/vendor_credits/widgets/vendor_credits_more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -144,6 +145,15 @@ class _VendorCreditsPageState extends State<VendorCreditsPage> {
     }
   }
 
+  void _showMoreOptions() {
+    VendorCreditsMoreOptionsSheet.show(
+      context,
+      onExport: () =>
+          ToastificationHelper.showSuccess(context, 'Vendor credits exported'),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet<void>(
       context: context,
@@ -200,7 +210,7 @@ class _VendorCreditsPageState extends State<VendorCreditsPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],

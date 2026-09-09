@@ -12,6 +12,8 @@ import 'package:custom_books/features/invoices/views/new_invoice_page.dart';
 import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoice_filter_sheet.dart';
 import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoice_list_item.dart';
 import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoice_sort_sheet.dart';
+import 'package:custom_books/features/invoices/widgets/invoices_page_widgets/invoices_more_options_sheet.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -159,6 +161,19 @@ class _InvoicesPageState extends State<InvoicesPage> {
     if (mounted) setState(() {});
   }
 
+  void _showMoreOptions() {
+    InvoicesMoreOptionsSheet.show(
+      context,
+      onExport: () =>
+          ToastificationHelper.showSuccess(context, 'Invoices exported'),
+      onSendReminders: () => ToastificationHelper.showInfo(
+        context,
+        'Payment reminders is coming soon.',
+      ),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     InvoiceFilterSheet.show(
       context,
@@ -210,7 +225,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],

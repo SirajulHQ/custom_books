@@ -8,6 +8,7 @@ import 'package:custom_books/features/documents/models/document_model.dart';
 import 'package:custom_books/features/documents/widgets/document_filter_sheet.dart';
 import 'package:custom_books/features/documents/widgets/document_sort_sheet.dart';
 import 'package:custom_books/features/documents/widgets/document_page_widgets.dart';
+import 'package:custom_books/features/documents/widgets/all_files_more_options_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -125,13 +126,23 @@ class _AllFilesPageState extends State<AllFilesPage> {
     ToastificationHelper.showSuccess(context, 'Upload coming soon');
   }
 
+  void _showMoreOptions() {
+    AllFilesMoreOptionsSheet.show(
+      context,
+      onUpload: _upload,
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: context.colors.card,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(Dimensions.radius20)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
       ),
       builder: (_) => DocumentFilterSheet(
         selectedType: _typeFilter,
@@ -146,7 +157,9 @@ class _AllFilesPageState extends State<AllFilesPage> {
       isScrollControlled: true,
       backgroundColor: context.colors.card,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(Dimensions.radius20)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Dimensions.radius20),
+        ),
       ),
       builder: (_) => DocumentSortSheet(
         selectedField: _sortField,
@@ -208,7 +221,7 @@ class _AllFilesPageState extends State<AllFilesPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],
@@ -326,11 +339,13 @@ class _AllFilesPageState extends State<AllFilesPage> {
                           parent: BouncingScrollPhysics(),
                         ),
                         itemCount: visibleList.length,
-                        itemBuilder: (context, index) =>
-                            DocumentTile(
-                              doc: visibleList[index],
-                              onTap: () => ToastificationHelper.showSuccess(context, visibleList[index].fileName),
-                            ),
+                        itemBuilder: (context, index) => DocumentTile(
+                          doc: visibleList[index],
+                          onTap: () => ToastificationHelper.showSuccess(
+                            context,
+                            visibleList[index].fileName,
+                          ),
+                        ),
                       ),
                     ),
             ),
@@ -357,5 +372,4 @@ class _AllFilesPageState extends State<AllFilesPage> {
       ),
     );
   }
-
 }

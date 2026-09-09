@@ -11,6 +11,7 @@ import 'package:custom_books/features/bills/views/add_bill_page.dart';
 import 'package:custom_books/features/bills/widgets/bill_filter_sheet.dart';
 import 'package:custom_books/features/bills/widgets/bill_sort_sheet.dart';
 import 'package:custom_books/features/bills/widgets/bills_list_body.dart';
+import 'package:custom_books/features/bills/widgets/bills_more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -149,6 +150,15 @@ class _BillsPageState extends State<BillsPage> {
     }
   }
 
+  void _showMoreOptions() {
+    BillsMoreOptionsSheet.show(
+      context,
+      onExport: () =>
+          ToastificationHelper.showSuccess(context, 'Bills exported'),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet<void>(
       context: context,
@@ -226,7 +236,7 @@ class _BillsPageState extends State<BillsPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],

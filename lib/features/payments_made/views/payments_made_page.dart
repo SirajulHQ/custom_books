@@ -14,6 +14,7 @@ import 'package:custom_books/features/payments_made/views/payment_made_details_p
 import 'package:custom_books/features/payments_made/widgets/payment_made_filter_sheet.dart';
 import 'package:custom_books/features/payments_made/widgets/payment_made_sort_sheet.dart';
 import 'package:custom_books/features/payments_made/widgets/payment_made_page_widgets.dart';
+import 'package:custom_books/features/payments_made/widgets/payments_made_more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -149,6 +150,15 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
     }
   }
 
+  void _showMoreOptions() {
+    PaymentsMadeMoreOptionsSheet.show(
+      context,
+      onExport: () =>
+          ToastificationHelper.showSuccess(context, 'Payments made exported'),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet<void>(
       context: context,
@@ -205,7 +215,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],
@@ -274,5 +284,4 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
       ),
     );
   }
-
 }

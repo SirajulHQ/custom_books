@@ -14,6 +14,7 @@ import 'package:custom_books/features/sales_orders/views/sales_order_details_pag
 import 'package:custom_books/features/sales_orders/widgets/sales_order_actions_sheet.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_filter_sheet.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_sort_sheet.dart';
+import 'package:custom_books/features/sales_orders/widgets/sales_orders_more_options_sheet.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -190,6 +191,15 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
     }
   }
 
+  void _showMoreOptions() {
+    SalesOrdersMoreOptionsSheet.show(
+      context,
+      onExport: () =>
+          ToastificationHelper.showSuccess(context, 'Sales orders exported'),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet<void>(
       context: context,
@@ -316,7 +326,7 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],
@@ -376,8 +386,10 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
                             itemCount: visibleList.length,
                             itemBuilder: (context, index) => SalesOrderTile(
                               order: visibleList[index],
-                              onTap: () => _openOrderDetails(visibleList[index]),
-                              onLongPress: () => _openOrderActions(visibleList[index]),
+                              onTap: () =>
+                                  _openOrderDetails(visibleList[index]),
+                              onLongPress: () =>
+                                  _openOrderActions(visibleList[index]),
                             ),
                           ),
                         ),
@@ -389,5 +401,4 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
       ),
     );
   }
-
 }

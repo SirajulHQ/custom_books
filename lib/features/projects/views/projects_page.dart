@@ -14,6 +14,7 @@ import 'package:custom_books/features/projects/views/project_details_page.dart';
 import 'package:custom_books/features/projects/widgets/project_filter_sheet.dart';
 import 'package:custom_books/features/projects/widgets/project_sort_sheet.dart';
 import 'package:custom_books/features/projects/widgets/project_page_widgets.dart';
+import 'package:custom_books/features/projects/widgets/projects_more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -146,6 +147,15 @@ class _ProjectsPageState extends State<ProjectsPage> {
     }
   }
 
+  void _showMoreOptions() {
+    ProjectsMoreOptionsSheet.show(
+      context,
+      onExport: () =>
+          ToastificationHelper.showSuccess(context, 'Projects exported'),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet<void>(
       context: context,
@@ -212,7 +222,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],

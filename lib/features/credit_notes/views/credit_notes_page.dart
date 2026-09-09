@@ -12,6 +12,7 @@ import 'package:custom_books/features/credit_notes/views/credit_note_details_pag
 import 'package:custom_books/features/credit_notes/widgets/credit_note_card.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/features/credit_notes/widgets/credit_note_filter_sheet.dart';
+import 'package:custom_books/features/credit_notes/widgets/credit_notes_more_options_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -131,6 +132,15 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
     return list;
   }
 
+  void _showMoreOptions() {
+    CreditNotesMoreOptionsSheet.show(
+      context,
+      onExport: () =>
+          ToastificationHelper.showSuccess(context, 'Credit notes exported'),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet(
       context: context,
@@ -240,7 +250,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],

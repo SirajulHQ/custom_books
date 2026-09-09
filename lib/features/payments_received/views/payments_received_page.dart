@@ -14,6 +14,7 @@ import 'package:custom_books/features/payments_received/views/payment_received_d
 import 'package:custom_books/features/payments_received/widgets/payment_received_filter_sheet.dart';
 import 'package:custom_books/features/payments_received/widgets/payment_received_sort_sheet.dart';
 import 'package:custom_books/features/payments_received/widgets/payment_received_page_widgets.dart';
+import 'package:custom_books/features/payments_received/widgets/payments_received_more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -155,6 +156,19 @@ class _PaymentsReceivedPageState extends State<PaymentsReceivedPage> {
     }
   }
 
+  void _showMoreOptions() {
+    PaymentsReceivedMoreOptionsSheet.show(
+      context,
+      onExport: () =>
+          ToastificationHelper.showSuccess(context, 'Payments exported'),
+      onGenerateStatement: () => ToastificationHelper.showInfo(
+        context,
+        'Generate statement is coming soon.',
+      ),
+      onRefresh: () => setState(() {}),
+    );
+  }
+
   void _openFilterSheet() {
     showModalBottomSheet<void>(
       context: context,
@@ -211,7 +225,7 @@ class _PaymentsReceivedPageState extends State<PaymentsReceivedPage> {
               AppBarIconButton(
                 icon: Icons.more_vert_rounded,
                 color: AppColors.accent,
-                onPressed: _openFilterSheet,
+                onPressed: _showMoreOptions,
               ),
               SizedBox(width: Dimensions.width20),
             ],
@@ -280,5 +294,4 @@ class _PaymentsReceivedPageState extends State<PaymentsReceivedPage> {
       ),
     );
   }
-
 }
