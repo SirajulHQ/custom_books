@@ -1,6 +1,8 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
@@ -12,8 +14,6 @@ import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/expenses/models/expense_model.dart';
 import 'package:custom_books/features/expenses/views/add_expense_page.dart';
 import 'package:custom_books/features/expenses/views/expense_details_page.dart';
-import 'package:custom_books/features/expenses/widgets/expense_filter_sheet.dart';
-import 'package:custom_books/features/expenses/widgets/expense_sort_sheet.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
@@ -168,8 +168,14 @@ class _ExpensesPageState extends State<ExpensesPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => ExpenseFilterSheet(
-        selectedStatus: _statusFilter,
+      builder: (_) => FilterSheet<ExpenseStatus>(
+        title: 'Filter by Status',
+        compact: true,
+        style: FilterOptionStyle.card,
+        options: const [null, ...ExpenseStatus.values],
+        selectedValue: _statusFilter,
+        labelBuilder: (status) =>
+            status == null ? 'All Expenses' : status.label,
         onSelected: (status) => setState(() => _statusFilter = status),
       ),
     );
@@ -180,15 +186,19 @@ class _ExpensesPageState extends State<ExpensesPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => ExpenseSortSheet(
-        selectedField: _sortField,
-        selectedDirection: _sortDirection,
+      builder: (_) => GenericSortSheet<ExpenseSortField>(
+        fields: ExpenseSortField.values,
+        initialField: _sortField,
+        initialDirection: _sortDirection,
+        labelBuilder: (f) => f.label,
         onApply: (field, direction) {
           setState(() {
             _sortField = field;
             _sortDirection = direction;
           });
         },
+        compact: true,
+        buttonLabel: 'Apply',
       ),
     );
   }
