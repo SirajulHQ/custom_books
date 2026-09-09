@@ -1,7 +1,6 @@
 // Shared helpers used by both receivables and payables sheets.
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
-import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:flutter/material.dart';
 
 // ── Data model ────────────────────────────────────────────────────────────────
@@ -18,10 +17,6 @@ class FinancialSummary {
     required this.split,
   });
 }
-
-// ── Sheet drag handle ─────────────────────────────────────────────────────────
-/// Alias kept for backwards compatibility within this file.
-typedef SheetHandle = BottomSheetDragHandle;
 
 // ── Summary card (amount + progress bar + current/overdue row) ────────────────
 class FinancialSummaryCard extends StatelessWidget {

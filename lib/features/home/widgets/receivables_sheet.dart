@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:custom_books/features/home/widgets/financial_summary_sheet_helpers.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,7 @@ class ReceivablesSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SheetHandle(),
+          const BottomSheetDragHandle(),
 
           // ── Header ────────────────────────────────────────────────────
           Padding(

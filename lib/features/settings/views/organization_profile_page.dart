@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/dashed_border.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:flutter/material.dart';
@@ -311,22 +312,11 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
                             padding: EdgeInsets.all(Dimensions.width15),
                             child: Row(
                               children: [
-                                Container(
+                                SizedBox(
                                   width: Dimensions.height45 * 2.22,
                                   height: Dimensions.height80,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: context.colors.textTertiary,
-                                      style: BorderStyle.solid,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      Dimensions.radius15 / 2,
-                                    ),
-                                  ),
-                                  child: CustomPaint(
-                                    painter: _DashedBorderPainter(
-                                      color: context.colors.textTertiary,
-                                    ),
+                                  child: DashedBorder(
+                                    color: context.colors.textTertiary,
                                     child: Center(
                                       child: Text(
                                         'Upload your\nlogo',
@@ -797,44 +787,4 @@ class _OrganizationProfilePageState extends State<OrganizationProfilePage>
       ),
     );
   }
-}
-
-class _DashedBorderPainter extends CustomPainter {
-  final Color color;
-
-  _DashedBorderPainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke;
-
-    const dashWidth = 6.0;
-    const dashSpace = 4.0;
-    final path = Path()
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(0, 0, size.width, size.height),
-          Radius.circular(Dimensions.radius15 * 0.4),
-        ),
-      );
-
-    final metrics = path.computeMetrics();
-    for (final metric in metrics) {
-      double distance = 0;
-      while (distance < metric.length) {
-        final end = distance + dashWidth;
-        canvas.drawPath(
-          metric.extractPath(distance, end.clamp(0, metric.length)),
-          paint,
-        );
-        distance = end + dashSpace;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

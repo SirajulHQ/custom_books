@@ -22,7 +22,7 @@ class DashedBorder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: _DashedBorderPainter(
+      painter: DashedBorderPainter(
         color: color,
         strokeWidth: strokeWidth,
         borderRadius: borderRadius ?? Dimensions.radius15 * 0.93,
@@ -34,14 +34,14 @@ class DashedBorder extends StatelessWidget {
   }
 }
 
-class _DashedBorderPainter extends CustomPainter {
+class DashedBorderPainter extends CustomPainter {
   final Color color;
   final double strokeWidth;
   final double borderRadius;
   final double dashWidth;
   final double dashSpace;
 
-  _DashedBorderPainter({
+  DashedBorderPainter({
     required this.color,
     required this.strokeWidth,
     required this.borderRadius,
