@@ -6,13 +6,13 @@ import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/vendors/models/vendor_model.dart';
 import 'package:custom_books/features/vendors/views/add_vendor_page.dart';
 import 'package:custom_books/features/vendors/views/vendor_details_page.dart';
-import 'package:custom_books/features/vendors/widgets/vendor_filter_sheet.dart';
-import 'package:custom_books/features/vendors/widgets/vendor_sort_sheet.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -183,8 +183,13 @@ class _VendorsPageState extends State<VendorsPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => VendorFilterSheet(
-        selectedStatus: _statusFilter,
+      builder: (_) => FilterSheet<VendorStatus>(
+        title: 'Filter by Status',
+        compact: true,
+        style: FilterOptionStyle.card,
+        options: const [null, ...VendorStatus.values],
+        selectedValue: _statusFilter,
+        labelBuilder: (status) => status == null ? 'All Vendors' : status.label,
         onSelected: (status) => setState(() => _statusFilter = status),
       ),
     );
@@ -195,15 +200,19 @@ class _VendorsPageState extends State<VendorsPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => VendorSortSheet(
-        selectedField: _sortField,
-        selectedDirection: _sortDirection,
+      builder: (_) => GenericSortSheet<VendorsSortField>(
+        fields: VendorsSortField.values,
+        initialField: _sortField,
+        initialDirection: _sortDirection,
+        labelBuilder: (f) => f.label,
         onApply: (field, direction) {
           setState(() {
             _sortField = field;
             _sortDirection = direction;
           });
         },
+        compact: true,
+        buttonLabel: 'Apply',
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/core/widgets/status_chip.dart';
@@ -15,7 +16,6 @@ import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/quotes/models/quote_model.dart';
 import 'package:custom_books/features/quotes/views/add_quote_page.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
-import 'package:custom_books/features/quotes/widgets/quote_filter_sheet.dart';
 import 'package:flutter/material.dart';
 
 enum QuoteSort {
@@ -269,9 +269,13 @@ class _QuotesPageState extends State<QuotesPage> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (sheetContext) => QuoteFilterSheet(
-        selectedStatus: _statusFilter,
-        onClose: () => Navigator.pop(sheetContext),
+      builder: (sheetContext) => FilterSheet<QuoteStatus>(
+        title: 'Filter',
+        showHeaderBorder: true,
+        sectionLabel: 'DEFAULT FILTERS',
+        options: const [null, ...QuoteStatus.values],
+        selectedValue: _statusFilter,
+        labelBuilder: (status) => status?.label ?? 'All Statuses',
         onSelected: (status) {
           setState(() {
             _statusFilter = status;
@@ -279,6 +283,7 @@ class _QuotesPageState extends State<QuotesPage> {
           });
           Navigator.pop(sheetContext);
         },
+        onClose: () => Navigator.pop(sheetContext),
       ),
     );
   }

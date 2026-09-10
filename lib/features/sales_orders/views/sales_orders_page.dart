@@ -1,21 +1,23 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/document_list_tile.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/sales_orders/models/sales_order_model.dart';
 import 'package:custom_books/features/sales_orders/views/add_sales_order_page.dart';
 import 'package:custom_books/features/sales_orders/views/sales_order_details_page.dart';
 import 'package:custom_books/features/sales_orders/widgets/sales_order_actions_sheet.dart';
-import 'package:custom_books/features/sales_orders/widgets/sales_order_filter_sheet.dart';
-import 'package:custom_books/features/sales_orders/widgets/sales_order_sort_sheet.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
-import 'package:custom_books/features/sales_orders/widgets/sales_order_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -220,8 +222,13 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => SalesOrderFilterSheet(
-        selectedStatus: _statusFilter,
+      builder: (context) => FilterSheet<SalesOrderStatus>(
+        title: 'Filter',
+        showHeaderBorder: true,
+        sectionLabel: 'DEFAULT FILTERS',
+        options: const [null, ...SalesOrderStatus.values],
+        selectedValue: _statusFilter,
+        labelBuilder: (status) => status?.label ?? 'All Statuses',
         onSelected: (status) {
           setState(() => _statusFilter = status);
           Navigator.pop(context);
@@ -232,16 +239,19 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
   }
 
   void _openSortSheet() {
-    showSalesOrderSortSheet(
+    GenericSortSheet.show<SalesOrderSortField>(
       context,
-      selectedField: _sortField,
-      selectedDirection: _sortDirection,
+      fields: SalesOrderSortField.values,
+      initialField: _sortField,
+      initialDirection: _sortDirection,
+      labelBuilder: (f) => f.label,
       onApply: (field, direction) {
         setState(() {
           _sortField = field;
           _sortDirection = direction;
         });
       },
+      showInfoBanner: true,
     );
   }
 
@@ -399,8 +409,60 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
                               parent: BouncingScrollPhysics(),
                             ),
                             itemCount: visibleList.length,
-                            itemBuilder: (context, index) => SalesOrderTile(
-                              order: visibleList[index],
+                            itemBuilder: (context, index) => DocumentListTile(
+                              leadingIcon: Icons.shopping_bag_outlined,
+                              leadingColor: AppColors.primary,
+                              primaryText: visibleList[index].customerName,
+                              date: formatDate(
+                                visibleList[index].salesOrderDate,
+                              ),
+                              documentNumber:
+                                  visibleList[index].salesOrderNumber,
+                              statusWidget: StatusChip(
+                                color: visibleList[index].status.color,
+                                label: visibleList[index].status.label,
+                              ),
+                              trailingBadge: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: Dimensions.width10 * 0.7,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: context.colors.surfaceLight,
+                                  borderRadius: BorderRadius.circular(
+                                    Dimensions.radius30,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: Dimensions.width10 * 0.6,
+                                      height: Dimensions.height10 * 0.6,
+                                      decoration: BoxDecoration(
+                                        color: visibleList[index].isInvoiced
+                                            ? AppColors.success
+                                            : context.colors.textTertiary,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    SizedBox(width: Dimensions.width10 / 3),
+                                    Text(
+                                      visibleList[index].isInvoiced
+                                          ? 'Invoiced'
+                                          : 'Not Invoiced',
+                                      style: TextStyle(
+                                        fontSize: Dimensions.font16 * 0.6,
+                                        color: context.colors.textSecondary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              amount:
+                                  '₹${visibleList[index].total.toStringAsFixed(2)}',
                               onTap: () =>
                                   _openOrderDetails(visibleList[index]),
                               onLongPress: () =>

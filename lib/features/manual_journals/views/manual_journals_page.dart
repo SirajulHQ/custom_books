@@ -6,13 +6,13 @@ import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/manual_journals/models/manual_journal_model.dart';
 import 'package:custom_books/features/manual_journals/views/add_manual_journal_page.dart';
 import 'package:custom_books/features/manual_journals/views/manual_journal_details_page.dart';
-import 'package:custom_books/features/manual_journals/widgets/manual_journal_filter_sheet.dart';
-import 'package:custom_books/features/manual_journals/widgets/manual_journal_sort_sheet.dart';
 import 'package:custom_books/features/manual_journals/widgets/manual_journal_page_widgets.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
@@ -175,8 +175,13 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
           top: Radius.circular(Dimensions.radius20),
         ),
       ),
-      builder: (_) => ManualJournalFilterSheet(
-        selectedStatus: _statusFilter,
+      builder: (_) => FilterSheet<ManualJournalStatus>(
+        title: 'Filter by Status',
+        compact: true,
+        style: FilterOptionStyle.radio,
+        options: const [null, ...ManualJournalStatus.values],
+        selectedValue: _statusFilter,
+        labelBuilder: (status) => status?.label ?? 'All Statuses',
         onSelected: (status) => setState(() => _statusFilter = status),
       ),
     );
@@ -192,13 +197,17 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
           top: Radius.circular(Dimensions.radius20),
         ),
       ),
-      builder: (_) => ManualJournalSortSheet(
-        selectedField: _sortField,
-        selectedDirection: _sortDirection,
+      builder: (_) => GenericSortSheet<ManualJournalSortField>(
+        fields: ManualJournalSortField.values,
+        initialField: _sortField,
+        initialDirection: _sortDirection,
+        labelBuilder: (f) => f.label,
         onApply: (field, direction) => setState(() {
           _sortField = field;
           _sortDirection = direction;
         }),
+        compact: true,
+        buttonLabel: 'Apply',
       ),
     );
   }

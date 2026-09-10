@@ -1,8 +1,8 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/features/inventory_adjustments/models/inventory_adjustments_model.dart';
-import 'package:custom_books/features/inventory_adjustments/widgets/sort_by_sheet_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
 
@@ -159,10 +159,12 @@ class AdjustmentsTabsAndSort extends StatelessWidget {
             icon: Icons.swap_vert_rounded,
             color: AppColors.primary,
             onTap: () {
-              showSortBySheet(
+              GenericSortSheet.show<AdjustmentSortField>(
                 context,
-                selectedField: sortField,
-                selectedDirection: sortDirection,
+                fields: AdjustmentSortField.values,
+                initialField: sortField,
+                initialDirection: sortDirection,
+                labelBuilder: (field) => field.label,
                 onApply: onSortChanged,
               );
             },

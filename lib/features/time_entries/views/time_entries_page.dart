@@ -6,13 +6,13 @@ import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/time_entries/models/time_entry_model.dart';
 import 'package:custom_books/features/time_entries/views/add_time_entry_page.dart';
 import 'package:custom_books/features/time_entries/views/time_entry_details_page.dart';
-import 'package:custom_books/features/time_entries/widgets/time_entry_filter_sheet.dart';
-import 'package:custom_books/features/time_entries/widgets/time_entry_sort_sheet.dart';
 import 'package:custom_books/features/time_entries/widgets/time_entry_page_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -154,8 +154,14 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
           top: Radius.circular(Dimensions.radius20),
         ),
       ),
-      builder: (_) => TimeEntryFilterSheet(
-        selectedBillable: _billableFilter,
+      builder: (_) => FilterSheet<bool>(
+        title: 'Filter by Type',
+        compact: true,
+        style: FilterOptionStyle.radio,
+        options: const [null, true, false],
+        selectedValue: _billableFilter,
+        labelBuilder: (b) =>
+            b == null ? 'All Entries' : (b ? 'BILLABLE' : 'NON-BILLABLE'),
         onSelected: (value) => setState(() => _billableFilter = value),
       ),
     );
@@ -171,13 +177,17 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
           top: Radius.circular(Dimensions.radius20),
         ),
       ),
-      builder: (_) => TimeEntrySortSheet(
-        selectedField: _sortField,
-        selectedDirection: _sortDirection,
+      builder: (_) => GenericSortSheet<TimeEntrySortField>(
+        fields: TimeEntrySortField.values,
+        initialField: _sortField,
+        initialDirection: _sortDirection,
+        labelBuilder: (f) => f.label,
         onApply: (field, direction) => setState(() {
           _sortField = field;
           _sortDirection = direction;
         }),
+        compact: true,
+        buttonLabel: 'Apply',
       ),
     );
   }

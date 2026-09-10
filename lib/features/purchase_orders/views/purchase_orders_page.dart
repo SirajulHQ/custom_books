@@ -1,19 +1,21 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/document_list_tile.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/purchase_orders/models/purchase_order_model.dart';
 import 'package:custom_books/features/purchase_orders/views/add_purchase_order_page.dart';
 import 'package:custom_books/features/purchase_orders/views/purchase_order_details_page.dart';
-import 'package:custom_books/features/purchase_orders/widgets/purchase_order_filter_sheet.dart';
-import 'package:custom_books/features/purchase_orders/widgets/purchase_order_sort_sheet.dart';
-import 'package:custom_books/features/purchase_orders/widgets/purchase_order_page_widgets.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -177,8 +179,13 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => PurchaseOrderFilterSheet(
-        selectedStatus: _statusFilter,
+      builder: (_) => FilterSheet<PurchaseOrderStatus>(
+        title: 'Filter by Status',
+        compact: true,
+        style: FilterOptionStyle.radio,
+        options: const [null, ...PurchaseOrderStatus.values],
+        selectedValue: _statusFilter,
+        labelBuilder: (status) => status?.label ?? 'All Statuses',
         onSelected: (status) => setState(() => _statusFilter = status),
       ),
     );
@@ -189,13 +196,17 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => PurchaseOrderSortSheet(
-        selectedField: _sortField,
-        selectedDirection: _sortDirection,
+      builder: (_) => GenericSortSheet<PurchaseOrderSortField>(
+        fields: PurchaseOrderSortField.values,
+        initialField: _sortField,
+        initialDirection: _sortDirection,
+        labelBuilder: (f) => f.label,
         onApply: (field, direction) => setState(() {
           _sortField = field;
           _sortDirection = direction;
         }),
+        compact: true,
+        buttonLabel: 'Apply',
       ),
     );
   }
@@ -279,8 +290,19 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
                           parent: BouncingScrollPhysics(),
                         ),
                         itemCount: visibleList.length,
-                        itemBuilder: (context, index) => PurchaseOrderTile(
-                          order: visibleList[index],
+                        itemBuilder: (context, index) => DocumentListTile(
+                          leadingIcon: Icons.assignment_outlined,
+                          leadingColor: AppColors.primary,
+                          primaryText: visibleList[index].vendorName,
+                          date: formatDate(visibleList[index].orderDate),
+                          documentNumber:
+                              visibleList[index].purchaseOrderNumber,
+                          statusWidget: StatusChip(
+                            color: visibleList[index].status.color,
+                            label: visibleList[index].status.label,
+                          ),
+                          amount:
+                              '₹${visibleList[index].total.toStringAsFixed(2)}',
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(

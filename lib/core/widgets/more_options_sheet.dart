@@ -18,30 +18,6 @@ class MoreOptionsItem {
   });
 }
 
-/// Generic reusable "More Options" bottom sheet that follows the app-wide
-/// card-row design (icon in tinted container · title + subtitle · chevron).
-///
-/// Usage:
-/// ```dart
-/// MoreOptionsSheet.show(
-///   context,
-///   sectionLabel: 'INVOICE ACTIONS',
-///   items: [
-///     MoreOptionsItem(
-///       icon: Icons.file_download_outlined,
-///       title: 'Export Invoices',
-///       subtitle: 'Export the current invoice list',
-///       onTap: () => ...,
-///     ),
-///     MoreOptionsItem(
-///       icon: Icons.refresh_rounded,
-///       title: 'Refresh',
-///       subtitle: 'Reload the latest invoices',
-///       onTap: () => ...,
-///     ),
-///   ],
-/// );
-/// ```
 class MoreOptionsSheet extends StatelessWidget {
   final String sectionLabel;
   final List<MoreOptionsItem> items;

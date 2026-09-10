@@ -7,10 +7,10 @@ import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:custom_books/features/items/widgets/item_card_widget.dart';
-import 'package:custom_books/features/items/widgets/items_filter_sheet.dart';
 import 'package:custom_books/features/items/views/add_item_page.dart';
 import 'package:custom_books/features/items/views/item_details_page.dart';
 import 'package:flutter/material.dart';
@@ -209,16 +209,23 @@ class _ItemsPageState extends State<ItemsPage> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (sheetContext) => ItemsFilterSheet(
+      builder: (sheetContext) => FilterSheet<String>(
+        title: 'Filter',
+        showHeaderBorder: true,
+        sectionLabel: 'DEFAULT FILTERS',
         options: _allFilterOptions,
-        selectedFilter: _selectedFilter,
+        selectedValue: _selectedFilter,
+        labelBuilder: (filter) => filter ?? '',
+        onSelected: (filter) {
+          if (filter != null) {
+            appLog('✅ Filter selected: $filter', name: 'ItemsPage');
+            setState(() => _selectedFilter = filter);
+            Navigator.pop(sheetContext);
+          }
+          ;
+        },
         onClose: () {
           appLog('❌ Filter sheet closed', name: 'ItemsPage');
-          Navigator.pop(sheetContext);
-        },
-        onSelected: (filter) {
-          appLog('✅ Filter selected: $filter', name: 'ItemsPage');
-          setState(() => _selectedFilter = filter);
           Navigator.pop(sheetContext);
         },
       ),

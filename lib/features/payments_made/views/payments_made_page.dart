@@ -1,19 +1,21 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/document_list_tile.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/payments_made/models/payment_made_model.dart';
 import 'package:custom_books/features/payments_made/views/add_payment_made_page.dart';
 import 'package:custom_books/features/payments_made/views/payment_made_details_page.dart';
-import 'package:custom_books/features/payments_made/widgets/payment_made_filter_sheet.dart';
-import 'package:custom_books/features/payments_made/widgets/payment_made_sort_sheet.dart';
-import 'package:custom_books/features/payments_made/widgets/payment_made_page_widgets.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -179,8 +181,13 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => PaymentMadeFilterSheet(
-        selectedMode: _modeFilter,
+      builder: (_) => FilterSheet<PaymentMode>(
+        title: 'Filter by Payment Mode',
+        compact: true,
+        style: FilterOptionStyle.card,
+        options: const [null, ...PaymentMode.values],
+        selectedValue: _modeFilter,
+        labelBuilder: (mode) => mode == null ? 'All Modes' : mode.label,
         onSelected: (mode) => setState(() => _modeFilter = mode),
       ),
     );
@@ -191,13 +198,17 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => PaymentMadeSortSheet(
-        selectedField: _sortField,
-        selectedDirection: _sortDirection,
+      builder: (_) => GenericSortSheet<PaymentMadeSortField>(
+        fields: PaymentMadeSortField.values,
+        initialField: _sortField,
+        initialDirection: _sortDirection,
+        labelBuilder: (f) => f.label,
         onApply: (field, direction) => setState(() {
           _sortField = field;
           _sortDirection = direction;
         }),
+        compact: true,
+        buttonLabel: 'Apply',
       ),
     );
   }
@@ -280,8 +291,18 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                           parent: BouncingScrollPhysics(),
                         ),
                         itemCount: visibleList.length,
-                        itemBuilder: (context, index) => PaymentMadeTile(
-                          payment: visibleList[index],
+                        itemBuilder: (context, index) => DocumentListTile(
+                          leadingIcon: Icons.payments_outlined,
+                          leadingColor: AppColors.primary,
+                          primaryText: visibleList[index].vendorName,
+                          date: formatDate(visibleList[index].paymentDate),
+                          documentNumber: visibleList[index].paymentNumber,
+                          statusWidget: StatusChip(
+                            color: AppColors.primaryLight,
+                            label: visibleList[index].mode.label,
+                          ),
+                          amount:
+                              '₹${visibleList[index].amount.toStringAsFixed(2)}',
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(

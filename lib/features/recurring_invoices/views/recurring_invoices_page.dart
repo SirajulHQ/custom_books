@@ -6,13 +6,13 @@ import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/recurring_invoices/models/recurring_invoice_model.dart';
 import 'package:custom_books/features/recurring_invoices/views/add_recurring_invoice_page.dart';
 import 'package:custom_books/features/recurring_invoices/views/recurring_invoice_details_page.dart';
-import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoice_filter_sheet.dart';
-import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoice_sort_sheet.dart';
 import 'package:custom_books/features/recurring_invoices/widgets/recurring_invoice_page_widgets.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
@@ -177,8 +177,11 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => RecurringInvoiceFilterSheet(
-        selectedStatus: _statusFilter,
+      builder: (_) => FilterSheet<RecurringInvoiceStatus>(
+        title: 'Filter',
+        options: const [null, ...RecurringInvoiceStatus.values],
+        selectedValue: _statusFilter,
+        labelBuilder: (status) => status?.label ?? 'All Statuses',
         onSelected: (status) => setState(() => _statusFilter = status),
       ),
     );
@@ -189,9 +192,11 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => RecurringInvoiceSortSheet(
-        selectedField: _sortField,
-        selectedDirection: _sortDirection,
+      builder: (_) => GenericSortSheet<RecurringInvoiceSortField>(
+        fields: RecurringInvoiceSortField.values,
+        initialField: _sortField,
+        initialDirection: _sortDirection,
+        labelBuilder: (f) => f.label,
         onApply: (field, direction) => setState(() {
           _sortField = field;
           _sortDirection = direction;

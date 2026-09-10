@@ -6,13 +6,13 @@ import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/projects/models/project_model.dart';
 import 'package:custom_books/features/projects/views/add_project_page.dart';
 import 'package:custom_books/features/projects/views/project_details_page.dart';
-import 'package:custom_books/features/projects/widgets/project_filter_sheet.dart';
-import 'package:custom_books/features/projects/widgets/project_sort_sheet.dart';
 import 'package:custom_books/features/projects/widgets/project_page_widgets.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
@@ -179,8 +179,13 @@ class _ProjectsPageState extends State<ProjectsPage> {
           top: Radius.circular(Dimensions.radius20),
         ),
       ),
-      builder: (_) => ProjectFilterSheet(
-        selectedStatus: _statusFilter,
+      builder: (_) => FilterSheet<ProjectStatus>(
+        title: 'Filter by Status',
+        compact: true,
+        style: FilterOptionStyle.radio,
+        options: const [null, ...ProjectStatus.values],
+        selectedValue: _statusFilter,
+        labelBuilder: (status) => status?.label ?? 'All Statuses',
         onSelected: (status) => setState(() => _statusFilter = status),
       ),
     );
@@ -196,13 +201,17 @@ class _ProjectsPageState extends State<ProjectsPage> {
           top: Radius.circular(Dimensions.radius20),
         ),
       ),
-      builder: (_) => ProjectSortSheet(
-        selectedField: _sortField,
-        selectedDirection: _sortDirection,
+      builder: (_) => GenericSortSheet<ProjectSortField>(
+        fields: ProjectSortField.values,
+        initialField: _sortField,
+        initialDirection: _sortDirection,
+        labelBuilder: (f) => f.label,
         onApply: (field, direction) => setState(() {
           _sortField = field;
           _sortDirection = direction;
         }),
+        compact: true,
+        buttonLabel: 'Apply',
       ),
     );
   }

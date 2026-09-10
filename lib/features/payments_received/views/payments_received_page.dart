@@ -1,19 +1,21 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
+import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/document_list_tile.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/payments_received/models/payment_received_model.dart';
 import 'package:custom_books/features/payments_received/views/add_payment_received_page.dart';
 import 'package:custom_books/features/payments_received/views/payment_received_details_page.dart';
-import 'package:custom_books/features/payments_received/widgets/payment_received_filter_sheet.dart';
-import 'package:custom_books/features/payments_received/widgets/payment_received_sort_sheet.dart';
-import 'package:custom_books/features/payments_received/widgets/payment_received_page_widgets.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -192,8 +194,11 @@ class _PaymentsReceivedPageState extends State<PaymentsReceivedPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => PaymentReceivedFilterSheet(
-        selectedMode: _modeFilter,
+      builder: (_) => FilterSheet<PaymentMode>(
+        title: 'Filter by mode',
+        options: const [null, ...PaymentMode.values],
+        selectedValue: _modeFilter,
+        labelBuilder: (mode) => mode?.label ?? 'All Modes',
         onSelected: (mode) => setState(() => _modeFilter = mode),
       ),
     );
@@ -204,9 +209,11 @@ class _PaymentsReceivedPageState extends State<PaymentsReceivedPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => PaymentReceivedSortSheet(
-        selectedField: _sortField,
-        selectedDirection: _sortDirection,
+      builder: (_) => GenericSortSheet<PaymentReceivedSortField>(
+        fields: PaymentReceivedSortField.values,
+        initialField: _sortField,
+        initialDirection: _sortDirection,
+        labelBuilder: (f) => f.label,
         onApply: (field, direction) => setState(() {
           _sortField = field;
           _sortDirection = direction;
@@ -293,8 +300,19 @@ class _PaymentsReceivedPageState extends State<PaymentsReceivedPage> {
                           parent: BouncingScrollPhysics(),
                         ),
                         itemCount: visibleList.length,
-                        itemBuilder: (context, index) => PaymentReceivedTile(
-                          payment: visibleList[index],
+                        itemBuilder: (context, index) => DocumentListTile(
+                          leadingIcon: Icons.payments_outlined,
+                          leadingColor: AppColors.success,
+                          primaryText: visibleList[index].customerName,
+                          date: formatDate(visibleList[index].paymentDate),
+                          documentNumber: visibleList[index].paymentNumber,
+                          statusWidget: StatusChip(
+                            color: AppColors.primaryLight,
+                            label: visibleList[index].mode.label,
+                          ),
+                          amount:
+                              '₹${visibleList[index].amount.toStringAsFixed(2)}',
+                          amountColor: AppColors.success,
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(

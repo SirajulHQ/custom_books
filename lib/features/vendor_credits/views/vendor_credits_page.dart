@@ -6,13 +6,13 @@ import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/vendor_credits/models/vendor_credit_model.dart';
 import 'package:custom_books/features/vendor_credits/views/add_vendor_credit_page.dart';
 import 'package:custom_books/features/vendor_credits/views/vendor_credit_details_page.dart';
-import 'package:custom_books/features/vendor_credits/widgets/vendor_credit_filter_sheet.dart';
-import 'package:custom_books/features/vendor_credits/widgets/vendor_credit_sort_sheet.dart';
 import 'package:custom_books/features/vendor_credits/widgets/vendor_credit_page_widgets.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:flutter/material.dart';
@@ -174,8 +174,13 @@ class _VendorCreditsPageState extends State<VendorCreditsPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => VendorCreditFilterSheet(
-        selectedStatus: _statusFilter,
+      builder: (_) => FilterSheet<VendorCreditStatus>(
+        title: 'Filter by Status',
+        compact: true,
+        style: FilterOptionStyle.radio,
+        options: const [null, ...VendorCreditStatus.values],
+        selectedValue: _statusFilter,
+        labelBuilder: (status) => status?.label ?? 'All Statuses',
         onSelected: (status) => setState(() => _statusFilter = status),
       ),
     );
@@ -186,13 +191,17 @@ class _VendorCreditsPageState extends State<VendorCreditsPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => VendorCreditSortSheet(
-        selectedField: _sortField,
-        selectedDirection: _sortDirection,
+      builder: (_) => GenericSortSheet<VendorCreditSortField>(
+        fields: VendorCreditSortField.values,
+        initialField: _sortField,
+        initialDirection: _sortDirection,
+        labelBuilder: (f) => f.label,
         onApply: (field, direction) => setState(() {
           _sortField = field;
           _sortDirection = direction;
         }),
+        compact: true,
+        buttonLabel: 'Apply',
       ),
     );
   }
