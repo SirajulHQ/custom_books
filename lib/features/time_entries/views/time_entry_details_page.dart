@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
+import 'package:custom_books/core/widgets/confirmation_dialog.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/time_entries/models/time_entry_model.dart';
@@ -76,56 +77,18 @@ class _TimeEntryDetailsPageState extends State<TimeEntryDetailsPage>
                   color: AppColors.warn,
                 ),
               ),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(ctx);
-                showDialog(
-                  context: context,
-                  builder: (dlgCtx) => AlertDialog(
-                    backgroundColor: context.colors.card,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius20),
-                    ),
-                    title: Text(
-                      'Delete Time Entry',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: Dimensions.font20,
-                      ),
-                    ),
-                    content: Text(
+                final confirmed = await showConfirmationDialog(
+                  context,
+                  title: 'Delete Time Entry',
+                  message:
                       'Are you sure you want to delete this time entry? This action cannot be undone.',
-                      style: TextStyle(
-                        color: context.colors.textSecondary,
-                        fontSize: Dimensions.font16 * 0.9,
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(dlgCtx),
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(
-                            color: context.colors.textSecondary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(dlgCtx);
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'Delete',
-                          style: TextStyle(
-                            color: AppColors.warn,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 );
+                if (!mounted) return;
+                if (confirmed) {
+                  Navigator.pop(context);
+                }
               },
             ),
             SizedBox(height: Dimensions.height20),

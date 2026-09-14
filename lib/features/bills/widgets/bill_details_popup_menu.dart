@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 
 class BillDetailsPopupMenu extends StatelessWidget {
@@ -21,7 +22,7 @@ class BillDetailsPopupMenu extends StatelessWidget {
       surfaceTintColor: context.colors.card,
       color: context.colors.card,
       elevation: 8,
-      onSelected: (value) {
+      onSelected: (value) async {
         if (value == 'print') {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -35,54 +36,15 @@ class BillDetailsPopupMenu extends StatelessWidget {
             ),
           );
         } else if (value == 'delete') {
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              backgroundColor: context.colors.card,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radius20),
-              ),
-              title: Text(
-                'Delete Bill',
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: Dimensions.font20,
-                ),
-              ),
-              content: Text(
+          final confirmed = await showConfirmationDialog(
+            context,
+            title: 'Delete Bill',
+            message:
                 'Are you sure you want to delete this bill? This action cannot be undone.',
-                style: TextStyle(
-                  color: context.colors.textSecondary,
-                  fontSize: Dimensions.font16 * 0.9,
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: context.colors.textSecondary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(ctx);
-                    onDelete();
-                  },
-                  child: Text(
-                    'Delete',
-                    style: TextStyle(
-                      color: AppColors.warn,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ],
-            ),
           );
+          if (confirmed) {
+            onDelete();
+          }
         }
       },
       itemBuilder: (context) => [

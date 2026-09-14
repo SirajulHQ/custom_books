@@ -222,7 +222,6 @@ class _ItemsPageState extends State<ItemsPage> {
             setState(() => _selectedFilter = filter);
             Navigator.pop(sheetContext);
           }
-          ;
         },
         onClose: () {
           appLog('❌ Filter sheet closed', name: 'ItemsPage');

@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/confirmation_dialog.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
@@ -255,55 +256,16 @@ class DocumentDetailsPage extends StatelessWidget {
     );
   }
 
-  void _confirmDelete(BuildContext context) {
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: context.colors.card,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Dimensions.radius20),
-        ),
-        title: Text(
-          'Delete Document',
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            fontSize: Dimensions.font20,
-          ),
-        ),
-        content: Text(
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirmed = await showConfirmationDialog(
+      context,
+      title: 'Delete Document',
+      message:
           'Are you sure you want to delete "${document.fileName}"? This action cannot be undone.',
-          style: TextStyle(
-            color: context.colors.textSecondary,
-            fontSize: Dimensions.font16 * 0.9,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(
-              'Cancel',
-              style: TextStyle(
-                color: context.colors.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              onDelete?.call();
-              Navigator.pop(context);
-            },
-            child: Text(
-              'Delete',
-              style: TextStyle(
-                color: AppColors.warn,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
+    if (confirmed && context.mounted) {
+      onDelete?.call();
+      Navigator.pop(context);
+    }
   }
 }

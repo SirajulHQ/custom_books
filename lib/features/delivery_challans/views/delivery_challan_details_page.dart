@@ -1,6 +1,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/confirmation_dialog.dart';
 import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/delivery_challans/models/delivery_challan_model.dart';
 import 'package:custom_books/features/delivery_challans/views/add_delivery_challan_page.dart';
@@ -72,56 +73,17 @@ class _DeliveryChallanDetailsPageState extends State<DeliveryChallanDetailsPage>
             surfaceTintColor: context.colors.card,
             color: context.colors.card,
             elevation: 8,
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == 'delete') {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    backgroundColor: context.colors.card,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Dimensions.radius20),
-                    ),
-                    title: Text(
-                      'Delete Delivery Challan',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: Dimensions.font20,
-                      ),
-                    ),
-                    content: Text(
+                final confirmed = await showConfirmationDialog(
+                  context,
+                  title: 'Delete Delivery Challan',
+                  message:
                       'Are you sure you want to delete this delivery challan? This action cannot be undone.',
-                      style: TextStyle(
-                        color: context.colors.textSecondary,
-                        fontSize: Dimensions.font16 * 0.9,
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(ctx),
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(
-                            color: context.colors.textSecondary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(ctx);
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'Delete',
-                          style: TextStyle(
-                            color: AppColors.warn,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 );
+                if (confirmed && context.mounted) {
+                  Navigator.pop(context);
+                }
               }
             },
             itemBuilder: (context) => [
