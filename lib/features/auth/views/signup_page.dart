@@ -54,19 +54,22 @@ class _SignupPageState extends State<SignupPage> {
       if (!mounted) return;
       setState(() => _isLoading = false);
 
-      // Navigate to login page after successful signup
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginPage()),
-      );
+      // Navigate back to the login page after successful signup.
+      _navigateToLogin();
     });
   }
 
   void _navigateToLogin() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginPage()),
-    );
+    // If Signup was pushed on top of Login, just pop back to the existing
+    // Login page instead of stacking a new one.
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginPage()),
+      );
+    }
   }
 
   @override
