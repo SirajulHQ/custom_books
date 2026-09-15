@@ -5,6 +5,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/line_item_form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/inventory_adjustments/models/line_item_model.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/cost_price_editor.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,8 @@ class AddLineItemPage extends StatefulWidget {
   State<AddLineItemPage> createState() => _AddLineItemPageState();
 }
 
-class _AddLineItemPageState extends State<AddLineItemPage> {
+class _AddLineItemPageState extends State<AddLineItemPage>
+    with UnsavedChangesMixin {
   final _itemSearchController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _newQtyController = TextEditingController();
@@ -97,10 +99,12 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
       _adjustedController.text = initial.quantityAdjusted.toStringAsFixed(2);
       _costPrice = initial.costPrice;
     }
+    _descriptionController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _descriptionController.removeListener(markDirty);
     _itemSearchController.dispose();
     _descriptionController.dispose();
     _newQtyController.dispose();
@@ -142,6 +146,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
       _newQtyController.clear();
       _adjustedController.clear();
     });
+    markDirty();
     appLog(
       '✅ Item selection complete. _selectedItem is now: ${_selectedItem?.name}',
       name: 'AddLineItem',
@@ -162,6 +167,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
 
   void _onNewQtyChanged(String value) {
     if (_syncing || _selectedItem == null) return;
+    markDirty();
     final newQty = double.tryParse(value);
     if (newQty == null) return;
     _syncing = true;
@@ -172,6 +178,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
 
   void _onAdjustedChanged(String value) {
     if (_syncing || _selectedItem == null) return;
+    markDirty();
     final adjusted = double.tryParse(value);
     if (adjusted == null) return;
     _syncing = true;
@@ -206,6 +213,7 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
       quantityAdjusted: adjusted,
       costPrice: _costPrice,
     );
+    markClean();
     Navigator.pop(context, lineItem);
   }
 
@@ -215,194 +223,205 @@ class _AddLineItemPageState extends State<AddLineItemPage> {
       '🏗️ Building AddLineItemPage - _selectedItem: ${_selectedItem?.name ?? "null"}',
       name: 'AddLineItem',
     );
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      appBar: CustomBackAppBar(
-        title: 'Add Line Item',
-        actions: [
-          TextButton(
-            onPressed: _done,
-            child: Text(
-              'DONE',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                fontWeight: FontWeight.w700,
-                color: AppColors.primary,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        appBar: CustomBackAppBar(
+          title: 'Add Line Item',
+          onLeadingPressed: () => onPopInvokedWithResult(false, null),
+          actions: [
+            TextButton(
+              onPressed: _done,
+              child: Text(
+                'DONE',
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.8,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary,
+                ),
               ),
             ),
-          ),
-          SizedBox(width: Dimensions.width10),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(Dimensions.width20),
-          physics: const BouncingScrollPhysics(),
-          child: FormCard(
-            children: [
-              const RequiredLabel(text: 'Item'),
-              SizedBox(height: Dimensions.height10 / 2),
-              ItemSearchField<InventoryItemLookup>(
-                controller: _itemSearchController,
-                isItemSelected: _selectedItem != null,
-                suggestions: _suggestions,
-                selectedItemImageUrl: _selectedItem?.imageUrl,
-                onChanged: (_) => setState(() {}),
-                onClear: _clearItem,
-                onBarcodeScan: () => ToastificationHelper.showInfo(
-                  context,
-                  'Barcode scan coming soon',
-                ),
-                suggestionBuilder: (item) => InkWell(
-                  onTap: () => _selectItem(item),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    child: Row(
-                      children: [
-                        ItemThumbnail(imageUrl: item.imageUrl),
-                        SizedBox(width: Dimensions.width10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.name,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: Dimensions.font16 * 0.85,
-                                  color: context.colors.textPrimary,
-                                ),
-                              ),
-                              SizedBox(height: Dimensions.height10 / 4),
-                              Text.rich(
-                                TextSpan(
-                                  text: 'Stock on Hand: ',
+            SizedBox(width: Dimensions.width10),
+          ],
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(Dimensions.width20),
+            physics: const BouncingScrollPhysics(),
+            child: FormCard(
+              children: [
+                const RequiredLabel(text: 'Item'),
+                SizedBox(height: Dimensions.height10 / 2),
+                ItemSearchField<InventoryItemLookup>(
+                  controller: _itemSearchController,
+                  isItemSelected: _selectedItem != null,
+                  suggestions: _suggestions,
+                  selectedItemImageUrl: _selectedItem?.imageUrl,
+                  onChanged: (_) => setState(() {}),
+                  onClear: _clearItem,
+                  onBarcodeScan: () => ToastificationHelper.showInfo(
+                    context,
+                    'Barcode scan coming soon',
+                  ),
+                  suggestionBuilder: (item) => InkWell(
+                    onTap: () => _selectItem(item),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height10,
+                      ),
+                      child: Row(
+                        children: [
+                          ItemThumbnail(imageUrl: item.imageUrl),
+                          SizedBox(width: Dimensions.width10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.name,
                                   style: TextStyle(
-                                    color: context.colors.textSecondary,
-                                    fontSize: Dimensions.font16 * 0.75,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: Dimensions.font16 * 0.85,
+                                    color: context.colors.textPrimary,
                                   ),
-                                  children: [
-                                    TextSpan(
-                                      text: item.stockOnHand.toStringAsFixed(2),
-                                      style: TextStyle(
-                                        color: item.stockOnHand < 0
-                                            ? Colors.red.shade600
-                                            : Colors.green.shade600,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ],
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: Dimensions.height10 / 4),
+                                Text.rich(
+                                  TextSpan(
+                                    text: 'Stock on Hand: ',
+                                    style: TextStyle(
+                                      color: context.colors.textSecondary,
+                                      fontSize: Dimensions.font16 * 0.75,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: item.stockOnHand.toStringAsFixed(
+                                          2,
+                                        ),
+                                        style: TextStyle(
+                                          color: item.stockOnHand < 0
+                                              ? Colors.red.shade600
+                                              : Colors.green.shade600,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                if (_selectedItem != null) ...[
+                  const FormDivider(),
+                  SizedBox(height: Dimensions.height10),
+                  Text('Description', style: FormTextStyles.label()),
+                  TextField(
+                    controller: _descriptionController,
+                    style: FormTextStyles.value(context),
+                    decoration: InputDecoration(
+                      hintText: 'Add a description for your item',
+                      hintStyle: TextStyle(color: context.colors.textTertiary),
+                      border: InputBorder.none,
+                      isDense: true,
+                    ),
+                  ),
+                  const FormDivider(),
+                  SizedBox(height: Dimensions.height15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Stock on Hand', style: FormTextStyles.label()),
+                      Text(
+                        _selectedItem!.stockOnHand.toStringAsFixed(2),
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.9,
+                          fontWeight: FontWeight.w700,
+                          color: _selectedItem!.stockOnHand < 0
+                              ? Colors.red.shade600
+                              : context.colors.textPrimary,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              if (_selectedItem != null) ...[
-                const FormDivider(),
-                SizedBox(height: Dimensions.height10),
-                Text('Description', style: FormTextStyles.label()),
-                TextField(
-                  controller: _descriptionController,
-                  style: FormTextStyles.value(context),
-                  decoration: InputDecoration(
-                    hintText: 'Add a description for your item',
-                    hintStyle: TextStyle(color: context.colors.textTertiary),
-                    border: InputBorder.none,
-                    isDense: true,
+                  SizedBox(height: Dimensions.height15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'New quantity on hand',
+                        style: FormTextStyles.label(),
+                      ),
+                      FormNumberField(
+                        controller: _newQtyController,
+                        focusNode: _newQtyFocusNode,
+                        signed: true,
+                        hint: '0.00',
+                        onChanged: _onNewQtyChanged,
+                      ),
+                    ],
                   ),
-                ),
-                const FormDivider(),
-                SizedBox(height: Dimensions.height15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Stock on Hand', style: FormTextStyles.label()),
-                    Text(
-                      _selectedItem!.stockOnHand.toStringAsFixed(2),
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.9,
-                        fontWeight: FontWeight.w700,
-                        color: _selectedItem!.stockOnHand < 0
-                            ? Colors.red.shade600
-                            : context.colors.textPrimary,
+                  SizedBox(height: Dimensions.height15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Quantity Adjusted', style: FormTextStyles.label()),
+                      FormNumberField(
+                        controller: _adjustedController,
+                        focusNode: _adjustedFocusNode,
+                        signed: true,
+                        hint: 'Eg. +10, -10',
+                        onChanged: _onAdjustedChanged,
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: Dimensions.height15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('New quantity on hand', style: FormTextStyles.label()),
-                    FormNumberField(
-                      controller: _newQtyController,
-                      focusNode: _newQtyFocusNode,
-                      signed: true,
-                      hint: '0.00',
-                      onChanged: _onNewQtyChanged,
-                    ),
-                  ],
-                ),
-                SizedBox(height: Dimensions.height15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Quantity Adjusted', style: FormTextStyles.label()),
-                    FormNumberField(
-                      controller: _adjustedController,
-                      focusNode: _adjustedFocusNode,
-                      signed: true,
-                      hint: 'Eg. +10, -10',
-                      onChanged: _onAdjustedChanged,
-                    ),
-                  ],
-                ),
-                SizedBox(height: Dimensions.height15),
-                Row(
-                  children: [
-                    Text(
-                      'Cost Price: ',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        color: context.colors.textSecondary,
+                    ],
+                  ),
+                  SizedBox(height: Dimensions.height15),
+                  Row(
+                    children: [
+                      Text(
+                        'Cost Price: ',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.85,
+                          color: context.colors.textSecondary,
+                        ),
                       ),
-                    ),
-                    Text(
-                      '₹${_costPrice.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 0.85,
-                        fontWeight: FontWeight.w700,
-                        color: context.colors.textPrimary,
+                      Text(
+                        '₹${_costPrice.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.85,
+                          fontWeight: FontWeight.w700,
+                          color: context.colors.textPrimary,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: Dimensions.width10 / 2),
-                    InkWell(
-                      onTap: () async {
-                        final result = await CostPriceEditor.show(
-                          context,
-                          initialValue: _costPrice,
-                        );
-                        if (result != null) {
-                          setState(() => _costPrice = result);
-                        }
-                      },
-                      child: Icon(
-                        Icons.edit_rounded,
-                        size: Dimensions.iconSize24 - 8,
-                        color: AppColors.primary,
+                      SizedBox(width: Dimensions.width10 / 2),
+                      InkWell(
+                        onTap: () async {
+                          final result = await CostPriceEditor.show(
+                            context,
+                            initialValue: _costPrice,
+                          );
+                          if (result != null) {
+                            setState(() => _costPrice = result);
+                            markDirty();
+                          }
+                        },
+                        child: Icon(
+                          Icons.edit_rounded,
+                          size: Dimensions.iconSize24 - 8,
+                          color: AppColors.primary,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/settings/preferences/shared/add_custom_field_page.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,8 @@ class ExpenseSettingsPage extends StatefulWidget {
   State<ExpenseSettingsPage> createState() => _ExpenseSettingsPageState();
 }
 
-class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
+class _ExpenseSettingsPageState extends State<ExpenseSettingsPage>
+    with UnsavedChangesMixin {
   // Mileage settings
   String _mileageUnit = 'Kilometer';
   String _mileageCategory = 'Fuel/Mileage Expenses';
@@ -38,6 +40,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
 
   void _save() {
     appLog('💾 Save Expense Settings', name: 'ExpenseSettings');
+    markClean();
     Navigator.pop(context);
   }
 
@@ -52,6 +55,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
     );
     if (result != null) {
       setState(() => _customFields.add(result));
+      markDirty();
     }
   }
 
@@ -115,6 +119,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
                     'rate': rateController.text,
                   });
                 });
+                markDirty();
               }
               Navigator.pop(ctx);
             },
@@ -165,6 +170,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
                     : null,
                 onTap: () {
                   setState(() => _mileageUnit = option);
+                  markDirty();
                   Navigator.pop(ctx);
                 },
               ),
@@ -215,6 +221,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
                     : null,
                 onTap: () {
                   setState(() => _mileageCategory = option);
+                  markDirty();
                   Navigator.pop(ctx);
                 },
               ),
@@ -227,128 +234,133 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: 'Expense Settings',
-              leadingType: AppBarLeadingType.back,
-              actions: [
-                AppBarElevatedButton(label: 'SAVE', onPressed: _save),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.width15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: Dimensions.height10),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'Expense Settings',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(label: 'SAVE', onPressed: _save),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimensions.width15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: Dimensions.height10),
 
-                    // Mileage Settings Section
-                    Text(
-                      'Mileage Settings',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height15),
-
-                    // Unit
-                    _buildPickerRow(
-                      label: 'Unit',
-                      value: _mileageUnit,
-                      onTap: _showUnitPicker,
-                    ),
-                    SizedBox(height: Dimensions.height20),
-
-                    // Category
-                    _buildPickerRow(
-                      label: 'Category',
-                      value: _mileageCategory,
-                      onTap: _showCategoryPicker,
-                    ),
-
-                    _buildDivider(),
-
-                    // Mileage Rates Section
-                    Text(
-                      'Mileage Rates',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height10),
-
-                    // Rates list
-                    ..._mileageRates.map((rate) => _buildRateTile(rate)),
-
-                    // Add new rate
-                    InkWell(
-                      onTap: _addNewRate,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: Dimensions.height15,
+                      // Mileage Settings Section
+                      Text(
+                        'Mileage Settings',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
                         ),
-                        child: Text(
-                          'Add new rate',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.9,
-                            color: context.colors.textPrimary,
+                      ),
+                      SizedBox(height: Dimensions.height15),
+
+                      // Unit
+                      _buildPickerRow(
+                        label: 'Unit',
+                        value: _mileageUnit,
+                        onTap: _showUnitPicker,
+                      ),
+                      SizedBox(height: Dimensions.height20),
+
+                      // Category
+                      _buildPickerRow(
+                        label: 'Category',
+                        value: _mileageCategory,
+                        onTap: _showCategoryPicker,
+                      ),
+
+                      _buildDivider(),
+
+                      // Mileage Rates Section
+                      Text(
+                        'Mileage Rates',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.height10),
+
+                      // Rates list
+                      ..._mileageRates.map((rate) => _buildRateTile(rate)),
+
+                      // Add new rate
+                      InkWell(
+                        onTap: _addNewRate,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: Dimensions.height15,
+                          ),
+                          child: Text(
+                            'Add new rate',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.9,
+                              color: context.colors.textPrimary,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    _buildDivider(),
+                      _buildDivider(),
 
-                    // Fields Section
-                    Text(
-                      'Fields',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height10),
-
-                    // Custom fields list
-                    ..._customFields.map(
-                      (field) => _buildCustomFieldTile(field),
-                    ),
-
-                    // Add new field
-                    InkWell(
-                      onTap: _addNewField,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: Dimensions.height15,
+                      // Fields Section
+                      Text(
+                        'Fields',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
                         ),
-                        child: Text(
-                          'Add new field',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.9,
-                            color: context.colors.textPrimary,
+                      ),
+                      SizedBox(height: Dimensions.height10),
+
+                      // Custom fields list
+                      ..._customFields.map(
+                        (field) => _buildCustomFieldTile(field),
+                      ),
+
+                      // Add new field
+                      InkWell(
+                        onTap: _addNewField,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: Dimensions.height15,
+                          ),
+                          child: Text(
+                            'Add new field',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.9,
+                              color: context.colors.textPrimary,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    SizedBox(height: Dimensions.height30 * 2),
-                  ],
+                      SizedBox(height: Dimensions.height30 * 2),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -443,6 +455,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
             ),
             onPressed: () {
               setState(() => _mileageRates.remove(rate));
+              markDirty();
             },
           ),
         ],
@@ -485,6 +498,7 @@ class _ExpenseSettingsPageState extends State<ExpenseSettingsPage> {
             ),
             onPressed: () {
               setState(() => _customFields.remove(field));
+              markDirty();
             },
           ),
         ],

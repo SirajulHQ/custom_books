@@ -6,6 +6,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,7 +20,7 @@ class AddItemPage extends StatefulWidget {
   State<AddItemPage> createState() => _AddItemPageState();
 }
 
-class _AddItemPageState extends State<AddItemPage> {
+class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
   String _itemType = 'Goods';
   bool _trackInventory = true;
   bool _salesInformation = true;
@@ -38,6 +39,7 @@ class _AddItemPageState extends State<AddItemPage> {
       );
       if (picked != null) {
         setState(() => _itemImage = picked);
+        markDirty();
         appLog('📷 Image picked: ${picked.path}', name: 'AddItemPage');
       }
     } catch (e) {
@@ -185,10 +187,28 @@ class _AddItemPageState extends State<AddItemPage> {
       _sellingPriceController.text = existing.salesPrice.toStringAsFixed(2);
       _costPriceController.text = existing.purchasePrice.toStringAsFixed(2);
     }
+    _itemNameController.addListener(markDirty);
+    _skuController.addListener(markDirty);
+    _unitController.addListener(markDirty);
+    _sellingPriceController.addListener(markDirty);
+    _costPriceController.addListener(markDirty);
+    _openingStockController.addListener(markDirty);
+    _openingStockRateController.addListener(markDirty);
+    _salesDescriptionController.addListener(markDirty);
+    _purchaseDescriptionController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _itemNameController.removeListener(markDirty);
+    _skuController.removeListener(markDirty);
+    _unitController.removeListener(markDirty);
+    _sellingPriceController.removeListener(markDirty);
+    _costPriceController.removeListener(markDirty);
+    _openingStockController.removeListener(markDirty);
+    _openingStockRateController.removeListener(markDirty);
+    _salesDescriptionController.removeListener(markDirty);
+    _purchaseDescriptionController.removeListener(markDirty);
     _itemNameController.dispose();
     _skuController.dispose();
     _unitController.dispose();
@@ -203,387 +223,408 @@ class _AddItemPageState extends State<AddItemPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            // App Bar
-            CustomSliverAppBar(
-              title: widget.existing == null ? 'New Item' : 'Edit Item',
-              subtitle: 'Fill in the details below',
-              leadingType: AppBarLeadingType.back,
-              onLeadingPressed: () {
-                appLog('⬅️ Back button tapped', name: 'AddItemPage');
-                Navigator.pop(context);
-              },
-              actions: [
-                AppBarElevatedButton(label: 'SAVE', onPressed: _saveItem),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              // App Bar
+              CustomSliverAppBar(
+                title: widget.existing == null ? 'New Item' : 'Edit Item',
+                subtitle: 'Fill in the details below',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () {
+                  appLog('⬅️ Back button tapped', name: 'AddItemPage');
+                  onPopInvokedWithResult(false, null);
+                },
+                actions: [
+                  AppBarElevatedButton(label: 'SAVE', onPressed: _saveItem),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
 
-            // Content
-            SliverPadding(
-              padding: EdgeInsets.all(Dimensions.width20),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  // Item Type and Image Card
-                  _ItemOverviewSection(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Item Type',
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16 * 0.9,
-                                    fontWeight: FontWeight.w700,
-                                    color: context.colors.textPrimary,
-                                  ),
-                                ),
-                                SizedBox(height: Dimensions.height10),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: context.colors.surfaceLight,
-                                    borderRadius: BorderRadius.circular(
-                                      Dimensions.radius15 / 2,
+              // Content
+              SliverPadding(
+                padding: EdgeInsets.all(Dimensions.width20),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    // Item Type and Image Card
+                    _ItemOverviewSection(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Item Type',
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.9,
+                                      fontWeight: FontWeight.w700,
+                                      color: context.colors.textPrimary,
                                     ),
                                   ),
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: Dimensions.width10,
-                                    vertical: Dimensions.height10 / 2,
+                                  SizedBox(height: Dimensions.height10),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: context.colors.surfaceLight,
+                                      borderRadius: BorderRadius.circular(
+                                        Dimensions.radius15 / 2,
+                                      ),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: Dimensions.width10,
+                                      vertical: Dimensions.height10 / 2,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        _buildRadioOption(
+                                          'Goods',
+                                          Icons.inventory_2_outlined,
+                                        ),
+                                        _buildRadioOption(
+                                          'Service',
+                                          Icons.home_repair_service_outlined,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  child: Column(
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: Dimensions.width15),
+                            Expanded(
+                              flex: 2,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Item Image',
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.9,
+                                      fontWeight: FontWeight.w700,
+                                      color: context.colors.textPrimary,
+                                    ),
+                                  ),
+                                  SizedBox(height: Dimensions.height10),
+                                  // ---- Live image preview / picker ----
+                                  Stack(
                                     children: [
-                                      _buildRadioOption(
-                                        'Goods',
-                                        Icons.inventory_2_outlined,
+                                      GestureDetector(
+                                        onTap: _showImageSourceSheet,
+                                        child: Container(
+                                          width: double.infinity,
+                                          height: Dimensions.height45 * 2.5,
+                                          decoration: BoxDecoration(
+                                            color: context.colors.surfaceLight,
+                                            border: Border.all(
+                                              color: AppColors.primary
+                                                  .withValues(alpha: 0.3),
+                                              width: 2,
+                                              style: BorderStyle.solid,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              Dimensions.radius15,
+                                            ),
+                                          ),
+                                          clipBehavior: Clip.antiAlias,
+                                          child: _itemImage != null
+                                              ? Image.file(
+                                                  File(_itemImage!.path),
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      padding: EdgeInsets.all(
+                                                        Dimensions.width10,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        color: AppColors.primary
+                                                            .withValues(
+                                                              alpha: 0.1,
+                                                            ),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                      child: Icon(
+                                                        Icons
+                                                            .add_photo_alternate_outlined,
+                                                        size: Dimensions
+                                                            .iconSize24,
+                                                        color:
+                                                            AppColors.primary,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height:
+                                                          Dimensions.height10 /
+                                                          2,
+                                                    ),
+                                                    Text(
+                                                      'Add Photo',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontSize:
+                                                            Dimensions.font16 *
+                                                            0.75,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            AppColors.primary,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                        ),
                                       ),
-                                      _buildRadioOption(
-                                        'Service',
-                                        Icons.home_repair_service_outlined,
-                                      ),
+                                      // Remove button — only shown when an image is selected
+                                      if (_itemImage != null)
+                                        Positioned(
+                                          top: 6,
+                                          right: 6,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() => _itemImage = null);
+                                              markDirty();
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.all(
+                                                Dimensions.height10 * 0.4,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: context
+                                                    .colors
+                                                    .textSecondary,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Icon(
+                                                Icons.close,
+                                                color: Colors.white,
+                                                size:
+                                                    Dimensions.iconSize16 *
+                                                    0.875,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                     ],
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(width: Dimensions.width15),
-                          Expanded(
-                            flex: 2,
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Item Image',
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16 * 0.9,
-                                    fontWeight: FontWeight.w700,
-                                    color: context.colors.textPrimary,
-                                  ),
-                                ),
-                                SizedBox(height: Dimensions.height10),
-                                // ---- Live image preview / picker ----
-                                Stack(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: _showImageSourceSheet,
-                                      child: Container(
-                                        width: double.infinity,
-                                        height: Dimensions.height45 * 2.5,
-                                        decoration: BoxDecoration(
-                                          color: context.colors.surfaceLight,
-                                          border: Border.all(
-                                            color: AppColors.primary.withValues(
-                                              alpha: 0.3,
-                                            ),
-                                            width: 2,
-                                            style: BorderStyle.solid,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            Dimensions.radius15,
-                                          ),
-                                        ),
-                                        clipBehavior: Clip.antiAlias,
-                                        child: _itemImage != null
-                                            ? Image.file(
-                                                File(_itemImage!.path),
-                                                fit: BoxFit.cover,
-                                              )
-                                            : Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    padding: EdgeInsets.all(
-                                                      Dimensions.width10,
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors.primary
-                                                          .withValues(
-                                                            alpha: 0.1,
-                                                          ),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: Icon(
-                                                      Icons
-                                                          .add_photo_alternate_outlined,
-                                                      size:
-                                                          Dimensions.iconSize24,
-                                                      color: AppColors.primary,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height:
-                                                        Dimensions.height10 / 2,
-                                                  ),
-                                                  Text(
-                                                    'Add Photo',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontSize:
-                                                          Dimensions.font16 *
-                                                          0.75,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: AppColors.primary,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                      ),
-                                    ),
-                                    // Remove button — only shown when an image is selected
-                                    if (_itemImage != null)
-                                      Positioned(
-                                        top: 6,
-                                        right: 6,
-                                        child: GestureDetector(
-                                          onTap: () =>
-                                              setState(() => _itemImage = null),
-                                          child: Container(
-                                            padding: EdgeInsets.all(
-                                              Dimensions.height10 * 0.4,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  context.colors.textSecondary,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Icon(
-                                              Icons.close,
-                                              color: Colors.white,
-                                              size:
-                                                  Dimensions.iconSize16 * 0.875,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ],
+                          ],
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        Divider(height: 1, color: context.colors.border),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTextField(
+                          'Item Name',
+                          _itemNameController,
+                          isRequired: true,
+                          icon: Icons.inventory_outlined,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildTextField(
+                                'SKU',
+                                _skuController,
+                                hasInfo: true,
+                                hasScan: true,
+                                icon: Icons.qr_code_2_outlined,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      Divider(height: 1, color: context.colors.border),
-                      SizedBox(height: Dimensions.height20),
-                      _buildTextField(
-                        'Item Name',
-                        _itemNameController,
-                        isRequired: true,
-                        icon: Icons.inventory_outlined,
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextField(
-                              'SKU',
-                              _skuController,
-                              hasInfo: true,
-                              hasScan: true,
-                              icon: Icons.qr_code_2_outlined,
+                            SizedBox(width: Dimensions.width15),
+                            Expanded(
+                              child: _buildTextField(
+                                'Unit',
+                                _unitController,
+                                hint: 'e.g., pcs, kg, box',
+                                icon: Icons.straighten_outlined,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: Dimensions.width15),
-                          Expanded(
-                            child: _buildTextField(
-                              'Unit',
-                              _unitController,
-                              hint: 'e.g., pcs, kg, box',
-                              icon: Icons.straighten_outlined,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: Dimensions.height15),
-                      _buildCheckbox(
-                        'It is an excise product',
-                        _isExciseProduct,
-                        (value) {
-                          setState(() => _isExciseProduct = value ?? false);
-                        },
-                      ),
-                    ],
-                  ),
+                          ],
+                        ),
+                        SizedBox(height: Dimensions.height15),
+                        _buildCheckbox(
+                          'It is an excise product',
+                          _isExciseProduct,
+                          (value) {
+                            setState(() => _isExciseProduct = value ?? false);
+                            markDirty();
+                          },
+                        ),
+                      ],
+                    ),
 
-                  SizedBox(height: Dimensions.height15),
+                    SizedBox(height: Dimensions.height15),
 
-                  // Sales Information Card
-                  _ItemToggleSection(
-                    'Sales Information',
-                    Icons.point_of_sale_outlined,
-                    _salesInformation,
-                    (value) => setState(() => _salesInformation = value),
-                    [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextField(
-                              'Selling Price',
-                              _sellingPriceController,
-                              isRequired: true,
-                              keyboardType: TextInputType.number,
-                              prefix: '₹',
-                              icon: Icons.sell_outlined,
+                    // Sales Information Card
+                    _ItemToggleSection(
+                      'Sales Information',
+                      Icons.point_of_sale_outlined,
+                      _salesInformation,
+                      (value) {
+                        setState(() => _salesInformation = value);
+                        markDirty();
+                      },
+                      [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildTextField(
+                                'Selling Price',
+                                _sellingPriceController,
+                                isRequired: true,
+                                keyboardType: TextInputType.number,
+                                prefix: '₹',
+                                icon: Icons.sell_outlined,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: Dimensions.width15),
-                          Expanded(
-                            child: _buildDropdown(
-                              'Account',
-                              _selectedSalesAccount,
-                              isRequired: true,
+                            SizedBox(width: Dimensions.width15),
+                            Expanded(
+                              child: _buildDropdown(
+                                'Account',
+                                _selectedSalesAccount,
+                                isRequired: true,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildTextField(
-                        'Description',
-                        _salesDescriptionController,
-                        maxLines: 3,
-                        hint: 'Enter sales description...',
-                        icon: Icons.description_outlined,
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildDropdown('Tax', 'Select a Tax'),
-                    ],
-                  ),
+                          ],
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTextField(
+                          'Description',
+                          _salesDescriptionController,
+                          maxLines: 3,
+                          hint: 'Enter sales description...',
+                          icon: Icons.description_outlined,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildDropdown('Tax', 'Select a Tax'),
+                      ],
+                    ),
 
-                  SizedBox(height: Dimensions.height15),
+                    SizedBox(height: Dimensions.height15),
 
-                  // Purchase Information Card
-                  _ItemToggleSection(
-                    'Purchase Information',
-                    Icons.shopping_cart_outlined,
-                    _purchaseInformation,
-                    (value) => setState(() => _purchaseInformation = value),
-                    [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextField(
-                              'Cost Price',
-                              _costPriceController,
-                              isRequired: true,
-                              keyboardType: TextInputType.number,
-                              prefix: '₹',
-                              icon: Icons.attach_money_outlined,
+                    // Purchase Information Card
+                    _ItemToggleSection(
+                      'Purchase Information',
+                      Icons.shopping_cart_outlined,
+                      _purchaseInformation,
+                      (value) {
+                        setState(() => _purchaseInformation = value);
+                        markDirty();
+                      },
+                      [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildTextField(
+                                'Cost Price',
+                                _costPriceController,
+                                isRequired: true,
+                                keyboardType: TextInputType.number,
+                                prefix: '₹',
+                                icon: Icons.attach_money_outlined,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: Dimensions.width15),
-                          Expanded(
-                            child: _buildDropdown(
-                              'Account',
-                              _selectedAccount,
-                              isRequired: true,
+                            SizedBox(width: Dimensions.width15),
+                            Expanded(
+                              child: _buildDropdown(
+                                'Account',
+                                _selectedAccount,
+                                isRequired: true,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildTextField(
-                        'Description',
-                        _purchaseDescriptionController,
-                        maxLines: 3,
-                        hint: 'Enter purchase description...',
-                        icon: Icons.description_outlined,
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildTextField(
-                        'Preferred Vendor',
-                        null,
-                        hint: 'Start typing to select a vendor',
-                        hasAdd: true,
-                        icon: Icons.person_outline,
-                      ),
-                    ],
-                  ),
+                          ],
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTextField(
+                          'Description',
+                          _purchaseDescriptionController,
+                          maxLines: 3,
+                          hint: 'Enter purchase description...',
+                          icon: Icons.description_outlined,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildTextField(
+                          'Preferred Vendor',
+                          null,
+                          hint: 'Start typing to select a vendor',
+                          hasAdd: true,
+                          icon: Icons.person_outline,
+                        ),
+                      ],
+                    ),
 
-                  SizedBox(height: Dimensions.height15),
+                    SizedBox(height: Dimensions.height15),
 
-                  // Track Inventory Card
-                  _ItemToggleSection(
-                    'Track Inventory',
-                    Icons.inventory_outlined,
-                    _trackInventory,
-                    (value) => setState(() => _trackInventory = value),
-                    [
-                      _buildDropdown(
-                        'Inventory Account',
-                        _selectedInventoryAccount,
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextField(
-                              'Opening Stock',
-                              _openingStockController,
-                              hasInfo: true,
-                              keyboardType: TextInputType.number,
-                              hint: '0',
-                              icon: Icons.numbers_outlined,
+                    // Track Inventory Card
+                    _ItemToggleSection(
+                      'Track Inventory',
+                      Icons.inventory_outlined,
+                      _trackInventory,
+                      (value) {
+                        setState(() => _trackInventory = value);
+                        markDirty();
+                      },
+                      [
+                        _buildDropdown(
+                          'Inventory Account',
+                          _selectedInventoryAccount,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildTextField(
+                                'Opening Stock',
+                                _openingStockController,
+                                hasInfo: true,
+                                keyboardType: TextInputType.number,
+                                hint: '0',
+                                icon: Icons.numbers_outlined,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: Dimensions.width15),
-                          Expanded(
-                            child: _buildTextField(
-                              'Rate per Unit',
-                              _openingStockRateController,
-                              hasInfo: true,
-                              keyboardType: TextInputType.number,
-                              prefix: '₹',
-                              hint: '0.00',
-                              icon: Icons.calculate_outlined,
+                            SizedBox(width: Dimensions.width15),
+                            Expanded(
+                              child: _buildTextField(
+                                'Rate per Unit',
+                                _openingStockRateController,
+                                hasInfo: true,
+                                keyboardType: TextInputType.number,
+                                prefix: '₹',
+                                hint: '0.00',
+                                icon: Icons.calculate_outlined,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: Dimensions.height20),
-                      _buildDropdown(
-                        'Valuation Method',
-                        _selectedValuationMethod,
-                        isRequired: true,
-                      ),
-                    ],
-                  ),
+                          ],
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        _buildDropdown(
+                          'Valuation Method',
+                          _selectedValuationMethod,
+                          isRequired: true,
+                        ),
+                      ],
+                    ),
 
-                  SizedBox(height: Dimensions.height30),
-                ]),
+                    SizedBox(height: Dimensions.height30),
+                  ]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -594,6 +635,7 @@ class _AddItemPageState extends State<AddItemPage> {
     return GestureDetector(
       onTap: () {
         setState(() => _itemType = label);
+        markDirty();
         appLog('📝 Item type changed to: $label', name: 'AddItemPage');
       },
       child: Row(
@@ -659,6 +701,7 @@ class _AddItemPageState extends State<AddItemPage> {
       return;
     }
     ToastificationHelper.showSuccess(context, '$name saved successfully.');
+    markClean();
     Navigator.pop(context);
   }
 

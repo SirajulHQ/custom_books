@@ -3,6 +3,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/settings/views/templates/template_preview_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
@@ -21,7 +22,8 @@ class CustomizeTemplatePage extends StatefulWidget {
   State<CustomizeTemplatePage> createState() => _CustomizeTemplatePageState();
 }
 
-class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
+class _CustomizeTemplatePageState extends State<CustomizeTemplatePage>
+    with UnsavedChangesMixin {
   late String _templateName;
   int _selectedThemeIndex = 0;
   String? _bankDetails;
@@ -90,6 +92,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
             onPressed: () {
               if (controller.text.trim().isNotEmpty) {
                 setState(() => _templateName = controller.text.trim());
+                markDirty();
               }
               Navigator.pop(ctx);
             },
@@ -163,6 +166,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                       _bankDetails =
                           '${bankNameCtrl.text} - ${accountCtrl.text}';
                     });
+                    markDirty();
                     Navigator.pop(ctx);
                     appLog('🏦 Bank details added', name: 'CustomizeTemplate');
                   },
@@ -329,6 +333,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                           child: OutlinedButton(
                             onPressed: () {
                               setState(() => _signatureImage = null);
+                              markDirty();
                               Navigator.pop(ctx);
                               appLog(
                                 '🗑️ Signature removed',
@@ -372,6 +377,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
                                         setState(
                                           () => _signatureImage = imageData,
                                         );
+                                        markDirty();
                                       }
                                       if (ctx.mounted) Navigator.pop(ctx);
                                       appLog(
@@ -442,51 +448,58 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
         ),
       ),
     );
+    markClean();
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  const CustomSliverAppBar(
-                    title: 'Customize Template',
-                    leadingType: AppBarLeadingType.back,
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Header Card with Template Name & Theme
-                          _buildHeaderCard(),
-                          SizedBox(height: Dimensions.height20),
-                          // PDF Preview
-                          _buildPdfPreview(),
-                          SizedBox(height: Dimensions.height20),
-                          // Action Buttons
-                          _buildActionButtons(),
-                          SizedBox(height: Dimensions.height30),
-                        ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    CustomSliverAppBar(
+                      title: 'Customize Template',
+                      leadingType: AppBarLeadingType.back,
+                      onLeadingPressed: () =>
+                          onPopInvokedWithResult(false, null),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width20,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Header Card with Template Name & Theme
+                            _buildHeaderCard(),
+                            SizedBox(height: Dimensions.height20),
+                            // PDF Preview
+                            _buildPdfPreview(),
+                            SizedBox(height: Dimensions.height20),
+                            // Action Buttons
+                            _buildActionButtons(),
+                            SizedBox(height: Dimensions.height30),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            // Bottom bar with Save button
-            _buildBottomBar(),
-          ],
+              // Bottom bar with Save button
+              _buildBottomBar(),
+            ],
+          ),
         ),
       ),
     );
@@ -625,6 +638,7 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage> {
               return GestureDetector(
                 onTap: () {
                   setState(() => _selectedThemeIndex = index);
+                  markDirty();
                   appLog(
                     '🎨 Theme color changed: $index',
                     name: 'CustomizeTemplate',

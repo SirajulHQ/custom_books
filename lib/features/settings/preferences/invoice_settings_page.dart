@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/settings/preferences/shared/add_custom_field_page.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,8 @@ class InvoiceSettingsPage extends StatefulWidget {
   State<InvoiceSettingsPage> createState() => _InvoiceSettingsPageState();
 }
 
-class _InvoiceSettingsPageState extends State<InvoiceSettingsPage> {
+class _InvoiceSettingsPageState extends State<InvoiceSettingsPage>
+    with UnsavedChangesMixin {
   bool _autoGenerateNumber = true;
   final TextEditingController _prefixController = TextEditingController(
     text: 'INV-',
@@ -35,10 +37,18 @@ class _InvoiceSettingsPageState extends State<InvoiceSettingsPage> {
   void initState() {
     super.initState();
     appLog('🧾 InvoiceSettingsPage initialized', name: 'InvoiceSettings');
+    _prefixController.addListener(markDirty);
+    _nextNumberController.addListener(markDirty);
+    _notesController.addListener(markDirty);
+    _termsController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _prefixController.removeListener(markDirty);
+    _nextNumberController.removeListener(markDirty);
+    _notesController.removeListener(markDirty);
+    _termsController.removeListener(markDirty);
     _prefixController.dispose();
     _nextNumberController.dispose();
     _notesController.dispose();
@@ -48,6 +58,7 @@ class _InvoiceSettingsPageState extends State<InvoiceSettingsPage> {
 
   void _save() {
     appLog('💾 Save Invoice Settings', name: 'InvoiceSettings');
+    markClean();
     Navigator.pop(context);
   }
 
@@ -58,182 +69,197 @@ class _InvoiceSettingsPageState extends State<InvoiceSettingsPage> {
     );
     if (result != null) {
       setState(() => _customFields.add(result));
+      markDirty();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: 'Invoice Settings',
-              leadingType: AppBarLeadingType.back,
-              actions: [
-                AppBarElevatedButton(label: 'SAVE', onPressed: _save),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.width15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: Dimensions.height10),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'Invoice Settings',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(label: 'SAVE', onPressed: _save),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimensions.width15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: Dimensions.height10),
 
-                    // Invoice Number
-                    _buildSettingRow(
-                      title: 'Invoice Number',
-                      subtitle: 'Auto-generate?',
-                      trailing: Checkbox(
-                        value: _autoGenerateNumber,
-                        onChanged: (val) =>
-                            setState(() => _autoGenerateNumber = val ?? false),
-                        activeColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius15 * 0.27,
+                      // Invoice Number
+                      _buildSettingRow(
+                        title: 'Invoice Number',
+                        subtitle: 'Auto-generate?',
+                        trailing: Checkbox(
+                          value: _autoGenerateNumber,
+                          onChanged: (val) {
+                            setState(() => _autoGenerateNumber = val ?? false);
+                            markDirty();
+                          },
+                          activeColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15 * 0.27,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    SizedBox(height: Dimensions.height20),
+                      SizedBox(height: Dimensions.height20),
 
-                    // Prefix
-                    _buildTextFieldRow(
-                      label: 'Prefix',
-                      controller: _prefixController,
-                    ),
+                      // Prefix
+                      _buildTextFieldRow(
+                        label: 'Prefix',
+                        controller: _prefixController,
+                      ),
 
-                    SizedBox(height: Dimensions.height20),
+                      SizedBox(height: Dimensions.height20),
 
-                    // Next Number
-                    _buildTextFieldRow(
-                      label: 'Next Number',
-                      controller: _nextNumberController,
-                    ),
+                      // Next Number
+                      _buildTextFieldRow(
+                        label: 'Next Number',
+                        controller: _nextNumberController,
+                      ),
 
-                    SizedBox(height: Dimensions.height20),
+                      SizedBox(height: Dimensions.height20),
 
-                    // Notes
-                    _buildTextFieldRow(
-                      label: 'Notes',
-                      controller: _notesController,
-                      maxLines: 2,
-                    ),
+                      // Notes
+                      _buildTextFieldRow(
+                        label: 'Notes',
+                        controller: _notesController,
+                        maxLines: 2,
+                      ),
 
-                    SizedBox(height: Dimensions.height20),
+                      SizedBox(height: Dimensions.height20),
 
-                    // Terms & Conditions
-                    _buildTextFieldRow(
-                      label: 'Terms & Conditions',
-                      controller: _termsController,
-                      maxLines: 3,
-                    ),
+                      // Terms & Conditions
+                      _buildTextFieldRow(
+                        label: 'Terms & Conditions',
+                        controller: _termsController,
+                        maxLines: 3,
+                      ),
 
-                    SizedBox(height: Dimensions.height20),
+                      SizedBox(height: Dimensions.height20),
 
-                    // Edit Invoice
-                    _buildSettingRow(
-                      title: 'Edit Invoice',
-                      subtitle: 'Allow editing of Sent Invoice?',
-                      trailing: Checkbox(
-                        value: _editInvoice,
-                        onChanged: (val) =>
-                            setState(() => _editInvoice = val ?? false),
-                        activeColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius15 * 0.27,
+                      // Edit Invoice
+                      _buildSettingRow(
+                        title: 'Edit Invoice',
+                        subtitle: 'Allow editing of Sent Invoice?',
+                        trailing: Checkbox(
+                          value: _editInvoice,
+                          onChanged: (val) {
+                            setState(() => _editInvoice = val ?? false);
+                            markDirty();
+                          },
+                          activeColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15 * 0.27,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    SizedBox(height: Dimensions.height20),
+                      SizedBox(height: Dimensions.height20),
 
-                    // Discount before tax
-                    _buildSettingRow(
-                      subtitle: 'Is discount before tax?',
-                      trailing: Checkbox(
-                        value: _discountBeforeTax,
-                        onChanged: (val) =>
-                            setState(() => _discountBeforeTax = val ?? false),
-                        activeColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius15 * 0.27,
+                      // Discount before tax
+                      _buildSettingRow(
+                        subtitle: 'Is discount before tax?',
+                        trailing: Checkbox(
+                          value: _discountBeforeTax,
+                          onChanged: (val) {
+                            setState(() => _discountBeforeTax = val ?? false);
+                            markDirty();
+                          },
+                          activeColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15 * 0.27,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    SizedBox(height: Dimensions.height15),
+                      SizedBox(height: Dimensions.height15),
 
-                    // Associate expense receipts
-                    _buildSettingRow(
-                      subtitle:
-                          'Associate and display expense receipts in Invoice PDF',
-                      trailing: Checkbox(
-                        value: _associateExpenseReceipts,
-                        onChanged: (val) => setState(
-                          () => _associateExpenseReceipts = val ?? false,
-                        ),
-                        activeColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius15 * 0.27,
+                      // Associate expense receipts
+                      _buildSettingRow(
+                        subtitle:
+                            'Associate and display expense receipts in Invoice PDF',
+                        trailing: Checkbox(
+                          value: _associateExpenseReceipts,
+                          onChanged: (val) {
+                            setState(
+                              () => _associateExpenseReceipts = val ?? false,
+                            );
+                            markDirty();
+                          },
+                          activeColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15 * 0.27,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    _buildDivider(),
+                      _buildDivider(),
 
-                    // Fields Section
-                    Text(
-                      'Fields',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height10),
-
-                    // Custom fields list
-                    ..._customFields.map(
-                      (field) => _buildCustomFieldTile(field),
-                    ),
-
-                    // Add new field
-                    InkWell(
-                      onTap: _addNewField,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: Dimensions.height15,
+                      // Fields Section
+                      Text(
+                        'Fields',
+                        style: TextStyle(
+                          fontSize: Dimensions.font16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
                         ),
-                        child: Text(
-                          'Add new field',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.9,
-                            color: context.colors.textPrimary,
+                      ),
+                      SizedBox(height: Dimensions.height10),
+
+                      // Custom fields list
+                      ..._customFields.map(
+                        (field) => _buildCustomFieldTile(field),
+                      ),
+
+                      // Add new field
+                      InkWell(
+                        onTap: _addNewField,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: Dimensions.height15,
+                          ),
+                          child: Text(
+                            'Add new field',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.9,
+                              color: context.colors.textPrimary,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    SizedBox(height: Dimensions.height30 * 2),
-                  ],
+                      SizedBox(height: Dimensions.height30 * 2),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -363,6 +389,7 @@ class _InvoiceSettingsPageState extends State<InvoiceSettingsPage> {
             ),
             onPressed: () {
               setState(() => _customFields.remove(field));
+              markDirty();
             },
           ),
         ],

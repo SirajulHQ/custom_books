@@ -2,14 +2,6 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 
-/// Shows the app's branded exit confirmation dialog.
-///
-/// The dialog uses the app's semantic theme tokens ([BuildContext.colors]) so
-/// it automatically matches the device's light/dark theme, and keeps the
-/// custom card design (header strip, icon, styled action buttons).
-///
-/// Returns `true` if the user confirmed exit, `false` otherwise (including when
-/// the dialog is dismissed by tapping the barrier).
 Future<bool> showExitConfirmationDialog(BuildContext context) async {
   final result = await showGeneralDialog<bool>(
     context: context,

@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/manual_journals/models/manual_journal_model.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
@@ -16,7 +17,8 @@ class AddManualJournalPage extends StatefulWidget {
   State<AddManualJournalPage> createState() => _AddManualJournalPageState();
 }
 
-class _AddManualJournalPageState extends State<AddManualJournalPage> {
+class _AddManualJournalPageState extends State<AddManualJournalPage>
+    with UnsavedChangesMixin {
   final _journalNumberController = TextEditingController(text: 'JN-00016');
   final _referenceController = TextEditingController();
   final _amountController = TextEditingController();
@@ -35,10 +37,18 @@ class _AddManualJournalPageState extends State<AddManualJournalPage> {
       _notesController.text = j.notes;
       _journalDate = j.journalDate;
     }
+    _journalNumberController.addListener(markDirty);
+    _referenceController.addListener(markDirty);
+    _amountController.addListener(markDirty);
+    _notesController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _journalNumberController.removeListener(markDirty);
+    _referenceController.removeListener(markDirty);
+    _amountController.removeListener(markDirty);
+    _notesController.removeListener(markDirty);
     _journalNumberController.dispose();
     _referenceController.dispose();
     _amountController.dispose();
@@ -55,6 +65,7 @@ class _AddManualJournalPageState extends State<AddManualJournalPage> {
     );
     if (picked != null) {
       setState(() => _journalDate = picked);
+      markDirty();
     }
   }
 
@@ -83,189 +94,195 @@ class _AddManualJournalPageState extends State<AddManualJournalPage> {
       updatedAt: DateTime.now(),
     );
 
+    markClean();
     Navigator.pop(context, newJournal);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      appBar: CustomBackAppBar(
-        title: widget.existing == null
-            ? 'New Manual Journal'
-            : 'Edit Manual Journal',
-        backgroundColor: context.colors.card,
-        actions: [
-          TextButton(
-            onPressed: () => _saveJournal(status: ManualJournalStatus.draft),
-            child: Text(
-              'SAVE AS DRAFT',
-              style: TextStyle(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w800,
-                fontSize: Dimensions.font16 * 0.75,
-                letterSpacing: 0.5,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        appBar: CustomBackAppBar(
+          title: widget.existing == null
+              ? 'New Manual Journal'
+              : 'Edit Manual Journal',
+          backgroundColor: context.colors.card,
+          onLeadingPressed: () => onPopInvokedWithResult(false, null),
+          actions: [
+            TextButton(
+              onPressed: () => _saveJournal(status: ManualJournalStatus.draft),
+              child: Text(
+                'SAVE AS DRAFT',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w800,
+                  fontSize: Dimensions.font16 * 0.75,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
-          ),
-          PopupMenuButton<String>(
-            icon: Icon(
-              Icons.more_vert_rounded,
-              color: context.colors.textPrimary,
-            ),
-            onSelected: (val) {
-              if (val == 'save_published') {
-                _saveJournal(status: ManualJournalStatus.published);
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'save_published',
-                child: Text('Save as Published'),
+            PopupMenuButton<String>(
+              icon: Icon(
+                Icons.more_vert_rounded,
+                color: context.colors.textPrimary,
               ),
-            ],
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(Dimensions.width15),
-        child: Column(
-          children: [
-            FormCard(
-              children: [
-                // Journal# *
-                const RequiredLabel(text: 'Journal#'),
-                SizedBox(height: Dimensions.height10 / 2),
-                TextField(
-                  controller: _journalNumberController,
-                  style: FormTextStyles.value(context),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.primary),
-                    ),
-                  ),
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                // Reference#
-                Text('Reference#', style: FormTextStyles.label()),
-                SizedBox(height: Dimensions.height10 / 2),
-                TextField(
-                  controller: _referenceController,
-                  style: FormTextStyles.value(context),
-                  decoration: InputDecoration(
-                    hintText: 'Enter reference',
-                    hintStyle: TextStyle(color: context.colors.textTertiary),
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.primary),
-                    ),
-                  ),
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                // Journal Date *
-                const RequiredLabel(text: 'Journal Date'),
-                SizedBox(height: Dimensions.height10 / 2),
-                InkWell(
-                  onTap: _pickDate,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height10,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: context.colors.border),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          formatDate(_journalDate),
-                          style: FormTextStyles.value(context),
-                        ),
-                        Icon(
-                          Icons.calendar_today_outlined,
-                          size: Dimensions.iconSize24 * 0.85,
-                          color: context.colors.textSecondary,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: Dimensions.height20),
-
-                // Amount (₹) *
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const RequiredLabel(text: 'Amount (₹)'),
-                    FormNumberField(
-                      controller: _amountController,
-                      hint: '0.00',
-                      prefix: '₹',
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: Dimensions.height15),
-
-            // Notes
-            FormCard(
-              children: [
-                Text('Notes', style: FormTextStyles.label()),
-                SizedBox(height: Dimensions.height10 / 2),
-                TextField(
-                  controller: _notesController,
-                  maxLines: 4,
-                  style: FormTextStyles.value(context),
-                  decoration: InputDecoration(
-                    hintText: 'Add notes',
-                    hintStyle: TextStyle(color: context.colors.textTertiary),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        Dimensions.radius15 / 2,
-                      ),
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        Dimensions.radius15 / 2,
-                      ),
-                      borderSide: BorderSide(color: context.colors.border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        Dimensions.radius15 / 2,
-                      ),
-                      borderSide: const BorderSide(color: AppColors.primary),
-                    ),
-                  ),
+              onSelected: (val) {
+                if (val == 'save_published') {
+                  _saveJournal(status: ManualJournalStatus.published);
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'save_published',
+                  child: Text('Save as Published'),
                 ),
               ],
             ),
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(Dimensions.width15),
+          child: Column(
+            children: [
+              FormCard(
+                children: [
+                  // Journal# *
+                  const RequiredLabel(text: 'Journal#'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  TextField(
+                    controller: _journalNumberController,
+                    style: FormTextStyles.value(context),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height10,
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: AppColors.primary),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height20),
+
+                  // Reference#
+                  Text('Reference#', style: FormTextStyles.label()),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  TextField(
+                    controller: _referenceController,
+                    style: FormTextStyles.value(context),
+                    decoration: InputDecoration(
+                      hintText: 'Enter reference',
+                      hintStyle: TextStyle(color: context.colors.textTertiary),
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height10,
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: AppColors.primary),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height20),
+
+                  // Journal Date *
+                  const RequiredLabel(text: 'Journal Date'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  InkWell(
+                    onTap: _pickDate,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: Dimensions.height10,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: context.colors.border),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            formatDate(_journalDate),
+                            style: FormTextStyles.value(context),
+                          ),
+                          Icon(
+                            Icons.calendar_today_outlined,
+                            size: Dimensions.iconSize24 * 0.85,
+                            color: context.colors.textSecondary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height20),
+
+                  // Amount (₹) *
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const RequiredLabel(text: 'Amount (₹)'),
+                      FormNumberField(
+                        controller: _amountController,
+                        hint: '0.00',
+                        prefix: '₹',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: Dimensions.height15),
+
+              // Notes
+              FormCard(
+                children: [
+                  Text('Notes', style: FormTextStyles.label()),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  TextField(
+                    controller: _notesController,
+                    maxLines: 4,
+                    style: FormTextStyles.value(context),
+                    decoration: InputDecoration(
+                      hintText: 'Add notes',
+                      hintStyle: TextStyle(color: context.colors.textTertiary),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15 / 2,
+                        ),
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15 / 2,
+                        ),
+                        borderSide: BorderSide(color: context.colors.border),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15 / 2,
+                        ),
+                        borderSide: const BorderSide(color: AppColors.primary),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

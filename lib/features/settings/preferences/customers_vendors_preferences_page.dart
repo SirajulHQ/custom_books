@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:flutter/material.dart';
 
 class CustomersVendorsPreferencesPage extends StatefulWidget {
@@ -16,7 +17,7 @@ class CustomersVendorsPreferencesPage extends StatefulWidget {
 
 class _CustomersVendorsPreferencesPageState
     extends State<CustomersVendorsPreferencesPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, UnsavedChangesMixin {
   late TabController _tabController;
 
   // General Tab
@@ -68,6 +69,7 @@ class _CustomersVendorsPreferencesPageState
       '💾 Save Customers & Vendors Preferences',
       name: 'CustomersVendorsPreferences',
     );
+    markClean();
     Navigator.pop(context);
   }
 
@@ -129,6 +131,7 @@ class _CustomersVendorsPreferencesPageState
                               '$_shippingAddressFormat\n${entry.value}';
                         }
                       });
+                      markDirty();
                     },
                   );
                 }).toList(),
@@ -233,6 +236,7 @@ class _CustomersVendorsPreferencesPageState
                           _CustomField(label: label, type: selectedType),
                         );
                       });
+                      markDirty();
                     },
                     child: Text(
                       'Add Field',
@@ -253,47 +257,52 @@ class _CustomersVendorsPreferencesPageState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      bottomNavigationBar: _buildSaveButton(),
-      body: SafeArea(
-        child: NestedScrollView(
-          physics: const BouncingScrollPhysics(),
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            CustomSliverAppBar(
-              title: 'Customers And Vendors',
-              leadingType: AppBarLeadingType.back,
-              pinned: true,
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _TabBarDelegate(
-                tabBar: TabBar(
-                  controller: _tabController,
-                  labelColor: AppColors.primary,
-                  unselectedLabelColor: context.colors.textSecondary,
-                  indicatorColor: AppColors.primary,
-                  indicatorWeight: 3,
-                  labelStyle: TextStyle(
-                    fontSize: Dimensions.font16 * 0.9,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  unselectedLabelStyle: TextStyle(
-                    fontSize: Dimensions.font16 * 0.9,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  tabs: const [
-                    Tab(text: 'General'),
-                    Tab(text: 'Field Customization'),
-                  ],
-                ),
-                backgroundColor: context.colors.background,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        bottomNavigationBar: _buildSaveButton(),
+        body: SafeArea(
+          child: NestedScrollView(
+            physics: const BouncingScrollPhysics(),
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              CustomSliverAppBar(
+                title: 'Customers And Vendors',
+                leadingType: AppBarLeadingType.back,
+                pinned: true,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
               ),
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _TabBarDelegate(
+                  tabBar: TabBar(
+                    controller: _tabController,
+                    labelColor: AppColors.primary,
+                    unselectedLabelColor: context.colors.textSecondary,
+                    indicatorColor: AppColors.primary,
+                    indicatorWeight: 3,
+                    labelStyle: TextStyle(
+                      fontSize: Dimensions.font16 * 0.9,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    unselectedLabelStyle: TextStyle(
+                      fontSize: Dimensions.font16 * 0.9,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    tabs: const [
+                      Tab(text: 'General'),
+                      Tab(text: 'Field Customization'),
+                    ],
+                  ),
+                  backgroundColor: context.colors.background,
+                ),
+              ),
+            ],
+            body: TabBarView(
+              controller: _tabController,
+              children: [_buildGeneralTab(), _buildFieldCustomizationTab()],
             ),
-          ],
-          body: TabBarView(
-            controller: _tabController,
-            children: [_buildGeneralTab(), _buildFieldCustomizationTab()],
           ),
         ),
       ),
@@ -387,8 +396,10 @@ class _CustomersVendorsPreferencesPageState
                   ),
                   Switch(
                     value: _enableCreditLimit,
-                    onChanged: (val) =>
-                        setState(() => _enableCreditLimit = val),
+                    onChanged: (val) {
+                      setState(() => _enableCreditLimit = val);
+                      markDirty();
+                    },
                     activeThumbColor: AppColors.primary,
                   ),
                 ],
@@ -561,8 +572,10 @@ class _CustomersVendorsPreferencesPageState
                         color: AppColors.warn,
                         size: Dimensions.iconSize24 * 0.9,
                       ),
-                      onPressed: () =>
-                          setState(() => _customFields.removeAt(index)),
+                      onPressed: () {
+                        setState(() => _customFields.removeAt(index));
+                        markDirty();
+                      },
                     ),
                   ],
                 ),
@@ -620,14 +633,19 @@ class _CustomersVendorsPreferencesPageState
   }
 
   Widget _buildRadioOption(String label, bool selected, VoidCallback onTap) {
+    void handleTap() {
+      onTap();
+      markDirty();
+    }
+
     return InkWell(
-      onTap: onTap,
+      onTap: handleTap,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           RadioGroup<bool>(
             groupValue: selected ? true : null,
-            onChanged: (_) => onTap(),
+            onChanged: (_) => handleTap(),
             child: Radio<bool>(
               value: true,
               activeColor: AppColors.primary,
@@ -651,8 +669,13 @@ class _CustomersVendorsPreferencesPageState
     bool value,
     ValueChanged<bool?> onChanged,
   ) {
+    void handleChanged(bool? val) {
+      onChanged(val);
+      markDirty();
+    }
+
     return InkWell(
-      onTap: () => onChanged(!value),
+      onTap: () => handleChanged(!value),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -661,7 +684,7 @@ class _CustomersVendorsPreferencesPageState
             height: Dimensions.iconSize24,
             child: Checkbox(
               value: value,
-              onChanged: onChanged,
+              onChanged: handleChanged,
               activeColor: AppColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),

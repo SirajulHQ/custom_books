@@ -9,6 +9,7 @@ import 'package:custom_books/features/inventory_adjustments/models/inventory_adj
 import 'package:custom_books/features/inventory_adjustments/models/line_item_model.dart';
 import 'package:custom_books/features/inventory_adjustments/views/add_line_item_page.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/adjustment_form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,7 +23,8 @@ class NewAdjustmentPage extends StatefulWidget {
   State<NewAdjustmentPage> createState() => _NewAdjustmentPageState();
 }
 
-class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
+class _NewAdjustmentPageState extends State<NewAdjustmentPage>
+    with UnsavedChangesMixin {
   final _referenceController = TextEditingController();
   final _descriptionController = TextEditingController();
 
@@ -240,6 +242,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
                                     ),
                                     onPressed: () {
                                       setState(() => _attachments.removeAt(i));
+                                      markDirty();
                                       setDialogState(() {});
                                     },
                                   ),
@@ -392,6 +395,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
       final exists = _attachments.any((f) => f.name == pf.name);
       if (!exists) {
         setState(() => _attachments.add(pf));
+        markDirty();
         setDialogState(() {});
       }
     } catch (e) {
@@ -435,6 +439,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
     }
     if (toAdd.isNotEmpty) {
       setState(() => _attachments.addAll(toAdd));
+      markDirty();
       setDialogState(() {});
     }
   }
@@ -512,10 +517,14 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
       _date = existing.date;
       _reason = _reasons.contains(existing.reason) ? existing.reason : null;
     }
+    _referenceController.addListener(markDirty);
+    _descriptionController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _referenceController.removeListener(markDirty);
+    _descriptionController.removeListener(markDirty);
     _referenceController.dispose();
     _descriptionController.dispose();
     super.dispose();
@@ -537,7 +546,10 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
-    if (picked != null) setState(() => _date = picked);
+    if (picked != null) {
+      setState(() => _date = picked);
+      markDirty();
+    }
   }
 
   Future<void> _addLineItem() async {
@@ -545,7 +557,10 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
       context,
       MaterialPageRoute(builder: (_) => const AddLineItemPage()),
     );
-    if (result != null) setState(() => _lineItems.add(result));
+    if (result != null) {
+      setState(() => _lineItems.add(result));
+      markDirty();
+    }
   }
 
   Future<void> _editLineItem(LineItem item) async {
@@ -558,11 +573,13 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
         final index = _lineItems.indexWhere((i) => i.id == item.id);
         if (index != -1) _lineItems[index] = result;
       });
+      markDirty();
     }
   }
 
   void _removeLineItem(String id) {
     setState(() => _lineItems.removeWhere((i) => i.id == id));
+    markDirty();
   }
 
   void _save() {
@@ -585,6 +602,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
       createdAt: now,
       lastModifiedAt: now,
     );
+    markClean();
     Navigator.pop(context, adjustment);
   }
 
@@ -624,247 +642,268 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      appBar: CustomBackAppBar(
-        title: widget.existing == null ? 'New Adjustment' : 'Edit Adjustment',
-        actions: [
-          TextButton(
-            onPressed: _save,
-            child: Text(
-              'SAVE',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                fontWeight: FontWeight.w700,
-                color: AppColors.primary,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        appBar: CustomBackAppBar(
+          title: widget.existing == null ? 'New Adjustment' : 'Edit Adjustment',
+          onLeadingPressed: () => onPopInvokedWithResult(false, null),
+          actions: [
+            TextButton(
+              onPressed: _save,
+              child: Text(
+                'SAVE',
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.8,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary,
+                ),
               ),
             ),
-          ),
-          PopupMenuButton<String>(
-            icon: Icon(
-              Icons.more_vert_rounded,
-              color: context.colors.textSecondary,
-              size: Dimensions.iconSize24 - 4,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-            ),
-            onSelected: (value) {
-              if (value == 'discard') Navigator.pop(context);
-            },
-            itemBuilder: (context) => const [
-              PopupMenuItem(value: 'discard', child: Text('Discard')),
-            ],
-          ),
-          SizedBox(width: Dimensions.width10),
-        ],
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.symmetric(
-            horizontal: Dimensions.width20,
-            vertical: Dimensions.height15,
-          ),
-          physics: const BouncingScrollPhysics(),
-          children: [
-            FormCard(
-              children: [
-                Text('Mode of adjustment', style: FormTextStyles.label()),
-                SizedBox(height: Dimensions.height10 / 2),
-                Row(
-                  children: [
-                    AdjustmentRadioOption(
-                      label: 'Quantity',
-                      value: ModeOfAdjustment.quantity,
-                      selectedValue: _mode,
-                      onChanged: (newMode) => setState(() => _mode = newMode),
-                    ),
-                    SizedBox(width: Dimensions.width20),
-                    AdjustmentRadioOption(
-                      label: 'Value',
-                      value: ModeOfAdjustment.value,
-                      selectedValue: _mode,
-                      onChanged: (newMode) => setState(() => _mode = newMode),
-                    ),
-                  ],
-                ),
+            PopupMenuButton<String>(
+              icon: Icon(
+                Icons.more_vert_rounded,
+                color: context.colors.textSecondary,
+                size: Dimensions.iconSize24 - 4,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Dimensions.radius15),
+              ),
+              onSelected: (value) {
+                if (value == 'discard') Navigator.pop(context);
+              },
+              itemBuilder: (context) => const [
+                PopupMenuItem(value: 'discard', child: Text('Discard')),
               ],
             ),
-            SizedBox(height: Dimensions.height15),
-            FormCard(
-              children: [
-                Text('Reference#', style: FormTextStyles.label()),
-                TextField(
-                  controller: _referenceController,
-                  style: FormTextStyles.value(context),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    isDense: true,
-                  ),
-                ),
-                const FormDivider(),
-                SizedBox(height: Dimensions.height15),
-                RequiredLabel(text: 'Date'),
-                SizedBox(height: Dimensions.height10 / 2),
-                InkWell(
-                  onTap: _pickDate,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            SizedBox(width: Dimensions.width10),
+          ],
+        ),
+        body: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.symmetric(
+              horizontal: Dimensions.width20,
+              vertical: Dimensions.height15,
+            ),
+            physics: const BouncingScrollPhysics(),
+            children: [
+              FormCard(
+                children: [
+                  Text('Mode of adjustment', style: FormTextStyles.label()),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  Row(
                     children: [
-                      Text(
-                        formatDate(_date),
-                        style: FormTextStyles.value(context),
+                      AdjustmentRadioOption(
+                        label: 'Quantity',
+                        value: ModeOfAdjustment.quantity,
+                        selectedValue: _mode,
+                        onChanged: (newMode) {
+                          setState(() => _mode = newMode);
+                          markDirty();
+                        },
                       ),
-                      Icon(
-                        Icons.calendar_today_outlined,
-                        size: Dimensions.iconSize24 - 6,
+                      SizedBox(width: Dimensions.width20),
+                      AdjustmentRadioOption(
+                        label: 'Value',
+                        value: ModeOfAdjustment.value,
+                        selectedValue: _mode,
+                        onChanged: (newMode) {
+                          setState(() => _mode = newMode);
+                          markDirty();
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: Dimensions.height15),
+              FormCard(
+                children: [
+                  Text('Reference#', style: FormTextStyles.label()),
+                  TextField(
+                    controller: _referenceController,
+                    style: FormTextStyles.value(context),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      isDense: true,
+                    ),
+                  ),
+                  const FormDivider(),
+                  SizedBox(height: Dimensions.height15),
+                  RequiredLabel(text: 'Date'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  InkWell(
+                    onTap: _pickDate,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          formatDate(_date),
+                          style: FormTextStyles.value(context),
+                        ),
+                        Icon(
+                          Icons.calendar_today_outlined,
+                          size: Dimensions.iconSize24 - 6,
+                          color: context.colors.textSecondary,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const FormDivider(),
+                  SizedBox(height: Dimensions.height15),
+                  RequiredLabel(text: 'Account'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _account,
+                      isExpanded: true,
+                      style: FormTextStyles.value(context),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
                         color: context.colors.textSecondary,
                       ),
-                    ],
-                  ),
-                ),
-                const FormDivider(),
-                SizedBox(height: Dimensions.height15),
-                RequiredLabel(text: 'Account'),
-                SizedBox(height: Dimensions.height10 / 2),
-                DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: _account,
-                    isExpanded: true,
-                    style: FormTextStyles.value(context),
-                    icon: Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: context.colors.textSecondary,
+                      items: _accounts
+                          .map(
+                            (a) => DropdownMenuItem(value: a, child: Text(a)),
+                          )
+                          .toList(),
+                      onChanged: (v) {
+                        setState(() => _account = v);
+                        markDirty();
+                      },
                     ),
-                    items: _accounts
-                        .map((a) => DropdownMenuItem(value: a, child: Text(a)))
-                        .toList(),
-                    onChanged: (v) => setState(() => _account = v),
                   ),
-                ),
-                const FormDivider(),
-                SizedBox(height: Dimensions.height15),
-                RequiredLabel(text: 'Reason'),
-                SizedBox(height: Dimensions.height10 / 2),
-                DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: _reason,
-                    isExpanded: true,
-                    hint: Text(
-                      'Select a reason',
-                      style: TextStyle(
-                        color: context.colors.textTertiary,
-                        fontSize: Dimensions.font16 * 0.85,
+                  const FormDivider(),
+                  SizedBox(height: Dimensions.height15),
+                  RequiredLabel(text: 'Reason'),
+                  SizedBox(height: Dimensions.height10 / 2),
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _reason,
+                      isExpanded: true,
+                      hint: Text(
+                        'Select a reason',
+                        style: TextStyle(
+                          color: context.colors.textTertiary,
+                          fontSize: Dimensions.font16 * 0.85,
+                        ),
                       ),
+                      style: FormTextStyles.value(context),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: context.colors.textSecondary,
+                      ),
+                      items: _reasons
+                          .map(
+                            (r) => DropdownMenuItem(value: r, child: Text(r)),
+                          )
+                          .toList(),
+                      onChanged: (v) {
+                        setState(() => _reason = v);
+                        markDirty();
+                      },
                     ),
+                  ),
+                  const FormDivider(),
+                  SizedBox(height: Dimensions.height15),
+                  Text('Description', style: FormTextStyles.label()),
+                  TextField(
+                    controller: _descriptionController,
+                    maxLength: 500,
+                    maxLines: 3,
                     style: FormTextStyles.value(context),
-                    icon: Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: context.colors.textSecondary,
+                    decoration: InputDecoration(
+                      hintText: 'Max 500 Characters',
+                      hintStyle: TextStyle(color: context.colors.textTertiary),
+                      border: InputBorder.none,
+                      isDense: true,
+                      counterText: '',
                     ),
-                    items: _reasons
-                        .map((r) => DropdownMenuItem(value: r, child: Text(r)))
-                        .toList(),
-                    onChanged: (v) => setState(() => _reason = v),
                   ),
-                ),
-                const FormDivider(),
-                SizedBox(height: Dimensions.height15),
-                Text('Description', style: FormTextStyles.label()),
-                TextField(
-                  controller: _descriptionController,
-                  maxLength: 500,
-                  maxLines: 3,
-                  style: FormTextStyles.value(context),
-                  decoration: InputDecoration(
-                    hintText: 'Max 500 Characters',
-                    hintStyle: TextStyle(color: context.colors.textTertiary),
-                    border: InputBorder.none,
-                    isDense: true,
-                    counterText: '',
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: Dimensions.height15),
-            if (_lineItems.isNotEmpty) ...[
-              ..._lineItems.map(
-                (item) => AdjustmentLineItemCard(
-                  item: item,
-                  onTap: () => _editLineItem(item),
-                  onRemove: () => _removeLineItem(item.id),
-                ),
+                ],
               ),
-              SizedBox(height: Dimensions.height10 / 2),
-            ],
-            AddLineItemButton(onPressed: _addLineItem),
-            SizedBox(height: Dimensions.height15),
-            FormCard(
-              children: [
-                Row(
-                  children: [
-                    Text('Attachments', style: FormTextStyles.label()),
-                    if (_attachments.isNotEmpty) ...[
-                      SizedBox(width: Dimensions.width10 / 2),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width10 * 0.6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(99),
-                        ),
-                        child: Text(
-                          '${_attachments.length}',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.7,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
+              SizedBox(height: Dimensions.height15),
+              if (_lineItems.isNotEmpty) ...[
+                ..._lineItems.map(
+                  (item) => AdjustmentLineItemCard(
+                    item: item,
+                    onTap: () => _editLineItem(item),
+                    onRemove: () => _removeLineItem(item.id),
+                  ),
                 ),
-                SizedBox(height: Dimensions.height10),
-                InkWell(
-                  borderRadius: BorderRadius.circular(Dimensions.radius15),
-                  onTap: _showAttachmentsDialog,
-                  child: DashedBorder(
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height15,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.upload_file_outlined,
-                            color: AppColors.primary,
-                            size: Dimensions.iconSize24 - 4,
+                SizedBox(height: Dimensions.height10 / 2),
+              ],
+              AddLineItemButton(onPressed: _addLineItem),
+              SizedBox(height: Dimensions.height15),
+              FormCard(
+                children: [
+                  Row(
+                    children: [
+                      Text('Attachments', style: FormTextStyles.label()),
+                      if (_attachments.isNotEmpty) ...[
+                        SizedBox(width: Dimensions.width10 / 2),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Dimensions.width10 * 0.6,
+                            vertical: 2,
                           ),
-                          SizedBox(width: Dimensions.width10),
-                          Text(
-                            _attachments.isEmpty
-                                ? 'Upload File'
-                                : '${_attachments.length} file(s) attached',
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(99),
+                          ),
+                          child: Text(
+                            '${_attachments.length}',
                             style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.85,
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w600,
+                              fontSize: Dimensions.font16 * 0.7,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
                             ),
                           ),
-                        ],
+                        ),
+                      ],
+                    ],
+                  ),
+                  SizedBox(height: Dimensions.height10),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(Dimensions.radius15),
+                    onTap: _showAttachmentsDialog,
+                    child: DashedBorder(
+                      child: Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(
+                          vertical: Dimensions.height15,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.upload_file_outlined,
+                              color: AppColors.primary,
+                              size: Dimensions.iconSize24 - 4,
+                            ),
+                            SizedBox(width: Dimensions.width10),
+                            Text(
+                              _attachments.isEmpty
+                                  ? 'Upload File'
+                                  : '${_attachments.length} file(s) attached',
+                              style: TextStyle(
+                                fontSize: Dimensions.font16 * 0.85,
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: Dimensions.height30),
-          ],
+                ],
+              ),
+              SizedBox(height: Dimensions.height30),
+            ],
+          ),
         ),
       ),
     );

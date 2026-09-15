@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:flutter/material.dart';
 
 class GeneralPreferencesPage extends StatefulWidget {
@@ -12,7 +13,8 @@ class GeneralPreferencesPage extends StatefulWidget {
   State<GeneralPreferencesPage> createState() => _GeneralPreferencesPageState();
 }
 
-class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
+class _GeneralPreferencesPageState extends State<GeneralPreferencesPage>
+    with UnsavedChangesMixin {
   // Module toggles
   final Map<String, bool> _modules = {
     'Quote': true,
@@ -97,6 +99,7 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
 
   void _save() {
     appLog('💾 Save General Preferences', name: 'GeneralPreferences');
+    markClean();
     Navigator.pop(context);
   }
 
@@ -153,6 +156,7 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
                         _orgAddressFormat =
                             '$_orgAddressFormat\n${entry.value}';
                       });
+                      markDirty();
                     },
                   );
                 }).toList(),
@@ -221,205 +225,211 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      bottomNavigationBar: _buildSaveButton(),
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            const CustomSliverAppBar(
-              title: 'General',
-              leadingType: AppBarLeadingType.back,
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.width15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: Dimensions.height10),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        bottomNavigationBar: _buildSaveButton(),
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'General',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimensions.width15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: Dimensions.height10),
 
-                    // ── Modules Section ──────────────────────────────────
-                    _buildSectionHeader(
-                      'Select the modules you would like to enable.',
-                    ),
-                    SizedBox(height: Dimensions.height10),
-                    Wrap(
-                      spacing: Dimensions.width10,
-                      runSpacing: Dimensions.height10,
-                      children: _modules.entries
-                          .map(
-                            (entry) => _buildModuleChip(entry.key, entry.value),
-                          )
-                          .toList(),
-                    ),
+                      // ── Modules Section ──────────────────────────────────
+                      _buildSectionHeader(
+                        'Select the modules you would like to enable.',
+                      ),
+                      SizedBox(height: Dimensions.height10),
+                      Wrap(
+                        spacing: Dimensions.width10,
+                        runSpacing: Dimensions.height10,
+                        children: _modules.entries
+                            .map(
+                              (entry) =>
+                                  _buildModuleChip(entry.key, entry.value),
+                            )
+                            .toList(),
+                      ),
 
-                    _buildSectionDivider(),
+                      _buildSectionDivider(),
 
-                    // ── Other Preferences ────────────────────────────────
-                    _buildSectionHeader('Other Preferences'),
-                    SizedBox(height: Dimensions.height15),
+                      // ── Other Preferences ────────────────────────────────
+                      _buildSectionHeader('Other Preferences'),
+                      SizedBox(height: Dimensions.height15),
 
-                    // PDF Attachment
-                    FormCard(
-                      children: [
-                        Text(
-                          'PDF Attachment',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16,
-                            fontWeight: FontWeight.w600,
-                            color: context.colors.textPrimary,
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height15),
-                        _buildCheckboxTile(
-                          'Attach PDF file with the link while emailing the invoice & quote?',
-                          _attachPdf,
-                          (val) => setState(() => _attachPdf = val ?? false),
-                        ),
-                        SizedBox(height: Dimensions.height10),
-                        _buildCheckboxTile(
-                          'I would like to encrypt the PDF files that I send',
-                          _encryptPdf,
-                          (val) => setState(() => _encryptPdf = val ?? false),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height15),
-
-                    // Discounts
-                    FormCard(
-                      children: [
-                        Text(
-                          'Do you give discounts?',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16,
-                            fontWeight: FontWeight.w600,
-                            color: context.colors.textPrimary,
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height10),
-                        ..._discountOptions.map(
-                          (option) => _buildRadioTile(
-                            option,
-                            _discountOption == option,
-                            () => setState(() => _discountOption = option),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height15),
-
-                    // Tax
-                    FormCard(
-                      children: [
-                        Text(
-                          'Do you sell your items at rates inclusive of Tax?',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16,
-                            fontWeight: FontWeight.w600,
-                            color: context.colors.textPrimary,
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height10),
-                        ..._taxOptions.map(
-                          (option) => _buildRadioTile(
-                            option,
-                            _taxOption == option,
-                            () => setState(() => _taxOption = option),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height15),
-
-                    // Rounding
-                    FormCard(
-                      children: [
-                        Text(
-                          'Rounding off in Sales Transactions',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16,
-                            fontWeight: FontWeight.w600,
-                            color: context.colors.textPrimary,
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height10),
-                        ..._roundingOptions.map(
-                          (option) => _buildRadioTile(
-                            option,
-                            _roundingOption == option,
-                            () => setState(() => _roundingOption = option),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height15),
-
-                    // Salesperson
-                    FormCard(
-                      children: [
-                        _buildCheckboxTile(
-                          'I want to add a field for salesperson',
-                          _addSalesperson,
-                          (val) =>
-                              setState(() => _addSalesperson = val ?? false),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Dimensions.height15),
-
-                    // Organization Address Format
-                    _buildSectionHeader('Organization Address Format'),
-                    SizedBox(height: Dimensions.height10),
-                    FormCard(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(Dimensions.width15),
-                          decoration: BoxDecoration(
-                            color: context.colors.surfaceLight,
-                            borderRadius: BorderRadius.circular(
-                              Dimensions.radius15 / 2,
-                            ),
-                            border: Border.all(color: context.colors.border),
-                          ),
-                          child: Text(
-                            _orgAddressFormat,
+                      // PDF Attachment
+                      FormCard(
+                        children: [
+                          Text(
+                            'PDF Attachment',
                             style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.8,
+                              fontSize: Dimensions.font16,
+                              fontWeight: FontWeight.w600,
                               color: context.colors.textPrimary,
-                              height: 1.5,
-                              fontFamily: 'monospace',
                             ),
                           ),
-                        ),
-                        SizedBox(height: Dimensions.height10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _buildActionLink(
-                              Icons.add_circle_outline_rounded,
-                              'Insert Placeholders',
-                              _insertPlaceholder,
-                            ),
-                            _buildActionLink(
-                              Icons.visibility_outlined,
-                              'Preview',
-                              _previewAddressFormat,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          SizedBox(height: Dimensions.height15),
+                          _buildCheckboxTile(
+                            'Attach PDF file with the link while emailing the invoice & quote?',
+                            _attachPdf,
+                            (val) => setState(() => _attachPdf = val ?? false),
+                          ),
+                          SizedBox(height: Dimensions.height10),
+                          _buildCheckboxTile(
+                            'I would like to encrypt the PDF files that I send',
+                            _encryptPdf,
+                            (val) => setState(() => _encryptPdf = val ?? false),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height15),
 
-                    SizedBox(height: Dimensions.height30 * 2),
-                  ],
+                      // Discounts
+                      FormCard(
+                        children: [
+                          Text(
+                            'Do you give discounts?',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16,
+                              fontWeight: FontWeight.w600,
+                              color: context.colors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height10),
+                          ..._discountOptions.map(
+                            (option) => _buildRadioTile(
+                              option,
+                              _discountOption == option,
+                              () => setState(() => _discountOption = option),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height15),
+
+                      // Tax
+                      FormCard(
+                        children: [
+                          Text(
+                            'Do you sell your items at rates inclusive of Tax?',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16,
+                              fontWeight: FontWeight.w600,
+                              color: context.colors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height10),
+                          ..._taxOptions.map(
+                            (option) => _buildRadioTile(
+                              option,
+                              _taxOption == option,
+                              () => setState(() => _taxOption = option),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height15),
+
+                      // Rounding
+                      FormCard(
+                        children: [
+                          Text(
+                            'Rounding off in Sales Transactions',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16,
+                              fontWeight: FontWeight.w600,
+                              color: context.colors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height10),
+                          ..._roundingOptions.map(
+                            (option) => _buildRadioTile(
+                              option,
+                              _roundingOption == option,
+                              () => setState(() => _roundingOption = option),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height15),
+
+                      // Salesperson
+                      FormCard(
+                        children: [
+                          _buildCheckboxTile(
+                            'I want to add a field for salesperson',
+                            _addSalesperson,
+                            (val) =>
+                                setState(() => _addSalesperson = val ?? false),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: Dimensions.height15),
+
+                      // Organization Address Format
+                      _buildSectionHeader('Organization Address Format'),
+                      SizedBox(height: Dimensions.height10),
+                      FormCard(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(Dimensions.width15),
+                            decoration: BoxDecoration(
+                              color: context.colors.surfaceLight,
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius15 / 2,
+                              ),
+                              border: Border.all(color: context.colors.border),
+                            ),
+                            child: Text(
+                              _orgAddressFormat,
+                              style: TextStyle(
+                                fontSize: Dimensions.font16 * 0.8,
+                                color: context.colors.textPrimary,
+                                height: 1.5,
+                                fontFamily: 'monospace',
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _buildActionLink(
+                                Icons.add_circle_outline_rounded,
+                                'Insert Placeholders',
+                                _insertPlaceholder,
+                              ),
+                              _buildActionLink(
+                                Icons.visibility_outlined,
+                                'Preview',
+                                _previewAddressFormat,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: Dimensions.height30 * 2),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -481,6 +491,7 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
     return GestureDetector(
       onTap: () {
         setState(() => _modules[label] = !enabled);
+        markDirty();
       },
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -510,15 +521,20 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
   }
 
   Widget _buildRadioTile(String label, bool selected, VoidCallback onTap) {
+    void handleTap() {
+      onTap();
+      markDirty();
+    }
+
     return InkWell(
-      onTap: onTap,
+      onTap: handleTap,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: Dimensions.height10 / 2),
         child: Row(
           children: [
             RadioGroup<bool>(
               groupValue: selected ? true : null,
-              onChanged: (_) => onTap(),
+              onChanged: (_) => handleTap(),
               child: Radio<bool>(
                 value: true,
                 activeColor: AppColors.primary,
@@ -546,8 +562,13 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
     bool value,
     ValueChanged<bool?> onChanged,
   ) {
+    void handleChanged(bool? val) {
+      onChanged(val);
+      markDirty();
+    }
+
     return InkWell(
-      onTap: () => onChanged(!value),
+      onTap: () => handleChanged(!value),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -556,7 +577,7 @@ class _GeneralPreferencesPageState extends State<GeneralPreferencesPage> {
             height: Dimensions.iconSize24,
             child: Checkbox(
               value: value,
-              onChanged: onChanged,
+              onChanged: handleChanged,
               activeColor: AppColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),

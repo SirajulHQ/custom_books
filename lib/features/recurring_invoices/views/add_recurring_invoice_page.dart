@@ -5,6 +5,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/recurring_invoices/models/recurring_invoice_model.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,8 @@ class AddRecurringInvoicePage extends StatefulWidget {
       _AddRecurringInvoicePageState();
 }
 
-class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
+class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage>
+    with UnsavedChangesMixin {
   final _profileNameController = TextEditingController();
   final _customerController = TextEditingController();
   final _amountController = TextEditingController();
@@ -45,10 +47,16 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
       _startDate = existing.startDate;
       _frequency = existing.frequency;
     }
+    _profileNameController.addListener(markDirty);
+    _customerController.addListener(markDirty);
+    _amountController.addListener(markDirty);
   }
 
   @override
   void dispose() {
+    _profileNameController.removeListener(markDirty);
+    _customerController.removeListener(markDirty);
+    _amountController.removeListener(markDirty);
     _profileNameController.dispose();
     _customerController.dispose();
     _amountController.dispose();
@@ -64,6 +72,7 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
     );
     if (picked != null) {
       setState(() => _startDate = picked);
+      markDirty();
     }
   }
 
@@ -123,6 +132,7 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
 
     if (selected != null) {
       setState(() => _customerController.text = selected);
+      markDirty();
     }
   }
 
@@ -173,6 +183,7 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
 
     if (selected != null) {
       setState(() => _frequency = selected);
+      markDirty();
     }
   }
 
@@ -204,247 +215,258 @@ class _AddRecurringInvoicePageState extends State<AddRecurringInvoicePage> {
       updatedAt: DateTime.now(),
     );
 
+    markClean();
     Navigator.pop(context, newProfile);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: widget.existing == null
-                  ? 'New Recurring Invoice'
-                  : 'Edit Recurring Invoice',
-              leadingType: AppBarLeadingType.back,
-              actions: [
-                AppBarElevatedButton(
-                  label: 'SAVE',
-                  onPressed: () =>
-                      _saveProfile(status: RecurringInvoiceStatus.active),
-                ),
-                SizedBox(width: Dimensions.width10),
-                AppBarIconButton(
-                  icon: Icons.more_vert_rounded,
-                  color: AppColors.accent,
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      backgroundColor: Colors.transparent,
-                      builder: (ctx) => Container(
-                        decoration: BoxDecoration(
-                          color: context.colors.card,
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(Dimensions.radius20 * 1.2),
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const BottomSheetDragHandle(),
-                            ListTile(
-                              leading: Icon(
-                                Icons.drafts_rounded,
-                                color: AppColors.primary,
-                              ),
-                              title: Text(
-                                'Save as Draft',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.9,
-                                  fontWeight: FontWeight.w600,
-                                  color: context.colors.textPrimary,
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.pop(ctx);
-                                _saveProfile(
-                                  status: RecurringInvoiceStatus.draft,
-                                );
-                              },
-                            ),
-                            SizedBox(height: Dimensions.height20),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(Dimensions.width15),
-                child: Column(
-                  children: [
-                    FormCard(
-                      children: [
-                        // Profile Name *
-                        const RequiredLabel(text: 'Profile Name'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        TextField(
-                          controller: _profileNameController,
-                          style: FormTextStyles.value(context),
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: Dimensions.height10,
-                            ),
-                            border: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: context.colors.border,
-                              ),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: context.colors.border,
-                              ),
-                            ),
-                            focusedBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.primary),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: widget.existing == null
+                    ? 'New Recurring Invoice'
+                    : 'Edit Recurring Invoice',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+                actions: [
+                  AppBarElevatedButton(
+                    label: 'SAVE',
+                    onPressed: () =>
+                        _saveProfile(status: RecurringInvoiceStatus.active),
+                  ),
+                  SizedBox(width: Dimensions.width10),
+                  AppBarIconButton(
+                    icon: Icons.more_vert_rounded,
+                    color: AppColors.accent,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        builder: (ctx) => Container(
+                          decoration: BoxDecoration(
+                            color: context.colors.card,
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(Dimensions.radius20 * 1.2),
                             ),
                           ),
-                        ),
-                        SizedBox(height: Dimensions.height20),
-
-                        // Customer Name *
-                        const RequiredLabel(text: 'Customer Name'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        InkWell(
-                          onTap: _selectCustomer,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: Dimensions.width10 / 2,
-                              vertical: Dimensions.height10,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: context.colors.border,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const BottomSheetDragHandle(),
+                              ListTile(
+                                leading: Icon(
+                                  Icons.drafts_rounded,
+                                  color: AppColors.primary,
                                 ),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    _customerController.text.isEmpty
-                                        ? 'Start typing to select a Customer'
-                                        : _customerController.text,
-                                    style: TextStyle(
-                                      fontSize: Dimensions.font16 * 0.9,
-                                      color: _customerController.text.isEmpty
-                                          ? context.colors.textTertiary
-                                          : context.colors.textPrimary,
-                                      fontWeight:
-                                          _customerController.text.isEmpty
-                                          ? FontWeight.normal
-                                          : FontWeight.w600,
-                                    ),
+                                title: Text(
+                                  'Save as Draft',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.colors.textPrimary,
                                   ),
                                 ),
-                                Icon(
-                                  Icons.add_rounded,
-                                  size: Dimensions.iconSize24,
-                                  color: context.colors.textPrimary,
-                                ),
-                              ],
-                            ),
+                                onTap: () {
+                                  Navigator.pop(ctx);
+                                  _saveProfile(
+                                    status: RecurringInvoiceStatus.draft,
+                                  );
+                                },
+                              ),
+                              SizedBox(height: Dimensions.height20),
+                            ],
                           ),
                         ),
-                        SizedBox(height: Dimensions.height20),
-
-                        // Frequency
-                        Text('Frequency', style: FormTextStyles.label()),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        InkWell(
-                          onTap: _selectFrequency,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: Dimensions.height10,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
+                      );
+                    },
+                  ),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(Dimensions.width15),
+                  child: Column(
+                    children: [
+                      FormCard(
+                        children: [
+                          // Profile Name *
+                          const RequiredLabel(text: 'Profile Name'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          TextField(
+                            controller: _profileNameController,
+                            style: FormTextStyles.value(context),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: Dimensions.height10,
+                              ),
+                              border: UnderlineInputBorder(
+                                borderSide: BorderSide(
                                   color: context.colors.border,
                                 ),
                               ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  _frequency.label,
-                                  style: FormTextStyles.value(context),
-                                ),
-                                Icon(
-                                  Icons.arrow_drop_down_rounded,
-                                  size: Dimensions.iconSize24,
-                                  color: context.colors.textSecondary,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: Dimensions.height20),
-
-                        // Start Date *
-                        const RequiredLabel(text: 'Start Date'),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        InkWell(
-                          onTap: _pickDate,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: Dimensions.height10,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
                                   color: context.colors.border,
                                 ),
                               ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  formatDate(_startDate),
-                                  style: FormTextStyles.value(context),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: AppColors.primary,
                                 ),
-                                Icon(
-                                  Icons.calendar_today_outlined,
-                                  size: Dimensions.iconSize24 * 0.85,
-                                  color: context.colors.textSecondary,
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: Dimensions.height20),
+                          SizedBox(height: Dimensions.height20),
 
-                        // Amount (₹) *
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const RequiredLabel(text: 'Amount (₹)'),
-                            FormNumberField(
-                              controller: _amountController,
-                              hint: '0.00',
-                              prefix: '₹',
+                          // Customer Name *
+                          const RequiredLabel(text: 'Customer Name'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          InkWell(
+                            onTap: _selectCustomer,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Dimensions.width10 / 2,
+                                vertical: Dimensions.height10,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: context.colors.border,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _customerController.text.isEmpty
+                                          ? 'Start typing to select a Customer'
+                                          : _customerController.text,
+                                      style: TextStyle(
+                                        fontSize: Dimensions.font16 * 0.9,
+                                        color: _customerController.text.isEmpty
+                                            ? context.colors.textTertiary
+                                            : context.colors.textPrimary,
+                                        fontWeight:
+                                            _customerController.text.isEmpty
+                                            ? FontWeight.normal
+                                            : FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.add_rounded,
+                                    size: Dimensions.iconSize24,
+                                    color: context.colors.textPrimary,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          // Frequency
+                          Text('Frequency', style: FormTextStyles.label()),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          InkWell(
+                            onTap: _selectFrequency,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: Dimensions.height10,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: context.colors.border,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    _frequency.label,
+                                    style: FormTextStyles.value(context),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_drop_down_rounded,
+                                    size: Dimensions.iconSize24,
+                                    color: context.colors.textSecondary,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          // Start Date *
+                          const RequiredLabel(text: 'Start Date'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          InkWell(
+                            onTap: _pickDate,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: Dimensions.height10,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: context.colors.border,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    formatDate(_startDate),
+                                    style: FormTextStyles.value(context),
+                                  ),
+                                  Icon(
+                                    Icons.calendar_today_outlined,
+                                    size: Dimensions.iconSize24 * 0.85,
+                                    color: context.colors.textSecondary,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: Dimensions.height20),
+
+                          // Amount (₹) *
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const RequiredLabel(text: 'Amount (₹)'),
+                              FormNumberField(
+                                controller: _amountController,
+                                hint: '0.00',
+                                prefix: '₹',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

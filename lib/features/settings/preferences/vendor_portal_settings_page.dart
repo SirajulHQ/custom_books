@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:flutter/material.dart';
 
 class VendorPortalSettingsPage extends StatefulWidget {
@@ -12,7 +13,8 @@ class VendorPortalSettingsPage extends StatefulWidget {
       _VendorPortalSettingsPageState();
 }
 
-class _VendorPortalSettingsPageState extends State<VendorPortalSettingsPage> {
+class _VendorPortalSettingsPageState extends State<VendorPortalSettingsPage>
+    with UnsavedChangesMixin {
   bool _notifyVendorActivity = true;
   bool _notifyVendorsOnComment = true;
   bool _allowUpdateContactDetails = false;
@@ -30,96 +32,102 @@ class _VendorPortalSettingsPageState extends State<VendorPortalSettingsPage> {
 
   void _save() {
     appLog('💾 Save Vendor Portal Settings', name: 'VendorPortalSettings');
+    markClean();
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      bottomNavigationBar: _buildSaveButton(),
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            const CustomSliverAppBar(
-              title: 'Vendor Portal Settings',
-              leadingType: AppBarLeadingType.back,
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.width15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: Dimensions.height10),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        bottomNavigationBar: _buildSaveButton(),
+        body: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'Vendor Portal Settings',
+                leadingType: AppBarLeadingType.back,
+                onLeadingPressed: () => onPopInvokedWithResult(false, null),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimensions.width15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: Dimensions.height10),
 
-                    // Notify me for vendor portal activity
-                    _buildToggleSection(
-                      title: 'Notify me for vendor portal activity',
-                      description:
-                          'Get notified via email when vendors add comments, updates custom fields or uploads documents.',
-                      value: _notifyVendorActivity,
-                      onChanged: (val) =>
-                          setState(() => _notifyVendorActivity = val),
-                    ),
+                      // Notify me for vendor portal activity
+                      _buildToggleSection(
+                        title: 'Notify me for vendor portal activity',
+                        description:
+                            'Get notified via email when vendors add comments, updates custom fields or uploads documents.',
+                        value: _notifyVendorActivity,
+                        onChanged: (val) =>
+                            setState(() => _notifyVendorActivity = val),
+                      ),
 
-                    _buildDivider(),
+                      _buildDivider(),
 
-                    // Notify vendors when I comment
-                    _buildToggleSection(
-                      title:
-                          'Notify my vendors when I comment or reject documents',
-                      description:
-                          'Vendors get an email when you comment or reject their documents.',
-                      value: _notifyVendorsOnComment,
-                      onChanged: (val) =>
-                          setState(() => _notifyVendorsOnComment = val),
-                    ),
+                      // Notify vendors when I comment
+                      _buildToggleSection(
+                        title:
+                            'Notify my vendors when I comment or reject documents',
+                        description:
+                            'Vendors get an email when you comment or reject their documents.',
+                        value: _notifyVendorsOnComment,
+                        onChanged: (val) =>
+                            setState(() => _notifyVendorsOnComment = val),
+                      ),
 
-                    _buildDivider(),
+                      _buildDivider(),
 
-                    // Allow vendors to update contact details
-                    _buildToggleSection(
-                      title:
-                          'Allow vendors to update contact details in portal',
-                      description:
-                          'Vendors can add or edit their addresses, custom fields, and contact info.',
-                      value: _allowUpdateContactDetails,
-                      onChanged: (val) =>
-                          setState(() => _allowUpdateContactDetails = val),
-                    ),
+                      // Allow vendors to update contact details
+                      _buildToggleSection(
+                        title:
+                            'Allow vendors to update contact details in portal',
+                        description:
+                            'Vendors can add or edit their addresses, custom fields, and contact info.',
+                        value: _allowUpdateContactDetails,
+                        onChanged: (val) =>
+                            setState(() => _allowUpdateContactDetails = val),
+                      ),
 
-                    _buildDivider(),
+                      _buildDivider(),
 
-                    // Allow vendors accept or reject purchase orders
-                    _buildToggleSection(
-                      title: 'Allow vendors accept or reject purchase orders',
-                      description:
-                          'Vendors can view purchase orders you send and accept or reject them.',
-                      value: _allowAcceptRejectPO,
-                      onChanged: (val) =>
-                          setState(() => _allowAcceptRejectPO = val),
-                    ),
+                      // Allow vendors accept or reject purchase orders
+                      _buildToggleSection(
+                        title: 'Allow vendors accept or reject purchase orders',
+                        description:
+                            'Vendors can view purchase orders you send and accept or reject them.',
+                        value: _allowAcceptRejectPO,
+                        onChanged: (val) =>
+                            setState(() => _allowAcceptRejectPO = val),
+                      ),
 
-                    _buildDivider(),
+                      _buildDivider(),
 
-                    // Allow vendors to upload documents
-                    _buildToggleSection(
-                      title: 'Allow vendors to upload documents',
-                      description:
-                          'Vendors can upload invoices. You can verify and convert them to bills.',
-                      value: _allowUploadDocuments,
-                      onChanged: (val) =>
-                          setState(() => _allowUploadDocuments = val),
-                    ),
+                      // Allow vendors to upload documents
+                      _buildToggleSection(
+                        title: 'Allow vendors to upload documents',
+                        description:
+                            'Vendors can upload invoices. You can verify and convert them to bills.',
+                        value: _allowUploadDocuments,
+                        onChanged: (val) =>
+                            setState(() => _allowUploadDocuments = val),
+                      ),
 
-                    SizedBox(height: Dimensions.height30 * 2),
-                  ],
+                      SizedBox(height: Dimensions.height30 * 2),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -163,7 +171,10 @@ class _VendorPortalSettingsPageState extends State<VendorPortalSettingsPage> {
           SizedBox(width: Dimensions.width10),
           Switch(
             value: value,
-            onChanged: onChanged,
+            onChanged: (val) {
+              onChanged(val);
+              markDirty();
+            },
             activeThumbColor: Colors.white,
             activeTrackColor: AppColors.primary,
             inactiveThumbColor: Colors.white,
