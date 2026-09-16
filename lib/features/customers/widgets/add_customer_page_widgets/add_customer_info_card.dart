@@ -7,7 +7,29 @@ import 'package:custom_books/features/invoices/widgets/new_invoice_page_widgets/
 import 'package:flutter/material.dart';
 
 class AddCustomerInfoCard extends StatefulWidget {
-  const AddCustomerInfoCard({super.key});
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
+  final TextEditingController companyNameController;
+  final TextEditingController displayNameController;
+  final TextEditingController emailController;
+  final TextEditingController phoneController;
+  final TextEditingController mobileController;
+
+  /// Called whenever a non-text selection changes (customer type, salutation,
+  /// phone/mobile country code) so the parent can flag unsaved changes.
+  final VoidCallback? onChanged;
+
+  const AddCustomerInfoCard({
+    super.key,
+    required this.firstNameController,
+    required this.lastNameController,
+    required this.companyNameController,
+    required this.displayNameController,
+    required this.emailController,
+    required this.phoneController,
+    required this.mobileController,
+    this.onChanged,
+  });
 
   @override
   State<AddCustomerInfoCard> createState() => _AddCustomerInfoCardState();
@@ -19,25 +41,7 @@ class _AddCustomerInfoCardState extends State<AddCustomerInfoCard> {
   String _mobileCountryCode = '+91';
   String _customerType = 'Business';
 
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _companyNameController = TextEditingController();
-  final TextEditingController _displayNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _mobileController = TextEditingController();
-
-  @override
-  void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _companyNameController.dispose();
-    _displayNameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _mobileController.dispose();
-    super.dispose();
-  }
+  void _notifyChanged() => widget.onChanged?.call();
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +100,7 @@ class _AddCustomerInfoCardState extends State<AddCustomerInfoCard> {
                       setState(() {
                         _selectedSalutation = value;
                       });
+                      _notifyChanged();
                     },
                   ),
                 ],
@@ -108,7 +113,7 @@ class _AddCustomerInfoCardState extends State<AddCustomerInfoCard> {
               flex: 2,
               child: InvoiceTextField(
                 label: 'First Name',
-                controller: _firstNameController,
+                controller: widget.firstNameController,
               ),
             ),
           ],
@@ -116,20 +121,23 @@ class _AddCustomerInfoCardState extends State<AddCustomerInfoCard> {
 
         SizedBox(height: Dimensions.height20),
 
-        InvoiceTextField(label: 'Last Name', controller: _lastNameController),
+        InvoiceTextField(
+          label: 'Last Name',
+          controller: widget.lastNameController,
+        ),
 
         SizedBox(height: Dimensions.height20),
 
         InvoiceTextField(
           label: 'Company Name',
-          controller: _companyNameController,
+          controller: widget.companyNameController,
         ),
 
         SizedBox(height: Dimensions.height20),
 
         InvoiceTextField(
           label: 'Display Name',
-          controller: _displayNameController,
+          controller: widget.displayNameController,
           isRequired: true,
           hasInfo: true,
         ),
@@ -138,23 +146,25 @@ class _AddCustomerInfoCardState extends State<AddCustomerInfoCard> {
 
         InvoiceTextField(
           label: 'Email Address',
-          controller: _emailController,
+          controller: widget.emailController,
           hasInfo: true,
         ),
         SizedBox(height: Dimensions.height20),
-        _buildPhoneField(
-          'Phone',
-          _phoneController,
-          _phoneCountryCode,
-          (value) => setState(() => _phoneCountryCode = value!),
-          hasInfo: true,
-        ),
+        _buildPhoneField('Phone', widget.phoneController, _phoneCountryCode, (
+          value,
+        ) {
+          setState(() => _phoneCountryCode = value!);
+          _notifyChanged();
+        }, hasInfo: true),
         SizedBox(height: Dimensions.height20),
         _buildPhoneField(
           'Mobile',
-          _mobileController,
+          widget.mobileController,
           _mobileCountryCode,
-          (value) => setState(() => _mobileCountryCode = value!),
+          (value) {
+            setState(() => _mobileCountryCode = value!);
+            _notifyChanged();
+          },
           hasInfo: true,
         ),
       ],
@@ -166,6 +176,7 @@ class _AddCustomerInfoCardState extends State<AddCustomerInfoCard> {
     return GestureDetector(
       onTap: () {
         setState(() => _customerType = label);
+        _notifyChanged();
         appLog('📝 Customer type changed to: $label', name: 'AddCustomerPage');
       },
       child: Container(

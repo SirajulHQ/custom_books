@@ -111,7 +111,7 @@ class _AddContactPersonPageState extends State<AddContactPersonPage>
                       'Contact person saved.',
                     );
                     markClean();
-                    Navigator.pop(context);
+                    Navigator.pop(context, true);
                   },
                 ),
                 SizedBox(width: Dimensions.width20),

@@ -156,7 +156,7 @@ class _AddAddressPageState extends State<AddAddressPage>
                         'Address saved.',
                       );
                       markClean();
-                      Navigator.pop(context);
+                      Navigator.pop(context, true);
                     },
                   ),
                   SizedBox(width: Dimensions.width20),

@@ -146,7 +146,16 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     // Customer Information Card
-                    AddCustomerInfoCard(),
+                    AddCustomerInfoCard(
+                      firstNameController: _firstNameController,
+                      lastNameController: _lastNameController,
+                      companyNameController: _companyNameController,
+                      displayNameController: _displayNameController,
+                      emailController: _emailController,
+                      phoneController: _phoneController,
+                      mobileController: _mobileController,
+                      onChanged: markDirty,
+                    ),
 
                     SizedBox(height: Dimensions.height15),
 
@@ -159,12 +168,15 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                       selectedPlaceOfSupply: _selectedPlaceOfSupply,
                       onCurrencyChanged: (value) {
                         setState(() => _selectedCurrency = value!);
+                        markDirty();
                       },
                       onAccountsReceivableChanged: (value) {
                         setState(() => _selectedAccountsReceivable = value!);
+                        markDirty();
                       },
                       onAccountsPayableChanged: (value) {
                         setState(() => _selectedAccountsPayable = value!);
+                        markDirty();
                       },
                     ),
 
@@ -173,17 +185,18 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                     // Add Billing & Shipping Address Button
                     _buildExpandableButton(
                       'Add Billing & Shipping address',
-                      onTap: () {
+                      onTap: () async {
                         appLog(
                           '📍 Add Address tapped',
                           name: 'AddCustomerPage',
                         );
-                        Navigator.push(
+                        final saved = await Navigator.push<bool>(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const AddAddressPage(),
                           ),
                         );
+                        if (saved == true) markDirty();
                       },
                     ),
 
@@ -192,17 +205,18 @@ class _AddCustomerPageState extends State<AddCustomerPage>
                     // Add Contact Person Button
                     _buildExpandableButton(
                       'Add Contact Person',
-                      onTap: () {
+                      onTap: () async {
                         appLog(
                           '👤 Add Contact Person tapped',
                           name: 'AddCustomerPage',
                         );
-                        Navigator.push(
+                        final saved = await Navigator.push<bool>(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const AddContactPersonPage(),
                           ),
                         );
+                        if (saved == true) markDirty();
                       },
                     ),
 
