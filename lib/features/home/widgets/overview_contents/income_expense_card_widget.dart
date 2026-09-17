@@ -1,6 +1,5 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
-import 'package:custom_books/dummy_data/dummy_data_list.dart';
 import 'package:custom_books/features/home/models/income_expense_point_model.dart';
 import 'package:custom_books/features/home/widgets/card_tile_widget.dart';
 import 'package:flutter/material.dart';
@@ -29,14 +28,30 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
   int? _touchedBarIndex;
   bool _touchedIsIncome = true;
 
+  // Sample data — replace with real income/expense data when the backend is wired up.
+  static final List<IncomeExpensePoint> _incomeExpenseData = [
+    IncomeExpensePoint('Jan', 1250, 450),
+    IncomeExpensePoint('Feb', 2100, 980),
+    IncomeExpensePoint('Mar', 3500, 1200),
+    IncomeExpensePoint('Apr', 1800, 2100),
+    IncomeExpensePoint('May', 4200, 850),
+    IncomeExpensePoint('Jun', 2800, 1950),
+    IncomeExpensePoint('Jul', 1500, 2300),
+    IncomeExpensePoint('Aug', 3800, 1100),
+    IncomeExpensePoint('Sep', 2200, 1850),
+    IncomeExpensePoint('Oct', 4500, 2200),
+    IncomeExpensePoint('Nov', 1900, 2800),
+    IncomeExpensePoint('Dec', 5200, 1500),
+  ];
+
   List<IncomeExpensePoint> get _filteredData {
     switch (_selectedPeriod) {
       case FiscalPeriod.thisFiscalYear:
       case FiscalPeriod.previousFiscalYear:
       case FiscalPeriod.last12Months:
-        return incomeExpenseData;
+        return _incomeExpenseData;
       case FiscalPeriod.last6Months:
-        return incomeExpenseData.sublist(6);
+        return _incomeExpenseData.sublist(6);
     }
   }
 

@@ -1,6 +1,5 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
-import 'package:custom_books/dummy_data/dummy_data_list.dart';
 import 'package:custom_books/features/home/models/cash_flow_point_model.dart';
 import 'package:custom_books/features/home/widgets/card_tile_widget.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +14,22 @@ class CashFlowCardWidget extends StatefulWidget {
 class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
   String _selectedPeriod = 'This Fiscal Year';
   int? _tappedIndex;
+
+  // Sample data — replace with real cash flow data when the backend is wired up.
+  static final List<CashFlowPoint> _cashFlowData = [
+    CashFlowPoint('Jan', 0, 1250, 450, 800),
+    CashFlowPoint('Feb', 800, 2100, 980, 1920),
+    CashFlowPoint('Mar', 1920, 3500, 1200, 4220),
+    CashFlowPoint('Apr', 4220, 1800, 2100, 3920),
+    CashFlowPoint('May', 3920, 4200, 850, 7270),
+    CashFlowPoint('Jun', 7270, 2800, 1950, 8120),
+    CashFlowPoint('Jul', 8120, 1500, 2300, 7320),
+    CashFlowPoint('Aug', 7320, 3800, 1100, 10020),
+    CashFlowPoint('Sep', 10020, 2200, 1850, 10370),
+    CashFlowPoint('Oct', 10370, 4500, 2200, 12670),
+    CashFlowPoint('Nov', 12670, 1900, 2800, 11770),
+    CashFlowPoint('Dec', 11770, 5200, 1500, 15470),
+  ];
 
   void _showPeriodSheet() {
     showModalBottomSheet(
@@ -46,13 +61,13 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final totalIncoming = cashFlowData.fold<double>(0, (p, e) => p + e.income);
-    final totalOutgoing = cashFlowData.fold<double>(
+    final totalIncoming = _cashFlowData.fold<double>(0, (p, e) => p + e.income);
+    final totalOutgoing = _cashFlowData.fold<double>(
       0,
       (p, e) => p + e.outgoing,
     );
-    final last = cashFlowData.last;
-    final first = cashFlowData.first;
+    final last = _cashFlowData.last;
+    final first = _cashFlowData.first;
 
     return GestureDetector(
       onTap: _dismissTooltip,
@@ -123,10 +138,10 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
                           onTapDown: (details) {
                             final stepX =
                                 constraints.maxWidth /
-                                (cashFlowData.length - 1);
+                                (_cashFlowData.length - 1);
                             final index = (details.localPosition.dx / stepX)
                                 .round()
-                                .clamp(0, cashFlowData.length - 1);
+                                .clamp(0, _cashFlowData.length - 1);
                             _onChartTap(index);
                           },
                           child: CustomPaint(
@@ -135,7 +150,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
                               constraints.maxHeight,
                             ),
                             painter: _InteractiveAreaChartPainter(
-                              data: cashFlowData,
+                              data: _cashFlowData,
                               color: AppColors.accent,
                               highlightIndex: _tappedIndex,
                               gridColor: context.colors.border,
@@ -158,7 +173,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             // ── Month labels ──
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: cashFlowData
+              children: _cashFlowData
                   .map(
                     (e) => Text(
                       e.month,
@@ -208,12 +223,12 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
 
   /// Builds the floating tooltip positioned over the chart at the tapped point.
   Widget _buildTooltipOverlay(BoxConstraints constraints) {
-    final point = cashFlowData[_tappedIndex!];
-    final values = cashFlowData.map((e) => e.ending).toList();
+    final point = _cashFlowData[_tappedIndex!];
+    final values = _cashFlowData.map((e) => e.ending).toList();
     final maxVal = values
         .reduce((a, b) => a > b ? a : b)
         .clamp(1.0, double.infinity);
-    final stepX = constraints.maxWidth / (cashFlowData.length - 1);
+    final stepX = constraints.maxWidth / (_cashFlowData.length - 1);
     final tooltipWidth = constraints.maxWidth * 0.62;
     final xCenter = _tappedIndex! * stepX;
 
