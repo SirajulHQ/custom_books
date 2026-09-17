@@ -68,11 +68,13 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
             children: [
               SizedBox(height: Dimensions.height10),
               Container(
-                width: 40,
-                height: 4,
+                width: Dimensions.width20 * 2,
+                height: Dimensions.height10 * 0.4,
                 decoration: BoxDecoration(
                   color: context.colors.textTertiary.withValues(alpha: 0.4),
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(
+                    Dimensions.radius15 * 0.13,
+                  ),
                 ),
               ),
               SizedBox(height: Dimensions.height10),

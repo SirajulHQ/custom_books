@@ -389,8 +389,8 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                                       // Remove button — only shown when an image is selected
                                       if (_itemImage != null)
                                         Positioned(
-                                          top: 6,
-                                          right: 6,
+                                          top: Dimensions.height10 * 0.6,
+                                          right: Dimensions.width10 * 0.6,
                                           child: GestureDetector(
                                             onTap: () {
                                               setState(() => _itemImage = null);

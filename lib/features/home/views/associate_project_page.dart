@@ -143,15 +143,17 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
                   Row(
                     children: [
                       SizedBox(
-                        width: 24,
-                        height: 24,
+                        width: Dimensions.iconSize24,
+                        height: Dimensions.iconSize24,
                         child: Checkbox(
                           value: _isBillable,
                           onChanged: (val) =>
                               setState(() => _isBillable = val ?? false),
                           activeColor: AppColors.primary,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15 * 0.27,
+                            ),
                           ),
                         ),
                       ),

@@ -133,11 +133,13 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage>
               Center(
                 child: Container(
                   width: Dimensions.width30 * 1.5,
-                  height: 4,
+                  height: Dimensions.height10 * 0.4,
                   margin: EdgeInsets.only(bottom: Dimensions.height15),
                   decoration: BoxDecoration(
                     color: context.colors.border,
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: BorderRadius.circular(
+                      Dimensions.radius15 * 0.13,
+                    ),
                   ),
                 ),
               ),
@@ -223,11 +225,13 @@ class _CustomizeTemplatePageState extends State<CustomizeTemplatePage>
                   Center(
                     child: Container(
                       width: Dimensions.width30 * 1.5,
-                      height: 4,
+                      height: Dimensions.height10 * 0.4,
                       margin: EdgeInsets.only(bottom: Dimensions.height15),
                       decoration: BoxDecoration(
                         color: context.colors.border,
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius15 * 0.13,
+                        ),
                       ),
                     ),
                   ),

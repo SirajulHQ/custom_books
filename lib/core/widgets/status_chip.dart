@@ -12,7 +12,7 @@ class StatusChip extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: Dimensions.width10,
-        vertical: 2,
+        vertical: Dimensions.height10 * 0.2,
       ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),

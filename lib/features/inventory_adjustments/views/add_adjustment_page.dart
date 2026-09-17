@@ -847,7 +847,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage>
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: Dimensions.width10 * 0.6,
-                            vertical: 2,
+                            vertical: Dimensions.height10 * 0.2,
                           ),
                           decoration: BoxDecoration(
                             color: AppColors.primary,

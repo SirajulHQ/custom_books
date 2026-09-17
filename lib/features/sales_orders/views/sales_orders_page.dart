@@ -425,7 +425,7 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
                               trailingBadge: Container(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: Dimensions.width10 * 0.7,
-                                  vertical: 2,
+                                  vertical: Dimensions.height10 * 0.2,
                                 ),
                                 decoration: BoxDecoration(
                                   color: context.colors.surfaceLight,

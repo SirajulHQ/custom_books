@@ -113,7 +113,7 @@ class InventoryAdjustmentCardWidget extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: Dimensions.width10,
-                      vertical: 2,
+                      vertical: Dimensions.height10 * 0.2,
                     ),
                     decoration: BoxDecoration(
                       color: (isDraft ? AppColors.warn : AppColors.primary)
