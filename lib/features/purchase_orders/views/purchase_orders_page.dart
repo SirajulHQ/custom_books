@@ -11,6 +11,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/purchase_orders/models/purchase_order_model.dart';
@@ -32,6 +33,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
 
   int _selectedTab = 0; // 0: All, 1: Draft, 2: Issued
   bool _searchOpen = false;
+  bool _isLoading = true;
   PurchaseOrderStatus? _statusFilter;
   PurchaseOrderSortField _sortField = PurchaseOrderSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -41,6 +43,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
   @override
   void initState() {
     super.initState();
+    _loadOrders();
     _orders = [
       PurchaseOrderModel(
         id: '1',
@@ -94,6 +97,14 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching purchase orders so the shimmer skeleton is shown briefly.
+  Future<void> _loadOrders() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<PurchaseOrderModel> get _visibleOrders {
@@ -270,7 +281,9 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
                 onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
-              child: visibleList.isEmpty
+              child: _isLoading
+                  ? const DocumentListSkeleton()
+                  : visibleList.isEmpty
                   ? const EmptyStateWidget(
                       icon: Icons.assignment_outlined,
                       title: 'No purchase orders found',
@@ -278,7 +291,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> {
                           'Tap the + button to create a new purchase order.',
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => setState(() {}),
+                      onRefresh: _loadOrders,
                       child: ListView.builder(
                         padding: EdgeInsets.fromLTRB(
                           Dimensions.width20,

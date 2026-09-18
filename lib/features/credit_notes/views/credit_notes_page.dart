@@ -6,6 +6,7 @@ import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/credit_notes/models/credit_note_model.dart';
 import 'package:custom_books/features/credit_notes/views/add_credit_note_page.dart';
 import 'package:custom_books/features/credit_notes/views/credit_note_details_page.dart';
@@ -29,6 +30,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
 
   int _selectedTab = 0; // 0: All, 1: Open, 2: Closed
   bool _searchOpen = false;
+  bool _isLoading = true;
   CreditNoteStatus? _statusFilter;
   CreditNoteSortField _sortField = CreditNoteSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -38,6 +40,7 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
   @override
   void initState() {
     super.initState();
+    _loadNotes();
     _notes = [
       CreditNoteModel(
         id: '1',
@@ -90,6 +93,14 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching credit notes so the shimmer skeleton is shown briefly.
+  Future<void> _loadNotes() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<CreditNoteModel> get _visibleNotes {
@@ -296,14 +307,16 @@ class _CreditNotesPageState extends State<CreditNotesPage> {
                 onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
-              child: visibleList.isEmpty
+              child: _isLoading
+                  ? const DocumentListSkeleton()
+                  : visibleList.isEmpty
                   ? const EmptyStateWidget(
                       icon: Icons.receipt_long_outlined,
                       title: 'No credit notes found',
                       subtitle: 'Tap the + button to create a new credit note.',
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => setState(() {}),
+                      onRefresh: _loadNotes,
                       child: ListView.builder(
                         padding: EdgeInsets.fromLTRB(
                           Dimensions.width20,

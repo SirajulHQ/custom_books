@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/projects/models/project_model.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
@@ -24,6 +25,7 @@ class _AddProjectPageState extends State<AddProjectPage>
   final _budgetHoursController = TextEditingController();
 
   BillingMethod _billingMethod = BillingMethod.values.first;
+  bool _isLoading = true;
 
   static const List<String> _customers = [
     'Nandhu',
@@ -35,6 +37,7 @@ class _AddProjectPageState extends State<AddProjectPage>
   @override
   void initState() {
     super.initState();
+    _load();
     final existing = widget.existing;
     if (existing != null) {
       _projectNameController.text = existing.projectName;
@@ -60,6 +63,14 @@ class _AddProjectPageState extends State<AddProjectPage>
     _rateController.dispose();
     _budgetHoursController.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   Future<void> _selectCustomer() async {
@@ -224,148 +235,161 @@ class _AddProjectPageState extends State<AddProjectPage>
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(Dimensions.width15),
-          child: Column(
-            children: [
-              FormCard(
-                children: [
-                  // Project Name *
-                  const RequiredLabel(text: 'Project Name'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _projectNameController,
-                    style: FormTextStyles.value(context),
-                    decoration: InputDecoration(
-                      hintText: 'Enter project name',
-                      hintStyle: TextStyle(color: context.colors.textTertiary),
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Customer Name *
-                  const RequiredLabel(text: 'Customer Name'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  InkWell(
-                    onTap: _selectCustomer,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: context.colors.border),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _customerController.text.isEmpty
-                                  ? 'Select a Customer'
-                                  : _customerController.text,
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.9,
-                                color: _customerController.text.isEmpty
-                                    ? context.colors.textTertiary
-                                    : context.colors.textPrimary,
-                                fontWeight: _customerController.text.isEmpty
-                                    ? FontWeight.normal
-                                    : FontWeight.w600,
+        body: _isLoading
+            ? const FormPageSkeleton()
+            : SingleChildScrollView(
+                padding: EdgeInsets.all(Dimensions.width15),
+                child: Column(
+                  children: [
+                    FormCard(
+                      children: [
+                        // Project Name *
+                        const RequiredLabel(text: 'Project Name'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _projectNameController,
+                          style: FormTextStyles.value(context),
+                          decoration: InputDecoration(
+                            hintText: 'Enter project name',
+                            hintStyle: TextStyle(
+                              color: context.colors.textTertiary,
+                            ),
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
                               ),
                             ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.primary),
+                            ),
                           ),
-                          Icon(
-                            Icons.arrow_drop_down_rounded,
-                            size: Dimensions.iconSize24,
-                            color: context.colors.textSecondary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Billing Method
-                  Text('Billing Method', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  InkWell(
-                    onTap: _selectBillingMethod,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: context.colors.border),
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _billingMethod.label,
-                            style: FormTextStyles.value(context),
+                        SizedBox(height: Dimensions.height20),
+
+                        // Customer Name *
+                        const RequiredLabel(text: 'Customer Name'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        InkWell(
+                          onTap: _selectCustomer,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: context.colors.border,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    _customerController.text.isEmpty
+                                        ? 'Select a Customer'
+                                        : _customerController.text,
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.9,
+                                      color: _customerController.text.isEmpty
+                                          ? context.colors.textTertiary
+                                          : context.colors.textPrimary,
+                                      fontWeight:
+                                          _customerController.text.isEmpty
+                                          ? FontWeight.normal
+                                          : FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_drop_down_rounded,
+                                  size: Dimensions.iconSize24,
+                                  color: context.colors.textSecondary,
+                                ),
+                              ],
+                            ),
                           ),
-                          Icon(
-                            Icons.arrow_drop_down_rounded,
-                            size: Dimensions.iconSize24,
-                            color: context.colors.textSecondary,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        // Billing Method
+                        Text('Billing Method', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        InkWell(
+                          onTap: _selectBillingMethod,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: context.colors.border,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  _billingMethod.label,
+                                  style: FormTextStyles.value(context),
+                                ),
+                                Icon(
+                                  Icons.arrow_drop_down_rounded,
+                                  size: Dimensions.iconSize24,
+                                  color: context.colors.textSecondary,
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: Dimensions.height15),
+                    SizedBox(height: Dimensions.height15),
 
-              FormCard(
-                children: [
-                  // Rate (₹)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Rate (₹)', style: FormTextStyles.label()),
-                      FormNumberField(
-                        controller: _rateController,
-                        hint: '0.00',
-                        prefix: '₹',
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height20),
+                    FormCard(
+                      children: [
+                        // Rate (₹)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Rate (₹)', style: FormTextStyles.label()),
+                            FormNumberField(
+                              controller: _rateController,
+                              hint: '0.00',
+                              prefix: '₹',
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: Dimensions.height20),
 
-                  // Budget Hours
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Budget Hours', style: FormTextStyles.label()),
-                      FormNumberField(
-                        controller: _budgetHoursController,
-                        hint: '0',
-                      ),
-                    ],
-                  ),
-                ],
+                        // Budget Hours
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Budget Hours', style: FormTextStyles.label()),
+                            FormNumberField(
+                              controller: _budgetHoursController,
+                              hint: '0',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
       ),
     );
   }

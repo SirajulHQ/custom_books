@@ -5,6 +5,7 @@ import 'package:custom_books/core/widgets/active_filter_banner.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/bills/models/bill_model.dart';
 import 'package:custom_books/features/bills/views/add_bill_page.dart';
@@ -29,6 +30,7 @@ class _BillsPageState extends State<BillsPage> {
 
   late int _selectedTab; // 0: All, 1: Open, 2: Overdue, 3: Paid
   bool _searchOpen = false;
+  bool _isLoading = true;
   BillStatus? _statusFilter;
   BillSortField _sortField = BillSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -39,6 +41,7 @@ class _BillsPageState extends State<BillsPage> {
   void initState() {
     super.initState();
     _selectedTab = widget.initialTab;
+    _loadBills();
     _bills = [
       BillModel(
         id: '1',
@@ -95,6 +98,14 @@ class _BillsPageState extends State<BillsPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching bills so the shimmer skeleton is shown briefly.
+  Future<void> _loadBills() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<BillModel> get _visibleBills {
@@ -280,10 +291,9 @@ class _BillsPageState extends State<BillsPage> {
                 onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
-              child: BillsListBody(
-                bills: visibleList,
-                onRefresh: () => setState(() {}),
-              ),
+              child: _isLoading
+                  ? const DocumentListSkeleton(showSubDate: true)
+                  : BillsListBody(bills: visibleList, onRefresh: _loadBills),
             ),
           ],
         ),

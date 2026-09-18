@@ -5,6 +5,7 @@ import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/settings/views/taxes/new_tax_page.dart';
 import 'package:custom_books/features/settings/views/taxes/new_tax_group_page.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 
 class TaxRatesPage extends StatefulWidget {
@@ -22,10 +23,21 @@ class _TaxRatesPageState extends State<TaxRatesPage> {
 
   bool _showAddMenu = false;
 
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
+    _load();
     appLog('📊 TaxRatesPage initialized', name: 'TaxRates');
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   void _toggleAddMenu() {
@@ -65,73 +77,82 @@ class _TaxRatesPageState extends State<TaxRatesPage> {
                   title: 'Tax Rates',
                   leadingType: AppBarLeadingType.back,
                 ),
-                SliverPadding(
-                  padding: EdgeInsets.only(bottom: Dimensions.listBottomSpace),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final tax = _taxRates[index];
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: Dimensions.width20,
-                              vertical: Dimensions.height15,
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        tax.name,
-                                        style: TextStyle(
-                                          fontSize: Dimensions.font16,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.primary,
-                                        ),
-                                      ),
-                                      if (tax.isDefault) ...[
+                if (_isLoading)
+                  const SliverToBoxAdapter(child: SettingsListSkeleton())
+                else
+                  SliverPadding(
+                    padding: EdgeInsets.only(
+                      bottom: Dimensions.listBottomSpace,
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final tax = _taxRates[index];
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Dimensions.width20,
+                                vertical: Dimensions.height15,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
                                         Text(
-                                          ' - ',
+                                          tax.name,
                                           style: TextStyle(
-                                            fontSize: Dimensions.font16 * 0.85,
-                                            color: context.colors.textSecondary,
+                                            fontSize: Dimensions.font16,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.primary,
                                           ),
                                         ),
-                                        Text(
-                                          'Default Tax',
-                                          style: TextStyle(
-                                            fontSize: Dimensions.font16 * 0.85,
-                                            color: context.colors.textTertiary,
-                                            fontStyle: FontStyle.italic,
+                                        if (tax.isDefault) ...[
+                                          Text(
+                                            ' - ',
+                                            style: TextStyle(
+                                              fontSize:
+                                                  Dimensions.font16 * 0.85,
+                                              color:
+                                                  context.colors.textSecondary,
+                                            ),
                                           ),
-                                        ),
+                                          Text(
+                                            'Default Tax',
+                                            style: TextStyle(
+                                              fontSize:
+                                                  Dimensions.font16 * 0.85,
+                                              color:
+                                                  context.colors.textTertiary,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          ),
+                                        ],
                                       ],
-                                    ],
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  '${tax.rate.toStringAsFixed(1)}%',
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16,
-                                    fontWeight: FontWeight.w600,
-                                    color: context.colors.textPrimary,
+                                  Text(
+                                    '${tax.rate.toStringAsFixed(1)}%',
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16,
+                                      fontWeight: FontWeight.w600,
+                                      color: context.colors.textPrimary,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          Divider(
-                            height: 1,
-                            color: context.colors.border,
-                            indent: Dimensions.width20,
-                            endIndent: Dimensions.width20,
-                          ),
-                        ],
-                      );
-                    }, childCount: _taxRates.length),
+                            Divider(
+                              height: 1,
+                              color: context.colors.border,
+                              indent: Dimensions.width20,
+                              endIndent: Dimensions.width20,
+                            ),
+                          ],
+                        );
+                      }, childCount: _taxRates.length),
+                    ),
                   ),
-                ),
               ],
             ),
 

@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/banking/models/bank_account.dart';
 import 'package:custom_books/features/banking/views/add_bank_account_page.dart';
 import 'package:custom_books/features/banking/widgets/bank_account_card.dart';
@@ -24,6 +25,7 @@ class BankingPage extends StatefulWidget {
 class _BankingPageState extends State<BankingPage> {
   String _selectedAccountFilter = 'All Accounts';
   String _selectedDateFilter = 'Last 30 days';
+  bool _isLoading = true;
 
   // Filter options
   final List<String> _accountFilterOptions = [
@@ -90,6 +92,25 @@ class _BankingPageState extends State<BankingPage> {
       amountInBank: 0.00,
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAccounts();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _loadAccounts() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -298,16 +319,19 @@ class _BankingPageState extends State<BankingPage> {
             ),
 
             // Active Accounts List
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) =>
-                      ActiveAccountItem(account: accounts[index]),
-                  childCount: accounts.length,
+            if (_isLoading)
+              const SliverToBoxAdapter(child: DocumentListSkeleton())
+            else
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) =>
+                        ActiveAccountItem(account: accounts[index]),
+                    childCount: accounts.length,
+                  ),
                 ),
               ),
-            ),
 
             SliverToBoxAdapter(
               child: SizedBox(

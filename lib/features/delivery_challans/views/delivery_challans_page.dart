@@ -7,6 +7,7 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/delivery_challans/models/delivery_challan_model.dart';
 import 'package:custom_books/features/delivery_challans/views/add_delivery_challan_page.dart';
 import 'package:custom_books/features/delivery_challans/widgets/delivery_challan_card.dart';
@@ -29,6 +30,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
 
   int _selectedTab = 0; // 0: All, 1: Draft, 2: Delivered
   bool _searchOpen = false;
+  bool _isLoading = true;
   DeliveryChallanStatus? _statusFilter;
   DeliveryChallanSortField _sortField = DeliveryChallanSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -38,6 +40,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
   @override
   void initState() {
     super.initState();
+    _loadChallans();
     _challans = [
       DeliveryChallanModel(
         id: '1',
@@ -94,6 +97,14 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching delivery challans so the shimmer skeleton is shown briefly.
+  Future<void> _loadChallans() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<DeliveryChallanModel> get _visibleChallans {
@@ -190,13 +201,13 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => FilterSheet<DeliveryChallanStatus>(
-      title: 'Filter',
-      options: const [null, ...DeliveryChallanStatus.values],
-      selectedValue: _statusFilter,
-      labelBuilder: (status) => status?.label ?? 'All Statuses',
-      onSelected: (status) => Navigator.pop(context, status),
-      onClose: () => Navigator.pop(context),
-    ),
+        title: 'Filter',
+        options: const [null, ...DeliveryChallanStatus.values],
+        selectedValue: _statusFilter,
+        labelBuilder: (status) => status?.label ?? 'All Statuses',
+        onSelected: (status) => Navigator.pop(context, status),
+        onClose: () => Navigator.pop(context),
+      ),
     );
 
     if (result != null || _statusFilter != null) {
@@ -303,7 +314,9 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                 onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
-              child: visibleList.isEmpty
+              child: _isLoading
+                  ? const DocumentListSkeleton()
+                  : visibleList.isEmpty
                   ? const EmptyStateWidget(
                       icon: Icons.local_shipping_outlined,
                       title: 'No delivery challans found',
@@ -311,7 +324,7 @@ class _DeliveryChallansPageState extends State<DeliveryChallansPage> {
                           'Tap the + button to create a new delivery challan.',
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => setState(() {}),
+                      onRefresh: _loadChallans,
                       child: ListView.builder(
                         padding: EdgeInsets.fromLTRB(
                           Dimensions.width20,

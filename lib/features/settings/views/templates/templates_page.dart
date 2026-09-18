@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/settings/views/templates/template_detail_page.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 
 class TemplatesPage extends StatefulWidget {
@@ -22,10 +23,21 @@ class _TemplatesPageState extends State<TemplatesPage> {
     _TemplateCategory(label: 'Delivery Challans', type: 'delivery_challans'),
   ];
 
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
+    _load();
     appLog('📄 TemplatesPage initialized', name: 'Templates');
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   void _navigateTo(_TemplateCategory category) {
@@ -53,41 +65,44 @@ class _TemplatesPageState extends State<TemplatesPage> {
               title: 'Templates',
               leadingType: AppBarLeadingType.back,
             ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final category = _categories[index];
-                return Column(
-                  children: [
-                    InkWell(
-                      onTap: () => _navigateTo(category),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width20,
-                          vertical: Dimensions.height20,
-                        ),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            category.label,
-                            style: TextStyle(
-                              fontSize: Dimensions.font16,
-                              fontWeight: FontWeight.w500,
-                              color: context.colors.textPrimary,
+            if (_isLoading)
+              const SliverToBoxAdapter(child: SettingsListSkeleton())
+            else
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final category = _categories[index];
+                  return Column(
+                    children: [
+                      InkWell(
+                        onTap: () => _navigateTo(category),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Dimensions.width20,
+                            vertical: Dimensions.height20,
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              category.label,
+                              style: TextStyle(
+                                fontSize: Dimensions.font16,
+                                fontWeight: FontWeight.w500,
+                                color: context.colors.textPrimary,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Divider(
-                      height: 1,
-                      color: context.colors.border,
-                      indent: Dimensions.width20,
-                      endIndent: Dimensions.width20,
-                    ),
-                  ],
-                );
-              }, childCount: _categories.length),
-            ),
+                      Divider(
+                        height: 1,
+                        color: context.colors.border,
+                        indent: Dimensions.width20,
+                        endIndent: Dimensions.width20,
+                      ),
+                    ],
+                  );
+                }, childCount: _categories.length),
+              ),
           ],
         ),
       ),

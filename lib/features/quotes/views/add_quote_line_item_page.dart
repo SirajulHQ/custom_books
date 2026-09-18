@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/line_item_form_widgets.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/quotes/models/quote_model.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
   String? _selectedItem;
   bool _discountIsPercent = true;
   double _taxRate = 0;
+  bool _isLoading = true;
 
   static const _catalog = {
     'Consulting Services': 150.0,
@@ -56,6 +58,7 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
   @override
   void initState() {
     super.initState();
+    _load();
     _item.addListener(markDirty);
     _description.addListener(markDirty);
     _quantity.addListener(markDirty);
@@ -76,6 +79,14 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
     _rate.dispose();
     _discount.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   void _selectItem(String name) {
@@ -148,94 +159,99 @@ class _AddQuoteLineItemPageState extends State<AddQuoteLineItemPage>
           onLeadingPressed: () => onPopInvokedWithResult(false, null),
         ),
         body: SafeArea(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(
-              Dimensions.width20,
-              Dimensions.height15,
-              Dimensions.width20,
-              Dimensions.height30,
-            ),
-            child: FormCard(
-              children: [
-                const RequiredLabel(text: 'Item'),
-                SizedBox(height: Dimensions.height10 / 2),
-                ItemSearchField<String>(
-                  controller: _item,
-                  isItemSelected: _selectedItem != null,
-                  suggestions: _suggestions,
-                  onChanged: (_) => setState(() {}),
-                  onClear: _clearItem,
-                  onBarcodeScan: () => ToastificationHelper.showInfo(
-                    context,
-                    'Barcode scan coming soon',
+          child: _isLoading
+              ? const FormPageSkeleton(sectionFieldCounts: [3])
+              : SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.fromLTRB(
+                    Dimensions.width20,
+                    Dimensions.height15,
+                    Dimensions.width20,
+                    Dimensions.height30,
                   ),
-                  suggestionBuilder: (name) => InkWell(
-                    onTap: () => _selectItem(name),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      child: Row(
-                        children: [
-                          const ItemThumbnail(),
-                          SizedBox(width: Dimensions.width10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                  child: FormCard(
+                    children: [
+                      const RequiredLabel(text: 'Item'),
+                      SizedBox(height: Dimensions.height10 / 2),
+                      ItemSearchField<String>(
+                        controller: _item,
+                        isItemSelected: _selectedItem != null,
+                        suggestions: _suggestions,
+                        onChanged: (_) => setState(() {}),
+                        onClear: _clearItem,
+                        onBarcodeScan: () => ToastificationHelper.showInfo(
+                          context,
+                          'Barcode scan coming soon',
+                        ),
+                        suggestionBuilder: (name) => InkWell(
+                          onTap: () => _selectItem(name),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            child: Row(
                               children: [
-                                Text(
-                                  name,
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16 * 0.85,
-                                    fontWeight: FontWeight.w700,
-                                    color: context.colors.textPrimary,
-                                  ),
-                                ),
-                                Text(
-                                  '₹${_catalog[name]!.toStringAsFixed(2)}',
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16 * 0.72,
-                                    color: context.colors.textSecondary,
+                                const ItemThumbnail(),
+                                SizedBox(width: Dimensions.width10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        name,
+                                        style: TextStyle(
+                                          fontSize: Dimensions.font16 * 0.85,
+                                          fontWeight: FontWeight.w700,
+                                          color: context.colors.textPrimary,
+                                        ),
+                                      ),
+                                      Text(
+                                        '₹${_catalog[name]!.toStringAsFixed(2)}',
+                                        style: TextStyle(
+                                          fontSize: Dimensions.font16 * 0.72,
+                                          color: context.colors.textSecondary,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      if (_selectedItem != null) ...[
+                        const FormDivider(),
+                        SizedBox(height: Dimensions.height10),
+                        Text('Description', style: FormTextStyles.label()),
+                        TextField(
+                          controller: _description,
+                          style: FormTextStyles.value(context),
+                          decoration: InputDecoration(
+                            hintText: 'Add a description for your item',
+                            hintStyle: TextStyle(
+                              color: context.colors.textTertiary,
+                            ),
+                            border: InputBorder.none,
+                            isDense: true,
+                          ),
+                        ),
+                        const FormDivider(),
+                        SizedBox(height: Dimensions.height15),
+                        _numberRow('Quantity', _quantity, required: true),
+                        SizedBox(height: Dimensions.height15),
+                        _numberRow('Rate', _rate, required: true, prefix: '₹'),
+                        SizedBox(height: Dimensions.height15),
+                        _discountRow(),
+                        SizedBox(height: Dimensions.height15),
+                        _taxRow(),
+                        SizedBox(height: Dimensions.height20),
+                        _amountSummary(),
+                      ],
+                    ],
                   ),
                 ),
-                if (_selectedItem != null) ...[
-                  const FormDivider(),
-                  SizedBox(height: Dimensions.height10),
-                  Text('Description', style: FormTextStyles.label()),
-                  TextField(
-                    controller: _description,
-                    style: FormTextStyles.value(context),
-                    decoration: InputDecoration(
-                      hintText: 'Add a description for your item',
-                      hintStyle: TextStyle(color: context.colors.textTertiary),
-                      border: InputBorder.none,
-                      isDense: true,
-                    ),
-                  ),
-                  const FormDivider(),
-                  SizedBox(height: Dimensions.height15),
-                  _numberRow('Quantity', _quantity, required: true),
-                  SizedBox(height: Dimensions.height15),
-                  _numberRow('Rate', _rate, required: true, prefix: '₹'),
-                  SizedBox(height: Dimensions.height15),
-                  _discountRow(),
-                  SizedBox(height: Dimensions.height15),
-                  _taxRow(),
-                  SizedBox(height: Dimensions.height20),
-                  _amountSummary(),
-                ],
-              ],
-            ),
-          ),
         ),
         bottomNavigationBar: _bottomActions(),
       ),

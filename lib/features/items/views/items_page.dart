@@ -8,6 +8,7 @@ import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:custom_books/features/items/widgets/item_card_widget.dart';
@@ -25,6 +26,7 @@ class ItemsPage extends StatefulWidget {
 class _ItemsPageState extends State<ItemsPage> {
   String _selectedFilter = 'Active Items';
   bool _searchOpen = false;
+  bool _isLoading = true;
   final _searchController = TextEditingController();
 
   String _sortField = 'Name';
@@ -45,6 +47,7 @@ class _ItemsPageState extends State<ItemsPage> {
   @override
   void initState() {
     super.initState();
+    _loadItems();
     appLog('🎯 ItemsPage initialized', name: 'ItemsPage');
   }
 
@@ -52,6 +55,14 @@ class _ItemsPageState extends State<ItemsPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _loadItems() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   // Dummy data based on the image
@@ -283,43 +294,51 @@ class _ItemsPageState extends State<ItemsPage> {
             SliverToBoxAdapter(child: _buildFilterSegment()),
 
             // Items List
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              sliver: _filteredItems.isEmpty
-                  ? const SliverToBoxAdapter(
-                      child: EmptyStateWidget(
-                        icon: Icons.inventory_2_outlined,
-                        title: 'No items found',
-                        subtitle: 'Tap the + button to add your first item',
-                      ),
-                    )
-                  : SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final item = _filteredItems[index];
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: Dimensions.height15),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(
-                              Dimensions.radius20,
+            if (_isLoading)
+              const SliverFillRemaining(
+                hasScrollBody: true,
+                child: DocumentListSkeleton(),
+              )
+            else
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                sliver: _filteredItems.isEmpty
+                    ? const SliverToBoxAdapter(
+                        child: EmptyStateWidget(
+                          icon: Icons.inventory_2_outlined,
+                          title: 'No items found',
+                          subtitle: 'Tap the + button to add your first item',
+                        ),
+                      )
+                    : SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final item = _filteredItems[index];
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: Dimensions.height15,
                             ),
-                            onTap: () {
-                              appLog(
-                                '👁️ Item tapped: ${item.name}',
-                                name: 'ItemsPage',
-                              );
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ItemDetailsPage(item: item),
-                                ),
-                              );
-                            },
-                            child: ItemCardWidget(item: item),
-                          ),
-                        );
-                      }, childCount: _filteredItems.length),
-                    ),
-            ),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius20,
+                              ),
+                              onTap: () {
+                                appLog(
+                                  '👁️ Item tapped: ${item.name}',
+                                  name: 'ItemsPage',
+                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ItemDetailsPage(item: item),
+                                  ),
+                                );
+                              },
+                              child: ItemCardWidget(item: item),
+                            ),
+                          );
+                        }, childCount: _filteredItems.length),
+                      ),
+              ),
 
             SliverToBoxAdapter(
               child: SizedBox(

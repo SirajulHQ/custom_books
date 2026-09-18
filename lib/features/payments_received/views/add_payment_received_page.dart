@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/payments_received/models/payment_received_model.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage>
 
   DateTime _paymentDate = DateTime.now();
   PaymentMode _mode = PaymentMode.bankTransfer;
+  bool _isLoading = true;
 
   static const List<String> _customers = [
     'Nandhu',
@@ -38,6 +40,7 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage>
   @override
   void initState() {
     super.initState();
+    _load();
     _paymentNumController.text = 'PR-00022';
     final existing = widget.existing;
     if (existing != null) {
@@ -65,6 +68,14 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage>
     _referenceController.dispose();
     _amountController.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   Future<void> _pickDate() async {
@@ -248,186 +259,203 @@ class _AddPaymentReceivedPageState extends State<AddPaymentReceivedPage>
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(Dimensions.width15),
-          child: Column(
-            children: [
-              FormCard(
-                children: [
-                  // Customer Name *
-                  const RequiredLabel(text: 'Customer Name'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  InkWell(
-                    onTap: _selectCustomer,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width10 / 2,
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: context.colors.border),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _customerController.text.isEmpty
-                                  ? 'Start typing to select a Customer'
-                                  : _customerController.text,
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.9,
-                                color: _customerController.text.isEmpty
-                                    ? context.colors.textTertiary
-                                    : context.colors.textPrimary,
-                                fontWeight: _customerController.text.isEmpty
-                                    ? FontWeight.normal
-                                    : FontWeight.w600,
+        body: _isLoading
+            ? const FormPageSkeleton()
+            : SingleChildScrollView(
+                padding: EdgeInsets.all(Dimensions.width15),
+                child: Column(
+                  children: [
+                    FormCard(
+                      children: [
+                        // Customer Name *
+                        const RequiredLabel(text: 'Customer Name'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        InkWell(
+                          onTap: _selectCustomer,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: Dimensions.width10 / 2,
+                              vertical: Dimensions.height10,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: context.colors.border,
+                                ),
                               ),
                             ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    _customerController.text.isEmpty
+                                        ? 'Start typing to select a Customer'
+                                        : _customerController.text,
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.9,
+                                      color: _customerController.text.isEmpty
+                                          ? context.colors.textTertiary
+                                          : context.colors.textPrimary,
+                                      fontWeight:
+                                          _customerController.text.isEmpty
+                                          ? FontWeight.normal
+                                          : FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.add_rounded,
+                                  size: Dimensions.iconSize24,
+                                  color: context.colors.textPrimary,
+                                ),
+                              ],
+                            ),
                           ),
-                          Icon(
-                            Icons.add_rounded,
-                            size: Dimensions.iconSize24,
-                            color: context.colors.textPrimary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Payment# *
-                  const RequiredLabel(text: 'Payment#'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _paymentNumController,
-                    style: FormTextStyles.value(context),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Payment Date *
-                  const RequiredLabel(text: 'Payment Date'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  InkWell(
-                    onTap: _pickDate,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: context.colors.border),
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            formatDate(_paymentDate),
-                            style: FormTextStyles.value(context),
-                          ),
-                          Icon(
-                            Icons.calendar_today_outlined,
-                            size: Dimensions.iconSize24 * 0.85,
-                            color: context.colors.textSecondary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
+                        SizedBox(height: Dimensions.height20),
 
-                  // Payment Mode
-                  Text('Payment Mode', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  InkWell(
-                    onTap: _selectMode,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: context.colors.border),
+                        // Payment# *
+                        const RequiredLabel(text: 'Payment#'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _paymentNumController,
+                          style: FormTextStyles.value(context),
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.primary),
+                            ),
+                          ),
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _mode.label,
-                            style: FormTextStyles.value(context),
-                          ),
-                          Icon(
-                            Icons.arrow_drop_down_rounded,
-                            size: Dimensions.iconSize24,
-                            color: context.colors.textSecondary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
+                        SizedBox(height: Dimensions.height20),
 
-                  // Reference#
-                  Text('Reference#', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _referenceController,
-                    style: FormTextStyles.value(context),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
+                        // Payment Date *
+                        const RequiredLabel(text: 'Payment Date'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        InkWell(
+                          onTap: _pickDate,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: context.colors.border,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  formatDate(_paymentDate),
+                                  style: FormTextStyles.value(context),
+                                ),
+                                Icon(
+                                  Icons.calendar_today_outlined,
+                                  size: Dimensions.iconSize24 * 0.85,
+                                  color: context.colors.textSecondary,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: Dimensions.height20),
 
-                  // Amount (₹) *
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const RequiredLabel(text: 'Amount (₹)'),
-                      FormNumberField(
-                        controller: _amountController,
-                        hint: '0.00',
-                        prefix: '₹',
-                      ),
-                    ],
-                  ),
-                ],
+                        // Payment Mode
+                        Text('Payment Mode', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        InkWell(
+                          onTap: _selectMode,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: context.colors.border,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  _mode.label,
+                                  style: FormTextStyles.value(context),
+                                ),
+                                Icon(
+                                  Icons.arrow_drop_down_rounded,
+                                  size: Dimensions.iconSize24,
+                                  color: context.colors.textSecondary,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        // Reference#
+                        Text('Reference#', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _referenceController,
+                          style: FormTextStyles.value(context),
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.primary),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        // Amount (₹) *
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const RequiredLabel(text: 'Amount (₹)'),
+                            FormNumberField(
+                              controller: _amountController,
+                              hint: '0.00',
+                              prefix: '₹',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
       ),
     );
   }

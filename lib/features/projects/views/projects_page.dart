@@ -9,6 +9,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/projects/models/project_model.dart';
 import 'package:custom_books/features/projects/views/add_project_page.dart';
@@ -30,6 +31,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
 
   int _selectedTab = 0; // 0: All, 1: Active, 2: Completed
   bool _searchOpen = false;
+  bool _isLoading = true;
   ProjectStatus? _statusFilter;
   ProjectSortField _sortField = ProjectSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -39,6 +41,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
   @override
   void initState() {
     super.initState();
+    _loadProjects();
     _projects = [
       ProjectModel(
         id: '1',
@@ -95,6 +98,14 @@ class _ProjectsPageState extends State<ProjectsPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _loadProjects() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<ProjectModel> get _visibleProjects {
@@ -275,14 +286,16 @@ class _ProjectsPageState extends State<ProjectsPage> {
                 onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
-              child: visibleList.isEmpty
+              child: _isLoading
+                  ? const DocumentListSkeleton()
+                  : visibleList.isEmpty
                   ? const EmptyStateWidget(
                       icon: Icons.work_outline_rounded,
                       title: 'No projects found',
                       subtitle: 'Tap the + button to create a new project.',
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => setState(() {}),
+                      onRefresh: _loadProjects,
                       child: ListView.builder(
                         padding: EdgeInsets.fromLTRB(
                           Dimensions.width20,

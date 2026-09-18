@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 
 class AssociateProjectPage extends StatefulWidget {
@@ -21,6 +22,7 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
   String? _selectedTask;
   bool _isBillable = false;
   bool _hasSearched = false;
+  bool _isLoading = true;
   List<String> _searchResults = [];
 
   // Dummy project list for search
@@ -45,6 +47,7 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() => _seconds++);
     });
+    _load();
   }
 
   @override
@@ -53,6 +56,14 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
     _projectController.dispose();
     _notesController.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   void _onProjectSearch(String query) {
@@ -103,148 +114,158 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: Dimensions.height20),
+      body: _isLoading
+          ? const FormPageSkeleton()
+          : Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.width20,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: Dimensions.height20),
 
-                  // Timer display
-                  Center(
-                    child: Text(
-                      _formattedTime,
-                      style: TextStyle(
-                        fontSize: Dimensions.font26 * 1.5,
-                        fontWeight: FontWeight.w800,
-                        color: context.colors.textPrimary,
-                        letterSpacing: 1,
-                      ),
+                        // Timer display
+                        Center(
+                          child: Text(
+                            _formattedTime,
+                            style: TextStyle(
+                              fontSize: Dimensions.font26 * 1.5,
+                              fontWeight: FontWeight.w800,
+                              color: context.colors.textPrimary,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: Dimensions.height30),
+
+                        // Project Name field
+                        _buildLabel(context, 'Project Name', isRequired: true),
+                        SizedBox(height: Dimensions.height10 * 0.6),
+                        _buildProjectSearchField(context),
+                        SizedBox(height: Dimensions.height20),
+
+                        // Task field
+                        _buildLabel(context, 'Task', isRequired: true),
+                        SizedBox(height: Dimensions.height10 * 0.6),
+                        _buildTaskDropdown(context),
+                        SizedBox(height: Dimensions.height20),
+
+                        // Billable checkbox
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: Dimensions.iconSize24,
+                              height: Dimensions.iconSize24,
+                              child: Checkbox(
+                                value: _isBillable,
+                                onChanged: (val) =>
+                                    setState(() => _isBillable = val ?? false),
+                                activeColor: AppColors.primary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    Dimensions.radius15 * 0.27,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: Dimensions.width10),
+                            Text(
+                              'Billable',
+                              style: TextStyle(
+                                fontSize: Dimensions.font16,
+                                fontWeight: FontWeight.w500,
+                                color: context.colors.textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        // Notes field
+                        _buildLabel(context, 'Notes', isRequired: false),
+                        SizedBox(height: Dimensions.height10 * 0.6),
+                        TextField(
+                          controller: _notesController,
+                          maxLines: 3,
+                          decoration: InputDecoration(
+                            hintText: '',
+                            hintStyle: TextStyle(
+                              color: context.colors.textTertiary,
+                              fontSize: Dimensions.font16 * 0.9,
+                            ),
+                            contentPadding: EdgeInsets.all(Dimensions.width15),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius15,
+                              ),
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius15,
+                              ),
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius15,
+                              ),
+                              borderSide: BorderSide(color: AppColors.primary),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: Dimensions.height30),
+                ),
 
-                  // Project Name field
-                  _buildLabel(context, 'Project Name', isRequired: true),
-                  SizedBox(height: Dimensions.height10 * 0.6),
-                  _buildProjectSearchField(context),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Task field
-                  _buildLabel(context, 'Task', isRequired: true),
-                  SizedBox(height: Dimensions.height10 * 0.6),
-                  _buildTaskDropdown(context),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Billable checkbox
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: Dimensions.iconSize24,
-                        height: Dimensions.iconSize24,
-                        child: Checkbox(
-                          value: _isBillable,
-                          onChanged: (val) =>
-                              setState(() => _isBillable = val ?? false),
-                          activeColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
+                // Stop Timer button pinned at bottom
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    Dimensions.width20,
+                    Dimensions.height10,
+                    Dimensions.width20,
+                    Dimensions.height20,
+                  ),
+                  child: SafeArea(
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: GestureDetector(
+                        onTap: _stopTimer,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: Dimensions.height15,
+                          ),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: AppColors.info,
                             borderRadius: BorderRadius.circular(
-                              Dimensions.radius15 * 0.27,
+                              Dimensions.radius15,
+                            ),
+                          ),
+                          child: Text(
+                            'Stop Timer',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 1.05,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(width: Dimensions.width10),
-                      Text(
-                        'Billable',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16,
-                          fontWeight: FontWeight.w500,
-                          color: context.colors.textPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Notes field
-                  _buildLabel(context, 'Notes', isRequired: false),
-                  SizedBox(height: Dimensions.height10 * 0.6),
-                  TextField(
-                    controller: _notesController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      hintText: '',
-                      hintStyle: TextStyle(
-                        color: context.colors.textTertiary,
-                        fontSize: Dimensions.font16 * 0.9,
-                      ),
-                      contentPadding: EdgeInsets.all(Dimensions.width15),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                        borderSide: BorderSide(color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Stop Timer button pinned at bottom
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              Dimensions.width20,
-              Dimensions.height10,
-              Dimensions.width20,
-              Dimensions.height20,
-            ),
-            child: SafeArea(
-              child: SizedBox(
-                width: double.infinity,
-                child: GestureDetector(
-                  onTap: _stopTimer,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: Dimensions.height15,
-                    ),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: AppColors.info,
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    ),
-                    child: Text(
-                      'Stop Timer',
-                      style: TextStyle(
-                        fontSize: Dimensions.font16 * 1.05,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 

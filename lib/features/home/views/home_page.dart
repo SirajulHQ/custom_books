@@ -13,6 +13,7 @@ import 'package:custom_books/features/home/widgets/overview_contents/project_tim
 import 'package:custom_books/features/home/widgets/overview_contents/quick_action_grid_widget.dart';
 import 'package:custom_books/features/home/widgets/support_content_widget.dart';
 import 'package:custom_books/features/home/widgets/update_content_widget.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -26,7 +27,22 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedSegment = 0;
+  bool _isLoading = true;
   static const String _period = 'This Fiscal Year';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDashboard();
+  }
+
+  /// Simulates fetching dashboard data so the shimmer skeleton is shown briefly.
+  Future<void> _loadDashboard() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +111,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildOverviewContent() {
+    if (_isLoading) {
+      return SliverPadding(
+        padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+        sliver: const SliverToBoxAdapter(child: DashboardSkeleton()),
+      );
+    }
     return SliverPadding(
       padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
       sliver: SliverList(

@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 
 class SwitchOrganizationPage extends StatefulWidget {
@@ -15,12 +16,23 @@ class SwitchOrganizationPage extends StatefulWidget {
 class _SwitchOrganizationPageState extends State<SwitchOrganizationPage> {
   int _selectedIndex = 0;
 
+  bool _isLoading = true;
+
   final List<String> _organizations = ['Own Store', 'Techgeum Books'];
 
   @override
   void initState() {
     super.initState();
+    _load();
     appLog('🔄 SwitchOrganizationPage initialized', name: 'SwitchOrganization');
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   void _selectOrganization(int index) {
@@ -49,45 +61,48 @@ class _SwitchOrganizationPageState extends State<SwitchOrganizationPage> {
               title: 'Organizations',
               leadingType: AppBarLeadingType.back,
             ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final isSelected = index == _selectedIndex;
-                return Column(
-                  children: [
-                    ListTile(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                        vertical: Dimensions.height10 / 2,
-                      ),
-                      title: Text(
-                        _organizations[index],
-                        style: TextStyle(
-                          fontSize: Dimensions.font16,
-                          fontWeight: isSelected
-                              ? FontWeight.w600
-                              : FontWeight.w500,
-                          color: context.colors.textPrimary,
+            if (_isLoading)
+              const SliverToBoxAdapter(child: SettingsListSkeleton())
+            else
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final isSelected = index == _selectedIndex;
+                  return Column(
+                    children: [
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.width20,
+                          vertical: Dimensions.height10 / 2,
                         ),
+                        title: Text(
+                          _organizations[index],
+                          style: TextStyle(
+                            fontSize: Dimensions.font16,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.w500,
+                            color: context.colors.textPrimary,
+                          ),
+                        ),
+                        trailing: isSelected
+                            ? Icon(
+                                Icons.check_rounded,
+                                color: context.colors.textPrimary,
+                                size: Dimensions.iconSize24,
+                              )
+                            : null,
+                        onTap: () => _selectOrganization(index),
                       ),
-                      trailing: isSelected
-                          ? Icon(
-                              Icons.check_rounded,
-                              color: context.colors.textPrimary,
-                              size: Dimensions.iconSize24,
-                            )
-                          : null,
-                      onTap: () => _selectOrganization(index),
-                    ),
-                    Divider(
-                      height: 1,
-                      color: context.colors.border,
-                      indent: Dimensions.width20,
-                      endIndent: Dimensions.width20,
-                    ),
-                  ],
-                );
-              }, childCount: _organizations.length),
-            ),
+                      Divider(
+                        height: 1,
+                        color: context.colors.border,
+                        indent: Dimensions.width20,
+                        endIndent: Dimensions.width20,
+                      ),
+                    ],
+                  );
+                }, childCount: _organizations.length),
+              ),
           ],
         ),
       ),

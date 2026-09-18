@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/manual_journals/models/manual_journal_model.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +26,12 @@ class _AddManualJournalPageState extends State<AddManualJournalPage>
   final _notesController = TextEditingController();
 
   DateTime _journalDate = DateTime.now();
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _load();
     if (widget.existing != null) {
       final j = widget.existing!;
       _journalNumberController.text = j.journalNumber;
@@ -54,6 +57,14 @@ class _AddManualJournalPageState extends State<AddManualJournalPage>
     _amountController.dispose();
     _notesController.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   Future<void> _pickDate() async {
@@ -143,147 +154,169 @@ class _AddManualJournalPageState extends State<AddManualJournalPage>
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(Dimensions.width15),
-          child: Column(
-            children: [
-              FormCard(
-                children: [
-                  // Journal# *
-                  const RequiredLabel(text: 'Journal#'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _journalNumberController,
-                    style: FormTextStyles.value(context),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Reference#
-                  Text('Reference#', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _referenceController,
-                    style: FormTextStyles.value(context),
-                    decoration: InputDecoration(
-                      hintText: 'Enter reference',
-                      hintStyle: TextStyle(color: context.colors.textTertiary),
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Journal Date *
-                  const RequiredLabel(text: 'Journal Date'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  InkWell(
-                    onTap: _pickDate,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: context.colors.border),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            formatDate(_journalDate),
-                            style: FormTextStyles.value(context),
+        body: _isLoading
+            ? const FormPageSkeleton()
+            : SingleChildScrollView(
+                padding: EdgeInsets.all(Dimensions.width15),
+                child: Column(
+                  children: [
+                    FormCard(
+                      children: [
+                        // Journal# *
+                        const RequiredLabel(text: 'Journal#'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _journalNumberController,
+                          style: FormTextStyles.value(context),
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.primary),
+                            ),
                           ),
-                          Icon(
-                            Icons.calendar_today_outlined,
-                            size: Dimensions.iconSize24 * 0.85,
-                            color: context.colors.textSecondary,
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        // Reference#
+                        Text('Reference#', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _referenceController,
+                          style: FormTextStyles.value(context),
+                          decoration: InputDecoration(
+                            hintText: 'Enter reference',
+                            hintStyle: TextStyle(
+                              color: context.colors.textTertiary,
+                            ),
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.primary),
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
+                        ),
+                        SizedBox(height: Dimensions.height20),
 
-                  // Amount (₹) *
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const RequiredLabel(text: 'Amount (₹)'),
-                      FormNumberField(
-                        controller: _amountController,
-                        hint: '0.00',
-                        prefix: '₹',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: Dimensions.height15),
+                        // Journal Date *
+                        const RequiredLabel(text: 'Journal Date'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        InkWell(
+                          onTap: _pickDate,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: context.colors.border,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  formatDate(_journalDate),
+                                  style: FormTextStyles.value(context),
+                                ),
+                                Icon(
+                                  Icons.calendar_today_outlined,
+                                  size: Dimensions.iconSize24 * 0.85,
+                                  color: context.colors.textSecondary,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: Dimensions.height20),
 
-              // Notes
-              FormCard(
-                children: [
-                  Text('Notes', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _notesController,
-                    maxLines: 4,
-                    style: FormTextStyles.value(context),
-                    decoration: InputDecoration(
-                      hintText: 'Add notes',
-                      hintStyle: TextStyle(color: context.colors.textTertiary),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15 / 2,
+                        // Amount (₹) *
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const RequiredLabel(text: 'Amount (₹)'),
+                            FormNumberField(
+                              controller: _amountController,
+                              hint: '0.00',
+                              prefix: '₹',
+                            ),
+                          ],
                         ),
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15 / 2,
-                        ),
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15 / 2,
-                        ),
-                        borderSide: const BorderSide(color: AppColors.primary),
-                      ),
+                      ],
                     ),
-                  ),
-                ],
+                    SizedBox(height: Dimensions.height15),
+
+                    // Notes
+                    FormCard(
+                      children: [
+                        Text('Notes', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _notesController,
+                          maxLines: 4,
+                          style: FormTextStyles.value(context),
+                          decoration: InputDecoration(
+                            hintText: 'Add notes',
+                            hintStyle: TextStyle(
+                              color: context.colors.textTertiary,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius15 / 2,
+                              ),
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius15 / 2,
+                              ),
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius15 / 2,
+                              ),
+                              borderSide: const BorderSide(
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
       ),
     );
   }

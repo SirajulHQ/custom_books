@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 
 class PaymentGatewaysPage extends StatefulWidget {
@@ -14,6 +15,8 @@ class PaymentGatewaysPage extends StatefulWidget {
 class _PaymentGatewaysPageState extends State<PaymentGatewaysPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
+  bool _isLoading = true;
 
   static const List<String> _tabs = [
     'CREDIT/DEBIT CARD',
@@ -31,6 +34,7 @@ class _PaymentGatewaysPageState extends State<PaymentGatewaysPage>
   @override
   void initState() {
     super.initState();
+    _load();
     _tabController = TabController(length: _tabs.length, vsync: this);
     appLog('💳 PaymentGatewaysPage initialized', name: 'PaymentGateways');
   }
@@ -39,6 +43,14 @@ class _PaymentGatewaysPageState extends State<PaymentGatewaysPage>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -78,31 +90,33 @@ class _PaymentGatewaysPageState extends State<PaymentGatewaysPage>
               ),
             ),
           ],
-          body: TabBarView(
-            controller: _tabController,
-            children: [
-              // CREDIT/DEBIT CARD
-              _buildCreditDebitCardTab(),
-              // IDEAL
-              _buildSingleGatewayTab('Stripe'),
-              // GIROPAY
-              _buildSingleGatewayTab('Stripe'),
-              // BANCONTACT
-              _buildSingleGatewayTab('Stripe'),
-              // SOFORT
-              _buildSingleGatewayTab('Stripe'),
-              // ALIPAY
-              _buildSingleGatewayTab('Stripe'),
-              // KLARNA
-              _buildSingleGatewayTab('Stripe'),
-              // PAYNOW
-              _buildSingleGatewayTab('Stripe'),
-              // GRABPAY
-              _buildSingleGatewayTab('Stripe'),
-              // OTHERS
-              _buildSingleGatewayTab('Stripe'),
-            ],
-          ),
+          body: _isLoading
+              ? const SettingsListSkeleton()
+              : TabBarView(
+                  controller: _tabController,
+                  children: [
+                    // CREDIT/DEBIT CARD
+                    _buildCreditDebitCardTab(),
+                    // IDEAL
+                    _buildSingleGatewayTab('Stripe'),
+                    // GIROPAY
+                    _buildSingleGatewayTab('Stripe'),
+                    // BANCONTACT
+                    _buildSingleGatewayTab('Stripe'),
+                    // SOFORT
+                    _buildSingleGatewayTab('Stripe'),
+                    // ALIPAY
+                    _buildSingleGatewayTab('Stripe'),
+                    // KLARNA
+                    _buildSingleGatewayTab('Stripe'),
+                    // PAYNOW
+                    _buildSingleGatewayTab('Stripe'),
+                    // GRABPAY
+                    _buildSingleGatewayTab('Stripe'),
+                    // OTHERS
+                    _buildSingleGatewayTab('Stripe'),
+                  ],
+                ),
         ),
       ),
     );

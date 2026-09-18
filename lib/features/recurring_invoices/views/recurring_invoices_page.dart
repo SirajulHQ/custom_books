@@ -9,6 +9,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/recurring_invoices/models/recurring_invoice_model.dart';
 import 'package:custom_books/features/recurring_invoices/views/add_recurring_invoice_page.dart';
@@ -30,6 +31,7 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
 
   int _selectedTab = 0; // 0: All, 1: Active, 2: Stopped
   bool _searchOpen = false;
+  bool _isLoading = true;
   RecurringInvoiceStatus? _statusFilter;
   RecurringInvoiceSortField _sortField = RecurringInvoiceSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -39,6 +41,7 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
   @override
   void initState() {
     super.initState();
+    _loadProfiles();
     _profiles = [
       RecurringInvoiceModel(
         id: '1',
@@ -91,6 +94,14 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _loadProfiles() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<RecurringInvoiceModel> get _visibleProfiles {
@@ -266,40 +277,46 @@ class _RecurringInvoicesPageState extends State<RecurringInvoicesPage> {
               ],
             ),
           ),
-          SliverFillRemaining(
-            child: visibleList.isEmpty
-                ? const EmptyStateWidget(
-                    icon: Icons.autorenew_rounded,
-                    title: 'No recurring invoices found',
-                    subtitle: 'Tap the + button to create a new profile.',
-                  )
-                : RefreshIndicator(
-                    onRefresh: () async => setState(() {}),
-                    child: ListView.builder(
-                      padding: EdgeInsets.fromLTRB(
-                        Dimensions.width20,
-                        0,
-                        Dimensions.width20,
-                        Dimensions.listBottomSpace,
-                      ),
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
-                      ),
-                      itemCount: visibleList.length,
-                      itemBuilder: (context, index) => RecurringInvoiceTile(
-                        profile: visibleList[index],
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RecurringInvoiceDetailsPage(
-                              profile: visibleList[index],
+          if (_isLoading)
+            const SliverFillRemaining(
+              hasScrollBody: true,
+              child: DocumentListSkeleton(),
+            )
+          else
+            SliverFillRemaining(
+              child: visibleList.isEmpty
+                  ? const EmptyStateWidget(
+                      icon: Icons.autorenew_rounded,
+                      title: 'No recurring invoices found',
+                      subtitle: 'Tap the + button to create a new profile.',
+                    )
+                  : RefreshIndicator(
+                      onRefresh: _loadProfiles,
+                      child: ListView.builder(
+                        padding: EdgeInsets.fromLTRB(
+                          Dimensions.width20,
+                          0,
+                          Dimensions.width20,
+                          Dimensions.listBottomSpace,
+                        ),
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
+                        itemCount: visibleList.length,
+                        itemBuilder: (context, index) => RecurringInvoiceTile(
+                          profile: visibleList[index],
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RecurringInvoiceDetailsPage(
+                                profile: visibleList[index],
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-          ),
+            ),
         ],
       ),
     );

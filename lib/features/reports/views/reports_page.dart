@@ -5,6 +5,7 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/reports/views/report_detail_page.dart';
 import 'package:custom_books/features/reports/models/report_type.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 
 class ReportsPage extends StatefulWidget {
@@ -15,10 +16,21 @@ class ReportsPage extends StatefulWidget {
 }
 
 class _ReportsPageState extends State<ReportsPage> {
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
+    _load();
     appLog('📊 ReportsPage initialized', name: 'ReportsPage');
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   void _openReport(ReportType reportType) {
@@ -44,52 +56,58 @@ class _ReportsPageState extends State<ReportsPage> {
               title: 'Reports',
               leadingType: AppBarLeadingType.menu,
             ),
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  SizedBox(height: Dimensions.height10),
+            if (_isLoading)
+              const SliverFillRemaining(
+                hasScrollBody: true,
+                child: DocumentListSkeleton(),
+              )
+            else
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    SizedBox(height: Dimensions.height10),
 
-                  // Financial Reports
-                  _buildSectionHeader('Financial Reports'),
-                  _buildReportTile(ReportType.balanceSheet),
-                  _buildReportTile(ReportType.profitAndLoss),
-                  _buildReportTile(ReportType.cashFlowStatement),
+                    // Financial Reports
+                    _buildSectionHeader('Financial Reports'),
+                    _buildReportTile(ReportType.balanceSheet),
+                    _buildReportTile(ReportType.profitAndLoss),
+                    _buildReportTile(ReportType.cashFlowStatement),
 
-                  SizedBox(height: Dimensions.height20),
+                    SizedBox(height: Dimensions.height20),
 
-                  // Sales
-                  _buildSectionHeader('Sales'),
-                  _buildReportTile(ReportType.salesByCustomer),
-                  _buildReportTile(ReportType.salesByItem),
-                  _buildReportTile(ReportType.salesBySalesPerson),
+                    // Sales
+                    _buildSectionHeader('Sales'),
+                    _buildReportTile(ReportType.salesByCustomer),
+                    _buildReportTile(ReportType.salesByItem),
+                    _buildReportTile(ReportType.salesBySalesPerson),
 
-                  SizedBox(height: Dimensions.height20),
+                    SizedBox(height: Dimensions.height20),
 
-                  // Receivables
-                  _buildSectionHeader('Receivables'),
-                  _buildReportTile(ReportType.customerBalanceSummary),
-                  _buildReportTile(ReportType.arAgingSummary),
-                  _buildReportTile(ReportType.arAgingDetails),
-                  _buildReportTile(ReportType.paymentsReceived),
+                    // Receivables
+                    _buildSectionHeader('Receivables'),
+                    _buildReportTile(ReportType.customerBalanceSummary),
+                    _buildReportTile(ReportType.arAgingSummary),
+                    _buildReportTile(ReportType.arAgingDetails),
+                    _buildReportTile(ReportType.paymentsReceived),
 
-                  SizedBox(height: Dimensions.height20),
+                    SizedBox(height: Dimensions.height20),
 
-                  // Expenses
-                  _buildSectionHeader('Expenses'),
-                  _buildReportTile(ReportType.expensesByCategory),
+                    // Expenses
+                    _buildSectionHeader('Expenses'),
+                    _buildReportTile(ReportType.expensesByCategory),
 
-                  SizedBox(height: Dimensions.height20),
+                    SizedBox(height: Dimensions.height20),
 
-                  // Payables
-                  _buildSectionHeader('Payables'),
-                  _buildReportTile(ReportType.paymentsMade),
-                  _buildReportTile(ReportType.vendorBalanceSummary),
+                    // Payables
+                    _buildSectionHeader('Payables'),
+                    _buildReportTile(ReportType.paymentsMade),
+                    _buildReportTile(ReportType.vendorBalanceSummary),
 
-                  SizedBox(height: Dimensions.height30),
-                ]),
+                    SizedBox(height: Dimensions.height30),
+                  ]),
+                ),
               ),
-            ),
           ],
         ),
       ),

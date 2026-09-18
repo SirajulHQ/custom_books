@@ -6,6 +6,7 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/features/settings/views/email_preferences/new_sender_page.dart';
 import 'package:custom_books/features/settings/views/email_preferences/email_delivery_method_page.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 
 class SenderEmailPreferencesPage extends StatefulWidget {
@@ -19,6 +20,8 @@ class SenderEmailPreferencesPage extends StatefulWidget {
 class _SenderEmailPreferencesPageState
     extends State<SenderEmailPreferencesPage> {
   bool _publicDomainsExpanded = false;
+
+  bool _isLoading = true;
 
   final List<_SenderItem> _senders = [
     _SenderItem(
@@ -41,7 +44,16 @@ class _SenderEmailPreferencesPageState
   @override
   void initState() {
     super.initState();
+    _load();
     appLog('✉️ SenderEmailPreferencesPage initialized', name: 'SenderEmail');
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   void _addNewSender() {
@@ -98,146 +110,154 @@ class _SenderEmailPreferencesPageState
               title: 'Sender Email Preferences',
               leadingType: AppBarLeadingType.back,
             ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  Dimensions.width15,
-                  Dimensions.width15,
-                  Dimensions.width15,
-                  Dimensions.width15 + Dimensions.listBottomSpace,
-                ),
-                child: Column(
-                  children: [
-                    // Public Domains Card
-                    FormCard(
-                      children: [
-                        // Public Domains Header (tappable)
-                        InkWell(
-                          onTap: () => setState(
-                            () => _publicDomainsExpanded =
-                                !_publicDomainsExpanded,
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: Dimensions.width10 * 0.4,
-                                height: Dimensions.height20,
-                                decoration: BoxDecoration(
-                                  color: AppColors.warning,
-                                  borderRadius: BorderRadius.circular(
-                                    Dimensions.radius15 * 0.13,
+            if (_isLoading)
+              const SliverToBoxAdapter(child: SettingsListSkeleton())
+            else
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    Dimensions.width15,
+                    Dimensions.width15,
+                    Dimensions.width15,
+                    Dimensions.width15 + Dimensions.listBottomSpace,
+                  ),
+                  child: Column(
+                    children: [
+                      // Public Domains Card
+                      FormCard(
+                        children: [
+                          // Public Domains Header (tappable)
+                          InkWell(
+                            onTap: () => setState(
+                              () => _publicDomainsExpanded =
+                                  !_publicDomainsExpanded,
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: Dimensions.width10 * 0.4,
+                                  height: Dimensions.height20,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.warning,
+                                    borderRadius: BorderRadius.circular(
+                                      Dimensions.radius15 * 0.13,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(width: Dimensions.width10),
-                              Expanded(
-                                child: Text(
-                                  'Public Domains',
+                                SizedBox(width: Dimensions.width10),
+                                Expanded(
+                                  child: Text(
+                                    'Public Domains',
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16,
+                                      fontWeight: FontWeight.w700,
+                                      color: context.colors.textPrimary,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  _publicDomainsExpanded
+                                      ? Icons.expand_less
+                                      : Icons.expand_more,
+                                  color: context.colors.textSecondary,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Description (always visible)
+                          SizedBox(height: Dimensions.height15),
+                          Text(
+                            'Emails sent with the following addresses in the From field will be sent from message.service@sender.zohobooks.com to avoid landing in the spam folder.',
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.8,
+                              color: context.colors.textSecondary,
+                              height: 1.4,
+                            ),
+                          ),
+
+                          // Expandable content (domain + senders)
+                          if (_publicDomainsExpanded) ...[
+                            SizedBox(height: Dimensions.height15),
+
+                            // Domain indicator
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.warning_amber_rounded,
+                                  size: Dimensions.iconSize24,
+                                  color: AppColors.warning,
+                                ),
+                                SizedBox(width: Dimensions.width10),
+                                Text(
+                                  'gmail.com',
                                   style: TextStyle(
-                                    fontSize: Dimensions.font16,
-                                    fontWeight: FontWeight.w700,
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    fontWeight: FontWeight.w600,
                                     color: context.colors.textPrimary,
                                   ),
                                 ),
-                              ),
-                              Icon(
-                                _publicDomainsExpanded
-                                    ? Icons.expand_less
-                                    : Icons.expand_more,
-                                color: context.colors.textSecondary,
-                              ),
-                            ],
-                          ),
-                        ),
+                              ],
+                            ),
+                            SizedBox(height: Dimensions.height15),
 
-                        // Description (always visible)
-                        SizedBox(height: Dimensions.height15),
-                        Text(
-                          'Emails sent with the following addresses in the From field will be sent from message.service@sender.zohobooks.com to avoid landing in the spam folder.',
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.8,
-                            color: context.colors.textSecondary,
-                            height: 1.4,
-                          ),
-                        ),
-
-                        // Expandable content (domain + senders)
-                        if (_publicDomainsExpanded) ...[
-                          SizedBox(height: Dimensions.height15),
-
-                          // Domain indicator
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.warning_amber_rounded,
-                                size: Dimensions.iconSize24,
-                                color: AppColors.warning,
-                              ),
-                              SizedBox(width: Dimensions.width10),
-                              Text(
-                                'gmail.com',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.9,
-                                  fontWeight: FontWeight.w600,
-                                  color: context.colors.textPrimary,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: Dimensions.height15),
-
-                          // Sender List
-                          ..._senders.map((sender) => _buildSenderTile(sender)),
+                            // Sender List
+                            ..._senders.map(
+                              (sender) => _buildSenderTile(sender),
+                            ),
+                          ],
                         ],
-                      ],
-                    ),
+                      ),
 
-                    SizedBox(height: Dimensions.height15),
+                      SizedBox(height: Dimensions.height15),
 
-                    // Choose How to Send Emails Card
-                    FormCard(
-                      children: [
-                        InkWell(
-                          onTap: _navigateToDeliveryMethod,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Choose How to Send Emails',
-                                      style: TextStyle(
-                                        fontSize: Dimensions.font16 * 0.9,
-                                        fontWeight: FontWeight.w700,
-                                        color: context.colors.textPrimary,
+                      // Choose How to Send Emails Card
+                      FormCard(
+                        children: [
+                          InkWell(
+                            onTap: _navigateToDeliveryMethod,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Choose How to Send Emails',
+                                        style: TextStyle(
+                                          fontSize: Dimensions.font16 * 0.9,
+                                          fontWeight: FontWeight.w700,
+                                          color: context.colors.textPrimary,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(height: Dimensions.height10 * 0.4),
-                                    Text(
-                                      'Select how you want to send emails using public domain email addresses.',
-                                      style: TextStyle(
-                                        fontSize: Dimensions.font16 * 0.75,
-                                        color: context.colors.textSecondary,
+                                      SizedBox(
+                                        height: Dimensions.height10 * 0.4,
                                       ),
-                                    ),
-                                  ],
+                                      Text(
+                                        'Select how you want to send emails using public domain email addresses.',
+                                        style: TextStyle(
+                                          fontSize: Dimensions.font16 * 0.75,
+                                          color: context.colors.textSecondary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Icon(
-                                Icons.chevron_right_rounded,
-                                color: context.colors.textSecondary,
-                              ),
-                            ],
+                                Icon(
+                                  Icons.chevron_right_rounded,
+                                  color: context.colors.textSecondary,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),

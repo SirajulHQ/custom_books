@@ -7,6 +7,7 @@ import 'package:custom_books/features/credit_notes/views/add_credit_note_page.da
 import 'package:custom_books/features/credit_notes/widgets/credit_note_card.dart';
 import 'package:custom_books/features/credit_notes/widgets/note_details_tab_view.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 
 class CreditNoteDetailsPage extends StatefulWidget {
   final CreditNoteModel note;
@@ -20,17 +21,27 @@ class CreditNoteDetailsPage extends StatefulWidget {
 class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _load();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching details so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -133,58 +144,64 @@ class _CreditNoteDetailsPageState extends State<CreditNoteDetailsPage>
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            // Header section
-            CreditNoteCard(note: note, statusColor: statusColor),
-            SizedBox(height: Dimensions.height15),
+        child: _isLoading
+            ? const DetailsPageSkeleton()
+            : Column(
+                children: [
+                  // Header section
+                  CreditNoteCard(note: note, statusColor: statusColor),
+                  SizedBox(height: Dimensions.height15),
 
-            // Tabs
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              decoration: BoxDecoration(
-                color: context.colors.surfaceLight,
-                borderRadius: BorderRadius.circular(Dimensions.radius30),
-              ),
-              child: TabBar(
-                controller: _tabController,
-                indicator: BoxDecoration(
-                  color: context.colors.card,
-                  borderRadius: BorderRadius.circular(Dimensions.radius30),
-                  border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    width: 1.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.08),
-                      blurRadius: Dimensions.radius15 * 0.53,
-                      offset: const Offset(0, 2),
+                  // Tabs
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: Dimensions.width20,
                     ),
-                  ],
-                ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: AppColors.primary,
-                unselectedLabelColor: context.colors.textSecondary,
-                labelStyle: TextStyle(
-                  fontSize: Dimensions.font16 * 0.72,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.3,
-                ),
-                dividerColor: Colors.transparent,
-                padding: EdgeInsets.all(Dimensions.width10 / 2),
-                tabs: const [
-                  Tab(text: 'DETAILS'),
-                  Tab(text: 'COMMENTS & HISTORY'),
+                    decoration: BoxDecoration(
+                      color: context.colors.surfaceLight,
+                      borderRadius: BorderRadius.circular(Dimensions.radius30),
+                    ),
+                    child: TabBar(
+                      controller: _tabController,
+                      indicator: BoxDecoration(
+                        color: context.colors.card,
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius30,
+                        ),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.3),
+                          width: 1.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.08),
+                            blurRadius: Dimensions.radius15 * 0.53,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelColor: AppColors.primary,
+                      unselectedLabelColor: context.colors.textSecondary,
+                      labelStyle: TextStyle(
+                        fontSize: Dimensions.font16 * 0.72,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.3,
+                      ),
+                      dividerColor: Colors.transparent,
+                      padding: EdgeInsets.all(Dimensions.width10 / 2),
+                      tabs: const [
+                        Tab(text: 'DETAILS'),
+                        Tab(text: 'COMMENTS & HISTORY'),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height15),
+
+                  // Tab content
+                  NoteDetailsTabView(tabController: _tabController, note: note),
                 ],
               ),
-            ),
-            SizedBox(height: Dimensions.height15),
-
-            // Tab content
-            NoteDetailsTabView(tabController: _tabController, note: note),
-          ],
-        ),
       ),
     );
   }

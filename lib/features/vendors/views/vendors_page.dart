@@ -9,6 +9,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/vendors/models/vendor_model.dart';
 import 'package:custom_books/features/vendors/views/add_vendor_page.dart';
@@ -29,6 +30,7 @@ class _VendorsPageState extends State<VendorsPage> {
 
   int _selectedTab = 0; // 0: All, 1: Active, 2: Inactive
   bool _searchOpen = false;
+  bool _isLoading = true;
   VendorStatus? _statusFilter;
   VendorsSortField _sortField = VendorsSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -38,6 +40,7 @@ class _VendorsPageState extends State<VendorsPage> {
   @override
   void initState() {
     super.initState();
+    _loadVendors();
     _vendors = [
       VendorModel(
         id: '1',
@@ -94,6 +97,14 @@ class _VendorsPageState extends State<VendorsPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching vendors so the shimmer skeleton is shown briefly.
+  Future<void> _loadVendors() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<VendorModel> get _visibleVendors {
@@ -276,14 +287,16 @@ class _VendorsPageState extends State<VendorsPage> {
                     onClear: () => setState(() => _statusFilter = null),
                   ),
                 Expanded(
-                  child: visibleList.isEmpty
+                  child: _isLoading
+                      ? const DocumentListSkeleton()
+                      : visibleList.isEmpty
                       ? const EmptyStateWidget(
                           icon: Icons.store_outlined,
                           title: 'No vendors found',
                           subtitle: 'Tap the + button to add a new vendor.',
                         )
                       : RefreshIndicator(
-                          onRefresh: () async => setState(() {}),
+                          onRefresh: _loadVendors,
                           child: ListView.builder(
                             padding: EdgeInsets.fromLTRB(
                               Dimensions.width20,

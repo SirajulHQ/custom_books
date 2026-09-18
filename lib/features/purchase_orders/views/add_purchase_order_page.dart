@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/purchase_orders/models/purchase_order_model.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _AddPurchaseOrderPageState extends State<AddPurchaseOrderPage>
   String? _vendorName;
   DateTime _orderDate = DateTime.now();
   DateTime? _expectedDeliveryDate;
+  bool _isLoading = true;
 
   static const List<String> _vendors = [
     'Global Supplies',
@@ -37,6 +39,7 @@ class _AddPurchaseOrderPageState extends State<AddPurchaseOrderPage>
   @override
   void initState() {
     super.initState();
+    _load();
     _purchaseOrderNumController.text = 'PO-00043';
     if (widget.existing != null) {
       final o = widget.existing!;
@@ -61,6 +64,14 @@ class _AddPurchaseOrderPageState extends State<AddPurchaseOrderPage>
     _referenceController.dispose();
     _amountController.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   Future<void> _pickDate({required bool isDeliveryDate}) async {
@@ -220,77 +231,82 @@ class _AddPurchaseOrderPageState extends State<AddPurchaseOrderPage>
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(Dimensions.width15),
-          child: Column(
-            children: [
-              FormCard(
-                children: [
-                  const RequiredLabel(text: 'Vendor'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  _selectorField(
-                    value: _vendorName,
-                    hint: 'Select a vendor',
-                    onTap: _selectVendor,
-                  ),
-                  SizedBox(height: Dimensions.height20),
+        body: _isLoading
+            ? const FormPageSkeleton()
+            : SingleChildScrollView(
+                padding: EdgeInsets.all(Dimensions.width15),
+                child: Column(
+                  children: [
+                    FormCard(
+                      children: [
+                        const RequiredLabel(text: 'Vendor'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _selectorField(
+                          value: _vendorName,
+                          hint: 'Select a vendor',
+                          onTap: _selectVendor,
+                        ),
+                        SizedBox(height: Dimensions.height20),
 
-                  const RequiredLabel(text: 'Purchase Order#'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _purchaseOrderNumController,
-                    style: FormTextStyles.value(context),
-                    decoration: _underlineDecoration(),
-                  ),
-                  SizedBox(height: Dimensions.height20),
+                        const RequiredLabel(text: 'Purchase Order#'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _purchaseOrderNumController,
+                          style: FormTextStyles.value(context),
+                          decoration: _underlineDecoration(),
+                        ),
+                        SizedBox(height: Dimensions.height20),
 
-                  Text('Reference#', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _referenceController,
-                    style: FormTextStyles.value(context),
-                    decoration: _underlineDecoration(),
-                  ),
-                  SizedBox(height: Dimensions.height20),
+                        Text('Reference#', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _referenceController,
+                          style: FormTextStyles.value(context),
+                          decoration: _underlineDecoration(),
+                        ),
+                        SizedBox(height: Dimensions.height20),
 
-                  const RequiredLabel(text: 'Order Date'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  _dateField(formatDate(_orderDate), () {
-                    _pickDate(isDeliveryDate: false);
-                  }),
-                  SizedBox(height: Dimensions.height20),
+                        const RequiredLabel(text: 'Order Date'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _dateField(formatDate(_orderDate), () {
+                          _pickDate(isDeliveryDate: false);
+                        }),
+                        SizedBox(height: Dimensions.height20),
 
-                  Text('Expected Delivery Date', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  _dateField(
-                    _expectedDeliveryDate != null
-                        ? formatDate(_expectedDeliveryDate!)
-                        : 'dd MMM yyyy',
-                    () => _pickDate(isDeliveryDate: true),
-                    isPlaceholder: _expectedDeliveryDate == null,
-                  ),
-                ],
+                        Text(
+                          'Expected Delivery Date',
+                          style: FormTextStyles.label(),
+                        ),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _dateField(
+                          _expectedDeliveryDate != null
+                              ? formatDate(_expectedDeliveryDate!)
+                              : 'dd MMM yyyy',
+                          () => _pickDate(isDeliveryDate: true),
+                          isPlaceholder: _expectedDeliveryDate == null,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Dimensions.height15),
+
+                    FormCard(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const RequiredLabel(text: 'Amount'),
+                            FormNumberField(
+                              controller: _amountController,
+                              hint: '0.00',
+                              prefix: '₹',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: Dimensions.height15),
-
-              FormCard(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const RequiredLabel(text: 'Amount'),
-                      FormNumberField(
-                        controller: _amountController,
-                        hint: '0.00',
-                        prefix: '₹',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

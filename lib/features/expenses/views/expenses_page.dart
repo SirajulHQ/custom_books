@@ -4,6 +4,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
@@ -31,6 +32,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
 
   int _selectedTab = 0; // 0: All, 1: Unbilled, 2: Billed
   bool _searchOpen = false;
+  bool _isLoading = true;
   ExpenseStatus? _statusFilter;
   ExpenseSortField _sortField = ExpenseSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -40,6 +42,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
   @override
   void initState() {
     super.initState();
+    _loadExpenses();
     _expenses = [
       ExpenseModel(
         id: '1',
@@ -92,6 +95,14 @@ class _ExpensesPageState extends State<ExpensesPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching expenses so the shimmer skeleton is shown briefly.
+  Future<void> _loadExpenses() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<ExpenseModel> get _visibleExpenses {
@@ -262,14 +273,16 @@ class _ExpensesPageState extends State<ExpensesPage> {
                 onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
-              child: visibleList.isEmpty
+              child: _isLoading
+                  ? const DocumentListSkeleton()
+                  : visibleList.isEmpty
                   ? const EmptyStateWidget(
                       icon: Icons.receipt_long_outlined,
                       title: 'No expenses found',
                       subtitle: 'Tap the + button to record a new expense.',
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => setState(() {}),
+                      onRefresh: _loadExpenses,
                       child: ListView.builder(
                         padding: EdgeInsets.fromLTRB(
                           Dimensions.width20,

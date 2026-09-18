@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/settings/views/currencies/new_currency_page.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 
 class CurrenciesPage extends StatefulWidget {
@@ -29,10 +30,21 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
     _CurrencyItem(code: 'ZAR', name: 'South African Rand'),
   ];
 
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
+    _load();
     appLog('💱 CurrenciesPage initialized', name: 'Currencies');
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   void _addCurrency() {
@@ -338,79 +350,82 @@ class _CurrenciesPageState extends State<CurrenciesPage> {
             ),
 
             // Currency List
-            SliverPadding(
-              padding: EdgeInsets.only(bottom: Dimensions.listBottomSpace),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final currency = _currencies[index];
-                  return Column(
-                    children: [
-                      ListTile(
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width20,
-                          vertical: Dimensions.height10 / 2,
-                        ),
-                        title: Row(
-                          children: [
-                            Text(
-                              currency.code,
-                              style: TextStyle(
-                                fontSize: Dimensions.font16,
-                                fontWeight: FontWeight.w700,
-                                color: context.colors.textPrimary,
-                              ),
-                            ),
-                            if (currency.isBase) ...[
-                              SizedBox(width: Dimensions.width10),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: Dimensions.width10,
-                                  vertical: Dimensions.height10 * 0.2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.ok.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(
-                                    Dimensions.radius15,
-                                  ),
-                                ),
-                                child: Text(
-                                  'BASE CURRENCY',
-                                  style: TextStyle(
-                                    fontSize: Dimensions.font16 * 0.6,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.ok,
-                                  ),
+            if (_isLoading)
+              const SliverToBoxAdapter(child: SettingsListSkeleton())
+            else
+              SliverPadding(
+                padding: EdgeInsets.only(bottom: Dimensions.listBottomSpace),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final currency = _currencies[index];
+                    return Column(
+                      children: [
+                        ListTile(
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: Dimensions.width20,
+                            vertical: Dimensions.height10 / 2,
+                          ),
+                          title: Row(
+                            children: [
+                              Text(
+                                currency.code,
+                                style: TextStyle(
+                                  fontSize: Dimensions.font16,
+                                  fontWeight: FontWeight.w700,
+                                  color: context.colors.textPrimary,
                                 ),
                               ),
+                              if (currency.isBase) ...[
+                                SizedBox(width: Dimensions.width10),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: Dimensions.width10,
+                                    vertical: Dimensions.height10 * 0.2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.ok.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(
+                                      Dimensions.radius15,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'BASE CURRENCY',
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.6,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.ok,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ],
-                          ],
-                        ),
-                        subtitle: Text(
-                          currency.name,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.8,
-                            color: context.colors.textSecondary,
+                          ),
+                          subtitle: Text(
+                            currency.name,
+                            style: TextStyle(
+                              fontSize: Dimensions.font16 * 0.8,
+                              color: context.colors.textSecondary,
+                            ),
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(
+                              Icons.more_horiz_rounded,
+                              color: context.colors.textSecondary,
+                            ),
+                            onPressed: () => _showCurrencyOptions(currency),
                           ),
                         ),
-                        trailing: IconButton(
-                          icon: Icon(
-                            Icons.more_horiz_rounded,
-                            color: context.colors.textSecondary,
-                          ),
-                          onPressed: () => _showCurrencyOptions(currency),
+                        Divider(
+                          height: 1,
+                          color: context.colors.border,
+                          indent: Dimensions.width20,
+                          endIndent: Dimensions.width20,
                         ),
-                      ),
-                      Divider(
-                        height: 1,
-                        color: context.colors.border,
-                        indent: Dimensions.width20,
-                        endIndent: Dimensions.width20,
-                      ),
-                    ],
-                  );
-                }, childCount: _currencies.length),
+                      ],
+                    );
+                  }, childCount: _currencies.length),
+                ),
               ),
-            ),
           ],
         ),
       ),

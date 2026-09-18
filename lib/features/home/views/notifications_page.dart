@@ -1,5 +1,6 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 
 // ── Notification data model ───────────────────────────────────────────────────
@@ -76,6 +77,22 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   bool get _hasUnread => _notifications.any((n) => !n.isRead);
 
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,7 +151,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
           child: Divider(height: 1, color: context.colors.border),
         ),
       ),
-      body: _notifications.isEmpty
+      body: _isLoading
+          ? const DocumentListSkeleton()
+          : _notifications.isEmpty
           ? Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,

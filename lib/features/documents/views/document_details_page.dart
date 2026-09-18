@@ -7,12 +7,37 @@ import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/detail_row.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 
-class DocumentDetailsPage extends StatelessWidget {
+class DocumentDetailsPage extends StatefulWidget {
   final DocumentModel document;
   final VoidCallback? onDelete;
 
   const DocumentDetailsPage({super.key, required this.document, this.onDelete});
+
+  @override
+  State<DocumentDetailsPage> createState() => _DocumentDetailsPageState();
+}
+
+class _DocumentDetailsPageState extends State<DocumentDetailsPage> {
+  bool _isLoading = true;
+
+  DocumentModel get document => widget.document;
+  VoidCallback? get onDelete => widget.onDelete;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  /// Simulates fetching details so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,17 +104,22 @@ class DocumentDetailsPage extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.all(Dimensions.width20),
-          children: [
-            _buildPreview(context),
-            SizedBox(height: Dimensions.height20),
-            _buildInfoCard(context),
-            SizedBox(height: Dimensions.height20),
-            _buildActionButtons(context),
-          ],
-        ),
+        child: _isLoading
+            ? const DetailsPageSkeleton(
+                headerStyle: DetailsHeaderStyle.preview,
+                showTabs: false,
+              )
+            : ListView(
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.all(Dimensions.width20),
+                children: [
+                  _buildPreview(context),
+                  SizedBox(height: Dimensions.height20),
+                  _buildInfoCard(context),
+                  SizedBox(height: Dimensions.height20),
+                  _buildActionButtons(context),
+                ],
+              ),
       ),
     );
   }

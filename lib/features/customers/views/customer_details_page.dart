@@ -15,6 +15,7 @@ import 'package:custom_books/features/customers/widgets/customer_details_page_wi
 import 'package:custom_books/features/invoices/views/new_invoice_page.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 
 class CustomerDetailsPage extends StatefulWidget {
   final CustomerModel customer;
@@ -29,6 +30,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _commentController = TextEditingController();
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -38,6 +40,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
       '🎯 CustomerDetailsPage initialized for: ${widget.customer.name}',
       name: 'CustomerDetailsPage',
     );
+    _load();
   }
 
   @override
@@ -45,6 +48,14 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
     _tabController.dispose();
     _commentController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching details so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   void _editCustomer() {
@@ -147,213 +158,228 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage>
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            // Custom Sliver App Bar
-            CustomSliverAppBar(
-              title: widget.customer.name,
-              leadingType: AppBarLeadingType.back,
-              onLeadingPressed: () {
-                appLog('⬅️ Back button pressed', name: 'CustomerDetailsPage');
-                Navigator.pop(context);
-              },
-              actions: [
-                AppBarIconButton(
-                  icon: Icons.edit_outlined,
-                  color: AppColors.primary,
-                  onPressed: () {
-                    appLog(
-                      '✏️ Edit button pressed',
-                      name: 'CustomerDetailsPage',
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            AddCustomerPage(customer: widget.customer),
+        child: _isLoading
+            ? const DetailsPageSkeleton(
+                headerStyle: DetailsHeaderStyle.twoMetric,
+                tabStyle: DetailsTabStyle.underline,
+                tabCount: 3,
+              )
+            : CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  // Custom Sliver App Bar
+                  CustomSliverAppBar(
+                    title: widget.customer.name,
+                    leadingType: AppBarLeadingType.back,
+                    onLeadingPressed: () {
+                      appLog(
+                        '⬅️ Back button pressed',
+                        name: 'CustomerDetailsPage',
+                      );
+                      Navigator.pop(context);
+                    },
+                    actions: [
+                      AppBarIconButton(
+                        icon: Icons.edit_outlined,
+                        color: AppColors.primary,
+                        onPressed: () {
+                          appLog(
+                            '✏️ Edit button pressed',
+                            name: 'CustomerDetailsPage',
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  AddCustomerPage(customer: widget.customer),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-                SizedBox(width: Dimensions.width10),
-                AppBarIconButton(
-                  icon: Icons.attach_file_rounded,
-                  color: context.colors.textSecondary,
-                  onPressed: () {
-                    appLog(
-                      '📎 Attachment button pressed',
-                      name: 'CustomerDetailsPage',
-                    );
-                    ToastificationHelper.showInfo(
-                      context,
-                      'Attachments for customers are coming soon.',
-                    );
-                  },
-                ),
-                SizedBox(width: Dimensions.width10),
-                AppBarIconButton(
-                  icon: Icons.more_vert_rounded,
-                  color: context.colors.textSecondary,
-                  onPressed: _showMoreOptions,
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-
-            // Header Section
-            SliverToBoxAdapter(
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(Dimensions.width20),
-                decoration: BoxDecoration(
-                  color: context.colors.card,
-                  border: Border(
-                    bottom: BorderSide(color: context.colors.border, width: 1),
+                      SizedBox(width: Dimensions.width10),
+                      AppBarIconButton(
+                        icon: Icons.attach_file_rounded,
+                        color: context.colors.textSecondary,
+                        onPressed: () {
+                          appLog(
+                            '📎 Attachment button pressed',
+                            name: 'CustomerDetailsPage',
+                          );
+                          ToastificationHelper.showInfo(
+                            context,
+                            'Attachments for customers are coming soon.',
+                          );
+                        },
+                      ),
+                      SizedBox(width: Dimensions.width10),
+                      AppBarIconButton(
+                        icon: Icons.more_vert_rounded,
+                        color: context.colors.textSecondary,
+                        onPressed: _showMoreOptions,
+                      ),
+                      SizedBox(width: Dimensions.width20),
+                    ],
                   ),
-                ),
-                child: Row(
-                  children: [
-                    // Receivables
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                  // Header Section
+                  SliverToBoxAdapter(
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(Dimensions.width20),
+                      decoration: BoxDecoration(
+                        color: context.colors.card,
+                        border: Border(
+                          bottom: BorderSide(
+                            color: context.colors.border,
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                      child: Row(
                         children: [
-                          Text(
-                            'Receivables',
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.75,
-                              color: context.colors.textTertiary,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
+                          // Receivables
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Receivables',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.75,
+                                    color: context.colors.textTertiary,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                                SizedBox(height: Dimensions.height10 / 2),
+                                Text(
+                                  '₹${widget.customer.receivables.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font26,
+                                    fontWeight: FontWeight.w800,
+                                    color: context.colors.textPrimary,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          SizedBox(height: Dimensions.height10 / 2),
-                          Text(
-                            '₹${widget.customer.receivables.toStringAsFixed(2)}',
-                            style: TextStyle(
-                              fontSize: Dimensions.font26,
-                              fontWeight: FontWeight.w800,
-                              color: context.colors.textPrimary,
+
+                          Container(
+                            height: Dimensions.height45,
+                            width: 1,
+                            color: context.colors.border,
+                          ),
+
+                          SizedBox(width: Dimensions.width20),
+
+                          // Unused Credits
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Unused Credits',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.75,
+                                    color: context.colors.textTertiary,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                                SizedBox(height: Dimensions.height10 / 2),
+                                Text(
+                                  '₹${widget.customer.unusedCredits.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font26,
+                                    fontWeight: FontWeight.w800,
+                                    color: context.colors.textPrimary,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
+                  ),
 
-                    Container(
-                      height: Dimensions.height45,
-                      width: 1,
-                      color: context.colors.border,
-                    ),
-
-                    SizedBox(width: Dimensions.width20),
-
-                    // Unused Credits
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Unused Credits',
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.75,
-                              color: context.colors.textTertiary,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                  // Tab Bar
+                  SliverToBoxAdapter(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: context.colors.card,
+                        border: Border(
+                          bottom: BorderSide(
+                            color: context.colors.border,
+                            width: 1,
                           ),
-                          SizedBox(height: Dimensions.height10 / 2),
-                          Text(
-                            '₹${widget.customer.unusedCredits.toStringAsFixed(2)}',
-                            style: TextStyle(
-                              fontSize: Dimensions.font26,
-                              fontWeight: FontWeight.w800,
-                              color: context.colors.textPrimary,
-                            ),
-                          ),
+                        ),
+                      ),
+                      child: TabBar(
+                        controller: _tabController,
+                        labelColor: AppColors.primary,
+                        unselectedLabelColor: context.colors.textSecondary,
+                        labelStyle: TextStyle(
+                          fontSize: Dimensions.font16 * 0.8,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                        ),
+                        unselectedLabelStyle: TextStyle(
+                          fontSize: Dimensions.font16 * 0.8,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        indicatorColor: AppColors.primary,
+                        indicatorWeight: 3,
+                        tabs: const [
+                          Tab(text: 'DETAILS'),
+                          Tab(text: 'TRANSACTIONS'),
+                          Tab(text: 'COMMENTS'),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
 
-            // Tab Bar
-            SliverToBoxAdapter(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: context.colors.card,
-                  border: Border(
-                    bottom: BorderSide(color: context.colors.border, width: 1),
-                  ),
-                ),
-                child: TabBar(
-                  controller: _tabController,
-                  labelColor: AppColors.primary,
-                  unselectedLabelColor: context.colors.textSecondary,
-                  labelStyle: TextStyle(
-                    fontSize: Dimensions.font16 * 0.8,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
-                  ),
-                  unselectedLabelStyle: TextStyle(
-                    fontSize: Dimensions.font16 * 0.8,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  indicatorColor: AppColors.primary,
-                  indicatorWeight: 3,
-                  tabs: const [
-                    Tab(text: 'DETAILS'),
-                    Tab(text: 'TRANSACTIONS'),
-                    Tab(text: 'COMMENTS'),
-                  ],
-                ),
-              ),
-            ),
-
-            // Tab Bar View Content
-            SliverFillRemaining(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Column(
+                  // Tab Bar View Content
+                  SliverFillRemaining(
+                    child: TabBarView(
+                      controller: _tabController,
                       children: [
-                        SizedBox(height: Dimensions.height20),
+                        SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Column(
+                            children: [
+                              SizedBox(height: Dimensions.height20),
 
-                        // Contact Information Section
-                        ContactInformationSection(
-                          customer: widget.customer,
-                          onDial: _dial,
-                          onSendEmail: _sendEmail,
+                              // Contact Information Section
+                              ContactInformationSection(
+                                customer: widget.customer,
+                                onDial: _dial,
+                                onSendEmail: _sendEmail,
+                              ),
+
+                              // Receivables Section
+                              ReceivablesSectionCard(
+                                customer: widget.customer,
+                                onEditCustomer: _editCustomer,
+                              ),
+
+                              // More Information Section
+                              const MoreInformationSection(),
+
+                              // Contact Persons Section
+                              const ContactPersonsSection(),
+
+                              SizedBox(height: Dimensions.height30),
+                            ],
+                          ),
                         ),
-
-                        // Receivables Section
-                        ReceivablesSectionCard(
-                          customer: widget.customer,
-                          onEditCustomer: _editCustomer,
-                        ),
-
-                        // More Information Section
-                        const MoreInformationSection(),
-
-                        // Contact Persons Section
-                        const ContactPersonsSection(),
-
-                        SizedBox(height: Dimensions.height30),
+                        const TransactionsTab(),
+                        const CommentsTab(),
                       ],
                     ),
                   ),
-                  const TransactionsTab(),
-                  const CommentsTab(),
                 ],
               ),
-            ),
-          ],
-        ),
       ),
       floatingActionButton: AnimatedBuilder(
         animation: _tabController,

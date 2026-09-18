@@ -10,6 +10,7 @@ import 'package:custom_books/features/documents/views/document_details_page.dart
 import 'package:custom_books/features/documents/widgets/document_sort_sheet.dart';
 import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
 import 'package:custom_books/core/enums/sort_direction.dart';
@@ -30,9 +31,12 @@ class _DocumentsInboxPageState extends State<DocumentsInboxPage> {
 
   late List<DocumentModel> _documents;
 
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
+    _load();
     _documents = [
       DocumentModel(
         id: '1',
@@ -77,6 +81,14 @@ class _DocumentsInboxPageState extends State<DocumentsInboxPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<DocumentModel> get _visibleDocuments {
@@ -231,14 +243,16 @@ class _DocumentsInboxPageState extends State<DocumentsInboxPage> {
               ),
             ),
             Expanded(
-              child: visibleList.isEmpty
+              child: _isLoading
+                  ? const DocumentListSkeleton()
+                  : visibleList.isEmpty
                   ? const EmptyStateWidget(
                       icon: Icons.inbox_rounded,
                       title: 'No documents found',
                       subtitle: 'Tap the upload button to add documents.',
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => setState(() {}),
+                      onRefresh: _load,
                       child: ListView.builder(
                         padding: EdgeInsets.fromLTRB(
                           Dimensions.width20,

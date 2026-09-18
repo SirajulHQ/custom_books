@@ -2,6 +2,7 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/inventory_adjustments/models/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/views/add_adjustment_page.dart';
@@ -23,6 +24,7 @@ class InventoryAdjustmentsPage extends StatefulWidget {
 class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
   int _selectedTab = 0; // 0 All, 1 By Quantity, 2 By Value
   bool _searchOpen = false;
+  bool _isLoading = true;
   final _searchController = TextEditingController();
 
   AdjustmentSortField _sortField = AdjustmentSortField.createdTime;
@@ -66,9 +68,23 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _loadAdjustments();
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _loadAdjustments() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<InventoryAdjustment> get _filteredAdjustments {
@@ -251,7 +267,12 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
                 },
               ),
             ),
-            if (items.isEmpty)
+            if (_isLoading)
+              const SliverFillRemaining(
+                hasScrollBody: true,
+                child: DocumentListSkeleton(),
+              )
+            else if (items.isEmpty)
               const SliverFillRemaining(
                 hasScrollBody: false,
                 child: AdjustmentsEmptyState(),

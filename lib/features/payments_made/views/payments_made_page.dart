@@ -11,6 +11,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/payments_made/models/payment_made_model.dart';
@@ -32,6 +33,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
 
   int _selectedTab = 0; // 0: All, 1: This Month
   bool _searchOpen = false;
+  bool _isLoading = true;
   PaymentMode? _modeFilter;
   PaymentMadeSortField _sortField = PaymentMadeSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -41,6 +43,7 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
   @override
   void initState() {
     super.initState();
+    _loadPayments();
     _payments = [
       PaymentMadeModel(
         id: '1',
@@ -97,6 +100,14 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching payments so the shimmer skeleton is shown briefly.
+  Future<void> _loadPayments() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   bool _isThisMonth(DateTime date) {
@@ -272,14 +283,16 @@ class _PaymentsMadePageState extends State<PaymentsMadePage> {
                 onClear: () => setState(() => _modeFilter = null),
               ),
             Expanded(
-              child: visibleList.isEmpty
+              child: _isLoading
+                  ? const DocumentListSkeleton()
+                  : visibleList.isEmpty
                   ? const EmptyStateWidget(
                       icon: Icons.payments_outlined,
                       title: 'No payments found',
                       subtitle: 'Tap the + button to record a payment made.',
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => setState(() {}),
+                      onRefresh: _loadPayments,
                       child: ListView.builder(
                         padding: EdgeInsets.fromLTRB(
                           Dimensions.width20,

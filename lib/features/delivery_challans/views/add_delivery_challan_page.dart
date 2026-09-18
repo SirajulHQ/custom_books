@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/delivery_challans/models/delivery_challan_model.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage>
 
   DateTime _challanDate = DateTime.now();
   String _type = 'Job Work';
+  bool _isLoading = true;
 
   static const List<String> _customers = [
     'Nandhu',
@@ -44,6 +46,7 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage>
   @override
   void initState() {
     super.initState();
+    _load();
     _challanNumController.text = 'DC-00043';
     if (widget.existing != null) {
       final c = widget.existing!;
@@ -71,6 +74,14 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage>
     _referenceController.dispose();
     _amountController.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   Future<void> _pickDate() async {
@@ -278,7 +289,9 @@ class _AddDeliveryChallanPageState extends State<AddDeliveryChallanPage>
             ),
           ],
         ),
-        body: SingleChildScrollView(
+        body: _isLoading
+            ? const FormPageSkeleton()
+            : SingleChildScrollView(
           padding: EdgeInsets.all(Dimensions.width15),
           child: Column(
             children: [

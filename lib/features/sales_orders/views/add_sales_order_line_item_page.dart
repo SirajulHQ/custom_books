@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/sales_orders/models/sales_order_model.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +27,12 @@ class _AddSalesOrderLineItemPageState extends State<AddSalesOrderLineItemPage>
   final _discountController = TextEditingController(text: '0');
   final _taxRateController = TextEditingController(text: '5');
   bool _discountIsPercent = true;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _load();
     if (widget.existingItem != null) {
       final item = widget.existingItem!;
       _nameController.text = item.itemName;
@@ -63,6 +66,14 @@ class _AddSalesOrderLineItemPageState extends State<AddSalesOrderLineItemPage>
     _discountController.dispose();
     _taxRateController.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   void _onSave() {
@@ -127,146 +138,155 @@ class _AddSalesOrderLineItemPageState extends State<AddSalesOrderLineItemPage>
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(Dimensions.width20),
-          child: Column(
-            children: [
-              FormCard(
-                children: [
-                  const RequiredLabel(text: 'Item Name'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      hintText: 'e.g. Consulting Service / Product A',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15 / 2,
+        body: _isLoading
+            ? const FormPageSkeleton(sectionFieldCounts: [3])
+            : SingleChildScrollView(
+                padding: EdgeInsets.all(Dimensions.width20),
+                child: Column(
+                  children: [
+                    FormCard(
+                      children: [
+                        const RequiredLabel(text: 'Item Name'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                            hintText: 'e.g. Consulting Service / Product A',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius15 / 2,
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: Dimensions.width15,
+                              vertical: Dimensions.height10,
+                            ),
+                          ),
                         ),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width15,
-                        vertical: Dimensions.height10,
-                      ),
+                        SizedBox(height: Dimensions.height15),
+                        Text('Description', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _descController,
+                          maxLines: 2,
+                          decoration: InputDecoration(
+                            hintText: 'Item description...',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius15 / 2,
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: Dimensions.width15,
+                              vertical: Dimensions.height10,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  SizedBox(height: Dimensions.height15),
-                  Text('Description', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _descController,
-                    maxLines: 2,
-                    decoration: InputDecoration(
-                      hintText: 'Item description...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15 / 2,
+                    SizedBox(height: Dimensions.height15),
+                    FormCard(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const RequiredLabel(text: 'Quantity'),
+                                  SizedBox(height: Dimensions.height10 / 2),
+                                  FormNumberField(
+                                    controller: _qtyController,
+                                    hint: '1',
+                                    width: double.infinity,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: Dimensions.width15),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const RequiredLabel(text: 'Rate (₹)'),
+                                  SizedBox(height: Dimensions.height10 / 2),
+                                  FormNumberField(
+                                    controller: _rateController,
+                                    hint: '0.00',
+                                    width: double.infinity,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width15,
-                        vertical: Dimensions.height10,
-                      ),
+                        SizedBox(height: Dimensions.height15),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Discount',
+                                        style: FormTextStyles.label(),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () => setState(
+                                          () => _discountIsPercent =
+                                              !_discountIsPercent,
+                                        ),
+                                        child: Text(
+                                          _discountIsPercent ? '%' : '₹',
+                                          style: TextStyle(
+                                            color: AppColors.primary,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: Dimensions.font16 * 0.8,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: Dimensions.height10 / 2),
+                                  FormNumberField(
+                                    controller: _discountController,
+                                    hint: '0',
+                                    suffix: _discountIsPercent ? '%' : '₹',
+                                    width: double.infinity,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: Dimensions.width15),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Tax Rate (%)',
+                                    style: FormTextStyles.label(),
+                                  ),
+                                  SizedBox(height: Dimensions.height10 / 2),
+                                  FormNumberField(
+                                    controller: _taxRateController,
+                                    hint: '5',
+                                    suffix: '%',
+                                    width: double.infinity,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              SizedBox(height: Dimensions.height15),
-              FormCard(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const RequiredLabel(text: 'Quantity'),
-                            SizedBox(height: Dimensions.height10 / 2),
-                            FormNumberField(
-                              controller: _qtyController,
-                              hint: '1',
-                              width: double.infinity,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: Dimensions.width15),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const RequiredLabel(text: 'Rate (₹)'),
-                            SizedBox(height: Dimensions.height10 / 2),
-                            FormNumberField(
-                              controller: _rateController,
-                              hint: '0.00',
-                              width: double.infinity,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height15),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Discount', style: FormTextStyles.label()),
-                                GestureDetector(
-                                  onTap: () => setState(
-                                    () => _discountIsPercent =
-                                        !_discountIsPercent,
-                                  ),
-                                  child: Text(
-                                    _discountIsPercent ? '%' : '₹',
-                                    style: TextStyle(
-                                      color: AppColors.primary,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: Dimensions.font16 * 0.8,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: Dimensions.height10 / 2),
-                            FormNumberField(
-                              controller: _discountController,
-                              hint: '0',
-                              suffix: _discountIsPercent ? '%' : '₹',
-                              width: double.infinity,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: Dimensions.width15),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Tax Rate (%)', style: FormTextStyles.label()),
-                            SizedBox(height: Dimensions.height10 / 2),
-                            FormNumberField(
-                              controller: _taxRateController,
-                              hint: '5',
-                              suffix: '%',
-                              width: double.infinity,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

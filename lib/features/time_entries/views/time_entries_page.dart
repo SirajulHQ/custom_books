@@ -9,6 +9,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/time_entries/models/time_entry_model.dart';
 import 'package:custom_books/features/time_entries/views/add_time_entry_page.dart';
@@ -29,6 +30,7 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
 
   int _selectedTab = 0; // 0: All, 1: Billable, 2: Non-billable
   bool _searchOpen = false;
+  bool _isLoading = true;
   bool? _billableFilter;
   TimeEntrySortField _sortField = TimeEntrySortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -38,6 +40,7 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
   @override
   void initState() {
     super.initState();
+    _loadEntries();
     _entries = [
       TimeEntryModel(
         id: '1',
@@ -94,6 +97,14 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _loadEntries() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<TimeEntryModel> get _visibleEntries {
@@ -263,7 +274,12 @@ class _TimeEntriesPageState extends State<TimeEntriesPage> {
               ),
 
             // List or empty state
-            if (visibleList.isEmpty)
+            if (_isLoading)
+              const SliverFillRemaining(
+                hasScrollBody: true,
+                child: DocumentListSkeleton(),
+              )
+            else if (visibleList.isEmpty)
               const SliverFillRemaining(
                 child: EmptyStateWidget(
                   icon: Icons.access_time_rounded,

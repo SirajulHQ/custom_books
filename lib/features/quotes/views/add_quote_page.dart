@@ -5,6 +5,7 @@ import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/dashed_border.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/line_item_form_widgets.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/adjustment_form_widgets.dart';
 import 'package:custom_books/features/quotes/models/quote_model.dart';
@@ -38,6 +39,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
   String? _salesperson;
   String? _project;
   bool _taxInclusive = false;
+  bool _isLoading = true;
 
   static const _customers = [
     'Amal',
@@ -51,6 +53,7 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
   @override
   void initState() {
     super.initState();
+    _load();
     _quoteNumber = 'QT-${widget.quoteSequence.toString().padLeft(6, '0')}';
     _customer.addListener(markDirty);
     _reference.addListener(markDirty);
@@ -72,6 +75,14 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
     _notes.dispose();
     _terms.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   Future<void> _pickDate(bool expiry) async {
@@ -278,300 +289,348 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
           ],
         ),
         body: SafeArea(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(
-              Dimensions.width20,
-              Dimensions.height15,
-              Dimensions.width20,
-              Dimensions.height30,
-            ),
-            child: Column(
-              children: [
-                _card([
-                  FormLabel(text: 'Customer Name ', required: true),
-                  InkWell(
-                    onTap: _selectCustomer,
-                    child: IgnorePointer(
-                      child: TextField(
-                        controller: _customer,
-                        decoration: FormTextStyles.inputDecoration(context, 'Start typing to select a Customer', suffixIcon: IconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: _selectCustomer,
-                          ),
-                        ),
-                      ),
-                    ),
+          child: _isLoading
+              ? const FormPageSkeleton()
+              : SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.fromLTRB(
+                    Dimensions.width20,
+                    Dimensions.height15,
+                    Dimensions.width20,
+                    Dimensions.height30,
                   ),
-                  FormLabel(text: 'Quote # ', required: true),
-                  TextField(
-                    controller: TextEditingController(text: _quoteNumber),
-                    readOnly: true,
-                    decoration: FormTextStyles.inputDecoration(context, 'e.g. QT-00001', suffixIcon: IconButton(
-                        icon: const Icon(Icons.settings),
-                        onPressed: _configureNumber,
-                      ),
-                    ),
-                  ),
-                  FormLabel(text: 'Reference#'),
-                  TextField(
-                    controller: _reference,
-                    decoration: FormTextStyles.inputDecoration(context, ''),
-                  ),
-                  FormLabel(text: 'Quote Date ', required: true),
-                  InkWell(
-                    onTap: () => _pickDate(false),
-                    child: IgnorePointer(
-                      child: TextField(
-                        controller: TextEditingController(
-                          text: formatDate(_quoteDate),
-                        ),
-                        decoration: FormTextStyles.inputDecoration(context, 'Select date', suffixIcon: const Icon(Icons.calendar_today_outlined),
-                        ),
-                      ),
-                    ),
-                  ),
-                  FormLabel(text: 'Expiry Date'),
-                  InkWell(
-                    onTap: () => _pickDate(true),
-                    child: IgnorePointer(
-                      child: TextField(
-                        controller: TextEditingController(
-                          text: _expiryDate == null
-                              ? ''
-                              : formatDate(_expiryDate!),
-                        ),
-                        decoration: FormTextStyles.inputDecoration(context, 'Select date', suffixIcon: const Icon(Icons.calendar_today_outlined),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]),
-                _card([
-                  FormLabel(text: 'Salesperson'),
-                  DropdownButtonFormField<String>(
-                    initialValue: _salesperson,
-                    decoration: FormTextStyles.inputDecoration(context, 'Select or Add Salesperson'),
-                    items: _salespeople
-                        .map(
-                          (value) => DropdownMenuItem(
-                            value: value,
-                            child: Text(value),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (value) => setState(() => _salesperson = value),
-                  ),
-                  FormLabel(text: 'Project Name'),
-                  DropdownButtonFormField<String>(
-                    initialValue: _project,
-                    decoration: FormTextStyles.inputDecoration(context, 'Select a Project'),
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'Website Redesign',
-                        child: Text('Website Redesign'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Annual Support',
-                        child: Text('Annual Support'),
-                      ),
-                    ],
-                    onChanged: _customer.text.isEmpty
-                        ? null
-                        : (value) => setState(() => _project = value),
-                  ),
-                  if (_customer.text.isEmpty)
-                    Padding(
-                      padding: EdgeInsets.only(top: Dimensions.height10 * 0.6),
-                      child: Text(
-                        'Select a customer to associate a project.',
-                        style: TextStyle(fontSize: Dimensions.font16 * 0.75),
-                      ),
-                    ),
-                  FormLabel(text: 'Subject', showInfo: true),
-                  TextField(
-                    controller: _subject,
-                    decoration: FormTextStyles.inputDecoration(context, 'What is this quote for?'),
-                  ),
-                ]),
-                _card([
-                  Text('Tax', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10),
-                  Container(
-                    padding: EdgeInsets.all(Dimensions.height10 * 0.4),
-                    decoration: BoxDecoration(
-                      color: context.colors.surfaceLight,
-                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                      border: Border.all(color: context.colors.border),
-                    ),
-                    child: Row(
-                      children: [
-                        _taxOption('Exclusive', false),
-                        _taxOption('Inclusive', true),
-                      ],
-                    ),
-                  ),
-                ]),
-                _card([
-                  ..._lineItems.asMap().entries.map(
-                    (entry) => _quoteLineItemCard(entry.key, entry.value),
-                  ),
-                  AddLineItemButton(onPressed: _addLineItem),
-                  if (_lineItems.isNotEmpty) ...[
-                    SizedBox(height: Dimensions.height20),
-                    Container(
-                      padding: EdgeInsets.all(Dimensions.width15),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.05),
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                        border: Border.all(
-                          color: AppColors.primary.withValues(alpha: 0.18),
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          _totalRow(
-                            'Sub Total',
-                            _lineItems.fold<double>(
-                              0,
-                              (sum, item) => sum + item.net,
-                            ),
-                          ),
-                          _totalRow(
-                            'Tax',
-                            _lineItems.fold<double>(
-                              0,
-                              (sum, item) => sum + item.taxAmount,
-                            ),
-                          ),
-                          const FormDivider(),
-                          _totalRow(
-                            'Total',
-                            _lineItems.fold<double>(
-                              0,
-                              (sum, item) =>
-                                  sum +
-                                  item.net +
-                                  (_taxInclusive ? 0 : item.taxAmount),
-                            ),
-                            bold: true,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ]),
-                _card([
-                  FormLabel(text: 'Customer Notes'),
-                  TextField(
-                    controller: _notes,
-                    decoration: FormTextStyles.inputDecoration(context, 'Looking forward for your business.'),
-                  ),
-                  FormLabel(text: 'Terms & Conditions'),
-                  TextField(
-                    controller: _terms,
-                    maxLines: 2,
-                    decoration: FormTextStyles.inputDecoration(context, ''),
-                  ),
-                ]),
-                _card([
-                  Row(
+                  child: Column(
                     children: [
-                      Text('Attachments', style: FormTextStyles.label()),
-                      if (_attachments.isNotEmpty) ...[
-                        SizedBox(width: Dimensions.width10 / 2),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.width10 * 0.6,
-                            vertical: Dimensions.height10 * 0.2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary,
-                            borderRadius: BorderRadius.circular(99),
-                          ),
-                          child: Text(
-                            '${_attachments.length}',
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.7,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: _pickAttachments,
-                    child: DashedBorder(
-                      child: Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(
-                          vertical: Dimensions.height15,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.upload_file_outlined,
-                              color: AppColors.primary,
-                              size: Dimensions.iconSize24 - 4,
-                            ),
-                            SizedBox(width: Dimensions.width10),
-                            Text(
-                              _attachments.isEmpty
-                                  ? 'Upload File'
-                                  : 'Add More Files',
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.85,
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w700,
+                      _card([
+                        FormLabel(text: 'Customer Name ', required: true),
+                        InkWell(
+                          onTap: _selectCustomer,
+                          child: IgnorePointer(
+                            child: TextField(
+                              controller: _customer,
+                              decoration: FormTextStyles.inputDecoration(
+                                context,
+                                'Start typing to select a Customer',
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.add),
+                                  onPressed: _selectCustomer,
+                                ),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  ..._attachments.asMap().entries.map(
-                    (entry) => Container(
-                      margin: EdgeInsets.only(top: Dimensions.height10),
-                      decoration: BoxDecoration(
-                        color: context.colors.surfaceLight,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radius15,
-                        ),
-                      ),
-                      child: ListTile(
-                        dense: true,
-                        leading: Icon(
-                          Icons.attach_file_rounded,
-                          color: AppColors.primary,
-                        ),
-                        title: Text(
-                          entry.value.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.8,
-                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.close_rounded),
-                          onPressed: () =>
-                              setState(() => _attachments.removeAt(entry.key)),
+                        FormLabel(text: 'Quote # ', required: true),
+                        TextField(
+                          controller: TextEditingController(text: _quoteNumber),
+                          readOnly: true,
+                          decoration: FormTextStyles.inputDecoration(
+                            context,
+                            'e.g. QT-00001',
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.settings),
+                              onPressed: _configureNumber,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
+                        FormLabel(text: 'Reference#'),
+                        TextField(
+                          controller: _reference,
+                          decoration: FormTextStyles.inputDecoration(
+                            context,
+                            '',
+                          ),
+                        ),
+                        FormLabel(text: 'Quote Date ', required: true),
+                        InkWell(
+                          onTap: () => _pickDate(false),
+                          child: IgnorePointer(
+                            child: TextField(
+                              controller: TextEditingController(
+                                text: formatDate(_quoteDate),
+                              ),
+                              decoration: FormTextStyles.inputDecoration(
+                                context,
+                                'Select date',
+                                suffixIcon: const Icon(
+                                  Icons.calendar_today_outlined,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        FormLabel(text: 'Expiry Date'),
+                        InkWell(
+                          onTap: () => _pickDate(true),
+                          child: IgnorePointer(
+                            child: TextField(
+                              controller: TextEditingController(
+                                text: _expiryDate == null
+                                    ? ''
+                                    : formatDate(_expiryDate!),
+                              ),
+                              decoration: FormTextStyles.inputDecoration(
+                                context,
+                                'Select date',
+                                suffixIcon: const Icon(
+                                  Icons.calendar_today_outlined,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
+                      _card([
+                        FormLabel(text: 'Salesperson'),
+                        DropdownButtonFormField<String>(
+                          initialValue: _salesperson,
+                          decoration: FormTextStyles.inputDecoration(
+                            context,
+                            'Select or Add Salesperson',
+                          ),
+                          items: _salespeople
+                              .map(
+                                (value) => DropdownMenuItem(
+                                  value: value,
+                                  child: Text(value),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (value) =>
+                              setState(() => _salesperson = value),
+                        ),
+                        FormLabel(text: 'Project Name'),
+                        DropdownButtonFormField<String>(
+                          initialValue: _project,
+                          decoration: FormTextStyles.inputDecoration(
+                            context,
+                            'Select a Project',
+                          ),
+                          items: const [
+                            DropdownMenuItem(
+                              value: 'Website Redesign',
+                              child: Text('Website Redesign'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Annual Support',
+                              child: Text('Annual Support'),
+                            ),
+                          ],
+                          onChanged: _customer.text.isEmpty
+                              ? null
+                              : (value) => setState(() => _project = value),
+                        ),
+                        if (_customer.text.isEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: Dimensions.height10 * 0.6,
+                            ),
+                            child: Text(
+                              'Select a customer to associate a project.',
+                              style: TextStyle(
+                                fontSize: Dimensions.font16 * 0.75,
+                              ),
+                            ),
+                          ),
+                        FormLabel(text: 'Subject', showInfo: true),
+                        TextField(
+                          controller: _subject,
+                          decoration: FormTextStyles.inputDecoration(
+                            context,
+                            'What is this quote for?',
+                          ),
+                        ),
+                      ]),
+                      _card([
+                        Text('Tax', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10),
+                        Container(
+                          padding: EdgeInsets.all(Dimensions.height10 * 0.4),
+                          decoration: BoxDecoration(
+                            color: context.colors.surfaceLight,
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15,
+                            ),
+                            border: Border.all(color: context.colors.border),
+                          ),
+                          child: Row(
+                            children: [
+                              _taxOption('Exclusive', false),
+                              _taxOption('Inclusive', true),
+                            ],
+                          ),
+                        ),
+                      ]),
+                      _card([
+                        ..._lineItems.asMap().entries.map(
+                          (entry) => _quoteLineItemCard(entry.key, entry.value),
+                        ),
+                        AddLineItemButton(onPressed: _addLineItem),
+                        if (_lineItems.isNotEmpty) ...[
+                          SizedBox(height: Dimensions.height20),
+                          Container(
+                            padding: EdgeInsets.all(Dimensions.width15),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withValues(alpha: 0.05),
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius15,
+                              ),
+                              border: Border.all(
+                                color: AppColors.primary.withValues(
+                                  alpha: 0.18,
+                                ),
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                _totalRow(
+                                  'Sub Total',
+                                  _lineItems.fold<double>(
+                                    0,
+                                    (sum, item) => sum + item.net,
+                                  ),
+                                ),
+                                _totalRow(
+                                  'Tax',
+                                  _lineItems.fold<double>(
+                                    0,
+                                    (sum, item) => sum + item.taxAmount,
+                                  ),
+                                ),
+                                const FormDivider(),
+                                _totalRow(
+                                  'Total',
+                                  _lineItems.fold<double>(
+                                    0,
+                                    (sum, item) =>
+                                        sum +
+                                        item.net +
+                                        (_taxInclusive ? 0 : item.taxAmount),
+                                  ),
+                                  bold: true,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ]),
+                      _card([
+                        FormLabel(text: 'Customer Notes'),
+                        TextField(
+                          controller: _notes,
+                          decoration: FormTextStyles.inputDecoration(
+                            context,
+                            'Looking forward for your business.',
+                          ),
+                        ),
+                        FormLabel(text: 'Terms & Conditions'),
+                        TextField(
+                          controller: _terms,
+                          maxLines: 2,
+                          decoration: FormTextStyles.inputDecoration(
+                            context,
+                            '',
+                          ),
+                        ),
+                      ]),
+                      _card([
+                        Row(
+                          children: [
+                            Text('Attachments', style: FormTextStyles.label()),
+                            if (_attachments.isNotEmpty) ...[
+                              SizedBox(width: Dimensions.width10 / 2),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: Dimensions.width10 * 0.6,
+                                  vertical: Dimensions.height10 * 0.2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(99),
+                                ),
+                                child: Text(
+                                  '${_attachments.length}',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.7,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        SizedBox(height: Dimensions.height10),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radius15,
+                          ),
+                          onTap: _pickAttachments,
+                          child: DashedBorder(
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(
+                                vertical: Dimensions.height15,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.upload_file_outlined,
+                                    color: AppColors.primary,
+                                    size: Dimensions.iconSize24 - 4,
+                                  ),
+                                  SizedBox(width: Dimensions.width10),
+                                  Text(
+                                    _attachments.isEmpty
+                                        ? 'Upload File'
+                                        : 'Add More Files',
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.85,
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        ..._attachments.asMap().entries.map(
+                          (entry) => Container(
+                            margin: EdgeInsets.only(top: Dimensions.height10),
+                            decoration: BoxDecoration(
+                              color: context.colors.surfaceLight,
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius15,
+                              ),
+                            ),
+                            child: ListTile(
+                              dense: true,
+                              leading: Icon(
+                                Icons.attach_file_rounded,
+                                color: AppColors.primary,
+                              ),
+                              title: Text(
+                                entry.value.name,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: Dimensions.font16 * 0.8,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.close_rounded),
+                                onPressed: () => setState(
+                                  () => _attachments.removeAt(entry.key),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ],
                   ),
-                ]),
-              ],
-            ),
-          ),
+                ),
         ),
       ),
     );
@@ -694,5 +753,3 @@ class _AddQuotePageState extends State<AddQuotePage> with UnsavedChangesMixin {
     ),
   );
 }
-
-

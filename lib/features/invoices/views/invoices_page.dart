@@ -6,6 +6,7 @@ import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
 import 'package:custom_books/features/invoices/views/new_invoice_page.dart';
@@ -31,6 +32,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
 
   late int _selectedTab;
   bool _searchOpen = false;
+  bool _isLoading = true;
   InvoiceStatus? _statusFilter;
   InvoiceSortField _sortField = InvoiceSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -41,6 +43,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
   void initState() {
     super.initState();
     _selectedTab = widget.initialTab;
+    _loadInvoices();
     _invoices = [
       InvoiceModel(
         id: '1',
@@ -109,6 +112,14 @@ class _InvoicesPageState extends State<InvoicesPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching invoices so the shimmer skeleton is shown briefly.
+  Future<void> _loadInvoices() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<InvoiceModel> get _visibleInvoices {
@@ -274,14 +285,16 @@ class _InvoicesPageState extends State<InvoicesPage> {
                 onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
-              child: visibleList.isEmpty
+              child: _isLoading
+                  ? const DocumentListSkeleton(showSubDate: true)
+                  : visibleList.isEmpty
                   ? const EmptyStateWidget(
                       icon: Icons.description_outlined,
                       title: 'No invoices found',
                       subtitle: 'Tap the + button to create a new invoice.',
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => setState(() {}),
+                      onRefresh: _loadInvoices,
                       child: ListView.builder(
                         padding: EdgeInsets.fromLTRB(
                           Dimensions.width20,

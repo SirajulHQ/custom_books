@@ -10,6 +10,7 @@ import 'package:custom_books/features/inventory_adjustments/views/add_adjustment
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 
 class AdjustmentDetailsPage extends StatefulWidget {
   final InventoryAdjustment adjustment;
@@ -46,16 +47,27 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
     ),
   ];
 
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _load();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching details so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   void _showAttachmentsDialog() {
@@ -386,194 +398,211 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            // Header section with date, reason, and status
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(Dimensions.width20),
-              decoration: BoxDecoration(
-                color: context.colors.card,
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0x08000000),
-                    blurRadius: Dimensions.radius15 * 0.53,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: _isLoading
+            ? const DetailsPageSkeleton()
+            : Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Date',
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.7,
-                          color: context.colors.textSecondary,
-                          fontWeight: FontWeight.w500,
+                  // Header section with date, reason, and status
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(Dimensions.width20),
+                    decoration: BoxDecoration(
+                      color: context.colors.card,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0x08000000),
+                          blurRadius: Dimensions.radius15 * 0.53,
+                          offset: Offset(0, 2),
                         ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width10 + 2,
-                          vertical: Dimensions.height10 * 0.5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: (isDraft ? AppColors.warn : AppColors.primary)
-                              .withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius30,
-                          ),
-                        ),
-                        child: Text(
-                          adjustment.status.label,
-                          style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.62,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.6,
-                            color: isDraft ? AppColors.warn : AppColors.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10 / 2.5),
-                  Text(
-                    formatDate(adjustment.date),
-                    style: TextStyle(
-                      fontSize: Dimensions.font20 * 0.95,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.textPrimary,
+                      ],
                     ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Reason',
+                              'Date',
                               style: TextStyle(
                                 fontSize: Dimensions.font16 * 0.7,
                                 color: context.colors.textSecondary,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(height: Dimensions.height10 / 2.5),
-                            Text(
-                              adjustment.reason,
-                              style: TextStyle(
-                                fontSize: Dimensions.font20 * 0.95,
-                                fontWeight: FontWeight.w800,
-                                color: context.colors.textPrimary,
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Dimensions.width10 + 2,
+                                vertical: Dimensions.height10 * 0.5,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    (isDraft
+                                            ? AppColors.warn
+                                            : AppColors.primary)
+                                        .withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(
+                                  Dimensions.radius30,
+                                ),
+                              ),
+                              child: Text(
+                                adjustment.status.label,
+                                style: TextStyle(
+                                  fontSize: Dimensions.font16 * 0.62,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.6,
+                                  color: isDraft
+                                      ? AppColors.warn
+                                      : AppColors.primary,
+                                ),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      if (_attachments.isNotEmpty)
-                        GestureDetector(
-                          onTap: _showAttachmentsDialog,
-                          child: Container(
-                            padding: EdgeInsets.all(Dimensions.width10 + 2),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withValues(alpha: 0.08),
-                              borderRadius: BorderRadius.circular(
-                                Dimensions.radius15,
-                              ),
-                              border: Border.all(
-                                color: AppColors.primary.withValues(alpha: 0.2),
-                                width: 1,
-                              ),
-                            ),
-                            child: Badge(
-                              label: Text(
-                                '${_attachments.length}',
-                                style: TextStyle(
-                                  fontSize: Dimensions.font16 * 0.56,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              backgroundColor: AppColors.accent,
-                              child: Icon(
-                                Icons.attach_file_rounded,
-                                color: AppColors.primary,
-                                size: Dimensions.iconSize24 - 2,
-                              ),
-                            ),
+                        SizedBox(height: Dimensions.height10 / 2.5),
+                        Text(
+                          formatDate(adjustment.date),
+                          style: TextStyle(
+                            fontSize: Dimensions.font20 * 0.95,
+                            fontWeight: FontWeight.w800,
+                            color: context.colors.textPrimary,
                           ),
                         ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-
-            // Tabs
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              decoration: BoxDecoration(
-                color: context.colors.surfaceLight,
-                borderRadius: BorderRadius.circular(Dimensions.radius30),
-              ),
-              child: TabBar(
-                controller: _tabController,
-                indicator: BoxDecoration(
-                  color: context.colors.card,
-                  borderRadius: BorderRadius.circular(Dimensions.radius30),
-                  border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    width: 1.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.08),
-                      blurRadius: Dimensions.radius15 * 0.53,
-                      offset: const Offset(0, 2),
+                        SizedBox(height: Dimensions.height20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Reason',
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.7,
+                                      color: context.colors.textSecondary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  SizedBox(height: Dimensions.height10 / 2.5),
+                                  Text(
+                                    adjustment.reason,
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font20 * 0.95,
+                                      fontWeight: FontWeight.w800,
+                                      color: context.colors.textPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (_attachments.isNotEmpty)
+                              GestureDetector(
+                                onTap: _showAttachmentsDialog,
+                                child: Container(
+                                  padding: EdgeInsets.all(
+                                    Dimensions.width10 + 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary.withValues(
+                                      alpha: 0.08,
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                      Dimensions.radius15,
+                                    ),
+                                    border: Border.all(
+                                      color: AppColors.primary.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Badge(
+                                    label: Text(
+                                      '${_attachments.length}',
+                                      style: TextStyle(
+                                        fontSize: Dimensions.font16 * 0.56,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    backgroundColor: AppColors.accent,
+                                    child: Icon(
+                                      Icons.attach_file_rounded,
+                                      color: AppColors.primary,
+                                      size: Dimensions.iconSize24 - 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: AppColors.primary,
-                unselectedLabelColor: context.colors.textSecondary,
-                labelStyle: TextStyle(
-                  fontSize: Dimensions.font16 * 0.72,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.3,
-                ),
-                dividerColor: Colors.transparent,
-                padding: EdgeInsets.all(Dimensions.width10 / 2),
-                tabs: const [
-                  Tab(text: 'DETAILS'),
-                  Tab(text: 'COMMENTS & HISTORY'),
-                ],
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
+                  ),
+                  SizedBox(height: Dimensions.height15),
 
-            // Tab content
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  // Details tab
-                  _buildDetailsTab(),
-                  // Comments & History tab
-                  _buildCommentsTab(),
+                  // Tabs
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: Dimensions.width20,
+                    ),
+                    decoration: BoxDecoration(
+                      color: context.colors.surfaceLight,
+                      borderRadius: BorderRadius.circular(Dimensions.radius30),
+                    ),
+                    child: TabBar(
+                      controller: _tabController,
+                      indicator: BoxDecoration(
+                        color: context.colors.card,
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius30,
+                        ),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.3),
+                          width: 1.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.08),
+                            blurRadius: Dimensions.radius15 * 0.53,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelColor: AppColors.primary,
+                      unselectedLabelColor: context.colors.textSecondary,
+                      labelStyle: TextStyle(
+                        fontSize: Dimensions.font16 * 0.72,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.3,
+                      ),
+                      dividerColor: Colors.transparent,
+                      padding: EdgeInsets.all(Dimensions.width10 / 2),
+                      tabs: const [
+                        Tab(text: 'DETAILS'),
+                        Tab(text: 'COMMENTS & HISTORY'),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height15),
+
+                  // Tab content
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        // Details tab
+                        _buildDetailsTab(),
+                        // Comments & History tab
+                        _buildCommentsTab(),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

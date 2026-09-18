@@ -5,54 +5,83 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:custom_books/features/items/views/add_item_page.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 
-class ItemDetailsPage extends StatelessWidget {
+class ItemDetailsPage extends StatefulWidget {
   final ItemModel item;
 
   const ItemDetailsPage({super.key, required this.item});
+
+  @override
+  State<ItemDetailsPage> createState() => _ItemDetailsPageState();
+}
+
+class _ItemDetailsPageState extends State<ItemDetailsPage> {
+  bool _isLoading = true;
+
+  ItemModel get item => widget.item;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  /// Simulates fetching details so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: item.name,
-              leadingType: AppBarLeadingType.back,
-              onLeadingPressed: () => Navigator.pop(context),
-              actions: [
-                AppBarIconButton(
-                  icon: Icons.edit_outlined,
-                  color: AppColors.primary,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => AddItemPage(existing: item),
+        child: _isLoading
+            ? const DetailsPageSkeleton(
+                headerStyle: DetailsHeaderStyle.avatar,
+                showTabs: false,
+              )
+            : CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  CustomSliverAppBar(
+                    title: item.name,
+                    leadingType: AppBarLeadingType.back,
+                    onLeadingPressed: () => Navigator.pop(context),
+                    actions: [
+                      AppBarIconButton(
+                        icon: Icons.edit_outlined,
+                        color: AppColors.primary,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => AddItemPage(existing: item),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(child: _buildHeaderSection(context)),
-            SliverPadding(
-              padding: EdgeInsets.all(Dimensions.width20),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  _buildPricingSection(context),
-                  SizedBox(height: Dimensions.height15),
-                  _buildDetailsSection(context),
-                  SizedBox(height: Dimensions.height30),
-                ]),
+                      SizedBox(width: Dimensions.width20),
+                    ],
+                  ),
+                  SliverToBoxAdapter(child: _buildHeaderSection(context)),
+                  SliverPadding(
+                    padding: EdgeInsets.all(Dimensions.width20),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        _buildPricingSection(context),
+                        SizedBox(height: Dimensions.height15),
+                        _buildDetailsSection(context),
+                        SizedBox(height: Dimensions.height30),
+                      ]),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

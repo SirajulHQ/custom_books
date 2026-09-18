@@ -10,6 +10,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
@@ -67,14 +68,29 @@ class _QuotesPageState extends State<QuotesPage> {
   ];
   int _tab = 0;
   bool _searchOpen = false;
+  bool _isLoading = true;
   QuoteStatus? _statusFilter;
   QuoteSort _sort = QuoteSort.createdTime;
   bool _ascending = false;
 
   @override
+  void initState() {
+    super.initState();
+    _loadQuotes();
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching quotes so the shimmer skeleton is shown briefly.
+  Future<void> _loadQuotes() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<QuoteModel> get _visibleQuotes {
@@ -364,14 +380,16 @@ class _QuotesPageState extends State<QuotesPage> {
                 onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
-              child: quotes.isEmpty
+              child: _isLoading
+                  ? const DocumentListSkeleton()
+                  : quotes.isEmpty
                   ? const EmptyStateWidget(
                       icon: Icons.request_quote_rounded,
                       title: 'No quotes found',
                       subtitle: 'Tap the + button to create a new quote.',
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => setState(() {}),
+                      onRefresh: _loadQuotes,
                       child: ListView.builder(
                         padding: EdgeInsets.fromLTRB(
                           Dimensions.width20,

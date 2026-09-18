@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/dashed_border.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/customers/views/add_customer_page.dart';
 import 'package:custom_books/features/sales_orders/models/sales_order_model.dart';
@@ -36,6 +37,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
   String _paymentTerms = 'Due on Receipt';
   String? _salesperson;
   bool _taxInclusive = false;
+  bool _isLoading = true;
 
   final List<SalesOrderLineItem> _lineItems = [];
   final List<PlatformFile> _attachments = [];
@@ -66,6 +68,7 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
   @override
   void initState() {
     super.initState();
+    _load();
     final existing = widget.existing;
     if (existing != null) {
       _salesOrderNumController.text = existing.salesOrderNumber;
@@ -107,6 +110,14 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
     _notesController.dispose();
     _termsController.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   Future<void> _pickDate({required bool isShipmentDate}) async {
@@ -431,66 +442,110 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(Dimensions.width15),
-          child: Column(
-            children: [
-              // Card 1: Core Details
-              FormCard(
-                children: [
-                  // Customer Name *
-                  const RequiredLabel(text: 'Customer Name'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  InkWell(
-                    onTap: _selectCustomer,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width10 / 2,
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: context.colors.border),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _customerController.text.isEmpty
-                                  ? 'Start typing to select a Customer'
-                                  : _customerController.text,
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.9,
-                                color: _customerController.text.isEmpty
-                                    ? context.colors.textTertiary
-                                    : context.colors.textPrimary,
-                                fontWeight: _customerController.text.isEmpty
-                                    ? FontWeight.normal
-                                    : FontWeight.w600,
+        body: _isLoading
+            ? const FormPageSkeleton()
+            : SingleChildScrollView(
+                padding: EdgeInsets.all(Dimensions.width15),
+                child: Column(
+                  children: [
+                    // Card 1: Core Details
+                    FormCard(
+                      children: [
+                        // Customer Name *
+                        const RequiredLabel(text: 'Customer Name'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        InkWell(
+                          onTap: _selectCustomer,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: Dimensions.width10 / 2,
+                              vertical: Dimensions.height10,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: context.colors.border,
+                                ),
                               ),
                             ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    _customerController.text.isEmpty
+                                        ? 'Start typing to select a Customer'
+                                        : _customerController.text,
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.9,
+                                      color: _customerController.text.isEmpty
+                                          ? context.colors.textTertiary
+                                          : context.colors.textPrimary,
+                                      fontWeight:
+                                          _customerController.text.isEmpty
+                                          ? FontWeight.normal
+                                          : FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.add_rounded,
+                                  size: Dimensions.iconSize24,
+                                  color: context.colors.textPrimary,
+                                ),
+                              ],
+                            ),
                           ),
-                          Icon(
-                            Icons.add_rounded,
-                            size: Dimensions.iconSize24,
-                            color: context.colors.textPrimary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
+                        ),
+                        SizedBox(height: Dimensions.height20),
 
-                  // Sales Order# *
-                  const RequiredLabel(text: 'Sales Order#'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _salesOrderNumController,
+                        // Sales Order# *
+                        const RequiredLabel(text: 'Sales Order#'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _salesOrderNumController,
+                                style: FormTextStyles.value(context),
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: Dimensions.height10,
+                                  ),
+                                  border: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: context.colors.border,
+                                    ),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: context.colors.border,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: Dimensions.width10),
+                            Icon(
+                              Icons.settings_outlined,
+                              size: Dimensions.iconSize24 * 0.85,
+                              color: context.colors.textSecondary,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        // Reference#
+                        Text('Reference#', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _referenceController,
                           style: FormTextStyles.value(context),
                           decoration: InputDecoration(
                             isDense: true,
@@ -512,256 +567,242 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: Dimensions.width10),
-                      Icon(
-                        Icons.settings_outlined,
-                        size: Dimensions.iconSize24 * 0.85,
-                        color: context.colors.textSecondary,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height20),
+                        SizedBox(height: Dimensions.height20),
 
-                  // Reference#
-                  Text('Reference#', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _referenceController,
-                    style: FormTextStyles.value(context),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Sales Order Date *
-                  const RequiredLabel(text: 'Sales Order Date'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  InkWell(
-                    onTap: () => _pickDate(isShipmentDate: false),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: context.colors.border),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            formatDate(_salesOrderDate),
-                            style: FormTextStyles.value(context),
-                          ),
-                          Icon(
-                            Icons.calendar_today_outlined,
-                            size: Dimensions.iconSize24 * 0.85,
-                            color: context.colors.textSecondary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Expected Shipment Date
-                  Text('Expected Shipment Date', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  InkWell(
-                    onTap: () => _pickDate(isShipmentDate: true),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: context.colors.border),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _expectedShipmentDate != null
-                                ? formatDate(_expectedShipmentDate!)
-                                : 'dd MMM yyyy',
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.9,
-                              color: _expectedShipmentDate != null
-                                  ? context.colors.textPrimary
-                                  : context.colors.textTertiary,
+                        // Sales Order Date *
+                        const RequiredLabel(text: 'Sales Order Date'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        InkWell(
+                          onTap: () => _pickDate(isShipmentDate: false),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
                             ),
-                          ),
-                          Icon(
-                            Icons.calendar_today_outlined,
-                            size: Dimensions.iconSize24 * 0.85,
-                            color: context.colors.textSecondary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-
-                  // Payment Terms
-                  Text('Payment Terms', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  InkWell(
-                    onTap: _selectPaymentTerms,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: context.colors.border),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _paymentTerms,
-                            style: FormTextStyles.value(context),
-                          ),
-                          Icon(
-                            Icons.arrow_drop_down_rounded,
-                            size: Dimensions.iconSize24,
-                            color: context.colors.textSecondary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: Dimensions.height15),
-
-              // Card 2: Delivery & Salesperson
-              FormCard(
-                children: [
-                  Text('Delivery Method', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _deliveryMethodController,
-                    style: FormTextStyles.value(context),
-                    decoration: InputDecoration(
-                      hintText: 'Select or Type to add',
-                      hintStyle: TextStyle(
-                        color: context.colors.textTertiary,
-                        fontSize: Dimensions.font16 * 0.9,
-                      ),
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-                  Text('Salesperson', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  InkWell(
-                    onTap: _selectSalesperson,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: context.colors.border),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            _salesperson ?? 'Select or Add Salesperson',
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.9,
-                              color: _salesperson != null
-                                  ? context.colors.textPrimary
-                                  : context.colors.textTertiary,
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_drop_down_rounded,
-                            size: Dimensions.iconSize24,
-                            color: context.colors.textSecondary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: Dimensions.height15),
-
-              // Card 3: Tax Radios
-              FormCard(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Tax', style: FormTextStyles.label()),
-                      RadioGroup<bool>(
-                        groupValue: _taxInclusive,
-                        onChanged: (val) =>
-                            setState(() => _taxInclusive = val!),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () =>
-                                  setState(() => _taxInclusive = false),
-                              child: Row(
-                                children: [
-                                  Radio<bool>(value: false),
-                                  Text(
-                                    'Exclusive',
-                                    style: TextStyle(
-                                      fontSize: Dimensions.font16 * 0.9,
-                                      fontWeight: FontWeight.w600,
-                                      color: context.colors.textPrimary,
-                                    ),
-                                  ),
-                                ],
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: context.colors.border,
+                                ),
                               ),
                             ),
-                            SizedBox(width: Dimensions.width15),
-                            GestureDetector(
-                              onTap: () => setState(() => _taxInclusive = true),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  formatDate(_salesOrderDate),
+                                  style: FormTextStyles.value(context),
+                                ),
+                                Icon(
+                                  Icons.calendar_today_outlined,
+                                  size: Dimensions.iconSize24 * 0.85,
+                                  color: context.colors.textSecondary,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        // Expected Shipment Date
+                        Text(
+                          'Expected Shipment Date',
+                          style: FormTextStyles.label(),
+                        ),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        InkWell(
+                          onTap: () => _pickDate(isShipmentDate: true),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: context.colors.border,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  _expectedShipmentDate != null
+                                      ? formatDate(_expectedShipmentDate!)
+                                      : 'dd MMM yyyy',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    color: _expectedShipmentDate != null
+                                        ? context.colors.textPrimary
+                                        : context.colors.textTertiary,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.calendar_today_outlined,
+                                  size: Dimensions.iconSize24 * 0.85,
+                                  color: context.colors.textSecondary,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: Dimensions.height20),
+
+                        // Payment Terms
+                        Text('Payment Terms', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        InkWell(
+                          onTap: _selectPaymentTerms,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: context.colors.border,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  _paymentTerms,
+                                  style: FormTextStyles.value(context),
+                                ),
+                                Icon(
+                                  Icons.arrow_drop_down_rounded,
+                                  size: Dimensions.iconSize24,
+                                  color: context.colors.textSecondary,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Dimensions.height15),
+
+                    // Card 2: Delivery & Salesperson
+                    FormCard(
+                      children: [
+                        Text('Delivery Method', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _deliveryMethodController,
+                          style: FormTextStyles.value(context),
+                          decoration: InputDecoration(
+                            hintText: 'Select or Type to add',
+                            hintStyle: TextStyle(
+                              color: context.colors.textTertiary,
+                              fontSize: Dimensions.font16 * 0.9,
+                            ),
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.primary),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        Text('Salesperson', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        InkWell(
+                          onTap: _selectSalesperson,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: context.colors.border,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  _salesperson ?? 'Select or Add Salesperson',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.9,
+                                    color: _salesperson != null
+                                        ? context.colors.textPrimary
+                                        : context.colors.textTertiary,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_drop_down_rounded,
+                                  size: Dimensions.iconSize24,
+                                  color: context.colors.textSecondary,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Dimensions.height15),
+
+                    // Card 3: Tax Radios
+                    FormCard(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Tax', style: FormTextStyles.label()),
+                            RadioGroup<bool>(
+                              groupValue: _taxInclusive,
+                              onChanged: (val) =>
+                                  setState(() => _taxInclusive = val!),
                               child: Row(
                                 children: [
-                                  Radio<bool>(value: true),
-                                  Text(
-                                    'Inclusive',
-                                    style: TextStyle(
-                                      fontSize: Dimensions.font16 * 0.9,
-                                      fontWeight: FontWeight.w600,
-                                      color: context.colors.textPrimary,
+                                  GestureDetector(
+                                    onTap: () =>
+                                        setState(() => _taxInclusive = false),
+                                    child: Row(
+                                      children: [
+                                        Radio<bool>(value: false),
+                                        Text(
+                                          'Exclusive',
+                                          style: TextStyle(
+                                            fontSize: Dimensions.font16 * 0.9,
+                                            fontWeight: FontWeight.w600,
+                                            color: context.colors.textPrimary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: Dimensions.width15),
+                                  GestureDetector(
+                                    onTap: () =>
+                                        setState(() => _taxInclusive = true),
+                                    child: Row(
+                                      children: [
+                                        Radio<bool>(value: true),
+                                        Text(
+                                          'Inclusive',
+                                          style: TextStyle(
+                                            fontSize: Dimensions.font16 * 0.9,
+                                            fontWeight: FontWeight.w600,
+                                            color: context.colors.textPrimary,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -769,220 +810,234 @@ class _AddSalesOrderPageState extends State<AddSalesOrderPage>
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: Dimensions.height15),
-
-              // Card 4: Line Items
-              FormCard(
-                children: [
-                  if (_lineItems.isNotEmpty) ...[
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _lineItems.length,
-                      separatorBuilder: (context, index) => const Divider(),
-                      itemBuilder: (context, index) {
-                        final item = _lineItems[index];
-                        return ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            item.itemName,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: context.colors.textPrimary,
-                            ),
-                          ),
-                          subtitle: Text(
-                            'Qty: ${item.quantity} x ₹${item.rate.toStringAsFixed(2)} | Tax: ${item.taxRate}%',
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.75,
-                              color: context.colors.textSecondary,
-                            ),
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                '₹${item.net.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: context.colors.textPrimary,
-                                ),
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.delete_outline_rounded,
-                                  color: Colors.red,
-                                  size: Dimensions.iconSize20,
-                                ),
-                                onPressed: () =>
-                                    setState(() => _lineItems.removeAt(index)),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                      ],
                     ),
-                    const Divider(),
-                  ],
-                  Center(
-                    child: OutlinedButton.icon(
-                      onPressed: _addLineItem,
-                      icon: Icon(
-                        Icons.add_circle_rounded,
-                        color: AppColors.primary,
-                        size: Dimensions.iconSize24 * 0.85,
-                      ),
-                      label: Text(
-                        'Add Line Item',
-                        style: TextStyle(
-                          color: AppColors.primary,
-                          fontSize: Dimensions.font16 * 0.95,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.primary, width: 1.2),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width20 * 1.5,
-                          vertical: Dimensions.height15 * 0.8,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius15 / 2,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: Dimensions.height15),
-
-              // Card 5: Notes & Terms
-              FormCard(
-                children: [
-                  Text('Customer Notes', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _notesController,
-                    maxLines: 2,
-                    style: FormTextStyles.value(context),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-                  Text('Terms & Conditions', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _termsController,
-                    maxLines: 2,
-                    style: FormTextStyles.value(context),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: Dimensions.height10,
-                      ),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: context.colors.border),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: Dimensions.height15),
-
-              // Card 6: Attachments
-              FormCard(
-                children: [
-                  Text('Attachments', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height15),
-                  DashedBorder(
-                    color: context.colors.border,
-                    borderRadius: Dimensions.radius15,
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(Dimensions.height20),
-                      alignment: Alignment.centerLeft,
-                      child: OutlinedButton.icon(
-                        onPressed: _pickAttachments,
-                        icon: Icon(
-                          Icons.image_outlined,
-                          color: context.colors.textPrimary,
-                          size: Dimensions.iconSize24 * 0.85,
-                        ),
-                        label: Text(
-                          'Upload File',
-                          style: TextStyle(
-                            color: context.colors.textPrimary,
-                            fontSize: Dimensions.font16 * 0.9,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: context.colors.border),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.width15,
-                            vertical: Dimensions.height10,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              Dimensions.radius15 / 2,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (_attachments.isNotEmpty) ...[
                     SizedBox(height: Dimensions.height15),
-                    Wrap(
-                      spacing: Dimensions.width10 * 0.8,
-                      runSpacing: Dimensions.height10 * 0.8,
-                      children: _attachments
-                          .map(
-                            (file) => Chip(
-                              avatar: Icon(
-                                Icons.insert_drive_file_outlined,
-                                size: Dimensions.iconSize16,
-                              ),
-                              label: Text(file.name),
-                              onDeleted: () =>
-                                  setState(() => _attachments.remove(file)),
+
+                    // Card 4: Line Items
+                    FormCard(
+                      children: [
+                        if (_lineItems.isNotEmpty) ...[
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: _lineItems.length,
+                            separatorBuilder: (context, index) =>
+                                const Divider(),
+                            itemBuilder: (context, index) {
+                              final item = _lineItems[index];
+                              return ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                title: Text(
+                                  item.itemName,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: context.colors.textPrimary,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  'Qty: ${item.quantity} x ₹${item.rate.toStringAsFixed(2)} | Tax: ${item.taxRate}%',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.75,
+                                    color: context.colors.textSecondary,
+                                  ),
+                                ),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      '₹${item.net.toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: context.colors.textPrimary,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.delete_outline_rounded,
+                                        color: Colors.red,
+                                        size: Dimensions.iconSize20,
+                                      ),
+                                      onPressed: () => setState(
+                                        () => _lineItems.removeAt(index),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          const Divider(),
+                        ],
+                        Center(
+                          child: OutlinedButton.icon(
+                            onPressed: _addLineItem,
+                            icon: Icon(
+                              Icons.add_circle_rounded,
+                              color: AppColors.primary,
+                              size: Dimensions.iconSize24 * 0.85,
                             ),
-                          )
-                          .toList(),
+                            label: Text(
+                              'Add Line Item',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontSize: Dimensions.font16 * 0.95,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                color: AppColors.primary,
+                                width: 1.2,
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Dimensions.width20 * 1.5,
+                                vertical: Dimensions.height15 * 0.8,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  Dimensions.radius15 / 2,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                    SizedBox(height: Dimensions.height15),
+
+                    // Card 5: Notes & Terms
+                    FormCard(
+                      children: [
+                        Text('Customer Notes', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _notesController,
+                          maxLines: 2,
+                          style: FormTextStyles.value(context),
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.primary),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        Text(
+                          'Terms & Conditions',
+                          style: FormTextStyles.label(),
+                        ),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _termsController,
+                          maxLines: 2,
+                          style: FormTextStyles.value(context),
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: Dimensions.height10,
+                            ),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: context.colors.border,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.primary),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Dimensions.height15),
+
+                    // Card 6: Attachments
+                    FormCard(
+                      children: [
+                        Text('Attachments', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height15),
+                        DashedBorder(
+                          color: context.colors.border,
+                          borderRadius: Dimensions.radius15,
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(Dimensions.height20),
+                            alignment: Alignment.centerLeft,
+                            child: OutlinedButton.icon(
+                              onPressed: _pickAttachments,
+                              icon: Icon(
+                                Icons.image_outlined,
+                                color: context.colors.textPrimary,
+                                size: Dimensions.iconSize24 * 0.85,
+                              ),
+                              label: Text(
+                                'Upload File',
+                                style: TextStyle(
+                                  color: context.colors.textPrimary,
+                                  fontSize: Dimensions.font16 * 0.9,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(color: context.colors.border),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: Dimensions.width15,
+                                  vertical: Dimensions.height10,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    Dimensions.radius15 / 2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (_attachments.isNotEmpty) ...[
+                          SizedBox(height: Dimensions.height15),
+                          Wrap(
+                            spacing: Dimensions.width10 * 0.8,
+                            runSpacing: Dimensions.height10 * 0.8,
+                            children: _attachments
+                                .map(
+                                  (file) => Chip(
+                                    avatar: Icon(
+                                      Icons.insert_drive_file_outlined,
+                                      size: Dimensions.iconSize16,
+                                    ),
+                                    label: Text(file.name),
+                                    onDeleted: () => setState(
+                                      () => _attachments.remove(file),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ],
+                      ],
+                    ),
+                    SizedBox(height: Dimensions.height30),
                   ],
-                ],
+                ),
               ),
-              SizedBox(height: Dimensions.height30),
-            ],
-          ),
-        ),
       ),
     );
   }

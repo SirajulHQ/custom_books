@@ -5,6 +5,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/widgets/customer_page_widgets/customer_card_widget.dart';
@@ -24,6 +25,7 @@ class CustomersPage extends StatefulWidget {
 class _CustomersPageState extends State<CustomersPage> {
   String _selectedFilter = 'Active Customers';
   bool _searchOpen = false;
+  bool _isLoading = true;
   final _searchController = TextEditingController();
 
   String _sortField = 'Name';
@@ -46,12 +48,21 @@ class _CustomersPageState extends State<CustomersPage> {
   void initState() {
     super.initState();
     appLog('🎯 CustomersPage initialized', name: 'CustomersPage');
+    _loadCustomers();
   }
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching customers so the shimmer skeleton is shown briefly.
+  Future<void> _loadCustomers() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   // Dummy data based on the image
@@ -274,28 +285,33 @@ class _CustomersPageState extends State<CustomersPage> {
             SliverToBoxAdapter(child: _buildFilterSegment()),
 
             // Customers List
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              sliver: _filteredCustomers.isEmpty
-                  ? const SliverToBoxAdapter(
-                      child: EmptyStateWidget(
-                        icon: Icons.people_outline_rounded,
-                        title: 'No customers found',
-                        subtitle:
-                            'Tap the + button to add your first customer.',
+            if (_isLoading)
+              const SliverToBoxAdapter(child: CustomerListSkeleton())
+            else
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                sliver: _filteredCustomers.isEmpty
+                    ? const SliverToBoxAdapter(
+                        child: EmptyStateWidget(
+                          icon: Icons.people_outline_rounded,
+                          title: 'No customers found',
+                          subtitle:
+                              'Tap the + button to add your first customer.',
+                        ),
+                      )
+                    : SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: Dimensions.height15,
+                            ),
+                            child: CustomerCardWidget(
+                              customer: _filteredCustomers[index],
+                            ),
+                          );
+                        }, childCount: _filteredCustomers.length),
                       ),
-                    )
-                  : SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: Dimensions.height15),
-                          child: CustomerCardWidget(
-                            customer: _filteredCustomers[index],
-                          ),
-                        );
-                      }, childCount: _filteredCustomers.length),
-                    ),
-            ),
+              ),
 
             SliverToBoxAdapter(
               child: SizedBox(

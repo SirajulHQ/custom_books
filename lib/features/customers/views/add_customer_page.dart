@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/customers/models/customer_model.dart';
 import 'package:custom_books/features/customers/views/add_address_page.dart';
@@ -43,10 +44,12 @@ class _AddCustomerPageState extends State<AddCustomerPage>
   String _selectedCurrency = 'INR- Indian Rupee';
   String _selectedAccountsReceivable = 'Select a Accounts Receivable';
   String _selectedAccountsPayable = 'Select a Accounts Payable';
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _load();
     _firstNameController.addListener(markDirty);
     _websiteController.addListener(markDirty);
     _facebookController.addListener(markDirty);
@@ -101,6 +104,14 @@ class _AddCustomerPageState extends State<AddCustomerPage>
     super.dispose();
   }
 
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -109,138 +120,148 @@ class _AddCustomerPageState extends State<AddCustomerPage>
       child: Scaffold(
         backgroundColor: context.colors.background,
         body: SafeArea(
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              // App Bar
-              CustomSliverAppBar(
-                title: widget.customer != null
-                    ? 'Edit Customer'
-                    : 'New Customer',
-                leadingType: AppBarLeadingType.back,
-                onLeadingPressed: () => onPopInvokedWithResult(false, null),
-                actions: [
-                  AppBarIconButton(
-                    icon: Icons.contacts_outlined,
-                    color: context.colors.textSecondary,
-                    onPressed: () {
-                      appLog(
-                        '📱 Contacts button tapped',
-                        name: 'AddCustomerPage',
-                      );
-                      ToastificationHelper.showInfo(
-                        context,
-                        'Importing from device contacts is coming soon.',
-                      );
-                    },
-                  ),
-                  SizedBox(width: Dimensions.width10),
-                  AppBarElevatedButton(label: 'SAVE', onPressed: _saveCustomer),
-                  SizedBox(width: Dimensions.width20),
-                ],
-              ),
-
-              // Content
-              SliverPadding(
-                padding: EdgeInsets.all(Dimensions.width20),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    // Customer Information Card
-                    AddCustomerInfoCard(
-                      firstNameController: _firstNameController,
-                      lastNameController: _lastNameController,
-                      companyNameController: _companyNameController,
-                      displayNameController: _displayNameController,
-                      emailController: _emailController,
-                      phoneController: _phoneController,
-                      mobileController: _mobileController,
-                      onChanged: markDirty,
-                    ),
-
-                    SizedBox(height: Dimensions.height15),
-
-                    // Other Details Card
-                    OtherDetailsCard(
-                      selectedCurrency: _selectedCurrency,
-                      selectedAccountsReceivable: _selectedAccountsReceivable,
-                      selectedAccountsPayable: _selectedAccountsPayable,
-                      selectedTaxTreatment: _selectedTaxTreatment,
-                      selectedPlaceOfSupply: _selectedPlaceOfSupply,
-                      onCurrencyChanged: (value) {
-                        setState(() => _selectedCurrency = value!);
-                        markDirty();
-                      },
-                      onAccountsReceivableChanged: (value) {
-                        setState(() => _selectedAccountsReceivable = value!);
-                        markDirty();
-                      },
-                      onAccountsPayableChanged: (value) {
-                        setState(() => _selectedAccountsPayable = value!);
-                        markDirty();
-                      },
-                    ),
-
-                    SizedBox(height: Dimensions.height15),
-
-                    // Add Billing & Shipping Address Button
-                    _buildExpandableButton(
-                      'Add Billing & Shipping address',
-                      onTap: () async {
-                        appLog(
-                          '📍 Add Address tapped',
-                          name: 'AddCustomerPage',
-                        );
-                        final saved = await Navigator.push<bool>(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AddAddressPage(),
-                          ),
-                        );
-                        if (saved == true) markDirty();
-                      },
-                    ),
-
-                    SizedBox(height: Dimensions.height15),
-
-                    // Add Contact Person Button
-                    _buildExpandableButton(
-                      'Add Contact Person',
-                      onTap: () async {
-                        appLog(
-                          '👤 Add Contact Person tapped',
-                          name: 'AddCustomerPage',
-                        );
-                        final saved = await Navigator.push<bool>(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AddContactPersonPage(),
-                          ),
-                        );
-                        if (saved == true) markDirty();
-                      },
-                    ),
-
-                    SizedBox(height: Dimensions.height15),
-
-                    // Remarks Card
-                    FormSectionCard(
-                      title: 'Remarks (For Internal Use)',
-                      children: [
-                        CustomerCustomTextField(
-                          label: '',
-                          controller: _remarksController,
-                          maxLines: 4,
-                          hint: 'Enter internal remarks...',
+          child: _isLoading
+              ? const FormPageSkeleton()
+              : CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    // App Bar
+                    CustomSliverAppBar(
+                      title: widget.customer != null
+                          ? 'Edit Customer'
+                          : 'New Customer',
+                      leadingType: AppBarLeadingType.back,
+                      onLeadingPressed: () =>
+                          onPopInvokedWithResult(false, null),
+                      actions: [
+                        AppBarIconButton(
+                          icon: Icons.contacts_outlined,
+                          color: context.colors.textSecondary,
+                          onPressed: () {
+                            appLog(
+                              '📱 Contacts button tapped',
+                              name: 'AddCustomerPage',
+                            );
+                            ToastificationHelper.showInfo(
+                              context,
+                              'Importing from device contacts is coming soon.',
+                            );
+                          },
                         ),
+                        SizedBox(width: Dimensions.width10),
+                        AppBarElevatedButton(
+                          label: 'SAVE',
+                          onPressed: _saveCustomer,
+                        ),
+                        SizedBox(width: Dimensions.width20),
                       ],
                     ),
 
-                    SizedBox(height: Dimensions.height30),
-                  ]),
+                    // Content
+                    SliverPadding(
+                      padding: EdgeInsets.all(Dimensions.width20),
+                      sliver: SliverList(
+                        delegate: SliverChildListDelegate([
+                          // Customer Information Card
+                          AddCustomerInfoCard(
+                            firstNameController: _firstNameController,
+                            lastNameController: _lastNameController,
+                            companyNameController: _companyNameController,
+                            displayNameController: _displayNameController,
+                            emailController: _emailController,
+                            phoneController: _phoneController,
+                            mobileController: _mobileController,
+                            onChanged: markDirty,
+                          ),
+
+                          SizedBox(height: Dimensions.height15),
+
+                          // Other Details Card
+                          OtherDetailsCard(
+                            selectedCurrency: _selectedCurrency,
+                            selectedAccountsReceivable:
+                                _selectedAccountsReceivable,
+                            selectedAccountsPayable: _selectedAccountsPayable,
+                            selectedTaxTreatment: _selectedTaxTreatment,
+                            selectedPlaceOfSupply: _selectedPlaceOfSupply,
+                            onCurrencyChanged: (value) {
+                              setState(() => _selectedCurrency = value!);
+                              markDirty();
+                            },
+                            onAccountsReceivableChanged: (value) {
+                              setState(
+                                () => _selectedAccountsReceivable = value!,
+                              );
+                              markDirty();
+                            },
+                            onAccountsPayableChanged: (value) {
+                              setState(() => _selectedAccountsPayable = value!);
+                              markDirty();
+                            },
+                          ),
+
+                          SizedBox(height: Dimensions.height15),
+
+                          // Add Billing & Shipping Address Button
+                          _buildExpandableButton(
+                            'Add Billing & Shipping address',
+                            onTap: () async {
+                              appLog(
+                                '📍 Add Address tapped',
+                                name: 'AddCustomerPage',
+                              );
+                              final saved = await Navigator.push<bool>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const AddAddressPage(),
+                                ),
+                              );
+                              if (saved == true) markDirty();
+                            },
+                          ),
+
+                          SizedBox(height: Dimensions.height15),
+
+                          // Add Contact Person Button
+                          _buildExpandableButton(
+                            'Add Contact Person',
+                            onTap: () async {
+                              appLog(
+                                '👤 Add Contact Person tapped',
+                                name: 'AddCustomerPage',
+                              );
+                              final saved = await Navigator.push<bool>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const AddContactPersonPage(),
+                                ),
+                              );
+                              if (saved == true) markDirty();
+                            },
+                          ),
+
+                          SizedBox(height: Dimensions.height15),
+
+                          // Remarks Card
+                          FormSectionCard(
+                            title: 'Remarks (For Internal Use)',
+                            children: [
+                              CustomerCustomTextField(
+                                label: '',
+                                controller: _remarksController,
+                                maxLines: 4,
+                                hint: 'Enter internal remarks...',
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: Dimensions.height30),
+                        ]),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
         ),
       ),
     );

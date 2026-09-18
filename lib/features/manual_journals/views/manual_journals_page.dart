@@ -9,6 +9,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/manual_journals/models/manual_journal_model.dart';
 import 'package:custom_books/features/manual_journals/views/add_manual_journal_page.dart';
@@ -30,6 +31,7 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
 
   int _selectedTab = 0; // 0: All, 1: Draft, 2: Published
   bool _searchOpen = false;
+  bool _isLoading = true;
   ManualJournalStatus? _statusFilter;
   ManualJournalSortField _sortField = ManualJournalSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -39,6 +41,7 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
   @override
   void initState() {
     super.initState();
+    _loadJournals();
     _journals = [
       ManualJournalModel(
         id: '1',
@@ -91,6 +94,14 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _loadJournals() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<ManualJournalModel> get _visibleJournals {
@@ -271,14 +282,16 @@ class _ManualJournalsPageState extends State<ManualJournalsPage> {
                 onClear: () => setState(() => _statusFilter = null),
               ),
             Expanded(
-              child: visibleList.isEmpty
+              child: _isLoading
+                  ? const DocumentListSkeleton()
+                  : visibleList.isEmpty
                   ? const EmptyStateWidget(
                       icon: Icons.menu_book_rounded,
                       title: 'No manual journals found',
                       subtitle: 'Tap the + button to create a new journal.',
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => setState(() {}),
+                      onRefresh: _loadJournals,
                       child: ListView.builder(
                         padding: EdgeInsets.fromLTRB(
                           Dimensions.width20,

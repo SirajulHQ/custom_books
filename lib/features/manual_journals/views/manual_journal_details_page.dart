@@ -7,6 +7,7 @@ import 'package:custom_books/features/manual_journals/views/add_manual_journal_p
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/utils/date_formatter.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 
 class ManualJournalDetailsPage extends StatefulWidget {
   final ManualJournalModel journal;
@@ -21,17 +22,27 @@ class ManualJournalDetailsPage extends StatefulWidget {
 class _ManualJournalDetailsPageState extends State<ManualJournalDetailsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _load();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching details so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -135,135 +146,141 @@ class _ManualJournalDetailsPageState extends State<ManualJournalDetailsPage>
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            // Header section
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(Dimensions.width20),
-              decoration: BoxDecoration(
-                color: context.colors.card,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0x08000000),
-                    blurRadius: Dimensions.radius15 * 0.53,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: _isLoading
+            ? const DetailsPageSkeleton()
+            : Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        formatDate(journal.journalDate),
-                        style: TextStyle(
-                          fontSize: Dimensions.font20 * 0.95,
-                          fontWeight: FontWeight.w800,
-                          color: context.colors.textPrimary,
+                  // Header section
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(Dimensions.width20),
+                    decoration: BoxDecoration(
+                      color: context.colors.card,
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0x08000000),
+                          blurRadius: Dimensions.radius15 * 0.53,
+                          offset: const Offset(0, 2),
                         ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.width10 + 2,
-                          vertical: Dimensions.height10 * 0.5,
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              formatDate(journal.journalDate),
+                              style: TextStyle(
+                                fontSize: Dimensions.font20 * 0.95,
+                                fontWeight: FontWeight.w800,
+                                color: context.colors.textPrimary,
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Dimensions.width10 + 2,
+                                vertical: Dimensions.height10 * 0.5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: statusColor.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(
+                                  Dimensions.radius30,
+                                ),
+                              ),
+                              child: Text(
+                                journal.status.label,
+                                style: TextStyle(
+                                  fontSize: Dimensions.font16 * 0.62,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.6,
+                                  color: statusColor,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        decoration: BoxDecoration(
-                          color: statusColor.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(
-                            Dimensions.radius30,
-                          ),
-                        ),
-                        child: Text(
-                          journal.status.label,
+                        SizedBox(height: Dimensions.height20),
+                        Text(
+                          journal.journalNumber,
                           style: TextStyle(
-                            fontSize: Dimensions.font16 * 0.62,
+                            fontSize: Dimensions.font20 * 0.95,
                             fontWeight: FontWeight.w800,
-                            letterSpacing: 0.6,
-                            color: statusColor,
+                            color: context.colors.textPrimary,
                           ),
                         ),
+                        SizedBox(height: Dimensions.height10 / 2.5),
+                        Text(
+                          journal.referenceNumber.isEmpty
+                              ? 'No reference'
+                              : journal.referenceNumber,
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.85,
+                            color: context.colors.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: Dimensions.height15),
+
+                  // Tabs
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: Dimensions.width20,
+                    ),
+                    decoration: BoxDecoration(
+                      color: context.colors.surfaceLight,
+                      borderRadius: BorderRadius.circular(Dimensions.radius30),
+                    ),
+                    child: TabBar(
+                      controller: _tabController,
+                      indicator: BoxDecoration(
+                        color: context.colors.card,
+                        borderRadius: BorderRadius.circular(
+                          Dimensions.radius30,
+                        ),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.3),
+                          width: 1.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.08),
+                            blurRadius: Dimensions.radius15 * 0.53,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height20),
-                  Text(
-                    journal.journalNumber,
-                    style: TextStyle(
-                      fontSize: Dimensions.font20 * 0.95,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.textPrimary,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelColor: AppColors.primary,
+                      unselectedLabelColor: context.colors.textSecondary,
+                      labelStyle: TextStyle(
+                        fontSize: Dimensions.font16 * 0.72,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.3,
+                      ),
+                      dividerColor: Colors.transparent,
+                      padding: EdgeInsets.all(Dimensions.width10 / 2),
+                      tabs: const [
+                        Tab(text: 'DETAILS'),
+                        Tab(text: 'COMMENTS & HISTORY'),
+                      ],
                     ),
                   ),
-                  SizedBox(height: Dimensions.height10 / 2.5),
-                  Text(
-                    journal.referenceNumber.isEmpty
-                        ? 'No reference'
-                        : journal.referenceNumber,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.85,
-                      color: context.colors.textSecondary,
-                      fontWeight: FontWeight.w500,
+                  SizedBox(height: Dimensions.height15),
+
+                  // Tab content
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [_buildDetailsTab(), _buildCommentsTab()],
                     ),
                   ),
                 ],
               ),
-            ),
-            SizedBox(height: Dimensions.height15),
-
-            // Tabs
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              decoration: BoxDecoration(
-                color: context.colors.surfaceLight,
-                borderRadius: BorderRadius.circular(Dimensions.radius30),
-              ),
-              child: TabBar(
-                controller: _tabController,
-                indicator: BoxDecoration(
-                  color: context.colors.card,
-                  borderRadius: BorderRadius.circular(Dimensions.radius30),
-                  border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    width: 1.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.08),
-                      blurRadius: Dimensions.radius15 * 0.53,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: AppColors.primary,
-                unselectedLabelColor: context.colors.textSecondary,
-                labelStyle: TextStyle(
-                  fontSize: Dimensions.font16 * 0.72,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.3,
-                ),
-                dividerColor: Colors.transparent,
-                padding: EdgeInsets.all(Dimensions.width10 / 2),
-                tabs: const [
-                  Tab(text: 'DETAILS'),
-                  Tab(text: 'COMMENTS & HISTORY'),
-                ],
-              ),
-            ),
-            SizedBox(height: Dimensions.height15),
-
-            // Tab content
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [_buildDetailsTab(), _buildCommentsTab()],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

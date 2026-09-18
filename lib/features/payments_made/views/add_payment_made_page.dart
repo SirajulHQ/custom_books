@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/payments_made/models/payment_made_model.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _AddPaymentMadePageState extends State<AddPaymentMadePage>
   String? _vendorName;
   DateTime _paymentDate = DateTime.now();
   PaymentMode _mode = PaymentMode.bankTransfer;
+  bool _isLoading = true;
 
   static const List<String> _vendors = [
     'Global Supplies',
@@ -37,6 +39,7 @@ class _AddPaymentMadePageState extends State<AddPaymentMadePage>
   @override
   void initState() {
     super.initState();
+    _load();
     _paymentNumController.text = 'PM-00022';
     final existing = widget.existing;
     if (existing != null) {
@@ -61,6 +64,14 @@ class _AddPaymentMadePageState extends State<AddPaymentMadePage>
     _referenceController.dispose();
     _amountController.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   Future<void> _pickDate() async {
@@ -242,73 +253,75 @@ class _AddPaymentMadePageState extends State<AddPaymentMadePage>
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(Dimensions.width15),
-          child: Column(
-            children: [
-              FormCard(
-                children: [
-                  const RequiredLabel(text: 'Vendor'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  _selectorField(
-                    value: _vendorName,
-                    hint: 'Select a vendor',
-                    onTap: _selectVendor,
-                  ),
-                  SizedBox(height: Dimensions.height20),
+        body: _isLoading
+            ? const FormPageSkeleton()
+            : SingleChildScrollView(
+                padding: EdgeInsets.all(Dimensions.width15),
+                child: Column(
+                  children: [
+                    FormCard(
+                      children: [
+                        const RequiredLabel(text: 'Vendor'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _selectorField(
+                          value: _vendorName,
+                          hint: 'Select a vendor',
+                          onTap: _selectVendor,
+                        ),
+                        SizedBox(height: Dimensions.height20),
 
-                  const RequiredLabel(text: 'Payment#'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _paymentNumController,
-                    style: FormTextStyles.value(context),
-                    decoration: _underlineDecoration(),
-                  ),
-                  SizedBox(height: Dimensions.height20),
+                        const RequiredLabel(text: 'Payment#'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _paymentNumController,
+                          style: FormTextStyles.value(context),
+                          decoration: _underlineDecoration(),
+                        ),
+                        SizedBox(height: Dimensions.height20),
 
-                  const RequiredLabel(text: 'Payment Date'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  _dateField(formatDate(_paymentDate), _pickDate),
-                  SizedBox(height: Dimensions.height20),
+                        const RequiredLabel(text: 'Payment Date'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _dateField(formatDate(_paymentDate), _pickDate),
+                        SizedBox(height: Dimensions.height20),
 
-                  Text('Payment Mode', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  _selectorField(
-                    value: _mode.label,
-                    hint: 'Select payment mode',
-                    onTap: _selectPaymentMode,
-                  ),
-                  SizedBox(height: Dimensions.height20),
+                        Text('Payment Mode', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        _selectorField(
+                          value: _mode.label,
+                          hint: 'Select payment mode',
+                          onTap: _selectPaymentMode,
+                        ),
+                        SizedBox(height: Dimensions.height20),
 
-                  Text('Reference#', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  TextField(
-                    controller: _referenceController,
-                    style: FormTextStyles.value(context),
-                    decoration: _underlineDecoration(),
-                  ),
-                ],
+                        Text('Reference#', style: FormTextStyles.label()),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        TextField(
+                          controller: _referenceController,
+                          style: FormTextStyles.value(context),
+                          decoration: _underlineDecoration(),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Dimensions.height15),
+
+                    FormCard(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const RequiredLabel(text: 'Amount'),
+                            FormNumberField(
+                              controller: _amountController,
+                              hint: '0.00',
+                              prefix: '₹',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: Dimensions.height15),
-
-              FormCard(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const RequiredLabel(text: 'Amount'),
-                      FormNumberField(
-                        controller: _amountController,
-                        hint: '0.00',
-                        prefix: '₹',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/line_item_form_widgets.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/invoices/models/invoice_model.dart';
 import 'package:custom_books/features/invoices/models/item_lookup_model.dart';
@@ -33,6 +34,7 @@ class _AddInvoiceLineItemPageState extends State<AddInvoiceLineItemPage>
   final _discountFocusNode = FocusNode();
 
   ItemLookup? _selectedItem;
+  bool _isLoading = true;
 
   final List<ItemLookup> _catalog = const [
     ItemLookup(
@@ -79,6 +81,7 @@ class _AddInvoiceLineItemPageState extends State<AddInvoiceLineItemPage>
   @override
   void initState() {
     super.initState();
+    _load();
     final initial = widget.initial;
     if (initial != null) {
       _selectedItem = ItemLookup(
@@ -123,6 +126,14 @@ class _AddInvoiceLineItemPageState extends State<AddInvoiceLineItemPage>
     _rateFocusNode.dispose();
     _discountFocusNode.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<ItemLookup> get _suggestions {
@@ -225,112 +236,120 @@ class _AddInvoiceLineItemPageState extends State<AddInvoiceLineItemPage>
           ],
         ),
         body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(Dimensions.width20),
-            physics: const BouncingScrollPhysics(),
-            child: FormCard(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const RequiredLabel(text: 'Item'),
-                    SizedBox(height: Dimensions.height10 / 2),
-                    ItemSearchField<ItemLookup>(
-                      controller: _itemSearchController,
-                      isItemSelected: _selectedItem != null,
-                      suggestions: _suggestions,
-                      selectedItemImageUrl: _selectedItem?.imageUrl,
-                      onChanged: (_) => setState(() {}),
-                      onClear: _clearItem,
-                      onBarcodeScan: () => ToastificationHelper.showInfo(
-                        context,
-                        'Barcode scan coming soon',
-                      ),
-                      suggestionBuilder: (item) => InkWell(
-                        onTap: () => _selectItem(item),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: Dimensions.height10,
-                          ),
-                          child: Row(
-                            children: [
-                              ItemThumbnail(imageUrl: item.imageUrl),
-                              SizedBox(width: Dimensions.width10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+          child: _isLoading
+              ? const FormPageSkeleton(sectionFieldCounts: [3])
+              : SingleChildScrollView(
+                  padding: EdgeInsets.all(Dimensions.width20),
+                  physics: const BouncingScrollPhysics(),
+                  child: FormCard(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const RequiredLabel(text: 'Item'),
+                          SizedBox(height: Dimensions.height10 / 2),
+                          ItemSearchField<ItemLookup>(
+                            controller: _itemSearchController,
+                            isItemSelected: _selectedItem != null,
+                            suggestions: _suggestions,
+                            selectedItemImageUrl: _selectedItem?.imageUrl,
+                            onChanged: (_) => setState(() {}),
+                            onClear: _clearItem,
+                            onBarcodeScan: () => ToastificationHelper.showInfo(
+                              context,
+                              'Barcode scan coming soon',
+                            ),
+                            suggestionBuilder: (item) => InkWell(
+                              onTap: () => _selectItem(item),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: Dimensions.height10,
+                                ),
+                                child: Row(
                                   children: [
-                                    Text(
-                                      item.name,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: Dimensions.font16 * 0.85,
-                                        color: context.colors.textPrimary,
-                                      ),
-                                    ),
-                                    SizedBox(height: Dimensions.height10 / 4),
-                                    Text(
-                                      '₹${item.salesPrice.toStringAsFixed(2)} per ${item.unit}',
-                                      style: TextStyle(
-                                        color: context.colors.textSecondary,
-                                        fontSize: Dimensions.font16 * 0.75,
+                                    ItemThumbnail(imageUrl: item.imageUrl),
+                                    SizedBox(width: Dimensions.width10),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.name,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize:
+                                                  Dimensions.font16 * 0.85,
+                                              color: context.colors.textPrimary,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: Dimensions.height10 / 4,
+                                          ),
+                                          Text(
+                                            '₹${item.salesPrice.toStringAsFixed(2)} per ${item.unit}',
+                                            style: TextStyle(
+                                              color:
+                                                  context.colors.textSecondary,
+                                              fontSize:
+                                                  Dimensions.font16 * 0.75,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (_selectedItem != null) ...[
+                        const FormDivider(),
+                        _InvoiceItemDetails(controller: _descriptionController),
+                        const FormDivider(),
+                        SizedBox(height: Dimensions.height10),
+                        _InvoicePricingFields(
+                          quantityController: _quantityController,
+                          rateController: _rateController,
+                          discountController: _discountController,
+                          taxRateController: _taxRateController,
+                          quantityFocusNode: _quantityFocusNode,
+                          rateFocusNode: _rateFocusNode,
+                          discountFocusNode: _discountFocusNode,
+                          onChanged: (_) => setState(() {}),
+                        ),
+                        SizedBox(height: Dimensions.height20),
+                        Container(
+                          padding: EdgeInsets.all(Dimensions.width15),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15 / 2,
+                            ),
+                            border: Border.all(
+                              color: AppColors.primary.withValues(alpha: 0.2),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              _SummaryRow(
+                                label: 'Amount:',
+                                amount: _calculatedAmount,
+                              ),
+                              SizedBox(height: Dimensions.height10 / 2),
+                              _SummaryRow(
+                                label: 'Tax Amount:',
+                                amount: _calculatedTaxAmount,
+                              ),
                             ],
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-                if (_selectedItem != null) ...[
-                  const FormDivider(),
-                  _InvoiceItemDetails(controller: _descriptionController),
-                  const FormDivider(),
-                  SizedBox(height: Dimensions.height10),
-                  _InvoicePricingFields(
-                    quantityController: _quantityController,
-                    rateController: _rateController,
-                    discountController: _discountController,
-                    taxRateController: _taxRateController,
-                    quantityFocusNode: _quantityFocusNode,
-                    rateFocusNode: _rateFocusNode,
-                    discountFocusNode: _discountFocusNode,
-                    onChanged: (_) => setState(() {}),
-                  ),
-                  SizedBox(height: Dimensions.height20),
-                  Container(
-                    padding: EdgeInsets.all(Dimensions.width15),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.05),
-                      borderRadius: BorderRadius.circular(
-                        Dimensions.radius15 / 2,
-                      ),
-                      border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.2),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        _SummaryRow(
-                          label: 'Amount:',
-                          amount: _calculatedAmount,
-                        ),
-                        SizedBox(height: Dimensions.height10 / 2),
-                        _SummaryRow(
-                          label: 'Tax Amount:',
-                          amount: _calculatedTaxAmount,
-                        ),
                       ],
-                    ),
+                    ],
                   ),
-                ],
-              ],
-            ),
-          ),
+                ),
         ),
       ),
     );

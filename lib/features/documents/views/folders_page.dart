@@ -7,6 +7,7 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/features/documents/models/document_model.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 
 class FoldersPage extends StatefulWidget {
@@ -23,9 +24,12 @@ class _FoldersPageState extends State<FoldersPage> {
 
   late List<FolderModel> _folders;
 
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
+    _load();
     _folders = [
       FolderModel(
         id: '1',
@@ -58,6 +62,14 @@ class _FoldersPageState extends State<FoldersPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<FolderModel> get _visibleFolders {
@@ -236,7 +248,9 @@ class _FoldersPageState extends State<FoldersPage> {
                 onChanged: (_) => setState(() {}),
               ),
             Expanded(
-              child: visibleList.isEmpty
+              child: _isLoading
+                  ? const DocumentListSkeleton()
+                  : visibleList.isEmpty
                   ? const EmptyStateWidget(
                       icon: Icons.folder_rounded,
                       title: 'No folders found',

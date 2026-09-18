@@ -9,8 +9,9 @@ import 'package:custom_books/features/sales_orders/models/sales_order_model.dart
 import 'package:custom_books/features/sales_orders/views/add_sales_order_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 
-class SalesOrderDetailsPage extends StatelessWidget {
+class SalesOrderDetailsPage extends StatefulWidget {
   final SalesOrderModel order;
   final ValueChanged<SalesOrderStatus>? onStatusChanged;
   final VoidCallback? onDelete;
@@ -22,8 +23,33 @@ class SalesOrderDetailsPage extends StatelessWidget {
     this.onDelete,
   });
 
+  @override
+  State<SalesOrderDetailsPage> createState() => _SalesOrderDetailsPageState();
+}
+
+class _SalesOrderDetailsPageState extends State<SalesOrderDetailsPage> {
+  bool _isLoading = true;
+
+  SalesOrderModel get order => widget.order;
+  ValueChanged<SalesOrderStatus>? get onStatusChanged => widget.onStatusChanged;
+  VoidCallback? get onDelete => widget.onDelete;
+
   NumberFormat get _currency =>
       NumberFormat.currency(symbol: '₹', decimalDigits: 2);
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  /// Simulates fetching details so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,43 +81,47 @@ class SalesOrderDetailsPage extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.zero,
-          children: [
-            _buildHeader(context, statusColor),
-            SizedBox(height: Dimensions.height15),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-              child: Column(
+        child: _isLoading
+            ? const DetailsPageSkeleton(showTabs: false, showLineItems: true)
+            : ListView(
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.zero,
                 children: [
-                  _buildInfoCard(context),
+                  _buildHeader(context, statusColor),
                   SizedBox(height: Dimensions.height15),
-                  _buildLineItemsCard(context),
-                  SizedBox(height: Dimensions.height15),
-                  _buildTotalsCard(context),
-                  if (order.customerNotes.isNotEmpty) ...[
-                    SizedBox(height: Dimensions.height15),
-                    _buildNoteCard(
-                      context,
-                      'Customer Notes',
-                      order.customerNotes,
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.width20,
                     ),
-                  ],
-                  if (order.termsAndConditions.isNotEmpty) ...[
-                    SizedBox(height: Dimensions.height15),
-                    _buildNoteCard(
-                      context,
-                      'Terms & Conditions',
-                      order.termsAndConditions,
+                    child: Column(
+                      children: [
+                        _buildInfoCard(context),
+                        SizedBox(height: Dimensions.height15),
+                        _buildLineItemsCard(context),
+                        SizedBox(height: Dimensions.height15),
+                        _buildTotalsCard(context),
+                        if (order.customerNotes.isNotEmpty) ...[
+                          SizedBox(height: Dimensions.height15),
+                          _buildNoteCard(
+                            context,
+                            'Customer Notes',
+                            order.customerNotes,
+                          ),
+                        ],
+                        if (order.termsAndConditions.isNotEmpty) ...[
+                          SizedBox(height: Dimensions.height15),
+                          _buildNoteCard(
+                            context,
+                            'Terms & Conditions',
+                            order.termsAndConditions,
+                          ),
+                        ],
+                        SizedBox(height: Dimensions.height30),
+                      ],
                     ),
-                  ],
-                  SizedBox(height: Dimensions.height30),
+                  ),
                 ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

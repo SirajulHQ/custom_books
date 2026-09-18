@@ -5,6 +5,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/dashed_border.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/inventory_adjustments/models/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/models/line_item_model.dart';
 import 'package:custom_books/features/inventory_adjustments/views/add_line_item_page.dart';
@@ -51,6 +52,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage>
 
   final List<LineItem> _lineItems = [];
   final List<PlatformFile> _attachments = [];
+  bool _isLoading = true;
 
   // ── Attachment constants ───────────────────────────────────────────────────
   static const int _maxAttachments = 5;
@@ -512,6 +514,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage>
   @override
   void initState() {
     super.initState();
+    _load();
     final existing = widget.existing;
     if (existing != null) {
       _date = existing.date;
@@ -528,6 +531,14 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage>
     _referenceController.dispose();
     _descriptionController.dispose();
     super.dispose();
+  }
+
+  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   double get _totalQuantity =>
@@ -682,228 +693,243 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage>
           ],
         ),
         body: SafeArea(
-          child: ListView(
-            padding: EdgeInsets.symmetric(
-              horizontal: Dimensions.width20,
-              vertical: Dimensions.height15,
-            ),
-            physics: const BouncingScrollPhysics(),
-            children: [
-              FormCard(
-                children: [
-                  Text('Mode of adjustment', style: FormTextStyles.label()),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  Row(
-                    children: [
-                      AdjustmentRadioOption(
-                        label: 'Quantity',
-                        value: ModeOfAdjustment.quantity,
-                        selectedValue: _mode,
-                        onChanged: (newMode) {
-                          setState(() => _mode = newMode);
-                          markDirty();
-                        },
-                      ),
-                      SizedBox(width: Dimensions.width20),
-                      AdjustmentRadioOption(
-                        label: 'Value',
-                        value: ModeOfAdjustment.value,
-                        selectedValue: _mode,
-                        onChanged: (newMode) {
-                          setState(() => _mode = newMode);
-                          markDirty();
-                        },
-                      ),
-                    ],
+          child: _isLoading
+              ? const FormPageSkeleton()
+              : ListView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Dimensions.width20,
+                    vertical: Dimensions.height15,
                   ),
-                ],
-              ),
-              SizedBox(height: Dimensions.height15),
-              FormCard(
-                children: [
-                  Text('Reference#', style: FormTextStyles.label()),
-                  TextField(
-                    controller: _referenceController,
-                    style: FormTextStyles.value(context),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      isDense: true,
-                    ),
-                  ),
-                  const FormDivider(),
-                  SizedBox(height: Dimensions.height15),
-                  RequiredLabel(text: 'Date'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  InkWell(
-                    onTap: _pickDate,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  physics: const BouncingScrollPhysics(),
+                  children: [
+                    FormCard(
                       children: [
                         Text(
-                          formatDate(_date),
-                          style: FormTextStyles.value(context),
+                          'Mode of adjustment',
+                          style: FormTextStyles.label(),
                         ),
-                        Icon(
-                          Icons.calendar_today_outlined,
-                          size: Dimensions.iconSize24 - 6,
-                          color: context.colors.textSecondary,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const FormDivider(),
-                  SizedBox(height: Dimensions.height15),
-                  RequiredLabel(text: 'Account'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: _account,
-                      isExpanded: true,
-                      style: FormTextStyles.value(context),
-                      icon: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: context.colors.textSecondary,
-                      ),
-                      items: _accounts
-                          .map(
-                            (a) => DropdownMenuItem(value: a, child: Text(a)),
-                          )
-                          .toList(),
-                      onChanged: (v) {
-                        setState(() => _account = v);
-                        markDirty();
-                      },
-                    ),
-                  ),
-                  const FormDivider(),
-                  SizedBox(height: Dimensions.height15),
-                  RequiredLabel(text: 'Reason'),
-                  SizedBox(height: Dimensions.height10 / 2),
-                  DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: _reason,
-                      isExpanded: true,
-                      hint: Text(
-                        'Select a reason',
-                        style: TextStyle(
-                          color: context.colors.textTertiary,
-                          fontSize: Dimensions.font16 * 0.85,
-                        ),
-                      ),
-                      style: FormTextStyles.value(context),
-                      icon: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: context.colors.textSecondary,
-                      ),
-                      items: _reasons
-                          .map(
-                            (r) => DropdownMenuItem(value: r, child: Text(r)),
-                          )
-                          .toList(),
-                      onChanged: (v) {
-                        setState(() => _reason = v);
-                        markDirty();
-                      },
-                    ),
-                  ),
-                  const FormDivider(),
-                  SizedBox(height: Dimensions.height15),
-                  Text('Description', style: FormTextStyles.label()),
-                  TextField(
-                    controller: _descriptionController,
-                    maxLength: 500,
-                    maxLines: 3,
-                    style: FormTextStyles.value(context),
-                    decoration: InputDecoration(
-                      hintText: 'Max 500 Characters',
-                      hintStyle: TextStyle(color: context.colors.textTertiary),
-                      border: InputBorder.none,
-                      isDense: true,
-                      counterText: '',
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: Dimensions.height15),
-              if (_lineItems.isNotEmpty) ...[
-                ..._lineItems.map(
-                  (item) => AdjustmentLineItemCard(
-                    item: item,
-                    onTap: () => _editLineItem(item),
-                    onRemove: () => _removeLineItem(item.id),
-                  ),
-                ),
-                SizedBox(height: Dimensions.height10 / 2),
-              ],
-              AddLineItemButton(onPressed: _addLineItem),
-              SizedBox(height: Dimensions.height15),
-              FormCard(
-                children: [
-                  Row(
-                    children: [
-                      Text('Attachments', style: FormTextStyles.label()),
-                      if (_attachments.isNotEmpty) ...[
-                        SizedBox(width: Dimensions.width10 / 2),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.width10 * 0.6,
-                            vertical: Dimensions.height10 * 0.2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary,
-                            borderRadius: BorderRadius.circular(99),
-                          ),
-                          child: Text(
-                            '${_attachments.length}',
-                            style: TextStyle(
-                              fontSize: Dimensions.font16 * 0.7,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                  SizedBox(height: Dimensions.height10),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(Dimensions.radius15),
-                    onTap: _showAttachmentsDialog,
-                    child: DashedBorder(
-                      child: Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(
-                          vertical: Dimensions.height15,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        SizedBox(height: Dimensions.height10 / 2),
+                        Row(
                           children: [
-                            Icon(
-                              Icons.upload_file_outlined,
-                              color: AppColors.primary,
-                              size: Dimensions.iconSize24 - 4,
+                            AdjustmentRadioOption(
+                              label: 'Quantity',
+                              value: ModeOfAdjustment.quantity,
+                              selectedValue: _mode,
+                              onChanged: (newMode) {
+                                setState(() => _mode = newMode);
+                                markDirty();
+                              },
                             ),
-                            SizedBox(width: Dimensions.width10),
-                            Text(
-                              _attachments.isEmpty
-                                  ? 'Upload File'
-                                  : '${_attachments.length} file(s) attached',
-                              style: TextStyle(
-                                fontSize: Dimensions.font16 * 0.85,
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            SizedBox(width: Dimensions.width20),
+                            AdjustmentRadioOption(
+                              label: 'Value',
+                              value: ModeOfAdjustment.value,
+                              selectedValue: _mode,
+                              onChanged: (newMode) {
+                                setState(() => _mode = newMode);
+                                markDirty();
+                              },
                             ),
                           ],
                         ),
-                      ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: Dimensions.height30),
-            ],
-          ),
+                    SizedBox(height: Dimensions.height15),
+                    FormCard(
+                      children: [
+                        Text('Reference#', style: FormTextStyles.label()),
+                        TextField(
+                          controller: _referenceController,
+                          style: FormTextStyles.value(context),
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            isDense: true,
+                          ),
+                        ),
+                        const FormDivider(),
+                        SizedBox(height: Dimensions.height15),
+                        RequiredLabel(text: 'Date'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        InkWell(
+                          onTap: _pickDate,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                formatDate(_date),
+                                style: FormTextStyles.value(context),
+                              ),
+                              Icon(
+                                Icons.calendar_today_outlined,
+                                size: Dimensions.iconSize24 - 6,
+                                color: context.colors.textSecondary,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const FormDivider(),
+                        SizedBox(height: Dimensions.height15),
+                        RequiredLabel(text: 'Account'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: _account,
+                            isExpanded: true,
+                            style: FormTextStyles.value(context),
+                            icon: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: context.colors.textSecondary,
+                            ),
+                            items: _accounts
+                                .map(
+                                  (a) => DropdownMenuItem(
+                                    value: a,
+                                    child: Text(a),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (v) {
+                              setState(() => _account = v);
+                              markDirty();
+                            },
+                          ),
+                        ),
+                        const FormDivider(),
+                        SizedBox(height: Dimensions.height15),
+                        RequiredLabel(text: 'Reason'),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: _reason,
+                            isExpanded: true,
+                            hint: Text(
+                              'Select a reason',
+                              style: TextStyle(
+                                color: context.colors.textTertiary,
+                                fontSize: Dimensions.font16 * 0.85,
+                              ),
+                            ),
+                            style: FormTextStyles.value(context),
+                            icon: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: context.colors.textSecondary,
+                            ),
+                            items: _reasons
+                                .map(
+                                  (r) => DropdownMenuItem(
+                                    value: r,
+                                    child: Text(r),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (v) {
+                              setState(() => _reason = v);
+                              markDirty();
+                            },
+                          ),
+                        ),
+                        const FormDivider(),
+                        SizedBox(height: Dimensions.height15),
+                        Text('Description', style: FormTextStyles.label()),
+                        TextField(
+                          controller: _descriptionController,
+                          maxLength: 500,
+                          maxLines: 3,
+                          style: FormTextStyles.value(context),
+                          decoration: InputDecoration(
+                            hintText: 'Max 500 Characters',
+                            hintStyle: TextStyle(
+                              color: context.colors.textTertiary,
+                            ),
+                            border: InputBorder.none,
+                            isDense: true,
+                            counterText: '',
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Dimensions.height15),
+                    if (_lineItems.isNotEmpty) ...[
+                      ..._lineItems.map(
+                        (item) => AdjustmentLineItemCard(
+                          item: item,
+                          onTap: () => _editLineItem(item),
+                          onRemove: () => _removeLineItem(item.id),
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.height10 / 2),
+                    ],
+                    AddLineItemButton(onPressed: _addLineItem),
+                    SizedBox(height: Dimensions.height15),
+                    FormCard(
+                      children: [
+                        Row(
+                          children: [
+                            Text('Attachments', style: FormTextStyles.label()),
+                            if (_attachments.isNotEmpty) ...[
+                              SizedBox(width: Dimensions.width10 / 2),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: Dimensions.width10 * 0.6,
+                                  vertical: Dimensions.height10 * 0.2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(99),
+                                ),
+                                child: Text(
+                                  '${_attachments.length}',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.font16 * 0.7,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        SizedBox(height: Dimensions.height10),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radius15,
+                          ),
+                          onTap: _showAttachmentsDialog,
+                          child: DashedBorder(
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(
+                                vertical: Dimensions.height15,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.upload_file_outlined,
+                                    color: AppColors.primary,
+                                    size: Dimensions.iconSize24 - 4,
+                                  ),
+                                  SizedBox(width: Dimensions.width10),
+                                  Text(
+                                    _attachments.isEmpty
+                                        ? 'Upload File'
+                                        : '${_attachments.length} file(s) attached',
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.85,
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Dimensions.height30),
+                  ],
+                ),
         ),
       ),
     );

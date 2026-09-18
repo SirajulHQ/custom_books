@@ -4,6 +4,7 @@ import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/features/vendors/models/vendor_model.dart';
 import 'package:custom_books/features/vendors/views/add_vendor_page.dart';
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 
 class VendorDetailsPage extends StatefulWidget {
   final VendorModel vendor;
@@ -18,11 +19,13 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _commentController = TextEditingController();
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _load();
   }
 
   @override
@@ -32,48 +35,63 @@ class _VendorDetailsPageState extends State<VendorDetailsPage>
     super.dispose();
   }
 
+  /// Simulates fetching details so the shimmer skeleton is shown briefly.
+  Future<void> _load() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.colors.background,
       body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: widget.vendor.displayName,
-              leadingType: AppBarLeadingType.back,
-              onLeadingPressed: () => Navigator.pop(context),
-              actions: [
-                AppBarIconButton(
-                  icon: Icons.edit_outlined,
-                  color: AppColors.primary,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => AddVendorPage(existing: widget.vendor),
+        child: _isLoading
+            ? const DetailsPageSkeleton(
+                headerStyle: DetailsHeaderStyle.twoMetric,
+                tabStyle: DetailsTabStyle.underline,
+                tabCount: 3,
+              )
+            : CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  CustomSliverAppBar(
+                    title: widget.vendor.displayName,
+                    leadingType: AppBarLeadingType.back,
+                    onLeadingPressed: () => Navigator.pop(context),
+                    actions: [
+                      AppBarIconButton(
+                        icon: Icons.edit_outlined,
+                        color: AppColors.primary,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  AddVendorPage(existing: widget.vendor),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
-            ),
-            SliverToBoxAdapter(child: _buildHeaderSection()),
-            SliverToBoxAdapter(child: _buildTabBar()),
-            SliverFillRemaining(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildDetailsTab(),
-                  _buildTransactionsTab(),
-                  _buildCommentsTab(),
+                      SizedBox(width: Dimensions.width20),
+                    ],
+                  ),
+                  SliverToBoxAdapter(child: _buildHeaderSection()),
+                  SliverToBoxAdapter(child: _buildTabBar()),
+                  SliverFillRemaining(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        _buildDetailsTab(),
+                        _buildTransactionsTab(),
+                        _buildCommentsTab(),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

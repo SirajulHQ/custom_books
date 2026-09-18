@@ -11,6 +11,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/list_control_bar.dart';
+import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/status_chip.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/sales_orders/models/sales_order_model.dart';
@@ -33,6 +34,7 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
 
   int _selectedTab = 0; // 0: All, 1: Draft, 2: Confirmed
   bool _searchOpen = false;
+  bool _isLoading = true;
   SalesOrderStatus? _statusFilter;
   SalesOrderSortField _sortField = SalesOrderSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
@@ -43,6 +45,7 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
   @override
   void initState() {
     super.initState();
+    _loadOrders();
     _orders = [
       SalesOrderModel(
         id: '1',
@@ -123,6 +126,14 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Simulates fetching sales orders so the shimmer skeleton is shown briefly.
+  Future<void> _loadOrders() async {
+    setState(() => _isLoading = true);
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   List<SalesOrderModel> get _visibleOrders {
@@ -389,7 +400,9 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
 
                 // Sales Orders List
                 Expanded(
-                  child: visibleList.isEmpty
+                  child: _isLoading
+                      ? const DocumentListSkeleton()
+                      : visibleList.isEmpty
                       ? const EmptyStateWidget(
                           icon: Icons.shopping_bag_outlined,
                           title: 'No sales orders found',
@@ -397,7 +410,7 @@ class _SalesOrdersPageState extends State<SalesOrdersPage> {
                               'Tap the + button to create a new sales order.',
                         )
                       : RefreshIndicator(
-                          onRefresh: () async => setState(() {}),
+                          onRefresh: _loadOrders,
                           child: ListView.builder(
                             padding: EdgeInsets.fromLTRB(
                               Dimensions.width20,
