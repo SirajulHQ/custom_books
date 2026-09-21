@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/form_validators.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/features/auth/controllers/signup_controller.dart';
+import 'package:custom_books/features/auth/controllers/states_controller.dart';
 import 'package:custom_books/features/auth/views/login_page.dart';
 import 'package:flutter/material.dart';
 
@@ -62,57 +63,29 @@ class _SignupPageState extends State<SignupPage> {
       .phoneCode;
 
   // ─── state ───────────────────────────────────────────────────
-  // Only India has a defined state list; other countries use a free-form
-  // state entry instead of a dropdown.
-  static const List<String> _indiaStates = [
-    'Andhra Pradesh',
-    'Arunachal Pradesh',
-    'Assam',
-    'Bihar',
-    'Chhattisgarh',
-    'Goa',
-    'Gujarat',
-    'Haryana',
-    'Himachal Pradesh',
-    'Jharkhand',
-    'Karnataka',
-    'Kerala',
-    'Madhya Pradesh',
-    'Maharashtra',
-    'Manipur',
-    'Meghalaya',
-    'Mizoram',
-    'Nagaland',
-    'Odisha',
-    'Punjab',
-    'Rajasthan',
-    'Sikkim',
-    'Tamil Nadu',
-    'Telangana',
-    'Tripura',
-    'Uttar Pradesh',
-    'Uttarakhand',
-    'West Bengal',
-    'Andaman and Nicobar Islands',
-    'Chandigarh',
-    'Dadra and Nagar Haveli and Daman and Diu',
-    'Delhi',
-    'Jammu and Kashmir',
-    'Ladakh',
-    'Lakshadweep',
-    'Puducherry',
-  ];
-  String? _state = 'Kerala';
+  // States are fetched from the API for the selected country. Countries the
+  // backend has a list for show a dropdown; others fall back to free-form
+  // text entry.
+  final _statesController = StatesController();
+  String? _state;
   final _stateController = TextEditingController();
-
-  bool get _isIndia => _country == 'IN';
 
   bool _obscurePassword = true;
   bool _termsAccepted = false;
 
   @override
+  void initState() {
+    super.initState();
+    _statesController.addListener(_onStatesChanged);
+    // Load states for the initial country selection.
+    _statesController.loadStates(_country);
+  }
+
+  @override
   void dispose() {
     _signupController.dispose();
+    _statesController.removeListener(_onStatesChanged);
+    _statesController.dispose();
     _companyNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
@@ -121,20 +94,32 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-  /// Keeps country + state in sync. India uses the dropdown value; other
-  /// countries use the free-form text field.
-  String get _resolvedState =>
-      _isIndia ? (_state ?? '') : _stateController.text.trim();
+  /// Drops the selected state when it isn't part of the freshly-loaded list,
+  /// so a stale value can't be submitted for the wrong country.
+  void _onStatesChanged() {
+    if (!mounted) return;
+    setState(() {
+      if (_state != null && !_statesController.states.contains(_state)) {
+        _state = null;
+      }
+    });
+  }
+
+  /// Keeps country + state in sync. When the backend provides a state list we
+  /// use the dropdown value; otherwise we use the free-form text field.
+  String get _resolvedState => _statesController.supportsStates
+      ? (_state ?? '')
+      : _stateController.text.trim();
 
   void _onCountryChanged(String? code) {
     setState(() {
       _country = code ?? 'IN';
-      // Reset state when switching to/from India so a stale value can't be
-      // sent for the wrong country.
-      if (_isIndia) {
-        _state = _indiaStates.contains(_state) ? _state : null;
-      }
+      // Reset both inputs so a value from the previous country can't leak into
+      // the new one before its states load.
+      _state = null;
+      _stateController.clear();
     });
+    _statesController.loadStates(_country);
   }
 
   Future<void> _signup() async {
@@ -160,7 +145,7 @@ class _SignupPageState extends State<SignupPage> {
       '   Phone: $_phoneCountryCode ${_phoneController.text.trim()}',
       name: 'SignupPage',
     );
-    appLog('   Country: $_country, State: $_state', name: 'SignupPage');
+    appLog('   Country: $_country, State: $_resolvedState', name: 'SignupPage');
 
     final success = await _signupController.register(
       userType: _userType,
@@ -405,54 +390,13 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       SizedBox(width: Dimensions.width10),
                       Expanded(
-                        // India → dropdown of states; other countries →
-                        // free-form entry since no fixed state list applies.
-                        child: _isIndia
-                            ? DropdownButtonFormField<String>(
-                                initialValue: _state,
-                                isExpanded: true,
-                                style: TextStyle(
-                                  color: context.colors.textPrimary,
-                                  fontSize: Dimensions.font16,
-                                ),
-                                dropdownColor: context.colors.card,
-                                decoration: _inputDecoration(
-                                  context,
-                                  label: 'State',
-                                  icon: Icons.location_on_outlined,
-                                ),
-                                validator: (v) => (v == null || v.isEmpty)
-                                    ? 'Select a state'
-                                    : null,
-                                items: [
-                                  for (final s in _indiaStates)
-                                    DropdownMenuItem(
-                                      value: s,
-                                      child: Text(
-                                        s,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                ],
-                                onChanged: (v) => setState(() => _state = v),
-                              )
-                            : TextFormField(
-                                controller: _stateController,
-                                textCapitalization: TextCapitalization.words,
-                                validator: (v) =>
-                                    (v == null || v.trim().isEmpty)
-                                    ? 'State is required'
-                                    : null,
-                                style: TextStyle(
-                                  color: context.colors.textPrimary,
-                                  fontSize: Dimensions.font16,
-                                ),
-                                decoration: _inputDecoration(
-                                  context,
-                                  label: 'State',
-                                  icon: Icons.location_on_outlined,
-                                ),
-                              ),
+                        // Rebuilds as states load for the selected country.
+                        // Supported countries → dropdown from the API list;
+                        // others → free-form entry.
+                        child: ListenableBuilder(
+                          listenable: _statesController,
+                          builder: (context, _) => _buildStateField(context),
+                        ),
                       ),
                     ],
                   ),
@@ -594,6 +538,82 @@ class _SignupPageState extends State<SignupPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// Builds the State input based on the current [StatesController] state:
+  /// a loading indicator while fetching, a dropdown when the API returns a
+  /// state list, or a free-form text field when the country has no list.
+  Widget _buildStateField(BuildContext context) {
+    if (_statesController.isLoading) {
+      return InputDecorator(
+        decoration: _inputDecoration(
+          context,
+          label: 'State',
+          icon: Icons.location_on_outlined,
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              width: Dimensions.iconSize16,
+              height: Dimensions.iconSize16,
+              child: const CircularProgressIndicator(strokeWidth: 2),
+            ),
+            SizedBox(width: Dimensions.width10),
+            Text(
+              'Loading…',
+              style: TextStyle(
+                color: context.colors.textSecondary,
+                fontSize: Dimensions.font16,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_statesController.supportsStates) {
+      final states = _statesController.states;
+      return DropdownButtonFormField<String>(
+        initialValue: states.contains(_state) ? _state : null,
+        isExpanded: true,
+        style: TextStyle(
+          color: context.colors.textPrimary,
+          fontSize: Dimensions.font16,
+        ),
+        dropdownColor: context.colors.card,
+        decoration: _inputDecoration(
+          context,
+          label: 'State',
+          icon: Icons.location_on_outlined,
+        ),
+        validator: (v) => (v == null || v.isEmpty) ? 'Select a state' : null,
+        items: [
+          for (final s in states)
+            DropdownMenuItem(
+              value: s,
+              child: Text(s, overflow: TextOverflow.ellipsis),
+            ),
+        ],
+        onChanged: (v) => setState(() => _state = v),
+      );
+    }
+
+    // No predefined list for this country — accept free-form entry.
+    return TextFormField(
+      controller: _stateController,
+      textCapitalization: TextCapitalization.words,
+      validator: (v) =>
+          (v == null || v.trim().isEmpty) ? 'State is required' : null,
+      style: TextStyle(
+        color: context.colors.textPrimary,
+        fontSize: Dimensions.font16,
+      ),
+      decoration: _inputDecoration(
+        context,
+        label: 'State',
+        icon: Icons.location_on_outlined,
       ),
     );
   }
