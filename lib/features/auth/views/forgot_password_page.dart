@@ -1,7 +1,8 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
-import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/form_validators.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/features/auth/controllers/forgot_password_controller.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -14,33 +15,27 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-  bool _isLoading = false;
-  bool _emailSent = false;
+  final _controller = ForgotPasswordController();
 
   @override
   void dispose() {
     _emailController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
-  void _submitResetRequest() {
+  Future<void> _submitResetRequest() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
-
-    appLog(
-      '📧 Password reset requested for: ${_emailController.text.trim()}',
-      name: 'ForgotPasswordPage',
+    final success = await _controller.sendResetLink(
+      email: _emailController.text.trim(),
     );
 
-    // TODO: Implement actual password reset API call
-    Future.delayed(const Duration(seconds: 1), () {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _emailSent = true;
-      });
-    });
+    if (!mounted) return;
+
+    if (!success && _controller.errorMessage != null) {
+      ToastificationHelper.showError(context, _controller.errorMessage!);
+    }
   }
 
   @override
@@ -63,9 +58,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         child: Center(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: Dimensions.width30),
-            child: _emailSent
-                ? _buildSuccessView(context)
-                : _buildFormView(context),
+            child: ListenableBuilder(
+              listenable: _controller,
+              builder: (context, _) {
+                return _controller.emailSent
+                    ? _buildSuccessView(context)
+                    : _buildFormView(context);
+              },
+            ),
           ),
         ),
       ),
@@ -171,7 +171,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             width: double.infinity,
             height: Dimensions.height52,
             child: ElevatedButton(
-              onPressed: _isLoading ? null : _submitResetRequest,
+              onPressed: _controller.isLoading ? null : _submitResetRequest,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
@@ -183,11 +183,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ),
                 elevation: 0,
               ),
-              child: _isLoading
+              child: _controller.isLoading
                   ? SizedBox(
                       width: Dimensions.iconSize22,
                       height: Dimensions.iconSize22,
-                      child: CircularProgressIndicator(
+                      child: const CircularProgressIndicator(
                         strokeWidth: 2.5,
                         color: Colors.white,
                       ),
@@ -286,9 +286,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
         // Resend option
         GestureDetector(
-          onTap: () {
-            setState(() => _emailSent = false);
-          },
+          onTap: _controller.isLoading ? null : _controller.reset,
           child: Text(
             'Didn\'t receive the email? Try again',
             style: TextStyle(
