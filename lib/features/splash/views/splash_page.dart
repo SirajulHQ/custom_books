@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:custom_books/core/services/auth_service.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/auth/views/login_page.dart';
+import 'package:custom_books/features/home/views/home_page.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatefulWidget {
@@ -84,18 +86,29 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     });
 
     // Navigate after splash
-    _navigationTimer = Timer(const Duration(seconds: 3), () {
-      if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder<void>(
-          pageBuilder: (context, animation1, animation2) => const LoginPage(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          transitionDuration: const Duration(milliseconds: 500),
-        ),
-      );
-    });
+    _navigationTimer = Timer(const Duration(seconds: 3), _navigateNext);
+  }
+
+  /// Decides the landing screen once the splash finishes: if a stored session
+  /// yields a valid access token (refreshing it when expired), go straight to
+  /// Home; otherwise send the user to Login.
+  Future<void> _navigateNext() async {
+    Widget destination = const LoginPage();
+    if (AuthService.instance.hasSession) {
+      final token = await AuthService.instance.getValidAccessToken();
+      if (token != null) destination = const HomePage();
+    }
+
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder<void>(
+        pageBuilder: (context, animation1, animation2) => destination,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 500),
+      ),
+    );
   }
 
   @override

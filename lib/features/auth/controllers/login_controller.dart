@@ -1,3 +1,4 @@
+import 'package:custom_books/core/services/auth_service.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,14 @@ class LoginController extends ChangeNotifier {
         status < 300 &&
         _loginResponse!['access'] != null;
 
-    if (!isSuccess) {
+    if (isSuccess) {
+      // Persist the token pair so the session survives restarts and the
+      // access token can be auto-refreshed once it expires.
+      await AuthService.instance.saveSession(
+        access: _loginResponse!['access'] as String,
+        refresh: (_loginResponse!['refresh'] ?? '') as String,
+      );
+    } else {
       _errorMessage = _extractErrorMessage(_loginResponse);
       appLog('⚠️ Login failed: $_errorMessage', name: 'LoginController');
     }

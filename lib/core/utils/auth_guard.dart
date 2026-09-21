@@ -2,6 +2,7 @@
 // Automatically refreshes tokens if needed
 
 import 'package:flutter/material.dart';
+import 'package:custom_books/core/services/auth_service.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/features/auth/views/login_page.dart';
 
@@ -12,17 +13,23 @@ class AuthGuard {
     try {
       appLog('🔐 [AuthGuard] Checking authentication...');
 
-      // TODO: Implement when AuthService is ready
-      // final authService = AuthService();
-      // await authService.initialize();
-      // if (authService.isAuthenticated) {
-      //   appLog('✅ [AuthGuard] User is authenticated');
-      //   return true;
-      // }
+      // Obtain a valid access token — this refreshes automatically when the
+      // access token has expired but the refresh token is still good.
+      final token = await AuthService.instance.getValidAccessToken();
+      if (token != null) {
+        appLog('✅ [AuthGuard] User is authenticated');
+        return true;
+      }
 
-      // Temporary: Always return true until auth API is connected
-      appLog('⚠️ [AuthGuard] Auth not implemented yet, allowing access');
-      return true;
+      appLog('🚫 [AuthGuard] No valid session, redirecting to login');
+      if (context.mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const LoginPage()),
+          (route) => false,
+        );
+      }
+      return false;
     } catch (e) {
       appLog('❌ [AuthGuard] Authentication check failed: $e');
       if (context.mounted) {
@@ -53,9 +60,8 @@ class AuthGuard {
   /// Useful for conditional UI rendering
   static Future<bool> isAuthenticated() async {
     try {
-      // TODO: Implement when AuthService is ready
-      // Temporary: Always return true until auth API is connected
-      return true;
+      final token = await AuthService.instance.getValidAccessToken();
+      return token != null;
     } catch (e) {
       appLog('❌ [AuthGuard] Authentication check failed: $e');
       return false;
@@ -85,9 +91,10 @@ class AuthGuard {
   }
 
   /// Logout the user and navigate to login page
-  static void logout(BuildContext context) {
+  static Future<void> logout(BuildContext context) async {
     appLog('🔓 [AuthGuard] Logging out...');
-    // TODO: Clear tokens/session when AuthService is ready
+    await AuthService.instance.clearSession();
+    if (!context.mounted) return;
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (_) => const LoginPage()),
