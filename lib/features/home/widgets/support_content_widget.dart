@@ -4,12 +4,11 @@ import 'package:custom_books/features/home/models/support_item_model.dart';
 import 'package:flutter/material.dart';
 
 class SupportContentWidget extends StatelessWidget {
-  /// Live data from the API. Shows a loading shimmer when null.
+
   final SupportDataModel? data;
 
   const SupportContentWidget({super.key, this.data});
 
-  // ── Icon mapping from API key string to Flutter IconData ──────────────────
   static IconData _iconFor(String key) {
     switch (key) {
       case 'rocket':
@@ -34,7 +33,7 @@ class SupportContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Show a minimal loading state if data hasn't arrived yet.
+
     if (data == null) {
       return SliverPadding(
         padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
@@ -100,7 +99,7 @@ class SupportContentWidget extends StatelessWidget {
           ContactSupportCard(
             heading: data!.contactHeading,
             buttonLabel: data!.contactButtonLabel,
-            // API currently returns path: null — hide tap until a real URL exists.
+
             onTap: null,
           ),
 
@@ -111,8 +110,6 @@ class SupportContentWidget extends StatelessWidget {
   }
 }
 
-
-// ── HelpCategoryCard ──────────────────────────────────────────────────────
 class HelpCategoryCard extends StatelessWidget {
   final String title;
   final String description;
@@ -216,7 +213,6 @@ class HelpCategoryCard extends StatelessWidget {
   }
 }
 
-// ── ContactSupportCard ────────────────────────────────────────────────────
 class ContactSupportCard extends StatelessWidget {
   final String heading;
   final String buttonLabel;

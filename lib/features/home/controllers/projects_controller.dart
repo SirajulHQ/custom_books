@@ -3,7 +3,6 @@ import 'package:custom_books/features/home/models/dashboard_project_model.dart';
 import 'package:custom_books/features/home/viewmodels/dashboard_projects_viewmodel.dart';
 import 'package:flutter/material.dart';
 
-/// Manages the dashboard "project timer" section.
 class ProjectsController extends ChangeNotifier {
   final _vm = DashboardProjectsViewModel();
 

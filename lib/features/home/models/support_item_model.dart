@@ -15,7 +15,7 @@ class SupportTopicModel {
 class SupportCategoryModel {
   final String title;
   final String description;
-  final String icon; // icon key from API e.g. "rocket", "bar_chart", "settings"
+  final String icon;
   final List<SupportTopicModel> items;
 
   SupportCategoryModel({

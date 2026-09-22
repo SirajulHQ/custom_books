@@ -4,13 +4,10 @@ import 'package:custom_books/features/home/models/update_item_model.dart';
 import 'package:flutter/material.dart';
 
 class UpdatesContentWidget extends StatelessWidget {
-  /// null  → still loading
-  /// []    → loaded, no updates
-  /// [...] → live update items from API
+
   final List<UpdateItemModel>? updates;
 
   const UpdatesContentWidget({super.key, this.updates});
-
 
   static IconData _iconFor(String key, String type) {
     switch (key) {
@@ -31,7 +28,7 @@ class UpdatesContentWidget extends StatelessWidget {
       case 'warning':
         return Icons.warning_amber_rounded;
       default:
-        // Fall back on update type
+
         switch (type) {
           case 'feature':
             return Icons.celebration_rounded;
@@ -47,7 +44,6 @@ class UpdatesContentWidget extends StatelessWidget {
     }
   }
 
-  // ── Map update type → accent color ─────────────────────────────────────
   static Color _colorFor(String type, int idx) {
     switch (type) {
       case 'feature':
@@ -72,7 +68,7 @@ class UpdatesContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ── Loading ──────────────────────────────────────────────────────────────
+
     if (updates == null) {
       return SliverPadding(
         padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
@@ -90,7 +86,6 @@ class UpdatesContentWidget extends StatelessWidget {
       );
     }
 
-    // ── Empty state ───────────────────────────────────────────────────────────
     if (updates!.isEmpty) {
       return SliverPadding(
         padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
@@ -130,7 +125,6 @@ class UpdatesContentWidget extends StatelessWidget {
       );
     }
 
-    // ── Live data ─────────────────────────────────────────────────────────────
     return SliverPadding(
       padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
       sliver: SliverList(
@@ -158,7 +152,6 @@ class UpdatesContentWidget extends StatelessWidget {
     );
   }
 }
-
 
 class AnnouncementCardWidget extends StatelessWidget {
   final String title;
@@ -258,7 +251,7 @@ class AnnouncementCardWidget extends StatelessWidget {
             ],
           ),
         ),
-        // Unread dot — top-right corner
+
         if (!isRead)
           Positioned(
             top: Dimensions.height10,

@@ -3,7 +3,6 @@ import 'package:custom_books/features/home/models/update_item_model.dart';
 import 'package:custom_books/features/home/viewmodels/updates_viewmodel.dart';
 import 'package:flutter/material.dart';
 
-/// Manages the dashboard "Updates" tab.
 class UpdatesController extends ChangeNotifier {
   final _vm = UpdatesViewModel();
 
@@ -13,10 +12,8 @@ class UpdatesController extends ChangeNotifier {
   List<UpdateItemModel>? _updates;
   List<UpdateItemModel>? get updates => _updates;
 
-  /// Number of unread updates. Returns 0 when updates haven't loaded yet.
   int get unreadCount => _updates?.where((u) => !u.isRead).length ?? 0;
 
-  /// Loads updates, toggling [isLoading].
   Future<void> load() async {
     _isLoading = true;
     notifyListeners();
@@ -25,7 +22,6 @@ class UpdatesController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Fetches without touching the loading flag.
   Future<void> fetch() async {
     final resp = await _vm.fetch();
     final int? status = resp?['_statusCode'] as int?;
@@ -42,8 +38,6 @@ class UpdatesController extends ChangeNotifier {
     }
   }
 
-  /// Safely extracts a [List] from a response data field that may be either
-  /// a direct List or a Map containing a list under a common key.
   List<dynamic> _extractList(dynamic data) {
     if (data is List) return data;
     if (data is Map) {

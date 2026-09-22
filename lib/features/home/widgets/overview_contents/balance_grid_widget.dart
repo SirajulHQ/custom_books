@@ -1,13 +1,19 @@
-// -------- Balances Grid Widget --------
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
-import 'package:custom_books/features/home/models/balance_tile_model.dart';
 import 'package:custom_books/features/home/models/dashboard_overview_model.dart';
 import 'package:custom_books/features/home/widgets/payables_sheet.dart';
 import 'package:custom_books/features/home/widgets/receivables_sheet.dart';
 import 'package:custom_books/features/invoices/views/invoices_page.dart';
 import 'package:custom_books/features/bills/views/bills_page.dart';
 import 'package:flutter/material.dart';
+
+class BalanceTileModel {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+  BalanceTileModel(this.label, this.value, this.icon, this.color);
+}
 
 class BalancesGridWidget extends StatelessWidget {
   final DashboardOverviewModel? data;
@@ -43,7 +49,6 @@ class BalancesGridWidget extends StatelessWidget {
       ),
     ];
 
-    // Tab index: 0 = Receivables, 1 = Payables, null = no sheet
     final tapHandlers = <VoidCallback?>[
       () => showReceivablesSheet(
         context,
@@ -78,7 +83,6 @@ class BalancesGridWidget extends StatelessWidget {
   }
 }
 
-// -------- Balance Tile Widget --------
 class BalanceTile extends StatelessWidget {
   final BalanceTileModel data;
   final VoidCallback? onTap;

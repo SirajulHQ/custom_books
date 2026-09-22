@@ -1,8 +1,14 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
-import 'package:custom_books/features/home/models/bank_entry_model.dart';
 import 'package:custom_books/features/home/models/dashboard_overview_model.dart';
 import 'package:flutter/material.dart';
+
+class BankEntryModel {
+  final String label;
+  final String value;
+  final IconData icon;
+  BankEntryModel(this.label, this.value, this.icon);
+}
 
 class BankingStripWidget extends StatelessWidget {
   final DashboardOverviewModel? data;

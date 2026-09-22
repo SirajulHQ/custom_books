@@ -1,4 +1,3 @@
-// Shared helpers used by both receivables and payables sheets.
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/home/models/dashboard_overview_model.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/material.dart';
 
 double _toDouble(String v) => double.tryParse(v.replaceAll(',', '')) ?? 0.0;
 
-// ── Summary card (amount + progress bar + current/overdue row) ────────────────
 class FinancialSummaryCard extends StatelessWidget {
   final String title;
   final FinancialDetail data;
@@ -88,7 +86,6 @@ class FinancialSummaryCard extends StatelessWidget {
   }
 }
 
-// ── Overdue split grid ─────────────────────────────────────────────────────────
 class OverdueSplitGrid extends StatelessWidget {
   final List<OverdueBucket> split;
 
@@ -147,7 +144,6 @@ class OverdueSplitGrid extends StatelessWidget {
   }
 }
 
-// ── Label + value column ──────────────────────────────────────────────────────
 class SummaryLabel extends StatelessWidget {
   final String label;
   final String value;

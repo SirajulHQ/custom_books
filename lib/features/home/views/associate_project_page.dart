@@ -25,7 +25,6 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
   bool _isLoading = true;
   List<String> _searchResults = [];
 
-  // Dummy project list for search
   final List<String> _projects = [
     'Website Redesign',
     'Mobile App Development',
@@ -58,7 +57,6 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
     super.dispose();
   }
 
-  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
   Future<void> _load() async {
     setState(() => _isLoading = true);
     await Future.delayed(const Duration(milliseconds: 700));
@@ -128,7 +126,6 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
                       children: [
                         SizedBox(height: Dimensions.height20),
 
-                        // Timer display
                         Center(
                           child: Text(
                             _formattedTime,
@@ -142,19 +139,16 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
                         ),
                         SizedBox(height: Dimensions.height30),
 
-                        // Project Name field
                         _buildLabel(context, 'Project Name', isRequired: true),
                         SizedBox(height: Dimensions.height10 * 0.6),
                         _buildProjectSearchField(context),
                         SizedBox(height: Dimensions.height20),
 
-                        // Task field
                         _buildLabel(context, 'Task', isRequired: true),
                         SizedBox(height: Dimensions.height10 * 0.6),
                         _buildTaskDropdown(context),
                         SizedBox(height: Dimensions.height20),
 
-                        // Billable checkbox
                         Row(
                           children: [
                             SizedBox(
@@ -185,7 +179,6 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
                         ),
                         SizedBox(height: Dimensions.height20),
 
-                        // Notes field
                         _buildLabel(context, 'Notes', isRequired: false),
                         SizedBox(height: Dimensions.height10 * 0.6),
                         TextField(
@@ -227,7 +220,6 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
                   ),
                 ),
 
-                // Stop Timer button pinned at bottom
                 Padding(
                   padding: EdgeInsets.fromLTRB(
                     Dimensions.width20,
@@ -313,7 +305,7 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
             ),
             suffixIcon: GestureDetector(
               onTap: () {
-                // Add new project action
+
               },
               child: Icon(
                 Icons.add,
@@ -384,7 +376,7 @@ class _AssociateProjectPageState extends State<AssociateProjectPage> {
   Widget _buildTaskDropdown(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Show task selection
+
       },
       child: Container(
         width: double.infinity,

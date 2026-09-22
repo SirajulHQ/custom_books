@@ -3,7 +3,6 @@ import 'package:custom_books/features/home/models/income_expense_point_model.dar
 import 'package:custom_books/features/home/viewmodels/income_expense_viewmodel.dart';
 import 'package:flutter/material.dart';
 
-/// Manages the dashboard "income vs expense" chart section.
 class IncomeExpenseController extends ChangeNotifier {
   final _vm = IncomeExpenseViewModel();
 
@@ -25,7 +24,6 @@ class IncomeExpenseController extends ChangeNotifier {
   String _currency = 'INR';
   String get currency => _currency;
 
-  /// Loads data for the given [period]/[accountingMethod], toggling loading.
   Future<void> load({
     required String period,
     required String accountingMethod,
@@ -37,7 +35,6 @@ class IncomeExpenseController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Fetches without touching the loading flag (used by parallel initial load).
   Future<void> fetch({
     required String period,
     required String accountingMethod,

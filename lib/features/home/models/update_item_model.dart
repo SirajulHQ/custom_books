@@ -1,9 +1,9 @@
 class UpdateItemModel {
   final String title;
   final String description;
-  final String time; // relative_time from API
-  final String icon; // e.g. "party_popper", "wrench", "calendar", "credit_card"
-  final String type; // e.g. "feature", "maintenance", "reminder", "integration"
+  final String time;
+  final String icon;
+  final String type;
   final bool isRead;
 
   UpdateItemModel({
@@ -20,7 +20,7 @@ class UpdateItemModel {
       title: json['title'] as String? ?? '',
       description:
           json['description'] as String? ?? json['body'] as String? ?? '',
-      // API field is "relative_time", fall back to "time" then "created_at"
+
       time:
           json['relative_time'] as String? ??
           json['time'] as String? ??

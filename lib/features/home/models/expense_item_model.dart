@@ -12,7 +12,7 @@ class ExpenseItem {
     Map<String, dynamic> json, {
     Color fallbackColor = const Color(0xFF94A3B8),
   }) {
-    // The API sends a hex color string e.g. "#2563EB" — parse it when present.
+
     final hexStr = json['color'] as String?;
     Color color = fallbackColor;
     if (hexStr != null && hexStr.startsWith('#') && hexStr.length == 7) {

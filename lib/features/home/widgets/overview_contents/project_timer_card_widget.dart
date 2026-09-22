@@ -74,7 +74,7 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
   }
 
   void _openAssociateProjectPage() async {
-    // Pause the local timer while on the associate page
+
     _timer?.cancel();
     final result = await Navigator.push<bool>(
       context,
@@ -84,10 +84,10 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
       ),
     );
     if (result == true) {
-      // User tapped Stop Timer on the page
+
       _stopTimer();
     } else {
-      // User dismissed — resume timer
+
       if (_isRunning && !_isPaused) {
         _timer = Timer.periodic(const Duration(seconds: 1), (_) {
           setState(() => _elapsedSeconds++);
@@ -114,11 +114,10 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
+
           CardTitle(title: 'Project Summary', icon: Icons.timer_outlined),
           SizedBox(height: Dimensions.height15),
 
-          // Timer display area
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(
@@ -131,7 +130,7 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
             ),
             child: Column(
               children: [
-                // Timer display
+
                 Text(
                   _formattedTime,
                   style: TextStyle(
@@ -143,7 +142,6 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
                 ),
                 SizedBox(height: Dimensions.height10 * 0.5),
 
-                // Associate Project label
                 GestureDetector(
                   onTap: _isRunning ? _openAssociateProjectPage : null,
                   child: Text(
@@ -157,9 +155,8 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
                 ),
                 SizedBox(height: Dimensions.height20),
 
-                // Action buttons row
                 if (!_isRunning)
-                  // Not running: show Log Time + Start Timer
+
                   Row(
                     children: [
                       Expanded(
@@ -185,7 +182,7 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
                     ],
                   )
                 else
-                  // Running: show Log Time, delete, stop, pause/resume
+
                   Row(
                     children: [
                       Expanded(
@@ -228,7 +225,6 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
           ),
           SizedBox(height: Dimensions.height15),
 
-          // Stat chips row
           Row(
             children: [
               Expanded(
@@ -254,7 +250,6 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
   }
 }
 
-// -------- Outline Action Button --------
 class _OutlineActionButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
@@ -286,7 +281,6 @@ class _OutlineActionButton extends StatelessWidget {
   }
 }
 
-// -------- Filled Action Button --------
 class _FilledActionButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
@@ -317,7 +311,6 @@ class _FilledActionButton extends StatelessWidget {
   }
 }
 
-// -------- Icon Action Button --------
 class _IconActionButton extends StatelessWidget {
   final IconData icon;
   final Color color;
@@ -347,7 +340,6 @@ class _IconActionButton extends StatelessWidget {
   }
 }
 
-// -------- Stat Card --------
 class _StatCard extends StatelessWidget {
   final String label;
   final String value;

@@ -3,9 +3,17 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/bills/views/add_bill_page.dart';
 import 'package:custom_books/features/customers/views/add_customer_page.dart';
 import 'package:custom_books/features/expenses/views/add_expense_page.dart';
-import 'package:custom_books/features/home/models/action_item_model.dart';
 import 'package:custom_books/features/invoices/views/new_invoice_page.dart';
 import 'package:flutter/material.dart';
+
+class ActionItemModel {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback? onTap;
+
+  ActionItemModel(this.icon, this.label, this.color, {this.onTap});
+}
 
 class QuickActionsGridWidget extends StatelessWidget {
   const QuickActionsGridWidget({super.key});

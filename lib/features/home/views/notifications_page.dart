@@ -3,7 +3,6 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:flutter/material.dart';
 
-// ── Notification data model ───────────────────────────────────────────────────
 class NotificationItem {
   final String title;
   final String subtitle;
@@ -22,7 +21,6 @@ class NotificationItem {
   });
 }
 
-// ── Notifications Page ────────────────────────────────────────────────────────
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
 
@@ -31,7 +29,7 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  // Sample notifications — replace with real data source later
+
   final List<NotificationItem> _notifications = [
     NotificationItem(
       title: 'nabeel has viewed your quote QT-000001.',
@@ -85,7 +83,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
     _load();
   }
 
-  /// Simulates fetching data so the shimmer skeleton is shown briefly.
   Future<void> _load() async {
     setState(() => _isLoading = true);
     await Future.delayed(const Duration(milliseconds: 900));
@@ -216,7 +213,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Icon badge
+
                     Container(
                       width: Dimensions.iconSize24 * 1.75,
                       height: Dimensions.iconSize24 * 1.75,
@@ -231,7 +228,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       ),
                     ),
                     SizedBox(width: Dimensions.width15),
-                    // Content
+
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,7 +265,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         ],
                       ),
                     ),
-                    // Unread dot
+
                     if (!_notifications[i].isRead)
                       Padding(
                         padding: EdgeInsets.only(left: Dimensions.width10 / 2),

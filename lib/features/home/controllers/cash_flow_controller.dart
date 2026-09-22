@@ -3,7 +3,6 @@ import 'package:custom_books/features/home/models/cash_flow_point_model.dart';
 import 'package:custom_books/features/home/viewmodels/cash_flow_viewmodel.dart';
 import 'package:flutter/material.dart';
 
-/// Manages the dashboard "cash flow" chart section.
 class CashFlowController extends ChangeNotifier {
   final _vm = CashFlowViewModel();
 
@@ -22,7 +21,6 @@ class CashFlowController extends ChangeNotifier {
   String _currency = 'INR';
   String get currency => _currency;
 
-  /// Loads cash flow data for the given [period], toggling [isLoading].
   Future<void> load({required String period}) async {
     _isLoading = true;
     notifyListeners();
@@ -31,7 +29,6 @@ class CashFlowController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Fetches without touching the loading flag (used by parallel initial load).
   Future<void> fetch({required String period}) async {
     final resp = await _vm.fetch(period: period);
     final int? status = resp?['_statusCode'] as int?;

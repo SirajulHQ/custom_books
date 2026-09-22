@@ -15,7 +15,7 @@ import 'package:custom_books/features/home/models/update_item_model.dart';
 import 'package:flutter/material.dart';
 
 class DashboardController extends ChangeNotifier {
-  // ── Sub-controllers ─────────────────────────────────────────────────────
+
   final overviewController = OverviewController();
   final projectsController = ProjectsController();
   final cashFlowController = CashFlowController();
@@ -31,7 +31,7 @@ class DashboardController extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   DashboardController() {
-    // Re-broadcast every sub-controller change through this notifier.
+
     overviewController.addListener(notifyListeners);
     projectsController.addListener(notifyListeners);
     cashFlowController.addListener(notifyListeners);
@@ -41,18 +41,15 @@ class DashboardController extends ChangeNotifier {
     supportController.addListener(notifyListeners);
   }
 
-  // ── Overview / projects passthrough ──────────────────────────────────────
   DashboardOverviewModel? get overview => overviewController.overview;
   DashboardProjectModel? get projects => projectsController.projects;
 
-  // ── Cash flow passthrough ────────────────────────────────────────────────
   bool get isCashFlowLoading => cashFlowController.isLoading;
   List<CashFlowPoint> get cashFlow => cashFlowController.cashFlow;
   List<String> get cashFlowPeriods => cashFlowController.periods;
   String get cashFlowAsOnLabel => cashFlowController.asOnLabel;
   String get cashFlowCurrency => cashFlowController.currency;
 
-  // ── Income / expense passthrough ─────────────────────────────────────────
   bool get isIncomeExpenseLoading => incomeExpenseController.isLoading;
   List<IncomeExpensePoint> get incomeExpense =>
       incomeExpenseController.incomeExpense;
@@ -61,22 +58,17 @@ class DashboardController extends ChangeNotifier {
   String get expenseTotal => incomeExpenseController.expenseTotal;
   String get incomeExpenseCurrency => incomeExpenseController.currency;
 
-  // ── Expenses passthrough ─────────────────────────────────────────────────
   bool get isExpensesLoading => expensesController.isLoading;
   List<ExpenseItem> get expenses => expensesController.expenses;
   List<String> get expensePeriods => expensesController.periods;
   String get expensesCurrency => expensesController.currency;
   String get expensesTotalExpense => expensesController.totalExpense;
 
-  // ── Updates / support passthrough ────────────────────────────────────────
   bool get isUpdatesLoading => updatesController.isLoading;
   List<UpdateItemModel>? get updates => updatesController.updates;
   int get unreadUpdatesCount => updatesController.unreadCount;
   SupportDataModel? get support => supportController.support;
 
-  // ── Public methods ────────────────────────────────────────────────────────
-
-  /// Loads overview + projects + charts in parallel. Called on tab open.
   Future<void> loadDashboard({
     String period = 'this_fiscal_year',
     String accountingMethod = 'accrual',
@@ -100,11 +92,9 @@ class DashboardController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Called when the cash flow period picker changes.
   Future<void> loadCashFlow({required String period}) =>
       cashFlowController.load(period: period);
 
-  /// Called when the income/expense period or accounting method changes.
   Future<void> loadIncomeExpense({
     required String period,
     required String accountingMethod,
@@ -113,14 +103,11 @@ class DashboardController extends ChangeNotifier {
     accountingMethod: accountingMethod,
   );
 
-  /// Called when the expense breakdown period picker changes.
   Future<void> loadExpenses({required String period}) =>
       expensesController.load(period: period);
 
-  /// Called when the Updates tab is selected.
   Future<void> loadUpdates() => updatesController.load();
 
-  /// Called when the Support tab is selected.
   Future<void> loadSupport() => supportController.load();
 
   @override

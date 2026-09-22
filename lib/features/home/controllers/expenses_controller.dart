@@ -3,7 +3,6 @@ import 'package:custom_books/features/home/models/expense_item_model.dart';
 import 'package:custom_books/features/home/viewmodels/expenses_viewmodel.dart';
 import 'package:flutter/material.dart';
 
-/// Palette for cycling expense category colours.
 const _expenseColors = [
   Color(0xFF3B82F6),
   Color(0xFF8B5CF6),
@@ -13,7 +12,6 @@ const _expenseColors = [
   Color(0xFF94A3B8),
 ];
 
-/// Manages the dashboard "expense breakdown" section.
 class ExpensesController extends ChangeNotifier {
   final _vm = ExpensesViewModel();
 
@@ -32,7 +30,6 @@ class ExpensesController extends ChangeNotifier {
   String _totalExpense = '0.00';
   String get totalExpense => _totalExpense;
 
-  /// Loads expense breakdown for the given [period], toggling loading.
   Future<void> load({required String period}) async {
     _isLoading = true;
     notifyListeners();
@@ -41,7 +38,6 @@ class ExpensesController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Fetches without touching the loading flag (used by parallel initial load).
   Future<void> fetch({required String period}) async {
     final resp = await _vm.fetch(period: period);
     final int? status = resp?['_statusCode'] as int?;

@@ -1,8 +1,7 @@
-/// A single overdue-ageing bucket (e.g. "1-15 Days").
 class OverdueBucket {
   final String label;
-  final String amount; // raw numeric string, e.g. "0.00"
-  final String amountDisplay; // formatted, e.g. "₹0.00"
+  final String amount;
+  final String amountDisplay;
 
   const OverdueBucket({
     required this.label,
@@ -22,7 +21,6 @@ class OverdueBucket {
   }
 }
 
-/// Detailed breakdown for receivables or payables, shown in the bottom sheet.
 class FinancialDetail {
   final String title;
   final String total;
@@ -33,7 +31,6 @@ class FinancialDetail {
   final String overdueDisplay;
   final int overdueCount;
 
-  /// Ageing buckets in fixed order: 1-15, 16-30, 31-45, >45.
   final List<OverdueBucket> overdueSplit;
 
   const FinancialDetail({
@@ -48,7 +45,6 @@ class FinancialDetail {
     required this.overdueSplit,
   });
 
-  /// Empty ageing buckets in fixed order, used when the API omits the split.
   static const emptySplit = <OverdueBucket>[
     OverdueBucket(label: '1-15 Days', amount: '0.00', amountDisplay: '₹0.00'),
     OverdueBucket(label: '16-30 Days', amount: '0.00', amountDisplay: '₹0.00'),
@@ -95,7 +91,6 @@ class FinancialDetail {
     );
   }
 
-  /// A zeroed detail, used when the API omits the section.
   static const empty = FinancialDetail(
     title: '',
     total: '0.00',
@@ -116,7 +111,7 @@ class DashboardOverviewModel {
   final int overdueBills;
   final String bankBalance;
   final String cashInHand;
-  final String currency; // e.g. "INR"
+  final String currency;
 
   final FinancialDetail receivablesDetail;
   final FinancialDetail payablesDetail;
@@ -133,7 +128,6 @@ class DashboardOverviewModel {
     this.payablesDetail = FinancialDetail.empty,
   });
 
-  /// Returns a currency symbol for display (e.g. INR → ₹, USD → $, AED → AED).
   String get currencySymbol {
     switch (currency) {
       case 'INR':

@@ -33,7 +33,6 @@ class PayablesSheet extends StatelessWidget {
         children: [
           const BottomSheetDragHandle(),
 
-          // ── Header ────────────────────────────────────────────────────
           Padding(
             padding: EdgeInsets.fromLTRB(
               Dimensions.width20,
@@ -71,7 +70,6 @@ class PayablesSheet extends StatelessWidget {
           Divider(height: 1, color: context.colors.border),
           SizedBox(height: Dimensions.height20),
 
-          // ── Summary card ───────────────────────────────────────────────
           FinancialSummaryCard(
             title: 'Total Payables',
             data: detail,
@@ -80,7 +78,6 @@ class PayablesSheet extends StatelessWidget {
 
           SizedBox(height: Dimensions.height20),
 
-          // ── Overdue split ──────────────────────────────────────────────
           Padding(
             padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
             child: Align(

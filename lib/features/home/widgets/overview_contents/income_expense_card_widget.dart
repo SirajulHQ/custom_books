@@ -27,7 +27,6 @@ class IncomeExpenseCardWidget extends StatefulWidget {
   final List<String> availablePeriods;
   final String currency;
 
-  /// Called when the user changes the period so the parent can re-fetch.
   final void Function(String period, String method)? onFilterChanged;
 
   const IncomeExpenseCardWidget({
@@ -87,7 +86,7 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header row: title + fiscal year dropdown
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -131,7 +130,6 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
           ),
           SizedBox(height: Dimensions.height15),
 
-          // Accrual / Cash segmented toggle
           _AccrualCashToggle(
             isAccrual: _isAccrual,
             onChanged: (val) {
@@ -144,7 +142,6 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
           ),
           SizedBox(height: Dimensions.height20),
 
-          // Bar chart with Y-axis labels
           SizedBox(
             height: Dimensions.screenHeight / 3.2,
             width: double.infinity,
@@ -159,7 +156,7 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
                     );
                   },
                   onTapUp: (_) {
-                    // Keep tooltip visible briefly
+
                   },
                   child: CustomPaint(
                     size: constraints.biggest,
@@ -182,7 +179,6 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
           ),
           SizedBox(height: Dimensions.height20),
 
-          // Bottom summary: Income + Expense totals
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -230,7 +226,6 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
   }
 }
 
-// -------- Period Picker Bottom Sheet --------
 class _PeriodPickerSheet extends StatelessWidget {
   final String title;
   final String sectionLabel;
@@ -369,7 +364,6 @@ class _PeriodTile extends StatelessWidget {
   }
 }
 
-// -------- Accrual / Cash Toggle --------
 class _AccrualCashToggle extends StatelessWidget {
   final bool isAccrual;
   final ValueChanged<bool> onChanged;
@@ -446,7 +440,6 @@ class _ToggleItem extends StatelessWidget {
   }
 }
 
-// -------- Total Label Widget --------
 class _TotalLabel extends StatelessWidget {
   final String label;
   final double value;
@@ -502,7 +495,6 @@ class _TotalLabel extends StatelessWidget {
   }
 }
 
-// -------- Custom Bar Chart Painter --------
 class _IncomeExpenseBarPainter extends CustomPainter {
   final List<IncomeExpensePoint> data;
   final Color incomeColor;
@@ -537,7 +529,6 @@ class _IncomeExpenseBarPainter extends CustomPainter {
     final chartWidth = size.width - leftPadding;
     final chartHeight = size.height - bottomPadding - topPadding;
 
-    // Find max value for scaling
     double maxVal = 0;
     for (final point in data) {
       if (point.income > maxVal) maxVal = point.income;
@@ -545,11 +536,9 @@ class _IncomeExpenseBarPainter extends CustomPainter {
     }
     if (maxVal == 0) maxVal = 1;
 
-    // Calculate nice Y-axis intervals
     final ySteps = _calculateYSteps(maxVal);
     final adjustedMax = ySteps.last;
 
-    // Draw horizontal grid lines and Y-axis labels
     final gridPaint = Paint()
       ..color = gridColor.withValues(alpha: 0.5)
       ..strokeWidth = 0.5;
@@ -558,7 +547,6 @@ class _IncomeExpenseBarPainter extends CustomPainter {
       final y = topPadding + chartHeight - (step / adjustedMax) * chartHeight;
       canvas.drawLine(Offset(leftPadding, y), Offset(size.width, y), gridPaint);
 
-      // Y-axis label
       final labelText = _formatYLabel(step);
       final tp = TextPainter(
         text: TextSpan(
@@ -570,7 +558,6 @@ class _IncomeExpenseBarPainter extends CustomPainter {
       tp.paint(canvas, Offset(leftPadding - tp.width - 6, y - tp.height / 2));
     }
 
-    // Draw bars
     final groupWidth = chartWidth / data.length;
     final barWidth = groupWidth * 0.3;
     const radius = Radius.circular(3);
@@ -581,7 +568,6 @@ class _IncomeExpenseBarPainter extends CustomPainter {
     for (int i = 0; i < data.length; i++) {
       final centerX = leftPadding + groupWidth * i + groupWidth / 2;
 
-      // Income bar
       final incomeHeight = (data[i].income / adjustedMax) * chartHeight;
       if (incomeHeight > 0) {
         final incomeRect = RRect.fromRectAndCorners(
@@ -597,7 +583,6 @@ class _IncomeExpenseBarPainter extends CustomPainter {
         canvas.drawRRect(incomeRect, incomePaint);
       }
 
-      // Expense bar
       final expenseHeight = (data[i].expense / adjustedMax) * chartHeight;
       if (expenseHeight > 0) {
         final expenseRect = RRect.fromRectAndCorners(
@@ -613,7 +598,6 @@ class _IncomeExpenseBarPainter extends CustomPainter {
         canvas.drawRRect(expenseRect, expensePaint);
       }
 
-      // X-axis month labels
       final monthTp = TextPainter(
         text: TextSpan(
           text: data[i].month,
@@ -627,7 +611,6 @@ class _IncomeExpenseBarPainter extends CustomPainter {
       );
     }
 
-    // Draw tooltip for touched bar
     if (touchedIndex != null &&
         touchedIndex! >= 0 &&
         touchedIndex! < data.length) {
@@ -676,16 +659,13 @@ class _IncomeExpenseBarPainter extends CustomPainter {
         const Radius.circular(6),
       );
 
-      // Shadow
       canvas.drawRRect(
         tooltipRect.shift(const Offset(0, 2)),
         Paint()..color = tooltipBorderColor.withValues(alpha: 0.3),
       );
 
-      // Background
       canvas.drawRRect(tooltipRect, Paint()..color = tooltipBgColor);
 
-      // Border
       canvas.drawRRect(
         tooltipRect,
         Paint()
@@ -697,7 +677,6 @@ class _IncomeExpenseBarPainter extends CustomPainter {
       tp1.paint(canvas, Offset(tooltipX + 8, tooltipY + 4));
       tp2.paint(canvas, Offset(tooltipX + 8, tooltipY + 4 + tp1.height + 2));
 
-      // Arrow/triangle pointing down
       final arrowPath = Path()
         ..moveTo(centerX - 5, tooltipY + tooltipHeight)
         ..lineTo(centerX, tooltipY + tooltipHeight + 5)
@@ -715,7 +694,7 @@ class _IncomeExpenseBarPainter extends CustomPainter {
   }
 
   List<double> _calculateYSteps(double maxVal) {
-    // Determine nice round intervals
+
     final rawInterval = maxVal / 5;
     double interval;
 

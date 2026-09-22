@@ -27,7 +27,6 @@ class ExpenseBreakdownCardWidget extends StatefulWidget {
   final List<String> availablePeriods;
   final String currency;
 
-  /// Called when the user picks a new period so the parent can re-fetch.
   final void Function(String period)? onPeriodChanged;
 
   const ExpenseBreakdownCardWidget({
@@ -98,7 +97,7 @@ class _ExpenseBreakdownCardWidgetState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Header with title and period dropdown ──
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -142,7 +141,6 @@ class _ExpenseBreakdownCardWidgetState
           ),
           SizedBox(height: Dimensions.height10 * 0.8),
 
-          // ── Total expenses summary ──
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -216,10 +214,6 @@ class _ExpenseBreakdownCardWidgetState
     );
   }
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// ── Period Selection Bottom Sheet ─────────────────────────────────────────────
-// ═══════════════════════════════════════════════════════════════════════════════
 
 class _PeriodPickerSheet extends StatelessWidget {
   final String title;

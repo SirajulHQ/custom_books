@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _controller.loadDashboard();
-    // Preload updates so the unread count badge shows without opening the tab.
+
     _controller.loadUpdates();
   }
 
@@ -104,7 +104,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // -------- Pull-to-refresh --------
   Future<void> _onRefresh() async {
     switch (_selectedSegment) {
       case 0:
@@ -116,14 +115,12 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // -------- Navigate to notifications page --------
   void _openNotificationsPage() {
     Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (_) => const NotificationsPage()));
   }
 
-  // -------- Content based on selected segment --------
   Widget _buildSelectedContent() {
     switch (_selectedSegment) {
       case 0:
@@ -196,7 +193,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // -------- Unread count badge --------
   Widget _buildUnreadBadge(int count) {
     final label = count > 99 ? '99+' : '$count';
     return Container(
@@ -222,7 +218,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // -------- Segmented control (replaces underline tabs) --------
   Widget _buildSegmentedControl() {
     final segments = ['Overview', 'Updates', 'Support'];
     return Padding(
@@ -245,7 +240,7 @@ class _HomePageState extends State<HomePage> {
               child: GestureDetector(
                 onTap: () {
                   setState(() => _selectedSegment = i);
-                  // Lazy-load the tab data on first tap
+
                   if (i == 1 && _controller.updates == null) {
                     _controller.loadUpdates();
                   } else if (i == 2 && _controller.support == null) {
@@ -292,7 +287,7 @@ class _HomePageState extends State<HomePage> {
                               : context.colors.textSecondary,
                         ),
                       ),
-                      // Unread count badge on the "Updates" segment.
+
                       if (i == 1 && _controller.unreadUpdatesCount > 0) ...[
                         SizedBox(width: Dimensions.width10 / 2),
                         _buildUnreadBadge(_controller.unreadUpdatesCount),

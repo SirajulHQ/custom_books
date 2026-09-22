@@ -85,7 +85,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
 
   void _onChartTap(int index) {
     setState(() {
-      // Toggle: tap same index again to dismiss
+
       _tappedIndex = (_tappedIndex == index) ? null : index;
     });
   }
@@ -146,7 +146,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Header with title and period dropdown ──
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -187,7 +187,6 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             ),
             SizedBox(height: Dimensions.height20),
 
-            // ── Chart area with overlay tooltip ──
             SizedBox(
               height: Dimensions.screenHeight / 3.5,
               width: double.infinity,
@@ -196,7 +195,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
                   return Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      // ── The chart ──
+
                       Positioned.fill(
                         child: GestureDetector(
                           onTapDown: (details) {
@@ -224,7 +223,6 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
                         ),
                       ),
 
-                      // ── Floating tooltip over the chart ──
                       if (_tappedIndex != null)
                         _buildTooltipOverlay(constraints),
                     ],
@@ -234,7 +232,6 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             ),
             SizedBox(height: Dimensions.height10),
 
-            // ── Month labels ──
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: _cashFlowData
@@ -252,7 +249,6 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
 
             Divider(height: Dimensions.height30, color: context.colors.border),
 
-            // ── Summary stats ──
             _statLine(
               context,
               label,
@@ -285,7 +281,6 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
     );
   }
 
-  /// Builds the floating tooltip positioned over the chart at the tapped point.
   Widget _buildTooltipOverlay(BoxConstraints constraints) {
     final point = _cashFlowData[_tappedIndex!];
     final values = _cashFlowData.map((e) => e.ending).toList();
@@ -296,19 +291,16 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
     final tooltipWidth = constraints.maxWidth * 0.62;
     final xCenter = _tappedIndex! * stepX;
 
-    // Y position of the tapped data point on the chart
     final yPoint =
         constraints.maxHeight -
         (values[_tappedIndex!] / maxVal) * constraints.maxHeight;
 
-    // Position tooltip so it doesn't overflow left/right
     double left = xCenter - tooltipWidth / 2;
     if (left < 0) left = 0;
     if (left + tooltipWidth > constraints.maxWidth) {
       left = constraints.maxWidth - tooltipWidth;
     }
 
-    // Position tooltip above the tapped point; if too high, place below
     const tooltipEstimatedHeight = 120.0;
     double top = yPoint - tooltipEstimatedHeight - 12;
     if (top < 0) top = yPoint + 16;
@@ -335,7 +327,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Month title
+
             Text(
               '${point.month} 2026',
               style: TextStyle(
@@ -346,7 +338,6 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             ),
             SizedBox(height: Dimensions.height10 * 0.6),
 
-            // Opening Bal.
             _tooltipRow(
               'Opening Bal.',
               '${_sym}${_formatNumber(point.opening)}',
@@ -354,7 +345,6 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             ),
             SizedBox(height: Dimensions.height10 * 0.4),
 
-            // Income
             _tooltipRow(
               'Income',
               '${_sym}${_formatNumber(point.income)}',
@@ -362,7 +352,6 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             ),
             SizedBox(height: Dimensions.height10 * 0.4),
 
-            // Outgoing
             _tooltipRow(
               'Outgoing',
               '${_sym}${_formatNumber(point.outgoing)}',
@@ -370,7 +359,6 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             ),
             SizedBox(height: Dimensions.height10 * 0.4),
 
-            // Ending Bal.
             _tooltipRow(
               'Ending Bal.',
               '${_sym}${_formatNumber(point.ending)}',
@@ -454,10 +442,6 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
     return value.toStringAsFixed(2);
   }
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// ── Period Selection Bottom Sheet ─────────────────────────────────────────────
-// ═══════════════════════════════════════════════════════════════════════════════
 
 class _PeriodPickerSheet extends StatelessWidget {
   final String title;
@@ -597,10 +581,6 @@ class _PeriodTile extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// ── Interactive Area Chart Painter ───────────────────────────────────────────
-// ═══════════════════════════════════════════════════════════════════════════════
-
 class _InteractiveAreaChartPainter extends CustomPainter {
   final List<CashFlowPoint> data;
   final Color color;
@@ -624,7 +604,6 @@ class _InteractiveAreaChartPainter extends CustomPainter {
         .clamp(1.0, double.infinity);
     final stepX = size.width / (values.length - 1);
 
-    // ── Draw horizontal grid lines ──
     final gridPaint = Paint()
       ..color = gridColor.withValues(alpha: 0.4)
       ..strokeWidth = 0.5;
@@ -635,7 +614,6 @@ class _InteractiveAreaChartPainter extends CustomPainter {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
     }
 
-    // ── Draw Y-axis labels ──
     final labelStyle = TextStyle(color: labelColor, fontSize: 10);
     for (int i = 0; i <= gridLines; i++) {
       final val = maxVal * (gridLines - i) / gridLines;
@@ -651,7 +629,6 @@ class _InteractiveAreaChartPainter extends CustomPainter {
       );
     }
 
-    // ── Build line path ──
     final linePaint = Paint()
       ..color = color
       ..strokeWidth = 2.5
@@ -687,7 +664,6 @@ class _InteractiveAreaChartPainter extends CustomPainter {
     canvas.drawPath(fillPath, fillPaint);
     canvas.drawPath(path, linePaint);
 
-    // ── Draw dots ──
     final dotPaint = Paint()..color = color;
     for (int i = 0; i < values.length; i++) {
       final x = i * stepX;
@@ -695,7 +671,6 @@ class _InteractiveAreaChartPainter extends CustomPainter {
       canvas.drawCircle(Offset(x, y), 3, dotPaint);
     }
 
-    // ── Highlight tapped index with vertical line ──
     if (highlightIndex != null &&
         highlightIndex! >= 0 &&
         highlightIndex! < values.length) {
@@ -705,7 +680,6 @@ class _InteractiveAreaChartPainter extends CustomPainter {
         ..strokeWidth = 1.5;
       canvas.drawLine(Offset(hx, 0), Offset(hx, size.height), vertPaint);
 
-      // Highlight dot
       final hy = size.height - (values[highlightIndex!] / maxVal) * size.height;
       canvas.drawCircle(
         Offset(hx, hy),

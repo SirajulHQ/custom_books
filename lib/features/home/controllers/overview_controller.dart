@@ -3,7 +3,6 @@ import 'package:custom_books/features/home/models/dashboard_overview_model.dart'
 import 'package:custom_books/features/home/viewmodels/dashboard_overview_viewmodel.dart';
 import 'package:flutter/material.dart';
 
-/// Manages the dashboard "overview" (balances + banking strip) section.
 class OverviewController extends ChangeNotifier {
   final _vm = DashboardOverviewViewModel();
 
