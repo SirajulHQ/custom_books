@@ -1,28 +1,23 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
+import 'package:custom_books/features/home/models/dashboard_overview_model.dart';
 import 'package:custom_books/features/home/widgets/financial_summary_sheet_helpers.dart';
 import 'package:flutter/material.dart';
 
-void showPayablesSheet(BuildContext context) {
+void showPayablesSheet(BuildContext context, FinancialDetail detail) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => const PayablesSheet(),
+    builder: (_) => PayablesSheet(detail: detail),
   );
 }
 
 class PayablesSheet extends StatelessWidget {
-  const PayablesSheet({super.key});
+  final FinancialDetail detail;
 
-  // Replace with real data source when ready
-  static const _data = FinancialSummary(
-    total: 0.00,
-    current: 0.00,
-    overdue: 0.00,
-    split: [0.00, 0.00, 0.00, 0.00],
-  );
+  const PayablesSheet({super.key, required this.detail});
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +74,7 @@ class PayablesSheet extends StatelessWidget {
           // ── Summary card ───────────────────────────────────────────────
           FinancialSummaryCard(
             title: 'Total Payables',
-            data: _data,
+            data: detail,
             accentColor: AppColors.accent,
           ),
 
@@ -102,7 +97,7 @@ class PayablesSheet extends StatelessWidget {
           ),
           SizedBox(height: Dimensions.height15),
 
-          OverdueSplitGrid(split: _data.split),
+          OverdueSplitGrid(split: detail.overdueSplit),
 
           SizedBox(height: Dimensions.height30),
         ],

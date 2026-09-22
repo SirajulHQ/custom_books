@@ -1,28 +1,23 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
+import 'package:custom_books/features/home/models/dashboard_overview_model.dart';
 import 'package:custom_books/features/home/widgets/financial_summary_sheet_helpers.dart';
 import 'package:flutter/material.dart';
 
-void showReceivablesSheet(BuildContext context) {
+void showReceivablesSheet(BuildContext context, FinancialDetail detail) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => const ReceivablesSheet(),
+    builder: (_) => ReceivablesSheet(detail: detail),
   );
 }
 
 class ReceivablesSheet extends StatelessWidget {
-  const ReceivablesSheet({super.key});
+  final FinancialDetail detail;
 
-  // Replace with real data source when ready
-  static const _data = FinancialSummary(
-    total: 5886.00,
-    current: 0.00,
-    overdue: 5886.00,
-    split: [0.00, 0.00, 5886.00, 0.00],
-  );
+  const ReceivablesSheet({super.key, required this.detail});
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +74,7 @@ class ReceivablesSheet extends StatelessWidget {
           // ── Summary card ───────────────────────────────────────────────
           FinancialSummaryCard(
             title: 'Total Receivables',
-            data: _data,
+            data: detail,
             accentColor: AppColors.primary,
           ),
 
@@ -102,7 +97,7 @@ class ReceivablesSheet extends StatelessWidget {
           ),
           SizedBox(height: Dimensions.height15),
 
-          OverdueSplitGrid(split: _data.split),
+          OverdueSplitGrid(split: detail.overdueSplit),
 
           SizedBox(height: Dimensions.height30),
         ],

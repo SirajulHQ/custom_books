@@ -1,27 +1,15 @@
 // Shared helpers used by both receivables and payables sheets.
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/features/home/models/dashboard_overview_model.dart';
 import 'package:flutter/material.dart';
 
-// ── Data model ────────────────────────────────────────────────────────────────
-class FinancialSummary {
-  final double total;
-  final double current;
-  final double overdue;
-  final List<double> split; // [1-15, 16-30, 31-45, >45]
-
-  const FinancialSummary({
-    required this.total,
-    required this.current,
-    required this.overdue,
-    required this.split,
-  });
-}
+double _toDouble(String v) => double.tryParse(v.replaceAll(',', '')) ?? 0.0;
 
 // ── Summary card (amount + progress bar + current/overdue row) ────────────────
 class FinancialSummaryCard extends StatelessWidget {
   final String title;
-  final FinancialSummary data;
+  final FinancialDetail data;
   final Color accentColor;
 
   const FinancialSummaryCard({
@@ -33,6 +21,8 @@ class FinancialSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final total = _toDouble(data.total);
+    final overdue = _toDouble(data.overdue);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
       child: Container(
@@ -56,7 +46,7 @@ class FinancialSummaryCard extends StatelessWidget {
             ),
             SizedBox(height: Dimensions.height10 / 2),
             Text(
-              '₹${_fmt(data.total)}',
+              data.totalDisplay,
               style: TextStyle(
                 fontSize: Dimensions.font26,
                 fontWeight: FontWeight.w800,
@@ -67,13 +57,11 @@ class FinancialSummaryCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
               child: LinearProgressIndicator(
-                value: data.total == 0
-                    ? 0
-                    : (data.overdue / data.total).clamp(0.0, 1.0),
+                value: total == 0 ? 0 : (overdue / total).clamp(0.0, 1.0),
                 minHeight: Dimensions.height10 * 0.4,
                 backgroundColor: AppColors.ok.withValues(alpha: 0.25),
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  data.overdue > 0 ? AppColors.warning : AppColors.ok,
+                  overdue > 0 ? AppColors.warning : AppColors.ok,
                 ),
               ),
             ),
@@ -82,13 +70,13 @@ class FinancialSummaryCard extends StatelessWidget {
               children: [
                 SummaryLabel(
                   label: 'Current',
-                  value: '₹${_fmt(data.current)}',
+                  value: data.currentDisplay,
                   color: accentColor,
                 ),
                 SizedBox(width: Dimensions.width30),
                 SummaryLabel(
                   label: 'Overdue',
-                  value: '₹${_fmt(data.overdue)}',
+                  value: data.overdueDisplay,
                   color: AppColors.warn,
                 ),
               ],
@@ -98,15 +86,11 @@ class FinancialSummaryCard extends StatelessWidget {
       ),
     );
   }
-
-  String _fmt(double v) => v.toStringAsFixed(2);
 }
 
 // ── Overdue split grid ─────────────────────────────────────────────────────────
 class OverdueSplitGrid extends StatelessWidget {
-  final List<double> split;
-
-  static const _labels = ['1–15 Days', '16–30 Days', '31–45 Days', '> 45 Days'];
+  final List<OverdueBucket> split;
 
   const OverdueSplitGrid({super.key, required this.split});
 
@@ -117,7 +101,7 @@ class OverdueSplitGrid extends StatelessWidget {
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: 4,
+        itemCount: split.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisSpacing: Dimensions.height10,
@@ -139,7 +123,7 @@ class OverdueSplitGrid extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                _labels[i],
+                split[i].label,
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.75,
                   color: context.colors.textSecondary,
@@ -148,7 +132,7 @@ class OverdueSplitGrid extends StatelessWidget {
               ),
               SizedBox(height: Dimensions.height10 / 3),
               Text(
-                '₹${split[i].toStringAsFixed(2)}',
+                split[i].amountDisplay,
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.95,
                   fontWeight: FontWeight.w700,

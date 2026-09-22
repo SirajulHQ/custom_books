@@ -278,45 +278,46 @@ Widget _quickActionsSkeleton(BuildContext context) {
 // Matches: SizedBox(height: height45*2.3), 2 partial-width gradient cards
 Widget _bankingStripSkeleton(BuildContext context) {
   final stripHeight = Dimensions.height45 * 2.3;
-  final cardWidth = Dimensions.screenWidth * 0.55;
 
   return SizedBox(
     height: stripHeight,
     child: Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (int i = 0; i < 2; i++) ...[
-          Container(
-            width: cardWidth,
-            padding: EdgeInsets.all(Dimensions.width15),
-            decoration: BoxDecoration(
-              color: context.colors.card,
-              borderRadius: BorderRadius.circular(Dimensions.radius20),
-              border: Border.all(color: context.colors.border),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Icon
-                SkeletonBox(
-                  width: Dimensions.iconSize24 - 4,
-                  height: Dimensions.iconSize24 - 4,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                // Value
-                SkeletonLine(
-                  width: Dimensions.width30 * 2.5,
-                  height: Dimensions.font20,
-                ),
-                // Label
-                SkeletonLine(
-                  width: Dimensions.width30 * 3,
-                  height: Dimensions.font16 * 0.8,
-                ),
-              ],
+          if (i > 0) SizedBox(width: Dimensions.width15),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(Dimensions.width15),
+              decoration: BoxDecoration(
+                color: context.colors.card,
+                borderRadius: BorderRadius.circular(Dimensions.radius20),
+                border: Border.all(color: context.colors.border),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Icon
+                  SkeletonBox(
+                    width: Dimensions.iconSize24 - 4,
+                    height: Dimensions.iconSize24 - 4,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  // Value
+                  SkeletonLine(
+                    width: Dimensions.width30 * 2.5,
+                    height: Dimensions.font20,
+                  ),
+                  // Label
+                  SkeletonLine(
+                    width: Dimensions.width30 * 3,
+                    height: Dimensions.font16 * 0.8,
+                  ),
+                ],
+              ),
             ),
           ),
-          if (i == 0) SizedBox(width: Dimensions.width15),
         ],
       ],
     ),

@@ -25,51 +25,65 @@ class BankingStripWidget extends StatelessWidget {
     ];
     return SizedBox(
       height: Dimensions.height45 * 2.3,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: entries.length,
-        separatorBuilder: (_, index) => SizedBox(width: Dimensions.width15),
-        itemBuilder: (context, i) {
-          final e = entries[i];
-          return Container(
-            width: Dimensions.screenWidth * 0.55,
-            padding: EdgeInsets.all(Dimensions.width15),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [AppColors.primary, AppColors.primaryLight],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(Dimensions.radius20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < entries.length; i++) ...[
+            if (i > 0) SizedBox(width: Dimensions.width15),
+            Expanded(child: _BankTile(entry: entries[i])),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _BankTile extends StatelessWidget {
+  final BankEntryModel entry;
+
+  const _BankTile({required this.entry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(Dimensions.width15),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColors.primary, AppColors.primaryLight],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(Dimensions.radius20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Icon(
+            entry.icon,
+            color: Colors.white,
+            size: Dimensions.iconSize24 - 4,
+          ),
+          Text(
+            entry.value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: Dimensions.font20,
+              fontWeight: FontWeight.w800,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(
-                  e.icon,
-                  color: Colors.white,
-                  size: Dimensions.iconSize24 - 4,
-                ),
-                Text(
-                  e.value,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: Dimensions.font20,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                Text(
-                  e.label,
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: Dimensions.font16 * 0.8,
-                  ),
-                ),
-              ],
+          ),
+          Text(
+            entry.label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: Dimensions.font16 * 0.8,
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

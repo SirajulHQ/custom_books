@@ -45,8 +45,14 @@ class BalancesGridWidget extends StatelessWidget {
 
     // Tab index: 0 = Receivables, 1 = Payables, null = no sheet
     final tapHandlers = <VoidCallback?>[
-      () => showReceivablesSheet(context),
-      () => showPayablesSheet(context),
+      () => showReceivablesSheet(
+        context,
+        data?.receivablesDetail ?? FinancialDetail.empty,
+      ),
+      () => showPayablesSheet(
+        context,
+        data?.payablesDetail ?? FinancialDetail.empty,
+      ),
       () => Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => const InvoicesPage(initialTab: 2)),
