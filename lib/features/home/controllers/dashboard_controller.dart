@@ -25,20 +25,6 @@ const _expenseColors = [
   Color(0xFF94A3B8),
 ];
 
-/// Maps a UI period label to the snake_case value expected by the API.
-String _periodParam(String label) {
-  switch (label) {
-    case 'Previous Fiscal Year':
-      return 'previous_fiscal_year';
-    case 'Last 12 Months':
-      return 'last_12_months';
-    case 'Last 6 Months':
-      return 'last_6_months';
-    default:
-      return 'this_fiscal_year';
-  }
-}
-
 class DashboardController extends ChangeNotifier {
   // ── ViewModels ────────────────────────────────────────────────────────────
   final _overviewVm = DashboardOverviewViewModel();
@@ -86,13 +72,13 @@ class DashboardController extends ChangeNotifier {
   List<ExpenseItem> get expenses => _expenses;
 
   // Period labels from API (used to populate dropdown sheets)
-  List<String> _cashFlowPeriods = ['This Fiscal Year'];
+  List<String> _cashFlowPeriods = ['this_fiscal_year'];
   List<String> get cashFlowPeriods => _cashFlowPeriods;
 
-  List<String> _incomeExpensePeriods = ['This Fiscal Year'];
+  List<String> _incomeExpensePeriods = ['this_fiscal_year'];
   List<String> get incomeExpensePeriods => _incomeExpensePeriods;
 
-  List<String> _expensePeriods = ['This Fiscal Year'];
+  List<String> _expensePeriods = ['this_fiscal_year'];
   List<String> get expensePeriods => _expensePeriods;
 
   // Summary fields from Cash Flow API
@@ -129,7 +115,7 @@ class DashboardController extends ChangeNotifier {
 
   /// Loads overview + projects in parallel. Called on dashboard tab open.
   Future<void> loadDashboard({
-    String period = 'This Fiscal Year',
+    String period = 'this_fiscal_year',
     String accountingMethod = 'accrual',
   }) async {
     _isLoading = true;
@@ -164,7 +150,10 @@ class DashboardController extends ChangeNotifier {
   }) async {
     _isIncomeExpenseLoading = true;
     notifyListeners();
-    await _fetchIncomeExpense(period: period, accountingMethod: accountingMethod);
+    await _fetchIncomeExpense(
+      period: period,
+      accountingMethod: accountingMethod,
+    );
     _isIncomeExpenseLoading = false;
     notifyListeners();
   }
@@ -202,7 +191,10 @@ class DashboardController extends ChangeNotifier {
       final data = resp['data'] as Map<String, dynamic>? ?? resp;
       _overview = DashboardOverviewModel.fromJson(data);
     } else {
-      appLog('⚠️ Overview fetch failed (status: $status)', name: 'DashboardController');
+      appLog(
+        '⚠️ Overview fetch failed (status: $status)',
+        name: 'DashboardController',
+      );
     }
   }
 
@@ -213,12 +205,15 @@ class DashboardController extends ChangeNotifier {
       final data = resp['data'] as Map<String, dynamic>? ?? resp;
       _projects = DashboardProjectModel.fromJson(data);
     } else {
-      appLog('⚠️ Projects fetch failed (status: $status)', name: 'DashboardController');
+      appLog(
+        '⚠️ Projects fetch failed (status: $status)',
+        name: 'DashboardController',
+      );
     }
   }
 
   Future<void> _fetchCashFlow({required String period}) async {
-    final resp = await _cashFlowVm.fetch(period: _periodParam(period));
+    final resp = await _cashFlowVm.fetch(period: period);
     final int? status = resp?['_statusCode'] as int?;
     if (resp != null && status != null && status >= 200 && status < 300) {
       final data = resp['data'] as Map<String, dynamic>?;
@@ -229,13 +224,17 @@ class DashboardController extends ChangeNotifier {
       // Store summary fields
       _cashFlowAsOnLabel = data?['as_on_label'] as String? ?? '';
       _cashFlowCurrency = data?['currency'] as String? ?? 'INR';
-      _cashFlowPeriods = (data?['available_periods'] as List<dynamic>?)
-              ?.map((e) => (e as Map)['label'] as String? ?? '')
+      _cashFlowPeriods =
+          (data?['available_periods'] as List<dynamic>?)
+              ?.map((e) => (e as Map)['value'] as String? ?? '')
               .where((s) => s.isNotEmpty)
               .toList() ??
-          ['This Fiscal Year'];
+          ['this_fiscal_year'];
     } else {
-      appLog('⚠️ Cash flow fetch failed (status: $status)', name: 'DashboardController');
+      appLog(
+        '⚠️ Cash flow fetch failed (status: $status)',
+        name: 'DashboardController',
+      );
     }
   }
 
@@ -244,7 +243,7 @@ class DashboardController extends ChangeNotifier {
     required String accountingMethod,
   }) async {
     final resp = await _incomeExpenseVm.fetch(
-      period: _periodParam(period),
+      period: period,
       accountingMethod: accountingMethod,
     );
     final int? status = resp?['_statusCode'] as int?;
@@ -258,18 +257,22 @@ class DashboardController extends ChangeNotifier {
       _incomeTotal = data?['income_total']?.toString() ?? '0.00';
       _expenseTotal = data?['expense_total']?.toString() ?? '0.00';
       _incomeExpenseCurrency = data?['currency'] as String? ?? 'INR';
-      _incomeExpensePeriods = (data?['available_periods'] as List<dynamic>?)
-              ?.map((e) => (e as Map)['label'] as String? ?? '')
+      _incomeExpensePeriods =
+          (data?['available_periods'] as List<dynamic>?)
+              ?.map((e) => (e as Map)['value'] as String? ?? '')
               .where((s) => s.isNotEmpty)
               .toList() ??
-          ['This Fiscal Year'];
+          ['this_fiscal_year'];
     } else {
-      appLog('⚠️ Income/expense fetch failed (status: $status)', name: 'DashboardController');
+      appLog(
+        '⚠️ Income/expense fetch failed (status: $status)',
+        name: 'DashboardController',
+      );
     }
   }
 
   Future<void> _fetchExpenses({required String period}) async {
-    final resp = await _expensesVm.fetch(period: _periodParam(period));
+    final resp = await _expensesVm.fetch(period: period);
     final int? status = resp?['_statusCode'] as int?;
     if (resp != null && status != null && status >= 200 && status < 300) {
       final data = resp['data'] as Map<String, dynamic>?;
@@ -283,13 +286,17 @@ class DashboardController extends ChangeNotifier {
       }).toList();
       _expensesTotalExpense = data?['total_expense']?.toString() ?? '0.00';
       _expensesCurrency = data?['currency'] as String? ?? 'INR';
-      _expensePeriods = (data?['available_periods'] as List<dynamic>?)
-              ?.map((e) => (e as Map)['label'] as String? ?? '')
+      _expensePeriods =
+          (data?['available_periods'] as List<dynamic>?)
+              ?.map((e) => (e as Map)['value'] as String? ?? '')
               .where((s) => s.isNotEmpty)
               .toList() ??
-          ['This Fiscal Year'];
+          ['this_fiscal_year'];
     } else {
-      appLog('⚠️ Expenses fetch failed (status: $status)', name: 'DashboardController');
+      appLog(
+        '⚠️ Expenses fetch failed (status: $status)',
+        name: 'DashboardController',
+      );
     }
   }
 
@@ -302,7 +309,10 @@ class DashboardController extends ChangeNotifier {
           .map((e) => UpdateItemModel.fromJson(e as Map<String, dynamic>))
           .toList();
     } else {
-      appLog('⚠️ Updates fetch failed (status: $status)', name: 'DashboardController');
+      appLog(
+        '⚠️ Updates fetch failed (status: $status)',
+        name: 'DashboardController',
+      );
     }
   }
 
@@ -315,7 +325,10 @@ class DashboardController extends ChangeNotifier {
         _support = SupportDataModel.fromJson(data);
       }
     } else {
-      appLog('⚠️ Support fetch failed (status: $status)', name: 'DashboardController');
+      appLog(
+        '⚠️ Support fetch failed (status: $status)',
+        name: 'DashboardController',
+      );
     }
   }
 

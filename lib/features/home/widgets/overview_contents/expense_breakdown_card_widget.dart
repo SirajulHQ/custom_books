@@ -1,8 +1,26 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_header.dart';
 import 'package:custom_books/features/home/models/expense_item_model.dart';
 import 'package:custom_books/features/home/widgets/card_tile_widget.dart';
 import 'package:flutter/material.dart';
+
+String _periodLabel(String value) {
+  switch (value) {
+    case 'this_fiscal_year':
+      return 'This Fiscal Year';
+    case 'last_fiscal_year':
+      return 'Last Fiscal Year';
+    case 'this_year':
+      return 'This Year';
+    case 'this_month':
+      return 'This Month';
+    case 'last_month':
+      return 'Last Month';
+    default:
+      return value;
+  }
+}
 
 class ExpenseBreakdownCardWidget extends StatefulWidget {
   final List<ExpenseItem> apiData;
@@ -27,15 +45,20 @@ class ExpenseBreakdownCardWidget extends StatefulWidget {
 
 class _ExpenseBreakdownCardWidgetState
     extends State<ExpenseBreakdownCardWidget> {
-  String _selectedPeriod = 'This Fiscal Year';
+  String _selectedPeriod = 'this_fiscal_year';
 
   String get _sym {
     switch (widget.currency) {
-      case 'INR': return '₹';
-      case 'USD': return '\$';
-      case 'EUR': return '€';
-      case 'GBP': return '£';
-      default: return '${widget.currency} ';
+      case 'INR':
+        return '₹';
+      case 'USD':
+        return '\$';
+      case 'EUR':
+        return '€';
+      case 'GBP':
+        return '£';
+      default:
+        return '${widget.currency} ';
     }
   }
 
@@ -46,14 +69,17 @@ class _ExpenseBreakdownCardWidgetState
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _ExpenseBreakdownPeriodSheet(
+      builder: (sheetCtx) => _PeriodPickerSheet(
+        title: 'Select Period',
+        sectionLabel: 'EXPENSE BREAKDOWN PERIOD',
         selectedPeriod: _selectedPeriod,
         periods: widget.availablePeriods,
         onSelected: (period) {
+          Navigator.pop(sheetCtx);
           setState(() => _selectedPeriod = period);
-          Navigator.pop(context);
           widget.onPeriodChanged?.call(period);
         },
+        onClose: () => Navigator.pop(sheetCtx),
       ),
     );
   }
@@ -95,7 +121,7 @@ class _ExpenseBreakdownCardWidgetState
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        _selectedPeriod,
+                        _periodLabel(_selectedPeriod),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.72,
                           fontWeight: FontWeight.w600,
@@ -142,8 +168,7 @@ class _ExpenseBreakdownCardWidgetState
           Divider(height: 1, color: context.colors.border),
           SizedBox(height: Dimensions.height10),
           ..._topExpenses.map((e) {
-            final ratio =
-                total == 0 ? 0.0 : (e.amount / total).clamp(0.0, 1.0);
+            final ratio = total == 0 ? 0.0 : (e.amount / total).clamp(0.0, 1.0);
             return Padding(
               padding: EdgeInsets.symmetric(
                 vertical: Dimensions.height10 / 1.5,
@@ -196,83 +221,140 @@ class _ExpenseBreakdownCardWidgetState
 // ── Period Selection Bottom Sheet ─────────────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════════════════════
 
-class _ExpenseBreakdownPeriodSheet extends StatelessWidget {
+class _PeriodPickerSheet extends StatelessWidget {
+  final String title;
+  final String sectionLabel;
   final String selectedPeriod;
   final List<String> periods;
   final ValueChanged<String> onSelected;
+  final VoidCallback onClose;
 
-  const _ExpenseBreakdownPeriodSheet({
+  const _PeriodPickerSheet({
+    required this.title,
+    required this.sectionLabel,
     required this.selectedPeriod,
     required this.periods,
     required this.onSelected,
+    required this.onClose,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.colors.card,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.radius20 * 1.2),
+    return SafeArea(
+      top: false,
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.colors.card,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(Dimensions.radius20),
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // ── Handle ──
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(top: Dimensions.height15),
-              width: Dimensions.width20 * 2,
-              height: 4,
-              decoration: BoxDecoration(
-                color: context.colors.textTertiary.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: Dimensions.height15),
+            BottomSheetHeader(title: title, onClose: onClose, showBorder: true),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                Dimensions.width20,
+                Dimensions.height20,
+                Dimensions.width20,
+                Dimensions.height10,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  sectionLabel,
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.7,
+                    fontWeight: FontWeight.w600,
+                    color: context.colors.textTertiary,
+                    letterSpacing: 0.5,
+                  ),
+                ),
               ),
             ),
-          ),
-          SizedBox(height: Dimensions.height20),
-
-          // ── Options list ──
-          ...List.generate(periods.length, (i) {
-            final period = periods[i];
-            final isSelected = period == selectedPeriod;
-            return GestureDetector(
-              onTap: () => onSelected(period),
-              behavior: HitTestBehavior.opaque,
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(
-                  horizontal: Dimensions.width20,
-                  vertical: Dimensions.height20,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: i < periods.length - 1
-                          ? context.colors.border.withValues(alpha: 0.5)
-                          : Colors.transparent,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+              child: Column(
+                children: [
+                  for (int i = 0; i < periods.length; i++) ...[
+                    _PeriodTile(
+                      period: periods[i],
+                      isSelected: periods[i] == selectedPeriod,
+                      onTap: () => onSelected(periods[i]),
                     ),
-                  ),
-                ),
-                child: Text(
-                  period,
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 1.1,
-                    fontWeight:
-                        isSelected ? FontWeight.w700 : FontWeight.w500,
-                    color: isSelected
-                        ? AppColors.primary
-                        : context.colors.textPrimary,
-                  ),
-                ),
+                    if (i < periods.length - 1)
+                      SizedBox(height: Dimensions.height10),
+                  ],
+                ],
               ),
-            );
-          }),
-          SizedBox(height: Dimensions.height30),
-        ],
+            ),
+            SizedBox(height: Dimensions.height20),
+          ],
+        ),
       ),
     );
   }
 }
 
+class _PeriodTile extends StatelessWidget {
+  final String period;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _PeriodTile({
+    required this.period,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(Dimensions.radius15),
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(Dimensions.width15),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.06)
+              : context.colors.card,
+          borderRadius: BorderRadius.circular(Dimensions.radius15),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.primary.withValues(alpha: 0.4)
+                : context.colors.border,
+          ),
+        ),
+        child: Row(
+          children: [
+            RadioGroup<bool>(
+              groupValue: isSelected,
+              onChanged: (_) => onTap(),
+              child: Radio<bool>(
+                value: true,
+                activeColor: AppColors.primary,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity.compact,
+              ),
+            ),
+            SizedBox(width: Dimensions.width10 * 0.5),
+            Expanded(
+              child: Text(
+                _periodLabel(period),
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.9,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  color: isSelected
+                      ? AppColors.primary
+                      : context.colors.textPrimary,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

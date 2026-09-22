@@ -1,9 +1,26 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_header.dart';
 import 'package:custom_books/features/home/models/income_expense_point_model.dart';
 import 'package:custom_books/features/home/widgets/card_tile_widget.dart';
 import 'package:flutter/material.dart';
 
+String _periodLabel(String value) {
+  switch (value) {
+    case 'this_fiscal_year':
+      return 'This Fiscal Year';
+    case 'last_fiscal_year':
+      return 'Last Fiscal Year';
+    case 'this_year':
+      return 'This Year';
+    case 'this_month':
+      return 'This Month';
+    case 'last_month':
+      return 'Last Month';
+    default:
+      return value;
+  }
+}
 
 class IncomeExpenseCardWidget extends StatefulWidget {
   final List<IncomeExpensePoint> apiData;
@@ -28,7 +45,7 @@ class IncomeExpenseCardWidget extends StatefulWidget {
 
 class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
   bool _isAccrual = true;
-  String _selectedPeriod = 'This Fiscal Year';
+  String _selectedPeriod = 'this_fiscal_year';
   int? _touchedBarIndex;
   bool _touchedIsIncome = true;
 
@@ -37,54 +54,20 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
   void _showPeriodPicker() {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetCtx) => _PeriodPickerSheet(
+        title: 'Select Period',
+        sectionLabel: 'INCOME & EXPENSE PERIOD',
+        selectedPeriod: _selectedPeriod,
+        periods: widget.availablePeriods,
+        onSelected: (period) {
+          Navigator.pop(sheetCtx);
+          setState(() => _selectedPeriod = period);
+          widget.onFilterChanged?.call(period, _isAccrual ? 'accrual' : 'cash');
+        },
+        onClose: () => Navigator.pop(sheetCtx),
       ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: Dimensions.height10),
-              Container(
-                width: Dimensions.width20 * 2,
-                height: Dimensions.height10 * 0.4,
-                decoration: BoxDecoration(
-                  color: context.colors.textTertiary.withValues(alpha: 0.4),
-                  borderRadius: BorderRadius.circular(
-                    Dimensions.radius15 * 0.13,
-                  ),
-                ),
-              ),
-              SizedBox(height: Dimensions.height10),
-              ...widget.availablePeriods.map(
-                (period) => ListTile(
-                  title: Text(
-                    period,
-                    style: TextStyle(
-                      fontWeight: period == _selectedPeriod
-                          ? FontWeight.w700
-                          : FontWeight.w400,
-                      color: period == _selectedPeriod
-                          ? AppColors.primary
-                          : context.colors.textPrimary,
-                    ),
-                  ),
-                  onTap: () {
-                    setState(() => _selectedPeriod = period);
-                    Navigator.pop(ctx);
-                    widget.onFilterChanged?.call(
-                      period,
-                      _isAccrual ? 'accrual' : 'cash',
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: Dimensions.height10),
-            ],
-          ),
-        );
-      },
     );
   }
 
@@ -127,7 +110,7 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        _selectedPeriod,
+                        _periodLabel(_selectedPeriod),
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.75,
                           fontWeight: FontWeight.w500,
@@ -151,7 +134,13 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
           // Accrual / Cash segmented toggle
           _AccrualCashToggle(
             isAccrual: _isAccrual,
-            onChanged: (val) => setState(() => _isAccrual = val),
+            onChanged: (val) {
+              setState(() => _isAccrual = val);
+              widget.onFilterChanged?.call(
+                _selectedPeriod,
+                val ? 'accrual' : 'cash',
+              );
+            },
           ),
           SizedBox(height: Dimensions.height20),
 
@@ -238,6 +227,145 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
         _touchedIsIncome = localX < groupWidth / 2;
       }
     });
+  }
+}
+
+// -------- Period Picker Bottom Sheet --------
+class _PeriodPickerSheet extends StatelessWidget {
+  final String title;
+  final String sectionLabel;
+  final String selectedPeriod;
+  final List<String> periods;
+  final ValueChanged<String> onSelected;
+  final VoidCallback onClose;
+
+  const _PeriodPickerSheet({
+    required this.title,
+    required this.sectionLabel,
+    required this.selectedPeriod,
+    required this.periods,
+    required this.onSelected,
+    required this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.colors.card,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(Dimensions.radius20),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: Dimensions.height15),
+            BottomSheetHeader(title: title, onClose: onClose, showBorder: true),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                Dimensions.width20,
+                Dimensions.height20,
+                Dimensions.width20,
+                Dimensions.height10,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  sectionLabel,
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.7,
+                    fontWeight: FontWeight.w600,
+                    color: context.colors.textTertiary,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+              child: Column(
+                children: [
+                  for (int i = 0; i < periods.length; i++) ...[
+                    _PeriodTile(
+                      period: periods[i],
+                      isSelected: periods[i] == selectedPeriod,
+                      onTap: () => onSelected(periods[i]),
+                    ),
+                    if (i < periods.length - 1)
+                      SizedBox(height: Dimensions.height10),
+                  ],
+                ],
+              ),
+            ),
+            SizedBox(height: Dimensions.height20),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PeriodTile extends StatelessWidget {
+  final String period;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _PeriodTile({
+    required this.period,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(Dimensions.radius15),
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(Dimensions.width15),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.06)
+              : context.colors.card,
+          borderRadius: BorderRadius.circular(Dimensions.radius15),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.primary.withValues(alpha: 0.4)
+                : context.colors.border,
+          ),
+        ),
+        child: Row(
+          children: [
+            RadioGroup<bool>(
+              groupValue: isSelected,
+              onChanged: (_) => onTap(),
+              child: Radio<bool>(
+                value: true,
+                activeColor: AppColors.primary,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity.compact,
+              ),
+            ),
+            SizedBox(width: Dimensions.width10 * 0.5),
+            Expanded(
+              child: Text(
+                _periodLabel(period),
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.9,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  color: isSelected
+                      ? AppColors.primary
+                      : context.colors.textPrimary,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

@@ -1,3 +1,4 @@
+import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:flutter/material.dart';
 
 class ShimmerEffect extends StatefulWidget {
@@ -30,6 +31,10 @@ class _ShimmerEffectState extends State<ShimmerEffect>
 
   @override
   Widget build(BuildContext context) {
+    // Use theme-aware colours so shimmer works in both light and dark mode.
+    final base = context.colors.border;
+    final highlight = context.colors.surfaceLight;
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -39,11 +44,7 @@ class _ShimmerEffectState extends State<ShimmerEffect>
             return LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: const [
-                Color(0xFFE8E8E8),
-                Color(0xFFF8F8F8),
-                Color(0xFFE8E8E8),
-              ],
+              colors: [base, highlight, base],
               stops: [
                 (value - 0.3).clamp(0.0, 1.0),
                 value.clamp(0.0, 1.0),
