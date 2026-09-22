@@ -5,7 +5,20 @@ import 'package:custom_books/features/home/widgets/card_tile_widget.dart';
 import 'package:flutter/material.dart';
 
 class CashFlowCardWidget extends StatefulWidget {
-  const CashFlowCardWidget({super.key});
+  final List<CashFlowPoint> apiData;
+  final List<String> availablePeriods;
+  final String asOnLabel;
+  final String currency;
+  final void Function(String period)? onPeriodChanged;
+
+  const CashFlowCardWidget({
+    super.key,
+    this.apiData = const [],
+    this.availablePeriods = const ['This Fiscal Year'],
+    this.asOnLabel = '',
+    this.currency = 'INR',
+    this.onPeriodChanged,
+  });
 
   @override
   State<CashFlowCardWidget> createState() => _CashFlowCardWidgetState();
@@ -15,21 +28,17 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
   String _selectedPeriod = 'This Fiscal Year';
   int? _tappedIndex;
 
-  // Sample data — replace with real cash flow data when the backend is wired up.
-  static final List<CashFlowPoint> _cashFlowData = [
-    CashFlowPoint('Jan', 0, 1250, 450, 800),
-    CashFlowPoint('Feb', 800, 2100, 980, 1920),
-    CashFlowPoint('Mar', 1920, 3500, 1200, 4220),
-    CashFlowPoint('Apr', 4220, 1800, 2100, 3920),
-    CashFlowPoint('May', 3920, 4200, 850, 7270),
-    CashFlowPoint('Jun', 7270, 2800, 1950, 8120),
-    CashFlowPoint('Jul', 8120, 1500, 2300, 7320),
-    CashFlowPoint('Aug', 7320, 3800, 1100, 10020),
-    CashFlowPoint('Sep', 10020, 2200, 1850, 10370),
-    CashFlowPoint('Oct', 10370, 4500, 2200, 12670),
-    CashFlowPoint('Nov', 12670, 1900, 2800, 11770),
-    CashFlowPoint('Dec', 11770, 5200, 1500, 15470),
-  ];
+  String get _sym {
+    switch (widget.currency) {
+      case 'INR': return '₹';
+      case 'USD': return '\$';
+      case 'EUR': return '€';
+      case 'GBP': return '£';
+      default: return '${widget.currency} ';
+    }
+  }
+
+  List<CashFlowPoint> get _cashFlowData => widget.apiData;
 
   void _showPeriodSheet() {
     showModalBottomSheet(
@@ -38,9 +47,11 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
       backgroundColor: Colors.transparent,
       builder: (_) => _CashFlowPeriodSheet(
         selectedPeriod: _selectedPeriod,
+        periods: widget.availablePeriods,
         onSelected: (period) {
           setState(() => _selectedPeriod = period);
           Navigator.pop(context);
+          widget.onPeriodChanged?.call(period);
         },
       ),
     );
@@ -61,11 +72,26 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (_cashFlowData.isEmpty) {
+      return Container(
+        padding: EdgeInsets.all(Dimensions.width15),
+        decoration: BoxDecoration(
+          color: context.colors.card,
+          borderRadius: BorderRadius.circular(Dimensions.radius20),
+          border: Border.all(color: context.colors.border),
+        ),
+        child: Column(children: [
+          CardTitle(title: 'Cash Flow', icon: Icons.show_chart_rounded),
+          SizedBox(height: Dimensions.height30),
+          Center(child: CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2)),
+          SizedBox(height: Dimensions.height30),
+        ]),
+      );
+    }
+    final sym = _sym;
+    final label = widget.asOnLabel.isNotEmpty ? widget.asOnLabel : 'Opening Balance';
     final totalIncoming = _cashFlowData.fold<double>(0, (p, e) => p + e.income);
-    final totalOutgoing = _cashFlowData.fold<double>(
-      0,
-      (p, e) => p + e.outgoing,
-    );
+    final totalOutgoing = _cashFlowData.fold<double>(0, (p, e) => p + e.outgoing);
     final last = _cashFlowData.last;
     final first = _cashFlowData.first;
 
@@ -191,27 +217,27 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             // ── Summary stats ──
             _statLine(
               context,
-              'Cash as on 01 Jan 2026',
-              'AED${first.opening.toStringAsFixed(2)}',
+              label,
+              '${sym}${first.opening.toStringAsFixed(2)}',
               context.colors.textPrimary,
               bold: true,
             ),
             _statLine(
               context,
               '+ Incoming',
-              'AED${totalIncoming.toStringAsFixed(2)}',
+              '${sym}${totalIncoming.toStringAsFixed(2)}',
               AppColors.ok,
             ),
             _statLine(
               context,
               '- Outgoing',
-              'AED${totalOutgoing.toStringAsFixed(2)}',
+              '${sym}${totalOutgoing.toStringAsFixed(2)}',
               AppColors.warn,
             ),
             _statLine(
               context,
               '= Ending Balance',
-              'AED${last.ending.toStringAsFixed(2)}',
+              '${sym}${last.ending.toStringAsFixed(2)}',
               AppColors.accent,
               bold: true,
             ),
@@ -285,7 +311,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             // Opening Bal.
             _tooltipRow(
               'Opening Bal.',
-              'AED${_formatNumber(point.opening)}',
+              '${_sym}${_formatNumber(point.opening)}',
               context.colors.textSecondary,
             ),
             SizedBox(height: Dimensions.height10 * 0.4),
@@ -293,7 +319,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             // Income
             _tooltipRow(
               'Income',
-              'AED${_formatNumber(point.income)}',
+              '${_sym}${_formatNumber(point.income)}',
               AppColors.ok,
             ),
             SizedBox(height: Dimensions.height10 * 0.4),
@@ -301,7 +327,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             // Outgoing
             _tooltipRow(
               'Outgoing',
-              'AED${_formatNumber(point.outgoing)}',
+              '${_sym}${_formatNumber(point.outgoing)}',
               AppColors.warn,
             ),
             SizedBox(height: Dimensions.height10 * 0.4),
@@ -309,7 +335,7 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
             // Ending Bal.
             _tooltipRow(
               'Ending Bal.',
-              'AED${_formatNumber(point.ending)}',
+              '${_sym}${_formatNumber(point.ending)}',
               AppColors.accent,
               bold: true,
             ),
@@ -397,18 +423,14 @@ class _CashFlowCardWidgetState extends State<CashFlowCardWidget> {
 
 class _CashFlowPeriodSheet extends StatelessWidget {
   final String selectedPeriod;
+  final List<String> periods;
   final ValueChanged<String> onSelected;
 
   const _CashFlowPeriodSheet({
     required this.selectedPeriod,
+    required this.periods,
     required this.onSelected,
   });
-
-  static const _periods = [
-    'This Fiscal Year',
-    'Previous Fiscal Year',
-    'Last 12 Months',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -437,8 +459,8 @@ class _CashFlowPeriodSheet extends StatelessWidget {
           SizedBox(height: Dimensions.height20),
 
           // ── Options list ──
-          ...List.generate(_periods.length, (i) {
-            final period = _periods[i];
+          ...List.generate(periods.length, (i) {
+            final period = periods[i];
             final isSelected = period == selectedPeriod;
             return GestureDetector(
               onTap: () => onSelected(period),
@@ -452,7 +474,7 @@ class _CashFlowPeriodSheet extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: i < _periods.length - 1
+                      color: i < periods.length - 1
                           ? context.colors.border.withValues(alpha: 0.5)
                           : Colors.transparent,
                     ),

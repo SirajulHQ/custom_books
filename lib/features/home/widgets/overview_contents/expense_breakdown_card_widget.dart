@@ -5,7 +5,20 @@ import 'package:custom_books/features/home/widgets/card_tile_widget.dart';
 import 'package:flutter/material.dart';
 
 class ExpenseBreakdownCardWidget extends StatefulWidget {
-  const ExpenseBreakdownCardWidget({super.key});
+  final List<ExpenseItem> apiData;
+  final List<String> availablePeriods;
+  final String currency;
+
+  /// Called when the user picks a new period so the parent can re-fetch.
+  final void Function(String period)? onPeriodChanged;
+
+  const ExpenseBreakdownCardWidget({
+    super.key,
+    this.apiData = const [],
+    this.availablePeriods = const ['This Fiscal Year'],
+    this.currency = 'INR',
+    this.onPeriodChanged,
+  });
 
   @override
   State<ExpenseBreakdownCardWidget> createState() =>
@@ -16,15 +29,17 @@ class _ExpenseBreakdownCardWidgetState
     extends State<ExpenseBreakdownCardWidget> {
   String _selectedPeriod = 'This Fiscal Year';
 
-  // Sample data — replace with real expense data when the backend is wired up.
-  static final List<ExpenseItem> _topExpenses = [
-    ExpenseItem('Salaries & Wages', 8500, 45.5, const Color(0xFF3B82F6)),
-    ExpenseItem('Rent & Utilities', 3200, 17.1, const Color(0xFF8B5CF6)),
-    ExpenseItem('Marketing', 2800, 15.0, const Color(0xFF10B981)),
-    ExpenseItem('Supplies', 2100, 11.2, const Color(0xFFF59E0B)),
-    ExpenseItem('Insurance', 1500, 8.0, const Color(0xFFEF4444)),
-    ExpenseItem('Other', 600, 3.2, const Color(0xFF94A3B8)),
-  ];
+  String get _sym {
+    switch (widget.currency) {
+      case 'INR': return '₹';
+      case 'USD': return '\$';
+      case 'EUR': return '€';
+      case 'GBP': return '£';
+      default: return '${widget.currency} ';
+    }
+  }
+
+  List<ExpenseItem> get _topExpenses => widget.apiData;
 
   void _showPeriodSheet() {
     showModalBottomSheet(
@@ -33,9 +48,11 @@ class _ExpenseBreakdownCardWidgetState
       backgroundColor: Colors.transparent,
       builder: (_) => _ExpenseBreakdownPeriodSheet(
         selectedPeriod: _selectedPeriod,
+        periods: widget.availablePeriods,
         onSelected: (period) {
           setState(() => _selectedPeriod = period);
           Navigator.pop(context);
+          widget.onPeriodChanged?.call(period);
         },
       ),
     );
@@ -43,6 +60,7 @@ class _ExpenseBreakdownCardWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final sym = _sym;
     final total = _topExpenses.fold<double>(0, (p, e) => p + e.amount);
     return Container(
       padding: EdgeInsets.all(Dimensions.width15),
@@ -111,7 +129,7 @@ class _ExpenseBreakdownCardWidgetState
                 ),
               ),
               Text(
-                '₹${total.toStringAsFixed(2)}',
+                '${sym}${total.toStringAsFixed(2)}',
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 1.05,
                   fontWeight: FontWeight.w800,
@@ -144,7 +162,7 @@ class _ExpenseBreakdownCardWidgetState
                         ),
                       ),
                       Text(
-                        '₹${e.amount.toStringAsFixed(2)}',
+                        '${sym}${e.amount.toStringAsFixed(2)}',
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.85,
                           fontWeight: FontWeight.w700,
@@ -180,19 +198,14 @@ class _ExpenseBreakdownCardWidgetState
 
 class _ExpenseBreakdownPeriodSheet extends StatelessWidget {
   final String selectedPeriod;
+  final List<String> periods;
   final ValueChanged<String> onSelected;
 
   const _ExpenseBreakdownPeriodSheet({
     required this.selectedPeriod,
+    required this.periods,
     required this.onSelected,
   });
-
-  static const _periods = [
-    'This Fiscal Year',
-    'Previous Fiscal Year',
-    'Last 12 Months',
-    'Last 6 Months',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -221,8 +234,8 @@ class _ExpenseBreakdownPeriodSheet extends StatelessWidget {
           SizedBox(height: Dimensions.height20),
 
           // ── Options list ──
-          ...List.generate(_periods.length, (i) {
-            final period = _periods[i];
+          ...List.generate(periods.length, (i) {
+            final period = periods[i];
             final isSelected = period == selectedPeriod;
             return GestureDetector(
               onTap: () => onSelected(period),
@@ -236,7 +249,7 @@ class _ExpenseBreakdownPeriodSheet extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: i < _periods.length - 1
+                      color: i < periods.length - 1
                           ? context.colors.border.withValues(alpha: 0.5)
                           : Colors.transparent,
                     ),

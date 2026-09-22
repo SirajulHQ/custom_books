@@ -1,16 +1,27 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/home/models/bank_entry_model.dart';
+import 'package:custom_books/features/home/models/dashboard_overview_model.dart';
 import 'package:flutter/material.dart';
 
 class BankingStripWidget extends StatelessWidget {
-  const BankingStripWidget({super.key});
+  final DashboardOverviewModel? data;
+
+  const BankingStripWidget({super.key, this.data});
 
   @override
   Widget build(BuildContext context) {
     final entries = [
-      BankEntryModel('Bank Balance', '₹306.73', Icons.account_balance_rounded),
-      BankEntryModel('Cash In Hand', '₹6,135.00', Icons.wallet_rounded),
+      BankEntryModel(
+        'Bank Balance',
+        data != null ? '${data!.currencySymbol}${data!.bankBalance}' : '—',
+        Icons.account_balance_rounded,
+      ),
+      BankEntryModel(
+        'Cash In Hand',
+        data != null ? '${data!.currencySymbol}${data!.cashInHand}' : '—',
+        Icons.wallet_rounded,
+      ),
     ];
     return SizedBox(
       height: Dimensions.height45 * 2.3,

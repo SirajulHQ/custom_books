@@ -4,18 +4,22 @@ import 'package:custom_books/features/home/models/income_expense_point_model.dar
 import 'package:custom_books/features/home/widgets/card_tile_widget.dart';
 import 'package:flutter/material.dart';
 
-enum FiscalPeriod {
-  thisFiscalYear('This Fiscal Year'),
-  previousFiscalYear('Previous Fiscal Year'),
-  last12Months('Last 12 Months'),
-  last6Months('Last 6 Months');
-
-  final String label;
-  const FiscalPeriod(this.label);
-}
 
 class IncomeExpenseCardWidget extends StatefulWidget {
-  const IncomeExpenseCardWidget({super.key});
+  final List<IncomeExpensePoint> apiData;
+  final List<String> availablePeriods;
+  final String currency;
+
+  /// Called when the user changes the period so the parent can re-fetch.
+  final void Function(String period, String method)? onFilterChanged;
+
+  const IncomeExpenseCardWidget({
+    super.key,
+    this.apiData = const [],
+    this.availablePeriods = const ['This Fiscal Year'],
+    this.currency = 'INR',
+    this.onFilterChanged,
+  });
 
   @override
   State<IncomeExpenseCardWidget> createState() =>
@@ -24,36 +28,11 @@ class IncomeExpenseCardWidget extends StatefulWidget {
 
 class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
   bool _isAccrual = true;
-  FiscalPeriod _selectedPeriod = FiscalPeriod.thisFiscalYear;
+  String _selectedPeriod = 'This Fiscal Year';
   int? _touchedBarIndex;
   bool _touchedIsIncome = true;
 
-  // Sample data — replace with real income/expense data when the backend is wired up.
-  static final List<IncomeExpensePoint> _incomeExpenseData = [
-    IncomeExpensePoint('Jan', 1250, 450),
-    IncomeExpensePoint('Feb', 2100, 980),
-    IncomeExpensePoint('Mar', 3500, 1200),
-    IncomeExpensePoint('Apr', 1800, 2100),
-    IncomeExpensePoint('May', 4200, 850),
-    IncomeExpensePoint('Jun', 2800, 1950),
-    IncomeExpensePoint('Jul', 1500, 2300),
-    IncomeExpensePoint('Aug', 3800, 1100),
-    IncomeExpensePoint('Sep', 2200, 1850),
-    IncomeExpensePoint('Oct', 4500, 2200),
-    IncomeExpensePoint('Nov', 1900, 2800),
-    IncomeExpensePoint('Dec', 5200, 1500),
-  ];
-
-  List<IncomeExpensePoint> get _filteredData {
-    switch (_selectedPeriod) {
-      case FiscalPeriod.thisFiscalYear:
-      case FiscalPeriod.previousFiscalYear:
-      case FiscalPeriod.last12Months:
-        return _incomeExpenseData;
-      case FiscalPeriod.last6Months:
-        return _incomeExpenseData.sublist(6);
-    }
-  }
+  List<IncomeExpensePoint> get _filteredData => widget.apiData;
 
   void _showPeriodPicker() {
     showModalBottomSheet(
@@ -78,10 +57,10 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
                 ),
               ),
               SizedBox(height: Dimensions.height10),
-              ...FiscalPeriod.values.map(
+              ...widget.availablePeriods.map(
                 (period) => ListTile(
                   title: Text(
-                    period.label,
+                    period,
                     style: TextStyle(
                       fontWeight: period == _selectedPeriod
                           ? FontWeight.w700
@@ -94,6 +73,10 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
                   onTap: () {
                     setState(() => _selectedPeriod = period);
                     Navigator.pop(ctx);
+                    widget.onFilterChanged?.call(
+                      period,
+                      _isAccrual ? 'accrual' : 'cash',
+                    );
                   },
                 ),
               ),
@@ -144,7 +127,7 @@ class _IncomeExpenseCardWidgetState extends State<IncomeExpenseCardWidget> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        _selectedPeriod.label,
+                        _selectedPeriod,
                         style: TextStyle(
                           fontSize: Dimensions.font16 * 0.75,
                           fontWeight: FontWeight.w500,

@@ -2,6 +2,7 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/features/home/models/balance_tile_model.dart';
+import 'package:custom_books/features/home/models/dashboard_overview_model.dart';
 import 'package:custom_books/features/home/widgets/payables_sheet.dart';
 import 'package:custom_books/features/home/widgets/receivables_sheet.dart';
 import 'package:custom_books/features/invoices/views/invoices_page.dart';
@@ -9,32 +10,34 @@ import 'package:custom_books/features/bills/views/bills_page.dart';
 import 'package:flutter/material.dart';
 
 class BalancesGridWidget extends StatelessWidget {
-  const BalancesGridWidget({super.key});
+  final DashboardOverviewModel? data;
+
+  const BalancesGridWidget({super.key, this.data});
 
   @override
   Widget build(BuildContext context) {
     final tiles = [
       BalanceTileModel(
         'Receivables',
-        '₹5,886.00',
+        data != null ? '₹${data!.receivables}' : '—',
         Icons.call_received_rounded,
         AppColors.primary,
       ),
       BalanceTileModel(
         'Payables',
-        '₹0.00',
+        data != null ? '₹${data!.payables}' : '—',
         Icons.call_made_rounded,
         AppColors.accent,
       ),
       BalanceTileModel(
         'Overdue Invoices',
-        '6',
+        data != null ? '${data!.overdueInvoices}' : '—',
         Icons.error_outline_rounded,
         AppColors.warn,
       ),
       BalanceTileModel(
         'Overdue Bills',
-        '0',
+        data != null ? '${data!.overdueBills}' : '—',
         Icons.check_circle_outline_rounded,
         AppColors.ok,
       ),

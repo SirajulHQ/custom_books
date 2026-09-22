@@ -1,13 +1,57 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/features/home/models/support_item_model.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SupportContentWidget extends StatelessWidget {
-  const SupportContentWidget({super.key});
+  /// Live data from the API. Shows a loading shimmer when null.
+  final SupportDataModel? data;
+
+  const SupportContentWidget({super.key, this.data});
+
+  // ── Icon mapping from API key string to Flutter IconData ──────────────────
+  static IconData _iconFor(String key) {
+    switch (key) {
+      case 'rocket':
+      case 'rocket_launch':
+        return Icons.rocket_launch_rounded;
+      case 'bar_chart':
+      case 'assessment':
+        return Icons.assessment_rounded;
+      case 'settings':
+      case 'account_management':
+        return Icons.settings_rounded;
+      default:
+        return Icons.help_outline_rounded;
+    }
+  }
+
+  static const _categoryColors = [
+    AppColors.primary,
+    AppColors.ok,
+    Color(0xFFF59E0B),
+  ];
 
   @override
   Widget build(BuildContext context) {
+    // Show a minimal loading state if data hasn't arrived yet.
+    if (data == null) {
+      return SliverPadding(
+        padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+        sliver: SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.only(top: Dimensions.height30),
+            child: Center(
+              child: CircularProgressIndicator(
+                color: AppColors.primary,
+                strokeWidth: 2,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return SliverPadding(
       padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
       sliver: SliverList(
@@ -15,7 +59,7 @@ class SupportContentWidget extends StatelessWidget {
           SizedBox(height: Dimensions.height15),
 
           Text(
-            'How can we help you?',
+            data!.heading,
             style: TextStyle(
               fontSize: Dimensions.font26,
               fontWeight: FontWeight.w800,
@@ -27,7 +71,7 @@ class SupportContentWidget extends StatelessWidget {
           SizedBox(height: Dimensions.height10),
 
           Text(
-            'Find answers to common questions or contact support',
+            data!.subheading,
             style: TextStyle(
               fontSize: Dimensions.font16,
               color: context.colors.textSecondary,
@@ -36,55 +80,28 @@ class SupportContentWidget extends StatelessWidget {
 
           SizedBox(height: Dimensions.height30),
 
-          HelpCategoryCard(
-            title: 'Getting Started',
-            description: 'Learn the basics of using Own Store',
-            icon: Icons.rocket_launch_rounded,
-            color: AppColors.primary,
-            topics: const [
-              'Creating your first invoice',
-              'Adding customers and vendors',
-              'Setting up payment methods',
-              'Understanding the dashboard',
-            ],
-          ),
+          ...data!.categories.asMap().entries.map((entry) {
+            final cat = entry.value;
+            final color = _categoryColors[entry.key % _categoryColors.length];
+            return Padding(
+              padding: EdgeInsets.only(bottom: Dimensions.height15),
+              child: HelpCategoryCard(
+                title: cat.title,
+                description: cat.description,
+                icon: _iconFor(cat.icon),
+                color: color,
+                topics: cat.items.map((i) => i.label).toList(),
+              ),
+            );
+          }),
 
           SizedBox(height: Dimensions.height15),
-
-          HelpCategoryCard(
-            title: 'Financial Reports',
-            description: 'Generate and understand reports',
-            icon: Icons.assessment_rounded,
-            color: AppColors.ok,
-            topics: const [
-              'Cash flow statements',
-              'Income and expense reports',
-              'Tax preparation reports',
-              'Custom report builder',
-            ],
-          ),
-
-          SizedBox(height: Dimensions.height15),
-
-          HelpCategoryCard(
-            title: 'Account Management',
-            description: 'Manage your account settings',
-            icon: Icons.settings_rounded,
-            color: const Color(0xFFF59E0B),
-            topics: const [
-              'Update profile information',
-              'Change password',
-              'Notification preferences',
-              'Subscription and billing',
-            ],
-          ),
-
-          SizedBox(height: Dimensions.height30),
 
           ContactSupportCard(
-            onTap: () {
-              launchUrl(Uri.parse('mailto:support@yourcompany.com'));
-            },
+            heading: data!.contactHeading,
+            buttonLabel: data!.contactButtonLabel,
+            // API currently returns path: null — hide tap until a real URL exists.
+            onTap: null,
           ),
 
           SizedBox(height: Dimensions.height30),
@@ -94,6 +111,8 @@ class SupportContentWidget extends StatelessWidget {
   }
 }
 
+
+// ── HelpCategoryCard ──────────────────────────────────────────────────────
 class HelpCategoryCard extends StatelessWidget {
   final String title;
   final String description;
@@ -197,10 +216,18 @@ class HelpCategoryCard extends StatelessWidget {
   }
 }
 
+// ── ContactSupportCard ────────────────────────────────────────────────────
 class ContactSupportCard extends StatelessWidget {
+  final String heading;
+  final String buttonLabel;
   final VoidCallback? onTap;
 
-  const ContactSupportCard({super.key, this.onTap});
+  const ContactSupportCard({
+    super.key,
+    this.heading = 'Still need help?',
+    this.buttonLabel = 'Contact Support',
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +248,7 @@ class ContactSupportCard extends StatelessWidget {
           ),
           SizedBox(height: Dimensions.height15),
           Text(
-            'Still need help?',
+            heading,
             style: TextStyle(
               fontSize: Dimensions.font20,
               fontWeight: FontWeight.w800,
@@ -255,7 +282,7 @@ class ContactSupportCard extends StatelessWidget {
                 ],
               ),
               child: Text(
-                'Contact Support',
+                buttonLabel,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: Dimensions.font16,

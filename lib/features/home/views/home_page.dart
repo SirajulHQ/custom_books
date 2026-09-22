@@ -3,6 +3,7 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/exit_confirmation_dialog.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
+import 'package:custom_books/features/home/controllers/dashboard_controller.dart';
 import 'package:custom_books/features/home/views/notifications_page.dart';
 import 'package:custom_books/features/home/widgets/overview_contents/balance_grid_widget.dart';
 import 'package:custom_books/features/home/widgets/overview_contents/banking_strip_widget.dart';
@@ -27,21 +28,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedSegment = 0;
-  bool _isLoading = true;
   static const String _period = 'This Fiscal Year';
+
+  final DashboardController _controller = DashboardController();
 
   @override
   void initState() {
     super.initState();
-    _loadDashboard();
+    _controller.loadDashboard();
   }
 
-  /// Simulates fetching dashboard data so the shimmer skeleton is shown briefly.
-  Future<void> _loadDashboard() async {
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 900));
-    if (!mounted) return;
-    setState(() => _isLoading = false);
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -63,30 +63,55 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: context.colors.background,
         drawer: const DrawerView(currentRoute: 'home'),
         body: SafeArea(
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              CustomSliverAppBar(
-                title: 'Business Overview',
-                subtitle: 'Snapshot • $_period',
-                leadingType: AppBarLeadingType.menu,
-                actions: [
-                  AppBarIconButton(
-                    icon: Icons.notifications_none_rounded,
-                    color: AppColors.accent,
-                    showBadge: true,
-                    onPressed: _openNotificationsPage,
+          child: ListenableBuilder(
+            listenable: _controller,
+            builder: (context, _) {
+              return RefreshIndicator(
+                color: AppColors.primary,
+                backgroundColor: context.colors.card,
+                strokeWidth: 2.5,
+                onRefresh: _onRefresh,
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
                   ),
-                  SizedBox(width: Dimensions.width20),
-                ],
-              ),
-              SliverToBoxAdapter(child: _buildSegmentedControl()),
-              _buildSelectedContent(),
-            ],
+                  slivers: [
+                    CustomSliverAppBar(
+                      title: 'Business Overview',
+                      subtitle: 'Snapshot • $_period',
+                      leadingType: AppBarLeadingType.menu,
+                      actions: [
+                        AppBarIconButton(
+                          icon: Icons.notifications_none_rounded,
+                          color: AppColors.accent,
+                          showBadge: true,
+                          onPressed: _openNotificationsPage,
+                        ),
+                        SizedBox(width: Dimensions.width20),
+                      ],
+                    ),
+                    SliverToBoxAdapter(child: _buildSegmentedControl()),
+                    _buildSelectedContent(),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),
     );
+  }
+
+  // -------- Pull-to-refresh --------
+  Future<void> _onRefresh() async {
+    switch (_selectedSegment) {
+      case 0:
+        await _controller.loadDashboard();
+      case 1:
+        await _controller.loadUpdates();
+      case 2:
+        await _controller.loadSupport();
+    }
   }
 
   // -------- Navigate to notifications page --------
@@ -102,16 +127,16 @@ class _HomePageState extends State<HomePage> {
       case 0:
         return _buildOverviewContent();
       case 1:
-        return const UpdatesContentWidget();
+        return UpdatesContentWidget(updates: _controller.updates);
       case 2:
-        return const SupportContentWidget();
+        return SupportContentWidget(data: _controller.support);
       default:
         return _buildOverviewContent();
     }
   }
 
   Widget _buildOverviewContent() {
-    if (_isLoading) {
+    if (_controller.isLoading) {
       return SliverPadding(
         padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
         sliver: const SliverToBoxAdapter(child: DashboardSkeleton()),
@@ -123,25 +148,47 @@ class _HomePageState extends State<HomePage> {
         delegate: SliverChildListDelegate([
           SizedBox(height: Dimensions.height15),
 
-          const BalancesGridWidget(),
+          BalancesGridWidget(data: _controller.overview),
           SizedBox(height: Dimensions.height20),
 
           const QuickActionsGridWidget(),
           SizedBox(height: Dimensions.height20),
 
-          const BankingStripWidget(),
+          BankingStripWidget(data: _controller.overview),
           SizedBox(height: Dimensions.height20),
 
-          const CashFlowCardWidget(),
+          CashFlowCardWidget(
+            apiData: _controller.cashFlow,
+            availablePeriods: _controller.cashFlowPeriods,
+            asOnLabel: _controller.cashFlowAsOnLabel,
+            currency: _controller.cashFlowCurrency,
+            onPeriodChanged: (period) =>
+                _controller.loadCashFlow(period: period),
+          ),
           SizedBox(height: Dimensions.height20),
 
-          const IncomeExpenseCardWidget(),
+          IncomeExpenseCardWidget(
+            apiData: _controller.incomeExpense,
+            availablePeriods: _controller.incomeExpensePeriods,
+            currency: _controller.incomeExpenseCurrency,
+            onFilterChanged: (period, method) =>
+                _controller.loadIncomeExpense(
+                  period: period,
+                  accountingMethod: method,
+                ),
+          ),
           SizedBox(height: Dimensions.height20),
 
-          const ProjectTimerCardWidget(),
+          ProjectTimerCardWidget(data: _controller.projects),
           SizedBox(height: Dimensions.height20),
 
-          const ExpenseBreakdownCardWidget(),
+          ExpenseBreakdownCardWidget(
+            apiData: _controller.expenses,
+            availablePeriods: _controller.expensePeriods,
+            currency: _controller.expensesCurrency,
+            onPeriodChanged: (period) =>
+                _controller.loadExpenses(period: period),
+          ),
           SizedBox(height: Dimensions.height30),
         ]),
       ),
@@ -169,7 +216,15 @@ class _HomePageState extends State<HomePage> {
             final selected = i == _selectedSegment;
             return Expanded(
               child: GestureDetector(
-                onTap: () => setState(() => _selectedSegment = i),
+                onTap: () {
+                  setState(() => _selectedSegment = i);
+                  // Lazy-load the tab data on first tap
+                  if (i == 1 && _controller.updates == null) {
+                    _controller.loadUpdates();
+                  } else if (i == 2 && _controller.support == null) {
+                    _controller.loadSupport();
+                  }
+                },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 180),
                   padding: EdgeInsets.symmetric(vertical: Dimensions.height10),

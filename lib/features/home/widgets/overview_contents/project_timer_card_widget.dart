@@ -2,13 +2,16 @@ import 'dart:async';
 
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/features/home/models/dashboard_project_model.dart';
 import 'package:custom_books/features/home/views/associate_project_page.dart';
 import 'package:custom_books/features/home/widgets/card_tile_widget.dart';
 import 'package:custom_books/features/time_entries/views/add_time_entry_page.dart';
 import 'package:flutter/material.dart';
 
 class ProjectTimerCardWidget extends StatefulWidget {
-  const ProjectTimerCardWidget({super.key});
+  final DashboardProjectModel? data;
+
+  const ProjectTimerCardWidget({super.key, this.data});
 
   @override
   State<ProjectTimerCardWidget> createState() => _ProjectTimerCardWidgetState();
@@ -229,11 +232,19 @@ class _ProjectTimerCardWidgetState extends State<ProjectTimerCardWidget> {
           Row(
             children: [
               Expanded(
-                child: _StatCard(label: 'Unbilled Hours', value: '00:00'),
+                child: _StatCard(
+                  label: 'Unbilled Hours',
+                  value: widget.data?.unbilledHours ?? '00:00',
+                ),
               ),
               SizedBox(width: Dimensions.width10),
               Expanded(
-                child: _StatCard(label: 'Unbilled Expenses', value: '₹0.00'),
+                child: _StatCard(
+                  label: 'Unbilled Expenses',
+                  value: widget.data != null
+                      ? '${widget.data!.currencySymbol}${widget.data!.unbilledExpenses}'
+                      : '₹0.00',
+                ),
               ),
             ],
           ),
