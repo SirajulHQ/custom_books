@@ -36,6 +36,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _controller.loadDashboard();
+    // Preload updates so the unread count badge shows without opening the tab.
+    _controller.loadUpdates();
   }
 
   @override
@@ -171,11 +173,10 @@ class _HomePageState extends State<HomePage> {
             apiData: _controller.incomeExpense,
             availablePeriods: _controller.incomeExpensePeriods,
             currency: _controller.incomeExpenseCurrency,
-            onFilterChanged: (period, method) =>
-                _controller.loadIncomeExpense(
-                  period: period,
-                  accountingMethod: method,
-                ),
+            onFilterChanged: (period, method) => _controller.loadIncomeExpense(
+              period: period,
+              accountingMethod: method,
+            ),
           ),
           SizedBox(height: Dimensions.height20),
 
@@ -191,6 +192,32 @@ class _HomePageState extends State<HomePage> {
           ),
           SizedBox(height: Dimensions.height30),
         ]),
+      ),
+    );
+  }
+
+  // -------- Unread count badge --------
+  Widget _buildUnreadBadge(int count) {
+    final label = count > 99 ? '99+' : '$count';
+    return Container(
+      constraints: BoxConstraints(minWidth: Dimensions.width20),
+      padding: EdgeInsets.symmetric(
+        horizontal: Dimensions.width10,
+        vertical: Dimensions.height10 / 4,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.accent,
+        borderRadius: BorderRadius.circular(Dimensions.radius30),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: Dimensions.font16 * 0.65,
+          fontWeight: FontWeight.w800,
+          color: Colors.white,
+          height: 1.0,
+        ),
       ),
     );
   }
@@ -248,16 +275,29 @@ class _HomePageState extends State<HomePage> {
                         : null,
                   ),
                   alignment: Alignment.center,
-                  child: Text(
-                    segments[i],
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.8,
-                      fontWeight: selected ? FontWeight.w800 : FontWeight.w500,
-                      letterSpacing: 0.3,
-                      color: selected
-                          ? AppColors.primary
-                          : context.colors.textSecondary,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        segments[i],
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.8,
+                          fontWeight: selected
+                              ? FontWeight.w800
+                              : FontWeight.w500,
+                          letterSpacing: 0.3,
+                          color: selected
+                              ? AppColors.primary
+                              : context.colors.textSecondary,
+                        ),
+                      ),
+                      // Unread count badge on the "Updates" segment.
+                      if (i == 1 && _controller.unreadUpdatesCount > 0) ...[
+                        SizedBox(width: Dimensions.width10 / 2),
+                        _buildUnreadBadge(_controller.unreadUpdatesCount),
+                      ],
+                    ],
                   ),
                 ),
               ),

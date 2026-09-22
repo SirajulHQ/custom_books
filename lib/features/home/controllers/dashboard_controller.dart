@@ -71,6 +71,7 @@ class DashboardController extends ChangeNotifier {
   // ── Updates / support passthrough ────────────────────────────────────────
   bool get isUpdatesLoading => updatesController.isLoading;
   List<UpdateItemModel>? get updates => updatesController.updates;
+  int get unreadUpdatesCount => updatesController.unreadCount;
   SupportDataModel? get support => supportController.support;
 
   // ── Public methods ────────────────────────────────────────────────────────

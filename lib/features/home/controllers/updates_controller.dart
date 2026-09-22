@@ -13,6 +13,9 @@ class UpdatesController extends ChangeNotifier {
   List<UpdateItemModel>? _updates;
   List<UpdateItemModel>? get updates => _updates;
 
+  /// Number of unread updates. Returns 0 when updates haven't loaded yet.
+  int get unreadCount => _updates?.where((u) => !u.isRead).length ?? 0;
+
   /// Loads updates, toggling [isLoading].
   Future<void> load() async {
     _isLoading = true;
