@@ -10,10 +10,10 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
-import 'package:custom_books/features/items/controllers/items_controller.dart';
+import 'package:custom_books/features/items/controllers/items_list_controller.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:custom_books/features/items/widgets/item_card_widget.dart';
-import 'package:custom_books/features/items/views/add_item_page.dart';
+import 'package:custom_books/features/items/views/add_edit_item_page.dart';
 import 'package:custom_books/features/items/views/item_details_page.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +25,7 @@ class ItemsPage extends StatefulWidget {
 }
 
 class _ItemsPageState extends State<ItemsPage> {
-  final ItemsController _controller = ItemsController();
+  final ItemsListController _controller = ItemsListController();
 
   String _selectedFilter = 'Active Items';
   bool _searchOpen = false;
@@ -68,9 +68,9 @@ class _ItemsPageState extends State<ItemsPage> {
 
   /// Fetches items from the API.
   Future<void> _loadItems() async {
-    final ok = await _controller.loadItems();
+    await _controller.load();
     if (!mounted) return;
-    if (!ok && _controller.errorMessage != null) {
+    if (_controller.errorMessage != null) {
       ToastificationHelper.showError(context, _controller.errorMessage!);
     }
   }
@@ -353,7 +353,7 @@ class _ItemsPageState extends State<ItemsPage> {
           appLog('➕ Add Item FAB tapped', name: 'ItemsPage');
           final created = await Navigator.push<bool>(
             context,
-            MaterialPageRoute(builder: (context) => const AddItemPage()),
+            MaterialPageRoute(builder: (context) => const AddEditItemPage()),
           );
           // Reload the list when a new item was created.
           if (created == true) _loadItems();

@@ -10,22 +10,23 @@ import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
-import 'package:custom_books/features/items/controllers/items_controller.dart';
+import 'package:custom_books/features/items/controllers/item_form_controller.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddItemPage extends StatefulWidget {
+class AddEditItemPage extends StatefulWidget {
   final ItemModel? existing;
 
-  const AddItemPage({super.key, this.existing});
+  const AddEditItemPage({super.key, this.existing});
 
   @override
-  State<AddItemPage> createState() => _AddItemPageState();
+  State<AddEditItemPage> createState() => _AddEditItemPageState();
 }
 
-class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
-  final ItemsController _itemsController = ItemsController();
+class _AddEditItemPageState extends State<AddEditItemPage>
+    with UnsavedChangesMixin {
+  final ItemFormController _itemsController = ItemFormController();
 
   String _itemType = 'Goods';
   bool _isLoading = true;
@@ -47,10 +48,10 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
       if (picked != null) {
         setState(() => _itemImage = picked);
         markDirty();
-        appLog('📷 Image picked: ${picked.path}', name: 'AddItemPage');
+        appLog('📷 Image picked: ${picked.path}', name: 'AddEditItemPage');
       }
     } catch (e) {
-      appLog('❌ Image pick error: $e', name: 'AddItemPage');
+      appLog('❌ Image pick error: $e', name: 'AddEditItemPage');
     }
   }
 
@@ -359,7 +360,10 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                       subtitle: 'Fill in the details below',
                       leadingType: AppBarLeadingType.back,
                       onLeadingPressed: () {
-                        appLog('⬅️ Back button tapped', name: 'AddItemPage');
+                        appLog(
+                          '⬅️ Back button tapped',
+                          name: 'AddEditItemPage',
+                        );
                         onPopInvokedWithResult(false, null);
                       },
                       actions: [
@@ -661,7 +665,7 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                                         markDirty();
                                         appLog(
                                           '💰 Sales account selected: $account',
-                                          name: 'AddItemPage',
+                                          name: 'AddEditItemPage',
                                         );
                                       },
                                     ),
@@ -686,7 +690,7 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                                   markDirty();
                                   appLog(
                                     '🧾 Tax selected: $tax',
-                                    name: 'AddItemPage',
+                                    name: 'AddEditItemPage',
                                   );
                                 },
                               ),
@@ -731,7 +735,7 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                                         markDirty();
                                         appLog(
                                           '🛒 Purchase account selected: $account',
-                                          name: 'AddItemPage',
+                                          name: 'AddEditItemPage',
                                         );
                                       },
                                     ),
@@ -813,7 +817,7 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                                   markDirty();
                                   appLog(
                                     '📊 Valuation method selected: $method',
-                                    name: 'AddItemPage',
+                                    name: 'AddEditItemPage',
                                   );
                                 },
                               ),
@@ -837,7 +841,7 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
       onTap: () {
         setState(() => _itemType = label);
         markDirty();
-        appLog('📝 Item type changed to: $label', name: 'AddItemPage');
+        appLog('📝 Item type changed to: $label', name: 'AddEditItemPage');
       },
       child: Row(
         children: [
@@ -888,7 +892,7 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
   }
 
   Future<void> _saveItem() async {
-    appLog('💾 Save button tapped', name: 'AddItemPage');
+    appLog('💾 Save button tapped', name: 'AddEditItemPage');
     if (_itemsController.isSaving) return;
 
     final name = _itemNameController.text.trim();
@@ -909,8 +913,8 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
     final bool isEdit = existing != null;
 
     final ok = isEdit
-        ? await _itemsController.updateItem(existing.id, body)
-        : await _itemsController.createItem(body);
+        ? await _itemsController.update(existing.id, body)
+        : await _itemsController.create(body);
     if (!mounted) return;
 
     if (ok) {
@@ -1318,7 +1322,7 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                                     markDirty();
                                     appLog(
                                       '🏷️ GTIN selected: $gtin',
-                                      name: 'AddItemPage',
+                                      name: 'AddEditItemPage',
                                     );
                                     Navigator.pop(sheetContext);
                                   },

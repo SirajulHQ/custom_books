@@ -1,9 +1,11 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/image_helper.dart';
+import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/features/items/controllers/item_detail_controller.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
-import 'package:custom_books/features/items/views/add_item_page.dart';
+import 'package:custom_books/features/items/views/add_edit_item_page.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 
@@ -17,9 +19,17 @@ class ItemDetailsPage extends StatefulWidget {
 }
 
 class _ItemDetailsPageState extends State<ItemDetailsPage> {
+  final ItemDetailController _controller = ItemDetailController();
+
   bool _isLoading = true;
 
-  ItemModel get item => widget.item;
+  /// Set when the item is edited from this page, so the list can refresh when
+  /// the user navigates back.
+  bool _didChange = false;
+
+  /// Starts with the item passed from the list, then gets replaced by the
+  /// full detail fetched from the API.
+  late ItemModel item = widget.item;
 
   @override
   void initState() {
@@ -27,67 +37,89 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
     _load();
   }
 
-  /// Simulates fetching details so the shimmer skeleton is shown briefly.
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  /// Fetches the full item details from the API.
   Future<void> _load() async {
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 900));
+    await _controller.load(widget.item.id);
     if (!mounted) return;
-    setState(() => _isLoading = false);
+    setState(() {
+      final fetched = _controller.item;
+      if (fetched != null) item = fetched;
+      _isLoading = false;
+    });
+    if (_controller.errorMessage != null) {
+      ToastificationHelper.showError(context, _controller.errorMessage!);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.colors.background,
-      body: SafeArea(
-        child: _isLoading
-            ? const DetailsPageSkeleton(
-                headerStyle: DetailsHeaderStyle.avatar,
-                showTabs: false,
-              )
-            : CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  CustomSliverAppBar(
-                    title: item.name,
-                    leadingType: AppBarLeadingType.back,
-                    onLeadingPressed: () => Navigator.pop(context),
-                    actions: [
-                      AppBarIconButton(
-                        icon: Icons.edit_outlined,
-                        color: AppColors.primary,
-                        onPressed: () async {
-                          final updated = await Navigator.push<bool>(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => AddItemPage(existing: item),
-                            ),
-                          );
-                          // Bubble the refresh signal up to the items list.
-                          if (updated == true && context.mounted) {
-                            Navigator.pop(context, true);
-                          }
-                        },
-                      ),
-                      SizedBox(width: Dimensions.width20),
-                    ],
-                  ),
-                  SliverToBoxAdapter(child: _buildHeaderSection(context)),
-                  SliverPadding(
-                    padding: EdgeInsets.all(Dimensions.width20),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate([
-                        _buildPricingSection(context),
-                        SizedBox(height: Dimensions.height15),
-                        _buildDetailsSection(context),
-                        SizedBox(height: Dimensions.height15),
-                        _buildAccountsSection(context),
-                        SizedBox(height: Dimensions.height30),
-                      ]),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) Navigator.pop(context, _didChange);
+      },
+      child: Scaffold(
+        backgroundColor: context.colors.background,
+        body: SafeArea(
+          child: _isLoading
+              ? const DetailsPageSkeleton(
+                  headerStyle: DetailsHeaderStyle.avatar,
+                  showTabs: false,
+                )
+              : CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    CustomSliverAppBar(
+                      title: item.name,
+                      leadingType: AppBarLeadingType.back,
+                      onLeadingPressed: () =>
+                          Navigator.pop(context, _didChange),
+                      actions: [
+                        AppBarIconButton(
+                          icon: Icons.edit_outlined,
+                          color: AppColors.primary,
+                          onPressed: () async {
+                            final updated = await Navigator.push<bool>(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AddEditItemPage(existing: item),
+                              ),
+                            );
+                            // Re-fetch the details so the page reflects the edit,
+                            // and remember to refresh the list on back.
+                            if (updated == true && mounted) {
+                              _didChange = true;
+                              _load();
+                            }
+                          },
+                        ),
+                        SizedBox(width: Dimensions.width20),
+                      ],
                     ),
-                  ),
-                ],
-              ),
+                    SliverToBoxAdapter(child: _buildHeaderSection(context)),
+                    SliverPadding(
+                      padding: EdgeInsets.all(Dimensions.width20),
+                      sliver: SliverList(
+                        delegate: SliverChildListDelegate([
+                          _buildPricingSection(context),
+                          SizedBox(height: Dimensions.height15),
+                          _buildDetailsSection(context),
+                          SizedBox(height: Dimensions.height15),
+                          _buildAccountsSection(context),
+                          SizedBox(height: Dimensions.height30),
+                        ]),
+                      ),
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }
