@@ -86,4 +86,46 @@ class ItemFormViewModel {
       return null;
     }
   }
+
+  /// Deletes an item via `DELETE /api/items/?item_id=<itemId>`.
+  ///
+  /// Returns the parsed response body with `_statusCode` attached (the body may
+  /// be empty for a 204 response), or `null` on a network error.
+  Future<Map<String, dynamic>?> deleteItem(String itemId) async {
+    final url = Uri.parse(
+      '$baseUrl/api/items/',
+    ).replace(queryParameters: {'item_id': itemId});
+
+    try {
+      final token = await AuthService.instance.getValidAccessToken();
+      appLog('➡️ Delete item request: $url', name: 'ItemFormViewModel');
+
+      final response = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          if (token != null) 'Authorization': 'Bearer $token',
+        },
+      );
+
+      appLog(
+        '📦 Delete item response (${response.statusCode}): ${response.body}',
+        name: 'ItemFormViewModel',
+      );
+
+      final Map<String, dynamic> resp = response.body.isNotEmpty
+          ? jsonDecode(response.body) as Map<String, dynamic>
+          : <String, dynamic>{};
+      resp['_statusCode'] = response.statusCode;
+      return resp;
+    } catch (e, st) {
+      appLog(
+        '❌ Delete item request error: $e',
+        name: 'ItemFormViewModel',
+        error: e,
+        stackTrace: st,
+      );
+      return null;
+    }
+  }
 }

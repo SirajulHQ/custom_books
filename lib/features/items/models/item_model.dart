@@ -23,6 +23,7 @@ class ItemModel {
   final bool? trackInventory;
   final String? valuationMethod;
   final double? margin;
+  final double? openingStock;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -49,6 +50,7 @@ class ItemModel {
     this.trackInventory,
     this.valuationMethod,
     this.margin,
+    this.openingStock,
     this.createdAt,
     this.updatedAt,
   });
@@ -89,6 +91,9 @@ class ItemModel {
       trackInventory: json['track_inventory'] as bool?,
       valuationMethod: _nullIfBlank(json['valuation_method']),
       margin: json['margin'] != null ? _toDouble(json['margin']) : null,
+      openingStock: json['opening_stock'] != null
+          ? _toDouble(json['opening_stock'])
+          : null,
       createdAt: _toDate(json['created_at']),
       updatedAt: _toDate(json['updated_at']),
     );

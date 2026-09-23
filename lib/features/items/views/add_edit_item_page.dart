@@ -16,9 +16,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddEditItemPage extends StatefulWidget {
+  /// When set, the form is in edit mode and saving updates this item.
   final ItemModel? existing;
 
-  const AddEditItemPage({super.key, this.existing});
+  /// When set (and [existing] is null), the form prefills from this item but
+  /// saving creates a brand-new item. Used by the "Clone" action.
+  final ItemModel? cloneFrom;
+
+  const AddEditItemPage({super.key, this.existing, this.cloneFrom});
 
   @override
   State<AddEditItemPage> createState() => _AddEditItemPageState();
@@ -243,10 +248,13 @@ class _AddEditItemPageState extends State<AddEditItemPage>
   void initState() {
     super.initState();
     _load();
-    final existing = widget.existing;
+    // Prefill from the edited item, or from the item being cloned. A clone
+    // copies every field except the SKU (left empty), and creates a new item.
+    final existing = widget.existing ?? widget.cloneFrom;
+    final bool isClone = widget.existing == null && widget.cloneFrom != null;
     if (existing != null) {
       _itemNameController.text = existing.name;
-      _skuController.text = existing.sku ?? '';
+      _skuController.text = isClone ? '' : (existing.sku ?? '');
       _unitController.text = existing.unit ?? '';
       if (existing.gtin != null && existing.gtin!.isNotEmpty) {
         _selectedGtin = existing.gtin!;
@@ -356,7 +364,11 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                   slivers: [
                     // App Bar
                     CustomSliverAppBar(
-                      title: widget.existing == null ? 'New Item' : 'Edit Item',
+                      title: widget.existing != null
+                          ? 'Edit Item'
+                          : (widget.cloneFrom != null
+                                ? 'Clone Item'
+                                : 'New Item'),
                       subtitle: 'Fill in the details below',
                       leadingType: AppBarLeadingType.back,
                       onLeadingPressed: () {

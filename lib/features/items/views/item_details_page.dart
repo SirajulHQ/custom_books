@@ -2,10 +2,14 @@ import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/image_helper.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
+import 'package:custom_books/core/widgets/confirmation_dialog.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/more_options_sheet.dart';
 import 'package:custom_books/features/items/controllers/item_detail_controller.dart';
+import 'package:custom_books/features/items/controllers/item_form_controller.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:custom_books/features/items/views/add_edit_item_page.dart';
+import 'package:custom_books/features/items/views/adjust_stock_page.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 
@@ -20,6 +24,7 @@ class ItemDetailsPage extends StatefulWidget {
 
 class _ItemDetailsPageState extends State<ItemDetailsPage> {
   final ItemDetailController _controller = ItemDetailController();
+  final ItemFormController _formController = ItemFormController();
 
   bool _isLoading = true;
 
@@ -40,7 +45,58 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
   @override
   void dispose() {
     _controller.dispose();
+    _formController.dispose();
     super.dispose();
+  }
+
+  /// Opens the add form prefilled from this item to create a copy.
+  Future<void> _cloneItem() async {
+    final created = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(builder: (_) => AddEditItemPage(cloneFrom: item)),
+    );
+    if (created == true && mounted) {
+      // A new item was created; the list should refresh on back.
+      _didChange = true;
+      ToastificationHelper.showSuccess(context, 'Item cloned successfully.');
+    }
+  }
+
+  /// Deletes the item via the API and returns to the list on success.
+  Future<void> _deleteItem() async {
+    final ok = await _formController.delete(item.id);
+    if (!mounted) return;
+    if (ok) {
+      ToastificationHelper.showSuccess(context, 'Item deleted successfully.');
+      // Pop back to the list with `true` so it refreshes.
+      Navigator.pop(context, true);
+    } else {
+      ToastificationHelper.showError(
+        context,
+        _formController.errorMessage ?? 'Could not delete the item.',
+      );
+    }
+  }
+
+  /// Toggles the item's active status via the update API.
+  Future<void> _setActive(bool active) async {
+    final ok = await _formController.update(item.id, {
+      'status': active ? 'active' : 'inactive',
+    });
+    if (!mounted) return;
+    if (ok) {
+      _didChange = true;
+      ToastificationHelper.showSuccess(
+        context,
+        active ? 'Item marked as active.' : 'Item marked as inactive.',
+      );
+      _load();
+    } else {
+      ToastificationHelper.showError(
+        context,
+        _formController.errorMessage ?? 'Could not update the item status.',
+      );
+    }
   }
 
   /// Fetches the full item details from the API.
@@ -56,6 +112,66 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
     if (_controller.errorMessage != null) {
       ToastificationHelper.showError(context, _controller.errorMessage!);
     }
+  }
+
+  /// Opens the "more options" bottom sheet for this item.
+  void _showMoreOptions() {
+    MoreOptionsSheet.show(
+      context,
+      sectionLabel: 'ITEM ACTIONS',
+      items: [
+        MoreOptionsItem(
+          icon: Icons.tune_rounded,
+          title: 'Adjust Stock',
+          subtitle: 'Update the quantity on hand',
+          onTap: _adjustStock,
+        ),
+        MoreOptionsItem(
+          icon: Icons.copy_rounded,
+          title: 'Clone',
+          subtitle: 'Create a copy of this item',
+          onTap: _cloneItem,
+        ),
+        MoreOptionsItem(
+          icon: item.isActive
+              ? Icons.toggle_off_outlined
+              : Icons.toggle_on_outlined,
+          title: item.isActive ? 'Mark as Inactive' : 'Mark as Active',
+          subtitle: item.isActive
+              ? 'Hide this item from active lists'
+              : 'Restore this item to active',
+          onTap: () => _setActive(!item.isActive),
+        ),
+        MoreOptionsItem(
+          icon: Icons.delete_outline_rounded,
+          title: 'Delete',
+          subtitle: 'Permanently remove this item',
+          onTap: _confirmDelete,
+        ),
+      ],
+    );
+  }
+
+  Future<void> _adjustStock() async {
+    final adjusted = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(builder: (_) => AdjustStockPage(item: item)),
+    );
+    if (adjusted == true && mounted) {
+      _didChange = true;
+      _load();
+    }
+  }
+
+  Future<void> _confirmDelete() async {
+    final confirmed = await showConfirmationDialog(
+      context,
+      title: 'Delete Item',
+      message:
+          'Are you sure you want to delete this item? This action cannot be undone.',
+    );
+    if (!mounted) return;
+    if (confirmed) _deleteItem();
   }
 
   @override
@@ -99,6 +215,12 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                               _load();
                             }
                           },
+                        ),
+                        SizedBox(width: Dimensions.width10),
+                        AppBarIconButton(
+                          icon: Icons.more_vert_rounded,
+                          color: context.colors.textSecondary,
+                          onPressed: _showMoreOptions,
                         ),
                         SizedBox(width: Dimensions.width20),
                       ],

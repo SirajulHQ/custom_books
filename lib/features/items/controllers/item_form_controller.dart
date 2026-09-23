@@ -36,6 +36,37 @@ class ItemFormController extends ChangeNotifier {
     return ok;
   }
 
+  Future<bool> delete(String itemId) async {
+    _isSaving = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    final resp = await _vm.deleteItem(itemId);
+    final int? status = resp?['_statusCode'] as int?;
+    // A delete succeeds on any 2xx; the body may be empty (204) or a
+    // `{success: true}` envelope, so we don't require the `success` flag.
+    final bool ok =
+        resp != null &&
+        status != null &&
+        status >= 200 &&
+        status < 300 &&
+        resp['success'] != false;
+
+    if (ok) {
+      appLog('✅ Item delete succeeded', name: 'ItemFormController');
+    } else {
+      _errorMessage = _extractError(resp, 'delete');
+      appLog(
+        '⚠️ Item delete failed (status: $status): $_errorMessage',
+        name: 'ItemFormController',
+      );
+    }
+
+    _isSaving = false;
+    notifyListeners();
+    return ok;
+  }
+
   bool _handle(Map<String, dynamic>? resp, String action) {
     final int? status = resp?['_statusCode'] as int?;
     if (resp != null &&
