@@ -10,6 +10,7 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
+import 'package:custom_books/features/items/controllers/items_controller.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:custom_books/features/items/widgets/item_card_widget.dart';
 import 'package:custom_books/features/items/views/add_item_page.dart';
@@ -24,9 +25,10 @@ class ItemsPage extends StatefulWidget {
 }
 
 class _ItemsPageState extends State<ItemsPage> {
+  final ItemsController _controller = ItemsController();
+
   String _selectedFilter = 'Active Items';
   bool _searchOpen = false;
-  bool _isLoading = true;
   final _searchController = TextEditingController();
 
   String _sortField = 'Name';
@@ -47,52 +49,36 @@ class _ItemsPageState extends State<ItemsPage> {
   @override
   void initState() {
     super.initState();
+    _controller.addListener(_onControllerChanged);
     _loadItems();
     appLog('🎯 ItemsPage initialized', name: 'ItemsPage');
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_onControllerChanged);
+    _controller.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
-  /// Simulates fetching data so the shimmer skeleton is shown briefly.
-  Future<void> _loadItems() async {
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 900));
-    if (!mounted) return;
-    setState(() => _isLoading = false);
+  void _onControllerChanged() {
+    if (mounted) setState(() {});
   }
 
-  // Dummy data based on the image
-  final List<ItemModel> _items = [
-    ItemModel(
-      id: '1',
-      name: 'Mouse',
-      salesPrice: 15.00,
-      purchasePrice: 10.00,
-      isActive: true,
-    ),
-    ItemModel(
-      id: '2',
-      name: 'Pen',
-      sku: 'PEN-01',
-      salesPrice: 20.00,
-      purchasePrice: 10.00,
-      isActive: true,
-    ),
-    ItemModel(
-      id: '3',
-      name: 'Pencil',
-      salesPrice: 20.00,
-      purchasePrice: 0.00,
-      isActive: true,
-    ),
-  ];
+  /// Fetches items from the API.
+  Future<void> _loadItems() async {
+    final ok = await _controller.loadItems();
+    if (!mounted) return;
+    if (!ok && _controller.errorMessage != null) {
+      ToastificationHelper.showError(context, _controller.errorMessage!);
+    }
+  }
+
+  bool get _isLoading => _controller.isLoading;
 
   List<ItemModel> get _filteredItems {
-    var list = _items;
+    var list = _controller.items;
 
     // Apply filter
     if (_selectedFilter == 'Active Items') {
@@ -249,112 +235,128 @@ class _ItemsPageState extends State<ItemsPage> {
       backgroundColor: context.colors.background,
       drawer: const DrawerView(currentRoute: 'items'),
       body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            // App Bar
-            CustomSliverAppBar(
-              title: 'Items',
-              subtitle: '${_filteredItems.length} items found',
-              leadingType: AppBarLeadingType.menu,
-              actions: [
-                AppBarIconButton(
-                  icon: _searchOpen
-                      ? Icons.close_rounded
-                      : Icons.search_rounded,
-                  color: AppColors.primary,
-                  onPressed: () {
-                    appLog('🔍 Search tapped', name: 'ItemsPage');
-                    setState(() {
-                      _searchOpen = !_searchOpen;
-                      if (!_searchOpen) _searchController.clear();
-                    });
-                  },
-                ),
-                SizedBox(width: Dimensions.width10),
-                AppBarIconButton(
-                  icon: Icons.qr_code_scanner_rounded,
-                  color: AppColors.accent,
-                  onPressed: () {
-                    appLog('📷 QR Scanner tapped', name: 'ItemsPage');
-                    ToastificationHelper.showInfo(
-                      context,
-                      'Barcode scanning is coming soon.',
-                    );
-                  },
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
+        child: RefreshIndicator(
+          color: AppColors.primary,
+          backgroundColor: context.colors.card,
+          strokeWidth: 2.5,
+          onRefresh: _loadItems,
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
             ),
+            slivers: [
+              // App Bar
+              CustomSliverAppBar(
+                title: 'Items',
+                subtitle: '${_filteredItems.length} items found',
+                leadingType: AppBarLeadingType.menu,
+                actions: [
+                  AppBarIconButton(
+                    icon: _searchOpen
+                        ? Icons.close_rounded
+                        : Icons.search_rounded,
+                    color: AppColors.primary,
+                    onPressed: () {
+                      appLog('🔍 Search tapped', name: 'ItemsPage');
+                      setState(() {
+                        _searchOpen = !_searchOpen;
+                        if (!_searchOpen) _searchController.clear();
+                      });
+                    },
+                  ),
+                  SizedBox(width: Dimensions.width10),
+                  AppBarIconButton(
+                    icon: Icons.qr_code_scanner_rounded,
+                    color: AppColors.accent,
+                    onPressed: () {
+                      appLog('📷 QR Scanner tapped', name: 'ItemsPage');
+                      ToastificationHelper.showInfo(
+                        context,
+                        'Barcode scanning is coming soon.',
+                      );
+                    },
+                  ),
+                  SizedBox(width: Dimensions.width20),
+                ],
+              ),
 
-            // Search Field
-            if (_searchOpen) SliverToBoxAdapter(child: _buildSearchField()),
+              // Search Field
+              if (_searchOpen) SliverToBoxAdapter(child: _buildSearchField()),
 
-            // Filter Segment Control
-            SliverToBoxAdapter(child: _buildFilterSegment()),
+              // Filter Segment Control
+              SliverToBoxAdapter(child: _buildFilterSegment()),
 
-            // Items List
-            if (_isLoading)
-              const SliverFillRemaining(
-                hasScrollBody: true,
-                child: DocumentListSkeleton(),
-              )
-            else
-              SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-                sliver: _filteredItems.isEmpty
-                    ? const SliverToBoxAdapter(
-                        child: EmptyStateWidget(
-                          icon: Icons.inventory_2_outlined,
-                          title: 'No items found',
-                          subtitle: 'Tap the + button to add your first item',
-                        ),
-                      )
-                    : SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final item = _filteredItems[index];
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom: Dimensions.height15,
-                            ),
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(
-                                Dimensions.radius20,
+              // Items List
+              if (_isLoading && _controller.items.isEmpty)
+                const SliverFillRemaining(
+                  hasScrollBody: true,
+                  child: DocumentListSkeleton(),
+                )
+              else
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                  sliver: _filteredItems.isEmpty
+                      ? const SliverToBoxAdapter(
+                          child: EmptyStateWidget(
+                            icon: Icons.inventory_2_outlined,
+                            title: 'No items found',
+                            subtitle: 'Tap the + button to add your first item',
+                          ),
+                        )
+                      : SliverList(
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
+                            final item = _filteredItems[index];
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom: Dimensions.height15,
                               ),
-                              onTap: () {
-                                appLog(
-                                  '👁️ Item tapped: ${item.name}',
-                                  name: 'ItemsPage',
-                                );
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => ItemDetailsPage(item: item),
-                                  ),
-                                );
-                              },
-                              child: ItemCardWidget(item: item),
-                            ),
-                          );
-                        }, childCount: _filteredItems.length),
-                      ),
-              ),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(
+                                  Dimensions.radius20,
+                                ),
+                                onTap: () async {
+                                  appLog(
+                                    '👁️ Item tapped: ${item.name}',
+                                    name: 'ItemsPage',
+                                  );
+                                  final changed = await Navigator.push<bool>(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          ItemDetailsPage(item: item),
+                                    ),
+                                  );
+                                  // Reload if the item was edited from details.
+                                  if (changed == true) _loadItems();
+                                },
+                                child: ItemCardWidget(item: item),
+                              ),
+                            );
+                          }, childCount: _filteredItems.length),
+                        ),
+                ),
 
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: Dimensions.height30 + Dimensions.listBottomSpace,
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: Dimensions.height30 + Dimensions.listBottomSpace,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButton: CustomAddButton(
-        onPressed: () {
+        onPressed: () async {
           appLog('➕ Add Item FAB tapped', name: 'ItemsPage');
-          Navigator.push(
+          final created = await Navigator.push<bool>(
             context,
             MaterialPageRoute(builder: (context) => const AddItemPage()),
           );
+          // Reload the list when a new item was created.
+          if (created == true) _loadItems();
         },
       ),
     );

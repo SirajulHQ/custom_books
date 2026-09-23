@@ -5,9 +5,12 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
+import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
+import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
+import 'package:custom_books/features/items/controllers/items_controller.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,6 +25,8 @@ class AddItemPage extends StatefulWidget {
 }
 
 class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
+  final ItemsController _itemsController = ItemsController();
+
   String _itemType = 'Goods';
   bool _isLoading = true;
   bool _trackInventory = true;
@@ -164,6 +169,15 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _skuController = TextEditingController();
   final TextEditingController _unitController = TextEditingController();
+
+  /// GTIN options offered in the searchable selection sheet. Empty for now,
+  /// so the sheet shows the "No result found" empty state.
+  static const List<String> _gtinOptions = [];
+  String _selectedGtin = 'Select a GTIN';
+
+  /// Search query controller for the GTIN selection sheet. Owned by the page
+  /// so it survives the sheet's rebuilds and is only disposed once.
+  final TextEditingController _gtinSearchController = TextEditingController();
   final TextEditingController _sellingPriceController = TextEditingController();
   final TextEditingController _costPriceController = TextEditingController();
   final TextEditingController _openingStockController = TextEditingController();
@@ -174,10 +188,55 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
   final TextEditingController _purchaseDescriptionController =
       TextEditingController();
 
-  final String _selectedAccount = 'Cost of Goods Sold';
-  final String _selectedSalesAccount = 'Sales';
   final String _selectedInventoryAccount = 'Inventory Asset';
-  final String _selectedValuationMethod = 'FIFO (First In First Out)';
+
+  /// Inventory valuation methods offered in the Track Inventory section.
+  static const List<String> _valuationMethodOptions = [
+    'FIFO (First In First Out)',
+    'Weighted Average Cost (Moving Average)',
+  ];
+  String _selectedValuationMethod = 'FIFO (First In First Out)';
+
+  /// Account options offered in the Purchase Information section.
+  static const List<String> _purchaseAccountOptions = [
+    'Bad Debt',
+    'Printing and Stationery',
+    'Salaries and Employee Wages',
+    'Meals and Entertainment',
+    'Depreciation Expense',
+    'Consultant Expense',
+    'Repairs and Maintenance',
+    'Other Expenses',
+    'Lodging',
+    'Cost of Goods Sold',
+    'Uncategorized',
+    'Purchase Discounts',
+    'Payment Charges',
+    'Vat Charges',
+    'Gratuity Expense',
+    'Air Travel Allowance Expense',
+  ];
+  String _selectedAccount = 'Cost of Goods Sold';
+
+  /// Account options offered in the Sales Information section.
+  static const List<String> _salesAccountOptions = [
+    'Sales',
+    'General Income',
+    'Interest Income',
+    'Late Fee Income',
+    'Discount',
+    'Other Charges',
+    'Shipping Charge',
+  ];
+  String _selectedSalesAccount = 'Sales';
+
+  /// Tax options offered in the Sales Information section.
+  static const List<String> _taxOptions = [
+    'Standard Rate [5%]',
+    'Zero Rate [0%]',
+    'VAT [5%]',
+  ];
+  String _selectedTax = 'Select a Tax';
 
   @override
   void initState() {
@@ -187,8 +246,55 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
     if (existing != null) {
       _itemNameController.text = existing.name;
       _skuController.text = existing.sku ?? '';
+      _unitController.text = existing.unit ?? '';
+      if (existing.gtin != null && existing.gtin!.isNotEmpty) {
+        _selectedGtin = existing.gtin!;
+      }
       _sellingPriceController.text = existing.salesPrice.toStringAsFixed(2);
       _costPriceController.text = existing.purchasePrice.toStringAsFixed(2);
+      _salesDescriptionController.text = existing.salesDescription ?? '';
+      _purchaseDescriptionController.text = existing.purchaseDescription ?? '';
+      // Reflect the item's saved options in the form toggles.
+      _itemType = (existing.itemType ?? 'goods').toLowerCase() == 'service'
+          ? 'Service'
+          : 'Goods';
+      _trackInventory = existing.trackInventory ?? _trackInventory;
+      _salesInformation = existing.salesEnabled ?? _salesInformation;
+      _purchaseInformation = existing.purchaseEnabled ?? _purchaseInformation;
+      // Map the API valuation code back to its display label.
+      final savedValuation = existing.valuationMethod?.toLowerCase();
+      if (savedValuation != null && savedValuation.isNotEmpty) {
+        if (savedValuation.contains('weighted') ||
+            savedValuation.contains('average')) {
+          _selectedValuationMethod = 'Weighted Average Cost (Moving Average)';
+        } else if (savedValuation.contains('fifo')) {
+          _selectedValuationMethod = 'FIFO (First In First Out)';
+        }
+      }
+      // Restore the saved sales account if it matches one of our options.
+      final savedSalesAccount = existing.salesAccount;
+      if (savedSalesAccount != null) {
+        _selectedSalesAccount = _salesAccountOptions.firstWhere(
+          (a) => a.toLowerCase() == savedSalesAccount.toLowerCase(),
+          orElse: () => _selectedSalesAccount,
+        );
+      }
+      // Restore the saved purchase account if it matches one of our options.
+      final savedPurchaseAccount = existing.purchaseAccount;
+      if (savedPurchaseAccount != null) {
+        _selectedAccount = _purchaseAccountOptions.firstWhere(
+          (a) => a.toLowerCase() == savedPurchaseAccount.toLowerCase(),
+          orElse: () => _selectedAccount,
+        );
+      }
+      // Restore the saved tax if it matches one of our options.
+      final savedTax = existing.tax;
+      if (savedTax != null) {
+        _selectedTax = _taxOptions.firstWhere(
+          (t) => t.toLowerCase() == savedTax.toLowerCase(),
+          orElse: () => _selectedTax,
+        );
+      }
     }
     _itemNameController.addListener(markDirty);
     _skuController.addListener(markDirty);
@@ -215,12 +321,14 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
     _itemNameController.dispose();
     _skuController.dispose();
     _unitController.dispose();
+    _gtinSearchController.dispose();
     _sellingPriceController.dispose();
     _costPriceController.dispose();
     _openingStockController.dispose();
     _openingStockRateController.dispose();
     _salesDescriptionController.dispose();
     _purchaseDescriptionController.dispose();
+    _itemsController.dispose();
     super.dispose();
   }
 
@@ -255,9 +363,15 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                         onPopInvokedWithResult(false, null);
                       },
                       actions: [
-                        AppBarElevatedButton(
-                          label: 'SAVE',
-                          onPressed: _saveItem,
+                        ListenableBuilder(
+                          listenable: _itemsController,
+                          builder: (context, _) {
+                            final saving = _itemsController.isSaving;
+                            return AppBarElevatedButton(
+                              label: saving ? 'SAVING...' : 'SAVE',
+                              onPressed: saving ? null : _saveItem,
+                            );
+                          },
                         ),
                         SizedBox(width: Dimensions.width20),
                       ],
@@ -490,6 +604,11 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                                   ),
                                 ],
                               ),
+                              SizedBox(height: Dimensions.height20),
+                              GestureDetector(
+                                onTap: _showGtinSearchSheet,
+                                child: _buildDropdown('GTIN', _selectedGtin),
+                              ),
                               SizedBox(height: Dimensions.height15),
                               _buildCheckbox(
                                 'It is an excise product',
@@ -534,6 +653,17 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                                       'Account',
                                       _selectedSalesAccount,
                                       isRequired: true,
+                                      options: _salesAccountOptions,
+                                      onSelected: (account) {
+                                        setState(
+                                          () => _selectedSalesAccount = account,
+                                        );
+                                        markDirty();
+                                        appLog(
+                                          '💰 Sales account selected: $account',
+                                          name: 'AddItemPage',
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],
@@ -547,7 +677,19 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                                 icon: Icons.description_outlined,
                               ),
                               SizedBox(height: Dimensions.height20),
-                              _buildDropdown('Tax', 'Select a Tax'),
+                              _buildDropdown(
+                                'Tax',
+                                _selectedTax,
+                                options: _taxOptions,
+                                onSelected: (tax) {
+                                  setState(() => _selectedTax = tax);
+                                  markDirty();
+                                  appLog(
+                                    '🧾 Tax selected: $tax',
+                                    name: 'AddItemPage',
+                                  );
+                                },
+                              ),
                             ],
                           ),
 
@@ -581,6 +723,17 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                                       'Account',
                                       _selectedAccount,
                                       isRequired: true,
+                                      options: _purchaseAccountOptions,
+                                      onSelected: (account) {
+                                        setState(
+                                          () => _selectedAccount = account,
+                                        );
+                                        markDirty();
+                                        appLog(
+                                          '🛒 Purchase account selected: $account',
+                                          name: 'AddItemPage',
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],
@@ -652,6 +805,17 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
                                 'Valuation Method',
                                 _selectedValuationMethod,
                                 isRequired: true,
+                                options: _valuationMethodOptions,
+                                onSelected: (method) {
+                                  setState(
+                                    () => _selectedValuationMethod = method,
+                                  );
+                                  markDirty();
+                                  appLog(
+                                    '📊 Valuation method selected: $method',
+                                    name: 'AddItemPage',
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -723,8 +887,10 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
     );
   }
 
-  void _saveItem() {
+  Future<void> _saveItem() async {
     appLog('💾 Save button tapped', name: 'AddItemPage');
+    if (_itemsController.isSaving) return;
+
     final name = _itemNameController.text.trim();
     if (name.isEmpty) {
       ToastificationHelper.showError(
@@ -733,13 +899,81 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
       );
       return;
     }
-    if (_sellingPriceController.text.trim().isEmpty) {
+    if (_salesInformation && _sellingPriceController.text.trim().isEmpty) {
       ToastificationHelper.showError(context, 'Please enter a selling price.');
       return;
     }
-    ToastificationHelper.showSuccess(context, '$name saved successfully.');
-    markClean();
-    Navigator.pop(context);
+
+    final body = _buildRequestBody();
+    final existing = widget.existing;
+    final bool isEdit = existing != null;
+
+    final ok = isEdit
+        ? await _itemsController.updateItem(existing.id, body)
+        : await _itemsController.createItem(body);
+    if (!mounted) return;
+
+    if (ok) {
+      ToastificationHelper.showSuccess(
+        context,
+        isEdit ? '$name updated successfully.' : '$name saved successfully.',
+      );
+      markClean();
+      // Return `true` so the items list knows to refresh.
+      Navigator.pop(context, true);
+    } else {
+      ToastificationHelper.showError(
+        context,
+        _itemsController.errorMessage ??
+            'Could not save item. Please try again.',
+      );
+    }
+  }
+
+  /// Maps the current form state to the API request payload.
+  Map<String, dynamic> _buildRequestBody() {
+    double parsePrice(String text) => double.tryParse(text.trim()) ?? 0.0;
+
+    // The UI shows a friendly label; the API expects a short code.
+    String valuationCode() {
+      final v = _selectedValuationMethod.toLowerCase();
+      if (v.contains('fifo')) return 'fifo';
+      if (v.contains('lifo')) return 'lifo';
+      if (v.contains('average') || v.contains('weighted')) {
+        return 'weighted_average';
+      }
+      return 'fifo';
+    }
+
+    return {
+      'item_type': _itemType.toLowerCase(),
+      'name': _itemNameController.text.trim(),
+      'sku': _skuController.text.trim(),
+      'unit': _unitController.text.trim(),
+      'gtin': _selectedGtin.startsWith('Select') ? '' : _selectedGtin,
+      'is_excise_product': _isExciseProduct,
+      'sales_enabled': _salesInformation,
+      'selling_price': parsePrice(
+        _sellingPriceController.text,
+      ).toStringAsFixed(2),
+      'sales_account': _selectedSalesAccount,
+      'sales_description': _salesDescriptionController.text.trim(),
+      'tax': _selectedTax.startsWith('Select') ? '' : _selectedTax,
+      'purchase_enabled': _purchaseInformation,
+      'cost_price': parsePrice(_costPriceController.text).toStringAsFixed(2),
+      'purchase_account': _selectedAccount,
+      'purchase_description': _purchaseDescriptionController.text.trim(),
+      'preferred_vendor_id': null,
+      'track_inventory': _trackInventory,
+      'inventory_account': _selectedInventoryAccount,
+      'opening_stock': parsePrice(
+        _openingStockController.text,
+      ).toStringAsFixed(2),
+      'rate_per_unit': parsePrice(
+        _openingStockRateController.text,
+      ).toStringAsFixed(2),
+      'valuation_method': _trackInventory ? valuationCode() : '',
+    };
   }
 
   Widget _buildTextField(
@@ -850,7 +1084,14 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
     );
   }
 
-  Widget _buildDropdown(String label, String value, {bool isRequired = false}) {
+  Widget _buildDropdown(
+    String label,
+    String value, {
+    bool isRequired = false,
+    List<String>? options,
+    ValueChanged<String>? onSelected,
+  }) {
+    final bool interactive = options != null && onSelected != null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -875,39 +1116,307 @@ class _AddItemPageState extends State<AddItemPage> with UnsavedChangesMixin {
           ],
         ),
         SizedBox(height: Dimensions.height10 / 2),
-        Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: Dimensions.width15,
-            vertical: Dimensions.height10,
-          ),
-          decoration: BoxDecoration(
-            border: Border.all(color: context.colors.border),
-            borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: Dimensions.font16,
-                    color: value.startsWith('Select')
-                        ? context.colors.textTertiary
-                        : context.colors.textPrimary,
+        GestureDetector(
+          onTap: interactive
+              ? () => _showSelectionSheet(
+                  title: label,
+                  options: options,
+                  selected: value,
+                  onSelected: onSelected,
+                )
+              : null,
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: Dimensions.width15,
+              vertical: Dimensions.height10,
+            ),
+            decoration: BoxDecoration(
+              border: Border.all(color: context.colors.border),
+              borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: Dimensions.font16,
+                      color: value.startsWith('Select')
+                          ? context.colors.textTertiary
+                          : context.colors.textPrimary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              SizedBox(width: Dimensions.width10),
-              Icon(
-                Icons.keyboard_arrow_down,
-                color: context.colors.textSecondary,
-                size: Dimensions.iconSize24,
-              ),
-            ],
+                SizedBox(width: Dimensions.width10),
+                Icon(
+                  Icons.keyboard_arrow_down,
+                  color: context.colors.textSecondary,
+                  size: Dimensions.iconSize24,
+                ),
+              ],
+            ),
           ),
         ),
       ],
+    );
+  }
+
+  /// Opens a searchable bottom sheet for picking a GTIN.
+  ///
+  /// Filters [_gtinOptions] by the search query and shows a "No result found"
+  /// empty state when nothing matches (which is the default, since no GTIN
+  /// options are configured yet).
+  void _showGtinSearchSheet() {
+    // Reset the query each time the sheet opens.
+    _gtinSearchController.clear();
+
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return Padding(
+          // Lift the sheet above the keyboard when the search field is focused.
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+          ),
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(sheetContext).size.height * 0.75,
+            ),
+            decoration: BoxDecoration(
+              color: context.colors.card,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(Dimensions.radius20),
+              ),
+            ),
+            child: StatefulBuilder(
+              builder: (context, setSheetState) {
+                final query = _gtinSearchController.text.trim().toLowerCase();
+                final results = query.isEmpty
+                    ? _gtinOptions
+                    : _gtinOptions
+                          .where((g) => g.toLowerCase().contains(query))
+                          .toList();
+
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const BottomSheetDragHandle(),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Dimensions.width20,
+                      ),
+                      child: Text(
+                        'GTIN',
+                        style: TextStyle(
+                          fontSize: Dimensions.font20,
+                          fontWeight: FontWeight.w800,
+                          color: context.colors.textPrimary,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: Dimensions.height15),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Dimensions.width20,
+                      ),
+                      child: TextField(
+                        controller: _gtinSearchController,
+                        autofocus: true,
+                        onChanged: (_) => setSheetState(() {}),
+                        style: TextStyle(
+                          fontSize: Dimensions.font16,
+                          color: context.colors.textPrimary,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Search',
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: context.colors.textSecondary,
+                            size: Dimensions.iconSize24 * 0.9,
+                          ),
+                          hintStyle: TextStyle(
+                            fontSize: Dimensions.font16,
+                            color: context.colors.textTertiary,
+                          ),
+                          filled: true,
+                          fillColor: context.colors.surfaceLight,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15,
+                            ),
+                            borderSide: BorderSide.none,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15,
+                            ),
+                            borderSide: BorderSide(
+                              color: context.colors.border,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius15,
+                            ),
+                            borderSide: BorderSide(
+                              color: AppColors.primary,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: Dimensions.width15,
+                            vertical: Dimensions.height15,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: Dimensions.height15),
+                    Flexible(
+                      child: results.isEmpty
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: Dimensions.height30,
+                              ),
+                              child: const EmptyStateWidget(
+                                icon: Icons.inventory_2_outlined,
+                                title: 'No result found',
+                                subtitle: '',
+                              ),
+                            )
+                          : ListView(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.only(
+                                bottom: Dimensions.height20,
+                              ),
+                              children: results.map((gtin) {
+                                final isSelected = gtin == _selectedGtin;
+                                return ListTile(
+                                  leading: Icon(
+                                    isSelected
+                                        ? Icons.radio_button_checked_rounded
+                                        : Icons.radio_button_off_rounded,
+                                    color: isSelected
+                                        ? AppColors.primary
+                                        : context.colors.textSecondary,
+                                  ),
+                                  title: Text(
+                                    gtin,
+                                    style: TextStyle(
+                                      fontSize: Dimensions.font16 * 0.9,
+                                      fontWeight: isSelected
+                                          ? FontWeight.w700
+                                          : FontWeight.w500,
+                                      color: context.colors.textPrimary,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    setState(() => _selectedGtin = gtin);
+                                    markDirty();
+                                    appLog(
+                                      '🏷️ GTIN selected: $gtin',
+                                      name: 'AddItemPage',
+                                    );
+                                    Navigator.pop(sheetContext);
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// Opens a bottom sheet listing [options] and reports the chosen value.
+  void _showSelectionSheet({
+    required String title,
+    required List<String> options,
+    required String selected,
+    required ValueChanged<String> onSelected,
+  }) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      // Allow the sheet to grow (and its list to scroll) instead of forcing
+      // all options into a fixed-height column that can overflow.
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return Container(
+          // Cap the sheet at 70% of the screen so long option lists scroll.
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(sheetContext).size.height * 0.7,
+          ),
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(Dimensions.radius20),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const BottomSheetDragHandle(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: Dimensions.font20,
+                      fontWeight: FontWeight.w800,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: Dimensions.height10),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.only(bottom: Dimensions.height20),
+                  children: options.map((option) {
+                    final isSelected = option == selected;
+                    return ListTile(
+                      leading: Icon(
+                        isSelected
+                            ? Icons.radio_button_checked_rounded
+                            : Icons.radio_button_off_rounded,
+                        color: isSelected
+                            ? AppColors.primary
+                            : context.colors.textSecondary,
+                      ),
+                      title: Text(
+                        option,
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.9,
+                          fontWeight: isSelected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                          color: context.colors.textPrimary,
+                        ),
+                      ),
+                      onTap: () {
+                        onSelected(option);
+                        Navigator.pop(sheetContext);
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

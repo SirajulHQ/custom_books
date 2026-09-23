@@ -56,13 +56,17 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                       AppBarIconButton(
                         icon: Icons.edit_outlined,
                         color: AppColors.primary,
-                        onPressed: () {
-                          Navigator.push(
+                        onPressed: () async {
+                          final updated = await Navigator.push<bool>(
                             context,
                             MaterialPageRoute(
                               builder: (_) => AddItemPage(existing: item),
                             ),
                           );
+                          // Bubble the refresh signal up to the items list.
+                          if (updated == true && context.mounted) {
+                            Navigator.pop(context, true);
+                          }
                         },
                       ),
                       SizedBox(width: Dimensions.width20),
@@ -76,6 +80,8 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                         _buildPricingSection(context),
                         SizedBox(height: Dimensions.height15),
                         _buildDetailsSection(context),
+                        SizedBox(height: Dimensions.height15),
+                        _buildAccountsSection(context),
                         SizedBox(height: Dimensions.height30),
                       ]),
                     ),
@@ -316,10 +322,117 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
           SizedBox(height: Dimensions.height20),
           _buildDetailRow(
             context,
+            icon: Icons.category_outlined,
+            label: 'Item Type',
+            value: _titleCase(item.itemType),
+          ),
+          SizedBox(height: Dimensions.height20),
+          _buildDetailRow(
+            context,
+            icon: Icons.straighten_outlined,
+            label: 'Unit',
+            value: item.unit,
+            placeholder: 'Not set',
+          ),
+          SizedBox(height: Dimensions.height20),
+          _buildDetailRow(
+            context,
+            icon: Icons.trending_up_outlined,
+            label: 'Margin',
+            value: item.margin != null
+                ? '${item.margin!.toStringAsFixed(2)}%'
+                : null,
+            placeholder: '—',
+          ),
+          SizedBox(height: Dimensions.height20),
+          _buildDetailRow(
+            context,
+            icon: Icons.inventory_outlined,
+            label: 'Track Inventory',
+            value: item.trackInventory == null
+                ? null
+                : (item.trackInventory! ? 'Yes' : 'No'),
+          ),
+          if (item.trackInventory == true) ...[
+            SizedBox(height: Dimensions.height20),
+            _buildDetailRow(
+              context,
+              icon: Icons.calculate_outlined,
+              label: 'Valuation Method',
+              value: item.valuationMethod?.toUpperCase(),
+              placeholder: 'Not set',
+            ),
+          ],
+          SizedBox(height: Dimensions.height20),
+          _buildDetailRow(
+            context,
             icon: Icons.toggle_on_outlined,
             label: 'Status',
             value: item.isActive ? 'Active' : 'Inactive',
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAccountsSection(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(Dimensions.width20),
+      decoration: BoxDecoration(
+        color: context.colors.card,
+        borderRadius: BorderRadius.circular(Dimensions.radius15),
+        border: Border.all(color: context.colors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'SALES & PURCHASE',
+            style: TextStyle(
+              fontSize: Dimensions.font16 * 0.7,
+              fontWeight: FontWeight.w700,
+              color: context.colors.textTertiary,
+              letterSpacing: 1.2,
+            ),
+          ),
+          SizedBox(height: Dimensions.height20),
+          _buildDetailRow(
+            context,
+            icon: Icons.call_made_rounded,
+            label: 'Sales Account',
+            value: item.salesEnabled == false
+                ? 'Sales disabled'
+                : item.salesAccount,
+            placeholder: 'Not set',
+          ),
+          if (item.salesDescription != null) ...[
+            SizedBox(height: Dimensions.height20),
+            _buildDetailRow(
+              context,
+              icon: Icons.notes_rounded,
+              label: 'Sales Description',
+              value: item.salesDescription,
+            ),
+          ],
+          SizedBox(height: Dimensions.height20),
+          _buildDetailRow(
+            context,
+            icon: Icons.call_received_rounded,
+            label: 'Purchase Account',
+            value: item.purchaseEnabled == false
+                ? 'Purchase disabled'
+                : item.purchaseAccount,
+            placeholder: 'Not set',
+          ),
+          if (item.purchaseDescription != null) ...[
+            SizedBox(height: Dimensions.height20),
+            _buildDetailRow(
+              context,
+              icon: Icons.notes_rounded,
+              label: 'Purchase Description',
+              value: item.purchaseDescription,
+            ),
+          ],
         ],
       ),
     );
@@ -377,6 +490,16 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
         ),
       ],
     );
+  }
+
+  /// Capitalises the first letter of each word (e.g. "goods" -> "Goods").
+  String? _titleCase(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    return value
+        .trim()
+        .split(RegExp(r'\s+'))
+        .map((w) => w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1)}')
+        .join(' ');
   }
 
   Widget _buildPlaceholderIcon(BuildContext context) {
