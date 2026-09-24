@@ -1,13 +1,14 @@
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
+import 'package:custom_books/core/enums/sort_direction.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
-import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:custom_books/core/widgets/custom_add_button.dart';
 import 'package:custom_books/core/widgets/custom_search_field.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/filter_sheet.dart';
+import 'package:custom_books/core/widgets/generic_sort_sheet.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
 import 'package:custom_books/features/items/controllers/items_list_controller.dart';
@@ -27,7 +28,7 @@ class ItemsPage extends StatefulWidget {
 class _ItemsPageState extends State<ItemsPage> {
   final ItemsListController _controller = ItemsListController();
 
-  String _selectedFilter = 'Active Items';
+  String _selectedFilter = 'All Items';
   bool _searchOpen = false;
   final _searchController = TextEditingController();
 
@@ -45,6 +46,26 @@ class _ItemsPageState extends State<ItemsPage> {
     'Inventory Items',
     'Non-inventory Items',
   ];
+
+  /// Maps the UI sort-field label to the API's `sort_by` query value.
+  static const Map<String, String> _sortApiValues = {
+    'Name': 'name',
+    'Sales Price': 'sales_price',
+    'Purchase Price': 'purchase_price',
+  };
+
+  /// Maps the UI filter label to the API's `filter` query value.
+  static const Map<String, String> _filterApiValues = {
+    'All Items': 'all_items',
+    'Active Items': 'active_items',
+    'Inactive Items': 'inactive_items',
+    'Sales': 'sales',
+    'Purchases': 'purchases',
+    'Services': 'services',
+    'Zoho CRM': 'zoho_crm',
+    'Inventory Items': 'inventory_items',
+    'Non-inventory Items': 'non_inventory_items',
+  };
 
   @override
   void initState() {
@@ -66,9 +87,13 @@ class _ItemsPageState extends State<ItemsPage> {
     if (mounted) setState(() {});
   }
 
-  /// Fetches items from the API.
+  /// Fetches items from the API for the current filter and sort selection.
   Future<void> _loadItems() async {
-    await _controller.load();
+    await _controller.load(
+      filter: _filterApiValues[_selectedFilter],
+      sortBy: _sortApiValues[_sortField],
+      sortOrder: _sortAsc ? 'asc' : 'desc',
+    );
     if (!mounted) return;
     if (_controller.errorMessage != null) {
       ToastificationHelper.showError(context, _controller.errorMessage!);
@@ -78,17 +103,10 @@ class _ItemsPageState extends State<ItemsPage> {
   bool get _isLoading => _controller.isLoading;
 
   List<ItemModel> get _filteredItems {
+    // Filtering and sorting are done server-side via query params; only the
+    // search box is applied client-side over the returned list.
     var list = _controller.items;
 
-    // Apply filter
-    if (_selectedFilter == 'Active Items') {
-      list = list.where((item) => item.isActive).toList();
-    } else if (_selectedFilter == 'Inactive Items') {
-      list = list.where((item) => !item.isActive).toList();
-    }
-    // For 'All Items' and other filters, show all items for now
-
-    // Apply search
     final query = _searchController.text.trim().toLowerCase();
     if (query.isNotEmpty) {
       list = list.where((item) {
@@ -97,105 +115,28 @@ class _ItemsPageState extends State<ItemsPage> {
       }).toList();
     }
 
-    // Apply sort
-    list = [...list];
-    list.sort((a, b) {
-      int cmp;
-      switch (_sortField) {
-        case 'Sales Price':
-          cmp = a.salesPrice.compareTo(b.salesPrice);
-          break;
-        case 'Purchase Price':
-          cmp = a.purchasePrice.compareTo(b.purchasePrice);
-          break;
-        case 'Name':
-        default:
-          cmp = a.name.toLowerCase().compareTo(b.name.toLowerCase());
-      }
-      return _sortAsc ? cmp : -cmp;
-    });
-
     return list;
   }
 
   void _showSortSheet() {
     appLog('🔀 Opening sort sheet', name: 'ItemsPage');
     const fields = ['Name', 'Sales Price', 'Purchase Price'];
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        return Container(
-          decoration: BoxDecoration(
-            color: context.colors.card,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(Dimensions.radius20 * 1.2),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const BottomSheetDragHandle(),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Sort by',
-                    style: TextStyle(
-                      fontSize: Dimensions.font20,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: Dimensions.height10),
-              ...fields.map((f) {
-                final selected = f == _sortField;
-                return ListTile(
-                  leading: Icon(
-                    selected
-                        ? Icons.radio_button_checked_rounded
-                        : Icons.radio_button_off_rounded,
-                    color: selected
-                        ? AppColors.primary
-                        : context.colors.textSecondary,
-                  ),
-                  title: Text(
-                    f,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16 * 0.9,
-                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                  trailing: selected
-                      ? Icon(
-                          _sortAsc
-                              ? Icons.arrow_upward_rounded
-                              : Icons.arrow_downward_rounded,
-                          color: AppColors.primary,
-                          size: Dimensions.iconSize16,
-                        )
-                      : null,
-                  onTap: () {
-                    setState(() {
-                      if (_sortField == f) {
-                        _sortAsc = !_sortAsc;
-                      } else {
-                        _sortField = f;
-                        _sortAsc = true;
-                      }
-                    });
-                    Navigator.pop(ctx);
-                  },
-                );
-              }),
-              SizedBox(height: Dimensions.height20),
-            ],
-          ),
-        );
+    GenericSortSheet.show<String>(
+      context,
+      fields: fields,
+      initialField: _sortField,
+      initialDirection: _sortAsc
+          ? SortDirection.ascending
+          : SortDirection.descending,
+      labelBuilder: (f) => f,
+      showInfoBanner: true,
+      onApply: (field, direction) {
+        setState(() {
+          _sortField = field;
+          _sortAsc = direction == SortDirection.ascending;
+        });
+        // Re-fetch from the API with the new sort.
+        _loadItems();
       },
     );
   }
@@ -214,11 +155,13 @@ class _ItemsPageState extends State<ItemsPage> {
         selectedValue: _selectedFilter,
         labelBuilder: (filter) => filter ?? '',
         onSelected: (filter) {
-          if (filter != null) {
+          if (filter != null && filter != _selectedFilter) {
             appLog('✅ Filter selected: $filter', name: 'ItemsPage');
             setState(() => _selectedFilter = filter);
-            Navigator.pop(sheetContext);
+            // Re-fetch from the API for the newly selected filter.
+            _loadItems();
           }
+          Navigator.pop(sheetContext);
         },
         onClose: () {
           appLog('❌ Filter sheet closed', name: 'ItemsPage');

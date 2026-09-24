@@ -15,16 +15,24 @@ class ItemsListController extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  Future<void> load() async {
+  Future<void> load({String? filter, String? sortBy, String? sortOrder}) async {
     _isLoading = true;
     notifyListeners();
-    await fetch();
+    await fetch(filter: filter, sortBy: sortBy, sortOrder: sortOrder);
     _isLoading = false;
     notifyListeners();
   }
 
-  Future<void> fetch() async {
-    final resp = await _vm.fetchItems();
+  Future<void> fetch({
+    String? filter,
+    String? sortBy,
+    String? sortOrder,
+  }) async {
+    final resp = await _vm.fetchItems(
+      filter: filter,
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+    );
     final int? status = resp?['_statusCode'] as int?;
     if (resp != null &&
         resp['success'] == true &&

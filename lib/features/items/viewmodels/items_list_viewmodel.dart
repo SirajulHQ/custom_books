@@ -8,13 +8,24 @@ import 'package:http/http.dart' as http;
 class ItemsListViewModel {
   final String baseUrl = ApiSecrets.baseUrl;
 
-  /// Fetches the paginated list of items.
+  /// Fetches the paginated list of items, optionally filtered and sorted
+  /// server-side via `?filter=<filter>&sort_by=<field>&sort_order=<asc|desc>`.
   ///
   /// Returns the parsed response body with `_statusCode` attached, or `null`
   /// if the request could not be completed (network error, etc.). The caller
   /// reads the `success` flag and `data.results` list.
-  Future<Map<String, dynamic>?> fetchItems() async {
-    final url = Uri.parse('$baseUrl/api/items/');
+  Future<Map<String, dynamic>?> fetchItems({
+    String? filter,
+    String? sortBy,
+    String? sortOrder,
+  }) async {
+    final url = Uri.parse('$baseUrl/api/items/').replace(
+      queryParameters: {
+        if (filter != null && filter.isNotEmpty) 'filter': filter,
+        if (sortBy != null && sortBy.isNotEmpty) 'sort_by': sortBy,
+        if (sortOrder != null && sortOrder.isNotEmpty) 'sort_order': sortOrder,
+      },
+    );
 
     try {
       final token = await AuthService.instance.getValidAccessToken();
