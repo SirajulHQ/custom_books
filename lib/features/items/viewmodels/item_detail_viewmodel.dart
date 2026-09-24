@@ -8,10 +8,6 @@ import 'package:http/http.dart' as http;
 class ItemDetailViewModel {
   final String baseUrl = ApiSecrets.baseUrl;
 
-  /// Fetches a single item via `GET /api/items/?item_id=<itemId>`.
-  ///
-  /// Returns the parsed response body with `_statusCode` attached, or `null`
-  /// on a network error.
   Future<Map<String, dynamic>?> fetchItem(String itemId) async {
     final url = Uri.parse(
       '$baseUrl/api/items/',

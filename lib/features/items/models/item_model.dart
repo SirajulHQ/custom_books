@@ -7,7 +7,6 @@ class ItemModel {
   final String? imageUrl;
   final bool isActive;
 
-  // Extra fields from the API (optional, kept nullable for backward-compat).
   final String? organizationId;
   final String? itemType;
   final String? unit;
@@ -61,11 +60,6 @@ class ItemModel {
     return profit.toStringAsFixed(2);
   }
 
-  /// Builds an [ItemModel] from a single API item object.
-  ///
-  /// The backend returns prices as strings (e.g. "15.00"), so numeric fields
-  /// are parsed defensively. A blank `sku`/`unit` is normalised to `null` so
-  /// the UI's "has value" checks behave correctly.
   factory ItemModel.fromJson(Map<String, dynamic> json) {
     return ItemModel(
       id: (json['item_id'] ?? json['id'] ?? '').toString(),

@@ -87,10 +87,6 @@ class ItemFormViewModel {
     }
   }
 
-  /// Deletes an item via `DELETE /api/items/?item_id=<itemId>`.
-  ///
-  /// Returns the parsed response body with `_statusCode` attached (the body may
-  /// be empty for a 204 response), or `null` on a network error.
   Future<Map<String, dynamic>?> deleteItem(String itemId) async {
     final url = Uri.parse(
       '$baseUrl/api/items/',

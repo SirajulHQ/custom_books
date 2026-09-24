@@ -16,11 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddEditItemPage extends StatefulWidget {
-  /// When set, the form is in edit mode and saving updates this item.
   final ItemModel? existing;
 
-  /// When set (and [existing] is null), the form prefills from this item but
-  /// saving creates a brand-new item. Used by the "Clone" action.
   final ItemModel? cloneFrom;
 
   const AddEditItemPage({super.key, this.existing, this.cloneFrom});
@@ -176,13 +173,9 @@ class _AddEditItemPageState extends State<AddEditItemPage>
   final TextEditingController _skuController = TextEditingController();
   final TextEditingController _unitController = TextEditingController();
 
-  /// GTIN options offered in the searchable selection sheet. Empty for now,
-  /// so the sheet shows the "No result found" empty state.
   static const List<String> _gtinOptions = [];
   String _selectedGtin = 'Select a GTIN';
 
-  /// Search query controller for the GTIN selection sheet. Owned by the page
-  /// so it survives the sheet's rebuilds and is only disposed once.
   final TextEditingController _gtinSearchController = TextEditingController();
   final TextEditingController _sellingPriceController = TextEditingController();
   final TextEditingController _costPriceController = TextEditingController();
@@ -196,14 +189,12 @@ class _AddEditItemPageState extends State<AddEditItemPage>
 
   final String _selectedInventoryAccount = 'Inventory Asset';
 
-  /// Inventory valuation methods offered in the Track Inventory section.
   static const List<String> _valuationMethodOptions = [
     'FIFO (First In First Out)',
     'Weighted Average Cost (Moving Average)',
   ];
   String _selectedValuationMethod = 'FIFO (First In First Out)';
 
-  /// Account options offered in the Purchase Information section.
   static const List<String> _purchaseAccountOptions = [
     'Bad Debt',
     'Printing and Stationery',
@@ -224,7 +215,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
   ];
   String _selectedAccount = 'Cost of Goods Sold';
 
-  /// Account options offered in the Sales Information section.
   static const List<String> _salesAccountOptions = [
     'Sales',
     'General Income',
@@ -236,7 +226,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
   ];
   String _selectedSalesAccount = 'Sales';
 
-  /// Tax options offered in the Sales Information section.
   static const List<String> _taxOptions = [
     'Standard Rate [5%]',
     'Zero Rate [0%]',
@@ -248,8 +237,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
   void initState() {
     super.initState();
     _load();
-    // Prefill from the edited item, or from the item being cloned. A clone
-    // copies every field except the SKU (left empty), and creates a new item.
     final existing = widget.existing ?? widget.cloneFrom;
     final bool isClone = widget.existing == null && widget.cloneFrom != null;
     if (existing != null) {
@@ -263,14 +250,12 @@ class _AddEditItemPageState extends State<AddEditItemPage>
       _costPriceController.text = existing.purchasePrice.toStringAsFixed(2);
       _salesDescriptionController.text = existing.salesDescription ?? '';
       _purchaseDescriptionController.text = existing.purchaseDescription ?? '';
-      // Reflect the item's saved options in the form toggles.
       _itemType = (existing.itemType ?? 'goods').toLowerCase() == 'service'
           ? 'Service'
           : 'Goods';
       _trackInventory = existing.trackInventory ?? _trackInventory;
       _salesInformation = existing.salesEnabled ?? _salesInformation;
       _purchaseInformation = existing.purchaseEnabled ?? _purchaseInformation;
-      // Map the API valuation code back to its display label.
       final savedValuation = existing.valuationMethod?.toLowerCase();
       if (savedValuation != null && savedValuation.isNotEmpty) {
         if (savedValuation.contains('weighted') ||
@@ -280,7 +265,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
           _selectedValuationMethod = 'FIFO (First In First Out)';
         }
       }
-      // Restore the saved sales account if it matches one of our options.
       final savedSalesAccount = existing.salesAccount;
       if (savedSalesAccount != null) {
         _selectedSalesAccount = _salesAccountOptions.firstWhere(
@@ -288,7 +272,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
           orElse: () => _selectedSalesAccount,
         );
       }
-      // Restore the saved purchase account if it matches one of our options.
       final savedPurchaseAccount = existing.purchaseAccount;
       if (savedPurchaseAccount != null) {
         _selectedAccount = _purchaseAccountOptions.firstWhere(
@@ -296,7 +279,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
           orElse: () => _selectedAccount,
         );
       }
-      // Restore the saved tax if it matches one of our options.
       final savedTax = existing.tax;
       if (savedTax != null) {
         _selectedTax = _taxOptions.firstWhere(
@@ -341,7 +323,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
     super.dispose();
   }
 
-  /// Simulates preparing the form so the shimmer skeleton is shown briefly.
   Future<void> _load() async {
     setState(() => _isLoading = true);
     await Future.delayed(const Duration(milliseconds: 700));
@@ -362,7 +343,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
               : CustomScrollView(
                   physics: const BouncingScrollPhysics(),
                   slivers: [
-                    // App Bar
                     CustomSliverAppBar(
                       title: widget.existing != null
                           ? 'Edit Item'
@@ -393,12 +373,10 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                       ],
                     ),
 
-                    // Content
                     SliverPadding(
                       padding: EdgeInsets.all(Dimensions.width20),
                       sliver: SliverList(
                         delegate: SliverChildListDelegate([
-                          // Item Type and Image Card
                           _ItemOverviewSection(
                             children: [
                               Row(
@@ -461,7 +439,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                                           ),
                                         ),
                                         SizedBox(height: Dimensions.height10),
-                                        // ---- Live image preview / picker ----
                                         Stack(
                                           children: [
                                             GestureDetector(
@@ -548,7 +525,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                                                       ),
                                               ),
                                             ),
-                                            // Remove button — only shown when an image is selected
                                             if (_itemImage != null)
                                               Positioned(
                                                 top: Dimensions.height10 * 0.6,
@@ -641,7 +617,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
 
                           SizedBox(height: Dimensions.height15),
 
-                          // Sales Information Card
                           _ItemToggleSection(
                             'Sales Information',
                             Icons.point_of_sale_outlined,
@@ -711,7 +686,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
 
                           SizedBox(height: Dimensions.height15),
 
-                          // Purchase Information Card
                           _ItemToggleSection(
                             'Purchase Information',
                             Icons.shopping_cart_outlined,
@@ -775,7 +749,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
 
                           SizedBox(height: Dimensions.height15),
 
-                          // Track Inventory Card
                           _ItemToggleSection(
                             'Track Inventory',
                             Icons.inventory_outlined,
@@ -935,7 +908,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
         isEdit ? '$name updated successfully.' : '$name saved successfully.',
       );
       markClean();
-      // Return `true` so the items list knows to refresh.
       Navigator.pop(context, true);
     } else {
       ToastificationHelper.showError(
@@ -946,11 +918,9 @@ class _AddEditItemPageState extends State<AddEditItemPage>
     }
   }
 
-  /// Maps the current form state to the API request payload.
   Map<String, dynamic> _buildRequestBody() {
     double parsePrice(String text) => double.tryParse(text.trim()) ?? 0.0;
 
-    // The UI shows a friendly label; the API expects a short code.
     String valuationCode() {
       final v = _selectedValuationMethod.toLowerCase();
       if (v.contains('fifo')) return 'fifo';
@@ -1178,13 +1148,7 @@ class _AddEditItemPageState extends State<AddEditItemPage>
     );
   }
 
-  /// Opens a searchable bottom sheet for picking a GTIN.
-  ///
-  /// Filters [_gtinOptions] by the search query and shows a "No result found"
-  /// empty state when nothing matches (which is the default, since no GTIN
-  /// options are configured yet).
   void _showGtinSearchSheet() {
-    // Reset the query each time the sheet opens.
     _gtinSearchController.clear();
 
     showModalBottomSheet<void>(
@@ -1193,7 +1157,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
       isScrollControlled: true,
       builder: (sheetContext) {
         return Padding(
-          // Lift the sheet above the keyboard when the search field is focused.
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
           ),
@@ -1352,7 +1315,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
     );
   }
 
-  /// Opens a bottom sheet listing [options] and reports the chosen value.
   void _showSelectionSheet({
     required String title,
     required List<String> options,
@@ -1362,12 +1324,9 @@ class _AddEditItemPageState extends State<AddEditItemPage>
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
-      // Allow the sheet to grow (and its list to scroll) instead of forcing
-      // all options into a fixed-height column that can overflow.
       isScrollControlled: true,
       builder: (sheetContext) {
         return Container(
-          // Cap the sheet at 70% of the screen so long option lists scroll.
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(sheetContext).size.height * 0.7,
           ),

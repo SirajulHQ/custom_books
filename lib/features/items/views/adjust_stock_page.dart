@@ -12,12 +12,6 @@ import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// Screen for adjusting an item's stock quantity (and, optionally, its cost).
-///
-/// Mirrors the reference "Adjust Stock" flow: pick a date and account, enter a
-/// new quantity on hand (or a signed adjustment), optionally edit the cost
-/// price, choose a reason and reference, then save as draft or convert to
-/// adjusted.
 class AdjustStockPage extends StatefulWidget {
   final ItemModel item;
 
@@ -38,7 +32,6 @@ class _AdjustStockPageState extends State<AdjustStockPage>
   String? _reason;
   late double _costPrice;
 
-  /// Guards against the two quantity fields recomputing each other in a loop.
   bool _syncingQuantities = false;
 
   double get _quantityAvailable => widget.item.openingStock ?? 0.0;
@@ -85,7 +78,6 @@ class _AdjustStockPageState extends State<AdjustStockPage>
     super.dispose();
   }
 
-  /// When the user types a new quantity on hand, derive the adjustment.
   void _onNewQuantityChanged() {
     if (_syncingQuantities) return;
     markDirty();
@@ -100,7 +92,6 @@ class _AdjustStockPageState extends State<AdjustStockPage>
     _syncingQuantities = false;
   }
 
-  /// When the user types an adjustment, derive the new quantity on hand.
   void _onAdjustedChanged() {
     if (_syncingQuantities) return;
     markDirty();
@@ -288,7 +279,6 @@ class _AdjustStockPageState extends State<AdjustStockPage>
     );
   }
 
-  // ── Item header ────────────────────────────────────────────────────────────
   Widget _buildItemHeader() {
     final item = widget.item;
     return Padding(
@@ -340,7 +330,6 @@ class _AdjustStockPageState extends State<AdjustStockPage>
     );
   }
 
-  // ── Date + Account ───────────────────────────────────────────────────────
   Widget _buildDateAccountCard() {
     return FormCard(
       children: [
@@ -370,11 +359,9 @@ class _AdjustStockPageState extends State<AdjustStockPage>
     );
   }
 
-  // ── Quantity + Cost ─────────────────────────────────────────────────────
   Widget _buildQuantityCard() {
     return FormCard(
       children: [
-        // Quantity Available (read-only strip)
         Container(
           padding: EdgeInsets.symmetric(
             horizontal: Dimensions.width15,
@@ -484,7 +471,6 @@ class _AdjustStockPageState extends State<AdjustStockPage>
     );
   }
 
-  // ── Reason + Reference ───────────────────────────────────────────────────
   Widget _buildReasonCard() {
     return FormCard(
       children: [
@@ -504,7 +490,6 @@ class _AdjustStockPageState extends State<AdjustStockPage>
     );
   }
 
-  // ── Shared dropdown field (opens a selection sheet) ──────────────────────
   Widget _buildDropdownField({
     required String? value,
     String hint = '',
@@ -616,7 +601,6 @@ class _AdjustStockPageState extends State<AdjustStockPage>
     );
   }
 
-  // ── Bottom actions ───────────────────────────────────────────────────────
   Widget _buildBottomActions() {
     return SafeArea(
       child: Container(

@@ -32,15 +32,10 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
 
   bool _isLoading = true;
 
-  /// Set when the item is edited from this page, so the list can refresh when
-  /// the user navigates back.
   bool _didChange = false;
 
-  /// Starts with the item passed from the list, then gets replaced by the
-  /// full detail fetched from the API.
   late ItemModel item = widget.item;
 
-  /// Selected transaction type on the TRANSACTIONS tab.
   String _txnType = 'Quotes';
   static const List<String> _txnTypes = [
     'Quotes',
@@ -65,13 +60,11 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
     super.dispose();
   }
 
-  // ── Currency helper ────────────────────────────────────────────────────────
   String _money(double value) => 'AED${value.toStringAsFixed(2)}';
 
   String get _unitSuffix =>
       (item.unit != null && item.unit!.isNotEmpty) ? ' per ${item.unit}' : '';
 
-  // ── Actions (unchanged behaviour) ──────────────────────────────────────────
   Future<void> _cloneItem() async {
     final created = await Navigator.push<bool>(
       context,
@@ -201,7 +194,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
     if (confirmed) _deleteItem();
   }
 
-  // ── Build ──────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -261,7 +253,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
     );
   }
 
-  // ── Header (name, prices, image) ────────────────────────────────────────────
   Widget _buildHeader() {
     return Container(
       width: double.infinity,
@@ -366,7 +357,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
     );
   }
 
-  // ── Tab bar (pill segmented, matching adjustment details) ──────────────────
   Widget _buildTabs() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: Dimensions.width20),
@@ -410,7 +400,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
     );
   }
 
-  // ── DETAILS tab ────────────────────────────────────────────────────────────
   Widget _buildDetailsTab() {
     return ListView(
       padding: EdgeInsets.all(Dimensions.width20),
@@ -448,7 +437,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
               _infoField('Item Type', _itemTypeLabel()),
               _infoField('SKU', item.sku, placeholder: 'No SKU'),
               _infoField('Tax', item.tax, placeholder: 'None'),
-              // Dummy: the API item payload doesn't carry a "created source".
               _infoField('Created Source', 'User'),
               _infoField('Opening Stock', _openingStockLabel(), isLast: true),
             ],
@@ -595,7 +583,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
 
   String _openingStockLabel() {
     final stock = item.openingStock ?? 0;
-    // Show a whole number when there's no fractional part (e.g. "0", "100").
     return stock == stock.roundToDouble()
         ? stock.toStringAsFixed(0)
         : stock.toStringAsFixed(2);
@@ -610,9 +597,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
     return _titleCase(item.itemType) ?? 'Item';
   }
 
-  // ── TRANSACTIONS tab ─────────────────────────────────────────────────────
   Widget _buildTransactionsTab() {
-    // Dummy transactions — the item payload doesn't carry linked documents.
     final txns = _dummyTransactions();
     return Column(
       children: [
@@ -836,7 +821,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
     );
   }
 
-  // ── HISTORY tab ────────────────────────────────────────────────────────────
   Widget _buildHistoryTab() {
     final events = _historyEvents();
     return ListView.builder(
@@ -863,7 +847,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Timeline rail
           Column(
             children: [
               Container(
@@ -884,7 +867,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
             ],
           ),
           SizedBox(width: Dimensions.width15),
-          // Content
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(bottom: Dimensions.height30),
@@ -980,7 +962,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
     );
   }
 
-  // ── Shared section card ────────────────────────────────────────────────────
   Widget _sectionCard({
     required IconData icon,
     required String title,
@@ -1032,7 +1013,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
     );
   }
 
-  // ── Stock Summary / Status (dummy data — not in the item payload) ──────────
   Widget _buildStockSummary() {
     final stockOnHand = item.openingStock ?? 51;
     const committedStock = 21.0;
@@ -1129,7 +1109,6 @@ class _ItemDetailsPageState extends State<ItemDetailsPage>
         .join(' ');
   }
 
-  // ── Dummy data ─────────────────────────────────────────────────────────────
   List<_Txn> _dummyTransactions() {
     return [
       _Txn(

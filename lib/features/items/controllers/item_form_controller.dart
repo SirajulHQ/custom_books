@@ -3,7 +3,6 @@ import 'package:custom_books/features/items/models/item_model.dart';
 import 'package:custom_books/features/items/viewmodels/item_form_viewmodel.dart';
 import 'package:flutter/material.dart';
 
-/// Drives the add/edit item form: creating and updating items.
 class ItemFormController extends ChangeNotifier {
   final _vm = ItemFormViewModel();
 
@@ -43,8 +42,6 @@ class ItemFormController extends ChangeNotifier {
 
     final resp = await _vm.deleteItem(itemId);
     final int? status = resp?['_statusCode'] as int?;
-    // A delete succeeds on any 2xx; the body may be empty (204) or a
-    // `{success: true}` envelope, so we don't require the `success` flag.
     final bool ok =
         resp != null &&
         status != null &&

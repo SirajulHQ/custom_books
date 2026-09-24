@@ -47,14 +47,12 @@ class _ItemsPageState extends State<ItemsPage> {
     'Non-inventory Items',
   ];
 
-  /// Maps the UI sort-field label to the API's `sort_by` query value.
   static const Map<String, String> _sortApiValues = {
     'Name': 'name',
     'Sales Price': 'sales_price',
     'Purchase Price': 'purchase_price',
   };
 
-  /// Maps the UI filter label to the API's `filter` query value.
   static const Map<String, String> _filterApiValues = {
     'All Items': 'all_items',
     'Active Items': 'active_items',
@@ -87,7 +85,6 @@ class _ItemsPageState extends State<ItemsPage> {
     if (mounted) setState(() {});
   }
 
-  /// Fetches items from the API for the current filter and sort selection.
   Future<void> _loadItems() async {
     await _controller.load(
       filter: _filterApiValues[_selectedFilter],
@@ -103,8 +100,6 @@ class _ItemsPageState extends State<ItemsPage> {
   bool get _isLoading => _controller.isLoading;
 
   List<ItemModel> get _filteredItems {
-    // Filtering and sorting are done server-side via query params; only the
-    // search box is applied client-side over the returned list.
     var list = _controller.items;
 
     final query = _searchController.text.trim().toLowerCase();
@@ -135,7 +130,6 @@ class _ItemsPageState extends State<ItemsPage> {
           _sortField = field;
           _sortAsc = direction == SortDirection.ascending;
         });
-        // Re-fetch from the API with the new sort.
         _loadItems();
       },
     );
@@ -158,7 +152,6 @@ class _ItemsPageState extends State<ItemsPage> {
           if (filter != null && filter != _selectedFilter) {
             appLog('✅ Filter selected: $filter', name: 'ItemsPage');
             setState(() => _selectedFilter = filter);
-            // Re-fetch from the API for the newly selected filter.
             _loadItems();
           }
           Navigator.pop(sheetContext);
@@ -188,7 +181,6 @@ class _ItemsPageState extends State<ItemsPage> {
               parent: BouncingScrollPhysics(),
             ),
             slivers: [
-              // App Bar
               CustomSliverAppBar(
                 title: 'Items',
                 subtitle: '${_filteredItems.length} items found',
@@ -223,13 +215,10 @@ class _ItemsPageState extends State<ItemsPage> {
                 ],
               ),
 
-              // Search Field
               if (_searchOpen) SliverToBoxAdapter(child: _buildSearchField()),
 
-              // Filter Segment Control
               SliverToBoxAdapter(child: _buildFilterSegment()),
 
-              // Items List
               if (_isLoading && _controller.items.isEmpty)
                 const SliverFillRemaining(
                   hasScrollBody: true,
@@ -272,7 +261,6 @@ class _ItemsPageState extends State<ItemsPage> {
                                           ItemDetailsPage(item: item),
                                     ),
                                   );
-                                  // Reload if the item was edited from details.
                                   if (changed == true) _loadItems();
                                 },
                                 child: ItemCardWidget(item: item),
@@ -298,7 +286,6 @@ class _ItemsPageState extends State<ItemsPage> {
             context,
             MaterialPageRoute(builder: (context) => const AddEditItemPage()),
           );
-          // Reload the list when a new item was created.
           if (created == true) _loadItems();
         },
       ),
@@ -314,7 +301,6 @@ class _ItemsPageState extends State<ItemsPage> {
   }
 
   Widget _buildFilterSegment() {
-    // Extract display text from selected filter
     String displayText = _selectedFilter.replaceAll(' Items', '');
 
     return Padding(
@@ -332,7 +318,6 @@ class _ItemsPageState extends State<ItemsPage> {
         ),
         child: Row(
           children: [
-            // Filter dropdown button
             Expanded(
               child: GestureDetector(
                 onTap: () {
@@ -388,7 +373,6 @@ class _ItemsPageState extends State<ItemsPage> {
 
             SizedBox(width: Dimensions.width10 * 0.8),
 
-            // Sort button
             GestureDetector(
               onTap: _showSortSheet,
               child: Container(

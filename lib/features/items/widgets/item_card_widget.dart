@@ -21,7 +21,6 @@ class ItemCardWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Item image/placeholder
           Container(
             width: Dimensions.height45 * 1.6,
             height: Dimensions.height45 * 1.6,
@@ -43,12 +42,10 @@ class ItemCardWidget extends StatelessWidget {
 
           SizedBox(width: Dimensions.width15),
 
-          // Item details
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Item name
                 Text(
                   item.name,
                   style: TextStyle(
@@ -58,7 +55,6 @@ class ItemCardWidget extends StatelessWidget {
                   ),
                 ),
 
-                // SKU (if available)
                 if (item.sku != null) ...[
                   SizedBox(height: Dimensions.height10 / 3),
                   Container(
@@ -85,10 +81,8 @@ class ItemCardWidget extends StatelessWidget {
 
                 SizedBox(height: Dimensions.height10),
 
-                // Price row
                 Row(
                   children: [
-                    // Sales Price
                     Expanded(
                       child: _buildPriceBox(
                         context,
@@ -99,7 +93,6 @@ class ItemCardWidget extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: Dimensions.width10),
-                    // Purchase Price
                     Expanded(
                       child: _buildPriceBox(
                         context,
@@ -114,7 +107,6 @@ class ItemCardWidget extends StatelessWidget {
 
                 SizedBox(height: Dimensions.height10),
 
-                // Profit/Loss
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: Dimensions.width10,
