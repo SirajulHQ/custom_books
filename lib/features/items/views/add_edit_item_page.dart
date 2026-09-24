@@ -3,15 +3,13 @@ import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
-import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
-import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
 import 'package:custom_books/features/items/widgets/selection_dropdown_field.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/items/controllers/item_form_controller.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
-import 'package:custom_books/features/items/widgets/item_image_picker.dart';
+import 'package:custom_books/features/items/widgets/item_overview_section.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -46,7 +44,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
   static const List<String> _gtinOptions = [];
   String _selectedGtin = 'Select a GTIN';
 
-  final TextEditingController _gtinSearchController = TextEditingController();
   final TextEditingController _sellingPriceController = TextEditingController();
   final TextEditingController _costPriceController = TextEditingController();
   final TextEditingController _openingStockController = TextEditingController();
@@ -182,7 +179,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
     _itemNameController.dispose();
     _skuController.dispose();
     _unitController.dispose();
-    _gtinSearchController.dispose();
     _sellingPriceController.dispose();
     _costPriceController.dispose();
     _openingStockController.dispose();
@@ -247,123 +243,35 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                       padding: EdgeInsets.all(Dimensions.width20),
                       sliver: SliverList(
                         delegate: SliverChildListDelegate([
-                          _ItemOverviewSection(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Item Type',
-                                          style: TextStyle(
-                                            fontSize: Dimensions.font16 * 0.9,
-                                            fontWeight: FontWeight.w700,
-                                            color: context.colors.textPrimary,
-                                          ),
-                                        ),
-                                        SizedBox(height: Dimensions.height10),
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: context.colors.surfaceLight,
-                                            borderRadius: BorderRadius.circular(
-                                              Dimensions.radius15 / 2,
-                                            ),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: Dimensions.width10,
-                                            vertical: Dimensions.height10 / 2,
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              _buildRadioOption(
-                                                'Goods',
-                                                Icons.inventory_2_outlined,
-                                              ),
-                                              _buildRadioOption(
-                                                'Service',
-                                                Icons
-                                                    .home_repair_service_outlined,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(width: Dimensions.width15),
-                                  Expanded(
-                                    flex: 2,
-                                    child: ItemImagePicker(
-                                      image: _itemImage,
-                                      onImagePicked: (picked) {
-                                        setState(() => _itemImage = picked);
-                                        markDirty();
-                                      },
-                                      onRemove: () {
-                                        setState(() => _itemImage = null);
-                                        markDirty();
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: Dimensions.height20),
-                              Divider(height: 1, color: context.colors.border),
-                              SizedBox(height: Dimensions.height20),
-                              _buildTextField(
-                                'Item Name',
-                                _itemNameController,
-                                isRequired: true,
-                                icon: Icons.inventory_outlined,
-                              ),
-                              SizedBox(height: Dimensions.height20),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: _buildTextField(
-                                      'SKU',
-                                      _skuController,
-                                      hasInfo: true,
-                                      hasScan: true,
-                                      icon: Icons.qr_code_2_outlined,
-                                    ),
-                                  ),
-                                  SizedBox(width: Dimensions.width15),
-                                  Expanded(
-                                    child: _buildTextField(
-                                      'Unit',
-                                      _unitController,
-                                      hint: 'e.g., pcs, kg, box',
-                                      icon: Icons.straighten_outlined,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: Dimensions.height20),
-                              GestureDetector(
-                                onTap: _showGtinSearchSheet,
-                                child: SelectionDropdownField(
-                                  label: 'GTIN',
-                                  value: _selectedGtin,
-                                ),
-                              ),
-                              SizedBox(height: Dimensions.height15),
-                              _buildCheckbox(
-                                'It is an excise product',
-                                _isExciseProduct,
-                                (value) {
-                                  setState(
-                                    () => _isExciseProduct = value ?? false,
-                                  );
-                                  markDirty();
-                                },
-                              ),
-                            ],
+                          ItemOverviewSection(
+                            itemType: _itemType,
+                            onItemTypeChanged: (type) {
+                              setState(() => _itemType = type);
+                              markDirty();
+                            },
+                            itemImage: _itemImage,
+                            onImagePicked: (picked) {
+                              setState(() => _itemImage = picked);
+                              markDirty();
+                            },
+                            onImageRemoved: () {
+                              setState(() => _itemImage = null);
+                              markDirty();
+                            },
+                            itemNameController: _itemNameController,
+                            skuController: _skuController,
+                            unitController: _unitController,
+                            gtinOptions: _gtinOptions,
+                            selectedGtin: _selectedGtin,
+                            onGtinSelected: (gtin) {
+                              setState(() => _selectedGtin = gtin);
+                              markDirty();
+                            },
+                            isExciseProduct: _isExciseProduct,
+                            onExciseProductChanged: (value) {
+                              setState(() => _isExciseProduct = value);
+                              markDirty();
+                            },
                           ),
 
                           SizedBox(height: Dimensions.height15),
@@ -571,62 +479,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
     );
   }
 
-  Widget _buildRadioOption(String label, IconData icon) {
-    final isSelected = _itemType == label;
-    return GestureDetector(
-      onTap: () {
-        setState(() => _itemType = label);
-        markDirty();
-        appLog('📝 Item type changed to: $label', name: 'AddEditItemPage');
-      },
-      child: Row(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(Dimensions.width10),
-            child: Container(
-              width: Dimensions.height20,
-              height: Dimensions.height20,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected
-                      ? AppColors.primary
-                      : context.colors.textTertiary,
-                  width: 2,
-                ),
-              ),
-              child: isSelected
-                  ? Center(
-                      child: Container(
-                        width: Dimensions.height10,
-                        height: Dimensions.height10,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    )
-                  : null,
-            ),
-          ),
-          Icon(
-            icon,
-            size: Dimensions.iconSize16,
-            color: context.colors.textSecondary,
-          ),
-          SizedBox(width: Dimensions.width10 / 2),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: Dimensions.font16,
-              color: context.colors.textPrimary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<void> _saveItem() async {
     appLog('💾 Save button tapped', name: 'AddEditItemPage');
     if (_itemsController.isSaving) return;
@@ -818,215 +670,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
           ),
         ),
       ],
-    );
-  }
-
-  void _showGtinSearchSheet() {
-    _gtinSearchController.clear();
-
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (sheetContext) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
-          ),
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(sheetContext).size.height * 0.75,
-            ),
-            decoration: BoxDecoration(
-              color: context.colors.card,
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(Dimensions.radius20),
-              ),
-            ),
-            child: StatefulBuilder(
-              builder: (context, setSheetState) {
-                final query = _gtinSearchController.text.trim().toLowerCase();
-                final results = query.isEmpty
-                    ? _gtinOptions
-                    : _gtinOptions
-                          .where((g) => g.toLowerCase().contains(query))
-                          .toList();
-
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const BottomSheetDragHandle(),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                      ),
-                      child: Text(
-                        'GTIN',
-                        style: TextStyle(
-                          fontSize: Dimensions.font20,
-                          fontWeight: FontWeight.w800,
-                          color: context.colors.textPrimary,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height15),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.width20,
-                      ),
-                      child: TextField(
-                        controller: _gtinSearchController,
-                        autofocus: true,
-                        onChanged: (_) => setSheetState(() {}),
-                        style: TextStyle(
-                          fontSize: Dimensions.font16,
-                          color: context.colors.textPrimary,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'Search',
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: context.colors.textSecondary,
-                            size: Dimensions.iconSize24 * 0.9,
-                          ),
-                          hintStyle: TextStyle(
-                            fontSize: Dimensions.font16,
-                            color: context.colors.textTertiary,
-                          ),
-                          filled: true,
-                          fillColor: context.colors.surfaceLight,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(
-                              Dimensions.radius15,
-                            ),
-                            borderSide: BorderSide.none,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(
-                              Dimensions.radius15,
-                            ),
-                            borderSide: BorderSide(
-                              color: context.colors.border,
-                              width: 1,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(
-                              Dimensions.radius15,
-                            ),
-                            borderSide: BorderSide(
-                              color: AppColors.primary,
-                              width: 2,
-                            ),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.width15,
-                            vertical: Dimensions.height15,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height15),
-                    Flexible(
-                      child: results.isEmpty
-                          ? Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: Dimensions.height30,
-                              ),
-                              child: const EmptyStateWidget(
-                                icon: Icons.inventory_2_outlined,
-                                title: 'No result found',
-                                subtitle: '',
-                              ),
-                            )
-                          : ListView(
-                              shrinkWrap: true,
-                              padding: EdgeInsets.only(
-                                bottom: Dimensions.height20,
-                              ),
-                              children: results.map((gtin) {
-                                final isSelected = gtin == _selectedGtin;
-                                return ListTile(
-                                  leading: Icon(
-                                    isSelected
-                                        ? Icons.radio_button_checked_rounded
-                                        : Icons.radio_button_off_rounded,
-                                    color: isSelected
-                                        ? AppColors.primary
-                                        : context.colors.textSecondary,
-                                  ),
-                                  title: Text(
-                                    gtin,
-                                    style: TextStyle(
-                                      fontSize: Dimensions.font16 * 0.9,
-                                      fontWeight: isSelected
-                                          ? FontWeight.w700
-                                          : FontWeight.w500,
-                                      color: context.colors.textPrimary,
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    setState(() => _selectedGtin = gtin);
-                                    markDirty();
-                                    appLog(
-                                      '🏷️ GTIN selected: $gtin',
-                                      name: 'AddEditItemPage',
-                                    );
-                                    Navigator.pop(sheetContext);
-                                  },
-                                );
-                              }).toList(),
-                            ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildCheckbox(String label, bool value, Function(bool?) onChanged) {
-    return Row(
-      children: [
-        SizedBox(
-          width: Dimensions.iconSize24,
-          height: Dimensions.iconSize24,
-          child: Checkbox(
-            value: value,
-            onChanged: onChanged,
-            activeColor: AppColors.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(Dimensions.radius15 * 0.27),
-            ),
-          ),
-        ),
-        SizedBox(width: Dimensions.width10),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Dimensions.font16,
-            color: context.colors.textPrimary,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ItemOverviewSection extends StatelessWidget {
-  final List<Widget> children;
-
-  const _ItemOverviewSection({required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return FormCard(
-      borderRadius: Dimensions.radius20,
-      showShadow: true,
-      children: children,
     );
   }
 }
