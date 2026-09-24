@@ -1,5 +1,3 @@
-import 'dart:io' show File;
-
 import 'package:custom_books/core/apptheme/apptheme.dart';
 import 'package:custom_books/core/utils/app_logger.dart';
 import 'package:custom_books/core/utils/dimensions.dart';
@@ -9,9 +7,11 @@ import 'package:custom_books/core/widgets/empty_state_widget.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/bottom_sheet_drag_handle.dart';
+import 'package:custom_books/features/items/widgets/selection_dropdown_field.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
 import 'package:custom_books/features/items/controllers/item_form_controller.dart';
 import 'package:custom_books/features/items/models/item_model.dart';
+import 'package:custom_books/features/items/widgets/item_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -38,136 +38,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
   bool _isExciseProduct = false;
 
   XFile? _itemImage;
-  final _picker = ImagePicker();
-
-  Future<void> _pickImage(ImageSource source) async {
-    try {
-      final picked = await _picker.pickImage(
-        source: source,
-        imageQuality: 85,
-        maxWidth: 1080,
-      );
-      if (picked != null) {
-        setState(() => _itemImage = picked);
-        markDirty();
-        appLog('📷 Image picked: ${picked.path}', name: 'AddEditItemPage');
-      }
-    } catch (e) {
-      appLog('❌ Image pick error: $e', name: 'AddEditItemPage');
-    }
-  }
-
-  void _showImageSourceSheet() {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: context.colors.card,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.radius20),
-        ),
-      ),
-      builder: (_) => SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: Dimensions.width20,
-            vertical: Dimensions.height20,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Select Photo Source',
-                style: TextStyle(
-                  fontSize: Dimensions.font20 * 0.85,
-                  fontWeight: FontWeight.w800,
-                  color: context.colors.textPrimary,
-                ),
-              ),
-              SizedBox(height: Dimensions.height20),
-              _sourceOption(
-                icon: Icons.camera_alt_outlined,
-                label: 'Take Photo',
-                subtitle: 'Use your camera',
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.camera);
-                },
-              ),
-              SizedBox(height: Dimensions.height10),
-              _sourceOption(
-                icon: Icons.photo_library_outlined,
-                label: 'Choose from Gallery',
-                subtitle: 'Pick from your photo library',
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.gallery);
-                },
-              ),
-              SizedBox(height: Dimensions.height10),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _sourceOption({
-    required IconData icon,
-    required String label,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(Dimensions.radius15),
-      child: Container(
-        padding: EdgeInsets.all(Dimensions.width15),
-        decoration: BoxDecoration(
-          color: context.colors.surfaceLight,
-          borderRadius: BorderRadius.circular(Dimensions.radius15),
-          border: Border.all(color: context.colors.border),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(Dimensions.width10),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
-              ),
-              child: Icon(
-                icon,
-                color: AppColors.primary,
-                size: Dimensions.iconSize24,
-              ),
-            ),
-            SizedBox(width: Dimensions.width15),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.9,
-                    fontWeight: FontWeight.w700,
-                    color: context.colors.textPrimary,
-                  ),
-                ),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: Dimensions.font16 * 0.75,
-                    color: context.colors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _skuController = TextEditingController();
@@ -428,138 +298,16 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                                   SizedBox(width: Dimensions.width15),
                                   Expanded(
                                     flex: 2,
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          'Item Image',
-                                          style: TextStyle(
-                                            fontSize: Dimensions.font16 * 0.9,
-                                            fontWeight: FontWeight.w700,
-                                            color: context.colors.textPrimary,
-                                          ),
-                                        ),
-                                        SizedBox(height: Dimensions.height10),
-                                        Stack(
-                                          children: [
-                                            GestureDetector(
-                                              onTap: _showImageSourceSheet,
-                                              child: Container(
-                                                width: double.infinity,
-                                                height:
-                                                    Dimensions.height45 * 2.5,
-                                                decoration: BoxDecoration(
-                                                  color: context
-                                                      .colors
-                                                      .surfaceLight,
-                                                  border: Border.all(
-                                                    color: AppColors.primary
-                                                        .withValues(alpha: 0.3),
-                                                    width: 2,
-                                                    style: BorderStyle.solid,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        Dimensions.radius15,
-                                                      ),
-                                                ),
-                                                clipBehavior: Clip.antiAlias,
-                                                child: _itemImage != null
-                                                    ? Image.file(
-                                                        File(_itemImage!.path),
-                                                        fit: BoxFit.cover,
-                                                      )
-                                                    : Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Container(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                  Dimensions
-                                                                      .width10,
-                                                                ),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                                  color: AppColors
-                                                                      .primary
-                                                                      .withValues(
-                                                                        alpha:
-                                                                            0.1,
-                                                                      ),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                            child: Icon(
-                                                              Icons
-                                                                  .add_photo_alternate_outlined,
-                                                              size: Dimensions
-                                                                  .iconSize24,
-                                                              color: AppColors
-                                                                  .primary,
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            height:
-                                                                Dimensions
-                                                                    .height10 /
-                                                                2,
-                                                          ),
-                                                          Text(
-                                                            'Add Photo',
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: TextStyle(
-                                                              fontSize:
-                                                                  Dimensions
-                                                                      .font16 *
-                                                                  0.75,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color: AppColors
-                                                                  .primary,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                              ),
-                                            ),
-                                            if (_itemImage != null)
-                                              Positioned(
-                                                top: Dimensions.height10 * 0.6,
-                                                right: Dimensions.width10 * 0.6,
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    setState(
-                                                      () => _itemImage = null,
-                                                    );
-                                                    markDirty();
-                                                  },
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(
-                                                      Dimensions.height10 * 0.4,
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      color: context
-                                                          .colors
-                                                          .textSecondary,
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: Icon(
-                                                      Icons.close,
-                                                      color: Colors.white,
-                                                      size:
-                                                          Dimensions
-                                                              .iconSize16 *
-                                                          0.875,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                          ],
-                                        ),
-                                      ],
+                                    child: ItemImagePicker(
+                                      image: _itemImage,
+                                      onImagePicked: (picked) {
+                                        setState(() => _itemImage = picked);
+                                        markDirty();
+                                      },
+                                      onRemove: () {
+                                        setState(() => _itemImage = null);
+                                        markDirty();
+                                      },
                                     ),
                                   ),
                                 ],
@@ -599,7 +347,10 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                               SizedBox(height: Dimensions.height20),
                               GestureDetector(
                                 onTap: _showGtinSearchSheet,
-                                child: _buildDropdown('GTIN', _selectedGtin),
+                                child: SelectionDropdownField(
+                                  label: 'GTIN',
+                                  value: _selectedGtin,
+                                ),
                               ),
                               SizedBox(height: Dimensions.height15),
                               _buildCheckbox(
@@ -640,9 +391,9 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                                   ),
                                   SizedBox(width: Dimensions.width15),
                                   Expanded(
-                                    child: _buildDropdown(
-                                      'Account',
-                                      _selectedSalesAccount,
+                                    child: SelectionDropdownField(
+                                      label: 'Account',
+                                      value: _selectedSalesAccount,
                                       isRequired: true,
                                       options: _salesAccountOptions,
                                       onSelected: (account) {
@@ -668,9 +419,9 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                                 icon: Icons.description_outlined,
                               ),
                               SizedBox(height: Dimensions.height20),
-                              _buildDropdown(
-                                'Tax',
-                                _selectedTax,
+                              SelectionDropdownField(
+                                label: 'Tax',
+                                value: _selectedTax,
                                 options: _taxOptions,
                                 onSelected: (tax) {
                                   setState(() => _selectedTax = tax);
@@ -709,9 +460,9 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                                   ),
                                   SizedBox(width: Dimensions.width15),
                                   Expanded(
-                                    child: _buildDropdown(
-                                      'Account',
-                                      _selectedAccount,
+                                    child: SelectionDropdownField(
+                                      label: 'Account',
+                                      value: _selectedAccount,
                                       isRequired: true,
                                       options: _purchaseAccountOptions,
                                       onSelected: (account) {
@@ -758,9 +509,9 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                               markDirty();
                             },
                             [
-                              _buildDropdown(
-                                'Inventory Account',
-                                _selectedInventoryAccount,
+                              SelectionDropdownField(
+                                label: 'Inventory Account',
+                                value: _selectedInventoryAccount,
                               ),
                               SizedBox(height: Dimensions.height20),
                               Row(
@@ -790,9 +541,9 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                                 ],
                               ),
                               SizedBox(height: Dimensions.height20),
-                              _buildDropdown(
-                                'Valuation Method',
-                                _selectedValuationMethod,
+                              SelectionDropdownField(
+                                label: 'Valuation Method',
+                                value: _selectedValuationMethod,
                                 isRequired: true,
                                 options: _valuationMethodOptions,
                                 onSelected: (method) {
@@ -1070,84 +821,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
     );
   }
 
-  Widget _buildDropdown(
-    String label,
-    String value, {
-    bool isRequired = false,
-    List<String>? options,
-    ValueChanged<String>? onSelected,
-  }) {
-    final bool interactive = options != null && onSelected != null;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.85,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primary,
-              ),
-            ),
-            if (isRequired)
-              Text(
-                ' *',
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.85,
-                  color: AppColors.error,
-                ),
-              ),
-          ],
-        ),
-        SizedBox(height: Dimensions.height10 / 2),
-        GestureDetector(
-          onTap: interactive
-              ? () => _showSelectionSheet(
-                  title: label,
-                  options: options,
-                  selected: value,
-                  onSelected: onSelected,
-                )
-              : null,
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: Dimensions.width15,
-              vertical: Dimensions.height10,
-            ),
-            decoration: BoxDecoration(
-              border: Border.all(color: context.colors.border),
-              borderRadius: BorderRadius.circular(Dimensions.radius15 / 2),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    value,
-                    style: TextStyle(
-                      fontSize: Dimensions.font16,
-                      color: value.startsWith('Select')
-                          ? context.colors.textTertiary
-                          : context.colors.textPrimary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                SizedBox(width: Dimensions.width10),
-                Icon(
-                  Icons.keyboard_arrow_down,
-                  color: context.colors.textSecondary,
-                  size: Dimensions.iconSize24,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   void _showGtinSearchSheet() {
     _gtinSearchController.clear();
 
@@ -1309,86 +982,6 @@ class _AddEditItemPageState extends State<AddEditItemPage>
                 );
               },
             ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showSelectionSheet({
-    required String title,
-    required List<String> options,
-    required String selected,
-    required ValueChanged<String> onSelected,
-  }) {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (sheetContext) {
-        return Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(sheetContext).size.height * 0.7,
-          ),
-          decoration: BoxDecoration(
-            color: context.colors.card,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(Dimensions.radius20),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const BottomSheetDragHandle(),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: Dimensions.font20,
-                      fontWeight: FontWeight.w800,
-                      color: context.colors.textPrimary,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: Dimensions.height10),
-              Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.only(bottom: Dimensions.height20),
-                  children: options.map((option) {
-                    final isSelected = option == selected;
-                    return ListTile(
-                      leading: Icon(
-                        isSelected
-                            ? Icons.radio_button_checked_rounded
-                            : Icons.radio_button_off_rounded,
-                        color: isSelected
-                            ? AppColors.primary
-                            : context.colors.textSecondary,
-                      ),
-                      title: Text(
-                        option,
-                        style: TextStyle(
-                          fontSize: Dimensions.font16 * 0.9,
-                          fontWeight: isSelected
-                              ? FontWeight.w700
-                              : FontWeight.w500,
-                          color: context.colors.textPrimary,
-                        ),
-                      ),
-                      onTap: () {
-                        onSelected(option);
-                        Navigator.pop(sheetContext);
-                      },
-                    );
-                  }).toList(),
-                ),
-              ),
-            ],
           ),
         );
       },
