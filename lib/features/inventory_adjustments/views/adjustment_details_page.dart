@@ -4,7 +4,9 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/confirmation_dialog.dart';
 import 'package:custom_books/core/widgets/detail_row.dart';
+import 'package:custom_books/features/inventory_adjustments/controllers/adjustment_comments_controller.dart';
 import 'package:custom_books/features/inventory_adjustments/controllers/inventory_adjustment_detail_controller.dart';
+import 'package:custom_books/features/inventory_adjustments/models/adjustment_comment_model.dart';
 import 'package:custom_books/features/inventory_adjustments/models/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/views/add_adjustment_page.dart';
 import 'package:file_picker/file_picker.dart';
@@ -26,6 +28,9 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
   late TabController _tabController;
   final InventoryAdjustmentDetailController _controller =
       InventoryAdjustmentDetailController();
+  late final AdjustmentCommentsController _commentsController =
+      AdjustmentCommentsController(widget.adjustment.id);
+  final TextEditingController _commentInputController = TextEditingController();
 
   // Attachments are not yet returned by the API.
   final List<PlatformFile> _attachments = [];
@@ -43,15 +48,36 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
     _tabController = TabController(length: 2, vsync: this);
     _controller.seed(widget.adjustment);
     _controller.addListener(_onControllerChanged);
+    _commentsController.addListener(_onControllerChanged);
     _load();
+    _commentsController.load();
   }
 
   @override
   void dispose() {
     _controller.removeListener(_onControllerChanged);
     _controller.dispose();
+    _commentsController.removeListener(_onControllerChanged);
+    _commentsController.dispose();
+    _commentInputController.dispose();
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _submitComment() async {
+    final text = _commentInputController.text.trim();
+    if (text.isEmpty) return;
+    FocusScope.of(context).unfocus();
+    final ok = await _commentsController.submit(text);
+    if (!mounted) return;
+    if (ok) {
+      _commentInputController.clear();
+    } else if (_commentsController.errorMessage != null) {
+      ToastificationHelper.showError(
+        context,
+        _commentsController.errorMessage!,
+      );
+    }
   }
 
   void _onControllerChanged() {
@@ -854,42 +880,237 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
   }
 
   Widget _buildCommentsTab() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(Dimensions.width20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
+      children: [
+        Expanded(child: _buildCommentsList()),
+        _buildCommentInput(),
+      ],
+    );
+  }
+
+  Widget _buildCommentsList() {
+    final comments = _commentsController.comments;
+
+    if (_commentsController.isLoading && comments.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (comments.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.all(Dimensions.width20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Dimensions.width20),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.07),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.history_rounded,
+                  size: Dimensions.iconSize24 * 2,
+                  color: AppColors.primary,
+                ),
+              ),
+              SizedBox(height: Dimensions.height20),
+              Text(
+                'No comments or history yet',
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.95,
+                  fontWeight: FontWeight.w700,
+                  color: context.colors.textPrimary,
+                ),
+              ),
+              SizedBox(height: Dimensions.height10),
+              Text(
+                'Add a comment below to start the\nactivity history',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: Dimensions.font16 * 0.8,
+                  color: context.colors.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: EdgeInsets.all(Dimensions.width20),
+      physics: const BouncingScrollPhysics(),
+      itemCount: comments.length,
+      separatorBuilder: (_, _) => SizedBox(height: Dimensions.height10),
+      itemBuilder: (_, i) => _buildCommentTile(comments[i]),
+    );
+  }
+
+  Widget _buildCommentTile(AdjustmentComment comment) {
+    final accent = comment.isSystem ? AppColors.accent : AppColors.primary;
+    return Container(
+      padding: EdgeInsets.all(Dimensions.width15),
+      decoration: BoxDecoration(
+        color: context.colors.card,
+        borderRadius: BorderRadius.circular(Dimensions.radius15),
+        border: Border.all(color: context.colors.border),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: Dimensions.height45 * 0.8,
+            height: Dimensions.height45 * 0.8,
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              comment.isSystem
+                  ? Icons.history_rounded
+                  : Icons.chat_bubble_outline_rounded,
+              size: Dimensions.iconSize24 - 6,
+              color: accent,
+            ),
+          ),
+          SizedBox(width: Dimensions.width15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  comment.text,
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.85,
+                    color: context.colors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                    height: 1.4,
+                  ),
+                ),
+                SizedBox(height: Dimensions.height10 / 2),
+                Row(
+                  children: [
+                    if (comment.author.isNotEmpty) ...[
+                      Flexible(
+                        child: Text(
+                          comment.author,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.7,
+                            fontWeight: FontWeight.w700,
+                            color: context.colors.textSecondary,
+                          ),
+                        ),
+                      ),
+                      if (comment.createdAt != null)
+                        Text(
+                          '  •  ',
+                          style: TextStyle(
+                            fontSize: Dimensions.font16 * 0.7,
+                            color: context.colors.textTertiary,
+                          ),
+                        ),
+                    ],
+                    if (comment.createdAt != null)
+                      Text(
+                        formatDateTime(comment.createdAt!),
+                        style: TextStyle(
+                          fontSize: Dimensions.font16 * 0.7,
+                          color: context.colors.textTertiary,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCommentInput() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(
+        Dimensions.width20,
+        Dimensions.height10,
+        Dimensions.width20,
+        Dimensions.height15,
+      ),
+      decoration: BoxDecoration(
+        color: context.colors.card,
+        border: Border(top: BorderSide(color: context.colors.border)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Container(
-              padding: EdgeInsets.all(Dimensions.width20),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.07),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.history_rounded,
-                size: Dimensions.iconSize24 * 2,
-                color: AppColors.primary,
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Dimensions.width15,
+                  vertical: Dimensions.height10 / 2,
+                ),
+                decoration: BoxDecoration(
+                  color: context.colors.surfaceLight,
+                  borderRadius: BorderRadius.circular(Dimensions.radius20),
+                  border: Border.all(color: context.colors.border),
+                ),
+                child: TextField(
+                  controller: _commentInputController,
+                  minLines: 1,
+                  maxLines: 4,
+                  textInputAction: TextInputAction.send,
+                  onSubmitted: (_) => _submitComment(),
+                  style: TextStyle(
+                    fontSize: Dimensions.font16 * 0.85,
+                    color: context.colors.textPrimary,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Add a comment',
+                    hintStyle: TextStyle(color: context.colors.textTertiary),
+                    border: InputBorder.none,
+                    isDense: true,
+                  ),
+                ),
               ),
             ),
-            SizedBox(height: Dimensions.height20),
-            Text(
-              'No comments or history yet',
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.95,
-                fontWeight: FontWeight.w700,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            SizedBox(height: Dimensions.height10),
-            Text(
-              'Comments and activity history\nwill appear here',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: Dimensions.font16 * 0.8,
-                color: context.colors.textSecondary,
-                height: 1.5,
-              ),
+            SizedBox(width: Dimensions.width10),
+            AnimatedBuilder(
+              animation: _commentsController,
+              builder: (context, _) {
+                final busy = _commentsController.isSubmitting;
+                return InkWell(
+                  onTap: busy ? null : _submitComment,
+                  borderRadius: BorderRadius.circular(Dimensions.radius20),
+                  child: Container(
+                    width: Dimensions.height45,
+                    height: Dimensions.height45,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: busy
+                        ? Padding(
+                            padding: EdgeInsets.all(Dimensions.width10),
+                            child: const CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                        : Icon(
+                            Icons.send_rounded,
+                            color: Colors.white,
+                            size: Dimensions.iconSize24 - 4,
+                          ),
+                  ),
+                );
+              },
             ),
           ],
         ),
