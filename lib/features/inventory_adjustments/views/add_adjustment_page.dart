@@ -6,6 +6,7 @@ import 'package:custom_books/core/widgets/custom_back_appbar.dart';
 import 'package:custom_books/core/widgets/dashed_border.dart';
 import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
+import 'package:custom_books/features/inventory_adjustments/controllers/inventory_adjustment_form_controller.dart';
 import 'package:custom_books/features/inventory_adjustments/models/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/models/line_item_model.dart';
 import 'package:custom_books/features/inventory_adjustments/views/add_line_item_page.dart';
@@ -52,6 +53,8 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage>
 
   final List<LineItem> _lineItems = [];
   final List<PlatformFile> _attachments = [];
+  final InventoryAdjustmentFormController _formController =
+      InventoryAdjustmentFormController();
   bool _isLoading = true;
 
   // ── Attachment constants ───────────────────────────────────────────────────
@@ -530,6 +533,7 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage>
     _descriptionController.removeListener(markDirty);
     _referenceController.dispose();
     _descriptionController.dispose();
+    _formController.dispose();
     super.dispose();
   }
 
@@ -540,12 +544,6 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage>
     if (!mounted) return;
     setState(() => _isLoading = false);
   }
-
-  double get _totalQuantity =>
-      _lineItems.fold(0.0, (sum, item) => sum + item.quantityAdjusted);
-
-  double get _totalValue =>
-      _lineItems.fold(0.0, (sum, item) => sum + item.valueChange);
 
   bool get _isValid =>
       _account != null && _reason != null && _lineItems.isNotEmpty;
@@ -593,7 +591,8 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage>
     markDirty();
   }
 
-  void _save() {
+  Future<void> _save() async {
+    if (_formController.isSubmitting) return;
     if (!_isValid) {
       ToastificationHelper.showWarning(
         context,
@@ -601,20 +600,30 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage>
       );
       return;
     }
-    final now = DateTime.now();
-    final adjustment = InventoryAdjustment(
-      id: now.millisecondsSinceEpoch.toString(),
+
+    final created = await _formController.create(
+      mode: _mode,
       reason: _reason!,
       date: _date,
-      createdBy: 'You',
-      quantityChange: _totalQuantity.round(),
-      value: _totalValue,
-      status: AdjustmentStatus.draft,
-      createdAt: now,
-      lastModifiedAt: now,
+      adjustedByName: widget.existing?.createdBy ?? 'You',
+      referenceNumber: _referenceController.text,
+      description: _descriptionController.text,
+      account: _account,
+      lines: _lineItems,
     );
-    markClean();
-    Navigator.pop(context, adjustment);
+
+    if (!mounted) return;
+
+    if (created != null) {
+      markClean();
+      Navigator.pop(context, created);
+    } else {
+      ToastificationHelper.showError(
+        context,
+        _formController.errorMessage ??
+            'Could not create the adjustment. Please try again.',
+      );
+    }
   }
 
   /// Returns a human-readable file size string (e.g. "2.3 MB").
@@ -662,16 +671,38 @@ class _NewAdjustmentPageState extends State<NewAdjustmentPage>
           title: widget.existing == null ? 'New Adjustment' : 'Edit Adjustment',
           onLeadingPressed: () => onPopInvokedWithResult(false, null),
           actions: [
-            TextButton(
-              onPressed: _save,
-              child: Text(
-                'SAVE',
-                style: TextStyle(
-                  fontSize: Dimensions.font16 * 0.8,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
-                ),
-              ),
+            AnimatedBuilder(
+              animation: _formController,
+              builder: (context, _) {
+                if (_formController.isSubmitting) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.width15,
+                    ),
+                    child: SizedBox(
+                      width: Dimensions.iconSize24 - 6,
+                      height: Dimensions.iconSize24 - 6,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return TextButton(
+                  onPressed: _save,
+                  child: Text(
+                    'SAVE',
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 0.8,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                );
+              },
             ),
             PopupMenuButton<String>(
               icon: Icon(

@@ -4,8 +4,8 @@ import 'package:custom_books/core/utils/dimensions.dart';
 import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/confirmation_dialog.dart';
 import 'package:custom_books/core/widgets/detail_row.dart';
+import 'package:custom_books/features/inventory_adjustments/controllers/inventory_adjustment_detail_controller.dart';
 import 'package:custom_books/features/inventory_adjustments/models/inventory_adjustments_model.dart';
-import 'package:custom_books/features/inventory_adjustments/models/line_item_model.dart';
 import 'package:custom_books/features/inventory_adjustments/views/add_adjustment_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -24,50 +24,46 @@ class AdjustmentDetailsPage extends StatefulWidget {
 class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final InventoryAdjustmentDetailController _controller =
+      InventoryAdjustmentDetailController();
 
-  // Mock data - replace with real data
-  final List<PlatformFile> _attachments = [
-    PlatformFile(
-      name: 'screenshot_2026_07_21.png',
-      size: 2457600, // ~2.3 MB
-      path: '/mock/path/screenshot.png',
-    ),
-  ];
+  // Attachments are not yet returned by the API.
+  final List<PlatformFile> _attachments = [];
 
-  final List<LineItem> _adjustedItems = [
-    LineItem(
-      id: '1',
-      itemId: 'item_1',
-      itemName: 'Pencil',
-      description: 'urj',
-      stockOnHand: 100.0,
-      newQuantityOnHand: 150.0,
-      quantityAdjusted: 50.0,
-      costPrice: 25.0,
-    ),
-  ];
+  /// The adjustment currently displayed: fetched detail if available,
+  /// otherwise the list item passed in.
+  InventoryAdjustment get _adjustment =>
+      _controller.adjustment ?? widget.adjustment;
 
-  bool _isLoading = true;
+  bool get _isLoading => _controller.isLoading;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _controller.seed(widget.adjustment);
+    _controller.addListener(_onControllerChanged);
     _load();
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_onControllerChanged);
+    _controller.dispose();
     _tabController.dispose();
     super.dispose();
   }
 
-  /// Simulates fetching details so the shimmer skeleton is shown briefly.
+  void _onControllerChanged() {
+    if (mounted) setState(() {});
+  }
+
   Future<void> _load() async {
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 900));
+    await _controller.load(widget.adjustment.id);
     if (!mounted) return;
-    setState(() => _isLoading = false);
+    if (_controller.errorMessage != null) {
+      ToastificationHelper.showError(context, _controller.errorMessage!);
+    }
   }
 
   void _showAttachmentsDialog() {
@@ -247,7 +243,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    final adjustment = widget.adjustment;
+    final adjustment = _adjustment;
     final isDraft = adjustment.status == AdjustmentStatus.draft;
 
     return Scaffold(
@@ -266,8 +262,7 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) =>
-                      NewAdjustmentPage(existing: widget.adjustment),
+                  builder: (_) => NewAdjustmentPage(existing: _adjustment),
                 ),
               );
             },
@@ -607,8 +602,19 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
     );
   }
 
+  String _adjustmentTypeLabel(String? type) {
+    switch (type?.toLowerCase()) {
+      case 'quantity':
+        return 'Quantity';
+      case 'value':
+        return 'Value';
+      default:
+        return (type == null || type.isEmpty) ? '-' : type;
+    }
+  }
+
   Widget _buildDetailsTab() {
-    final adjustment = widget.adjustment;
+    final adjustment = _adjustment;
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
       physics: const BouncingScrollPhysics(),
@@ -630,13 +636,31 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              DetailRow(label: 'Account:', value: 'Cost of Goods Sold'),
+              DetailRow(
+                label: 'Account:',
+                value: adjustment.account?.isNotEmpty == true
+                    ? adjustment.account!
+                    : '-',
+              ),
               SizedBox(height: Dimensions.height15),
-              DetailRow(label: 'Reference#:', value: 'lssj'),
+              DetailRow(
+                label: 'Reference#:',
+                value: adjustment.referenceNumber?.isNotEmpty == true
+                    ? adjustment.referenceNumber!
+                    : '-',
+              ),
               SizedBox(height: Dimensions.height15),
-              DetailRow(label: 'Adjusted By:', value: adjustment.createdBy),
+              DetailRow(
+                label: 'Adjusted By:',
+                value: adjustment.createdBy.isNotEmpty
+                    ? adjustment.createdBy
+                    : '-',
+              ),
               SizedBox(height: Dimensions.height15),
-              DetailRow(label: 'Adjustment Type:', value: 'Quantity'),
+              DetailRow(
+                label: 'Adjustment Type:',
+                value: _adjustmentTypeLabel(adjustment.adjustmentType),
+              ),
             ],
           ),
         ),
@@ -668,7 +692,18 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                 ),
               ),
               SizedBox(height: Dimensions.height15),
-              ..._adjustedItems.map(
+              if (adjustment.lines.isEmpty)
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: Dimensions.height10),
+                  child: Text(
+                    'No items in this adjustment.',
+                    style: TextStyle(
+                      fontSize: Dimensions.font16 * 0.8,
+                      color: context.colors.textSecondary,
+                    ),
+                  ),
+                ),
+              ...adjustment.lines.map(
                 (item) => Container(
                   margin: EdgeInsets.only(bottom: Dimensions.height10),
                   padding: EdgeInsets.all(Dimensions.width15),
@@ -709,14 +744,21 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                                 color: context.colors.textPrimary,
                               ),
                             ),
-                            if (item.description != null)
+                            if (item.sku?.isNotEmpty == true)
                               Text(
-                                item.description!,
+                                'SKU: ${item.sku}',
                                 style: TextStyle(
                                   fontSize: Dimensions.font16 * 0.72,
                                   color: context.colors.textSecondary,
                                 ),
                               ),
+                            Text(
+                              'Rate: ₹${item.rate.toStringAsFixed(2)}  •  Value: ₹${item.value.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                fontSize: Dimensions.font16 * 0.7,
+                                color: context.colors.textTertiary,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -739,11 +781,13 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
                           ],
                         ),
                         child: Text(
-                          item.quantityAdjusted.toStringAsFixed(1),
+                          '${item.quantityAdjusted > 0 ? '+' : ''}${item.quantityAdjusted.toStringAsFixed(2)}',
                           style: TextStyle(
                             fontSize: Dimensions.font16 * 0.85,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.primary,
+                            color: item.quantityAdjusted < 0
+                                ? AppColors.warn
+                                : AppColors.primary,
                           ),
                         ),
                       ),
@@ -792,7 +836,9 @@ class _AdjustmentDetailsPageState extends State<AdjustmentDetailsPage>
               ),
               SizedBox(height: Dimensions.height10 / 2),
               Text(
-                'Jjj',
+                adjustment.description?.isNotEmpty == true
+                    ? adjustment.description!
+                    : 'No description provided.',
                 style: TextStyle(
                   fontSize: Dimensions.font16 * 0.88,
                   color: context.colors.textPrimary,

@@ -1,4 +1,5 @@
 enum ModeOfAdjustment { quantity, value }
+
 class InventoryItemLookup {
   final String id;
   final String name;

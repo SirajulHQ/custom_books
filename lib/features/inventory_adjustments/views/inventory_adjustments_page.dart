@@ -4,6 +4,7 @@ import 'package:custom_books/core/utils/toastification_helper.dart';
 import 'package:custom_books/core/widgets/custom_sliver_appbar.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/features/drawer/views/custom_drawer.dart';
+import 'package:custom_books/features/inventory_adjustments/controllers/inventory_adjustments_list_controller.dart';
 import 'package:custom_books/features/inventory_adjustments/models/inventory_adjustments_model.dart';
 import 'package:custom_books/features/inventory_adjustments/views/add_adjustment_page.dart';
 import 'package:custom_books/features/inventory_adjustments/views/adjustment_details_page.dart';
@@ -22,107 +23,71 @@ class InventoryAdjustmentsPage extends StatefulWidget {
 }
 
 class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
+  final InventoryAdjustmentsListController _controller =
+      InventoryAdjustmentsListController();
+
   int _selectedTab = 0; // 0 All, 1 By Quantity, 2 By Value
   bool _searchOpen = false;
-  bool _isLoading = true;
   final _searchController = TextEditingController();
 
   AdjustmentSortField _sortField = AdjustmentSortField.createdTime;
   SortDirection _sortDirection = SortDirection.descending;
 
-  // TODO: replace with real data from your inventory/bloc/repository layer.
-  final List<InventoryAdjustment> _adjustments = [
-    InventoryAdjustment(
-      id: '1',
-      reason: 'Damaged goods',
-      date: DateTime(2026, 7, 21),
-      createdBy: 'Parthiv P',
-      quantityChange: -5,
-      value: -1250,
-      status: AdjustmentStatus.draft,
-      createdAt: DateTime(2026, 7, 21, 10, 53),
-      lastModifiedAt: DateTime(2026, 7, 21, 10, 53),
-    ),
-    InventoryAdjustment(
-      id: '2',
-      reason: 'Stock count correction',
-      date: DateTime(2026, 7, 18),
-      createdBy: 'Aarav Menon',
-      quantityChange: 12,
-      value: 3600,
-      status: AdjustmentStatus.completed,
-      createdAt: DateTime(2026, 7, 18, 9, 10),
-      lastModifiedAt: DateTime(2026, 7, 19, 14, 30),
-    ),
-    InventoryAdjustment(
-      id: '3',
-      reason: 'Warehouse transfer shortfall',
-      date: DateTime(2026, 7, 12),
-      createdBy: 'Own Store',
-      quantityChange: -2,
-      value: -480,
-      status: AdjustmentStatus.completed,
-      createdAt: DateTime(2026, 7, 12, 16, 45),
-      lastModifiedAt: DateTime(2026, 7, 12, 16, 45),
-    ),
+  /// Maps the sort enum to the API's `sort_by` query values.
+  static const Map<AdjustmentSortField, String> _sortApiValues = {
+    AdjustmentSortField.date: 'date',
+    AdjustmentSortField.reason: 'reason',
+    AdjustmentSortField.createdTime: 'created_time',
+    AdjustmentSortField.lastModifiedTime: 'last_modified_time',
+  };
+
+  /// Maps the selected tab to the API's `filter` query value.
+  static const List<String> _filterApiValues = [
+    'all',
+    'by_quantity',
+    'by_value',
   ];
 
   @override
   void initState() {
     super.initState();
+    _controller.addListener(_onControllerChanged);
     _loadAdjustments();
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_onControllerChanged);
+    _controller.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
-  /// Simulates fetching data so the shimmer skeleton is shown briefly.
+  void _onControllerChanged() {
+    if (mounted) setState(() {});
+  }
+
+  bool get _isLoading => _controller.isLoading;
+
   Future<void> _loadAdjustments() async {
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 900));
+    await _controller.load(
+      filter: _filterApiValues[_selectedTab],
+      sortBy: _sortApiValues[_sortField],
+      sortOrder: _sortDirection == SortDirection.ascending ? 'asc' : 'desc',
+    );
     if (!mounted) return;
-    setState(() => _isLoading = false);
+    if (_controller.errorMessage != null) {
+      ToastificationHelper.showError(context, _controller.errorMessage!);
+    }
   }
 
   List<InventoryAdjustment> get _filteredAdjustments {
-    var list = _adjustments.where((a) {
+    return _controller.adjustments.where((a) {
       final q = _searchController.text.trim().toLowerCase();
       if (q.isEmpty) return true;
       return a.reason.toLowerCase().contains(q) ||
           a.createdBy.toLowerCase().contains(q);
     }).toList();
-
-    list.sort((a, b) {
-      int cmp;
-      switch (_sortField) {
-        case AdjustmentSortField.date:
-          cmp = a.date.compareTo(b.date);
-          break;
-        case AdjustmentSortField.reason:
-          cmp = a.reason.toLowerCase().compareTo(b.reason.toLowerCase());
-          break;
-        case AdjustmentSortField.createdTime:
-          cmp = a.createdAt.compareTo(b.createdAt);
-          break;
-        case AdjustmentSortField.lastModifiedTime:
-          cmp = a.lastModifiedAt.compareTo(b.lastModifiedAt);
-          break;
-      }
-      return _sortDirection == SortDirection.ascending ? cmp : -cmp;
-    });
-
-    if (_selectedTab == 1) {
-      list.sort(
-        (a, b) => b.quantityChange.abs().compareTo(a.quantityChange.abs()),
-      );
-    } else if (_selectedTab == 2) {
-      list.sort((a, b) => b.value.abs().compareTo(a.value.abs()));
-    }
-
-    return list;
   }
 
   void _showMoreOptions() {
@@ -153,7 +118,7 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
           title: 'Refresh',
           subtitle: 'Reload the latest adjustments',
           onTap: () {
-            setState(() {});
+            _loadAdjustments();
             ToastificationHelper.showSuccess(context, 'Adjustments refreshed.');
           },
         ),
@@ -203,9 +168,7 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
               ),
             );
             if (result != null) {
-              setState(() {
-                _adjustments.add(result);
-              });
+              await _loadAdjustments();
               if (context.mounted) {
                 ToastificationHelper.showSuccess(
                   context,
@@ -218,93 +181,106 @@ class _InventoryAdjustmentsPageState extends State<InventoryAdjustmentsPage> {
         ),
       ),
       body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            CustomSliverAppBar(
-              title: 'Inventory Adjustments',
-              subtitle:
-                  '${items.length} adjustment${items.length == 1 ? '' : 's'}',
-              leadingType: AppBarLeadingType.menu,
-              actions: [
-                AppBarIconButton(
-                  icon: _searchOpen
-                      ? Icons.close_rounded
-                      : Icons.search_rounded,
-                  color: AppColors.primary,
-                  onPressed: () => setState(() {
-                    _searchOpen = !_searchOpen;
-                    if (!_searchOpen) _searchController.clear();
-                  }),
-                ),
-                SizedBox(width: Dimensions.width10),
-                AppBarIconButton(
-                  icon: Icons.more_vert_rounded,
-                  color: AppColors.accent,
-                  onPressed: _showMoreOptions,
-                ),
-                SizedBox(width: Dimensions.width20),
-              ],
+        child: RefreshIndicator(
+          color: AppColors.primary,
+          backgroundColor: context.colors.card,
+          strokeWidth: 2.5,
+          onRefresh: _loadAdjustments,
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
             ),
-            if (_searchOpen)
-              SliverToBoxAdapter(
-                child: AdjustmentsSearchField(
-                  controller: _searchController,
-                  onChanged: () => setState(() {}),
-                ),
+            slivers: [
+              CustomSliverAppBar(
+                title: 'Inventory Adjustments',
+                subtitle:
+                    '${items.length} adjustment${items.length == 1 ? '' : 's'}',
+                leadingType: AppBarLeadingType.menu,
+                actions: [
+                  AppBarIconButton(
+                    icon: _searchOpen
+                        ? Icons.close_rounded
+                        : Icons.search_rounded,
+                    color: AppColors.primary,
+                    onPressed: () => setState(() {
+                      _searchOpen = !_searchOpen;
+                      if (!_searchOpen) _searchController.clear();
+                    }),
+                  ),
+                  SizedBox(width: Dimensions.width10),
+                  AppBarIconButton(
+                    icon: Icons.more_vert_rounded,
+                    color: AppColors.accent,
+                    onPressed: _showMoreOptions,
+                  ),
+                  SizedBox(width: Dimensions.width20),
+                ],
               ),
-            SliverToBoxAdapter(
-              child: AdjustmentsTabsAndSort(
-                selectedTab: _selectedTab,
-                onTabChanged: (index) => setState(() => _selectedTab = index),
-                sortField: _sortField,
-                sortDirection: _sortDirection,
-                onSortChanged: (field, direction) {
-                  setState(() {
-                    _sortField = field;
-                    _sortDirection = direction;
-                  });
-                },
-              ),
-            ),
-            if (_isLoading)
-              const SliverFillRemaining(
-                hasScrollBody: true,
-                child: DocumentListSkeleton(),
-              )
-            else if (items.isEmpty)
-              const SliverFillRemaining(
-                hasScrollBody: false,
-                child: AdjustmentsEmptyState(),
-              )
-            else
-              SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => InventoryAdjustmentCardWidget(
-                      adjustment: items[index],
-                      mode: _listMode,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                AdjustmentDetailsPage(adjustment: items[index]),
-                          ),
-                        );
-                      },
-                    ),
-                    childCount: items.length,
+              if (_searchOpen)
+                SliverToBoxAdapter(
+                  child: AdjustmentsSearchField(
+                    controller: _searchController,
+                    onChanged: () => setState(() {}),
                   ),
                 ),
+              SliverToBoxAdapter(
+                child: AdjustmentsTabsAndSort(
+                  selectedTab: _selectedTab,
+                  onTabChanged: (index) {
+                    setState(() => _selectedTab = index);
+                    _loadAdjustments();
+                  },
+                  sortField: _sortField,
+                  sortDirection: _sortDirection,
+                  onSortChanged: (field, direction) {
+                    setState(() {
+                      _sortField = field;
+                      _sortDirection = direction;
+                    });
+                    _loadAdjustments();
+                  },
+                ),
               ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: Dimensions.height30 + Dimensions.listBottomSpace,
+              if (_isLoading && _controller.adjustments.isEmpty)
+                const SliverFillRemaining(
+                  hasScrollBody: true,
+                  child: DocumentListSkeleton(),
+                )
+              else if (items.isEmpty)
+                const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: AdjustmentsEmptyState(),
+                )
+              else
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => InventoryAdjustmentCardWidget(
+                        adjustment: items[index],
+                        mode: _listMode,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AdjustmentDetailsPage(
+                                adjustment: items[index],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      childCount: items.length,
+                    ),
+                  ),
+                ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: Dimensions.height30 + Dimensions.listBottomSpace,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

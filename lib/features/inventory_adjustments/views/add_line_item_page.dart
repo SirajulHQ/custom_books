@@ -7,9 +7,11 @@ import 'package:custom_books/core/widgets/form_widgets.dart';
 import 'package:custom_books/core/widgets/line_item_form_widgets.dart';
 import 'package:custom_books/core/widgets/skeletons/skeletons.dart';
 import 'package:custom_books/core/widgets/unsaved_changes_dialog.dart';
+import 'package:custom_books/features/inventory_adjustments/controllers/item_lookup_controller.dart';
 import 'package:custom_books/features/inventory_adjustments/models/line_item_model.dart';
 import 'package:custom_books/features/inventory_adjustments/widgets/cost_price_editor.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class AddLineItemPage extends StatefulWidget {
   final LineItem? initial;
@@ -38,55 +40,14 @@ class _AddLineItemPageState extends State<AddLineItemPage>
   bool _syncing = false;
   bool _isLoading = true;
 
-  final List<InventoryItemLookup> _catalog = const [
-    InventoryItemLookup(
-      id: '1',
-      name: 'Mouse',
-      stockOnHand: -10,
-      costPrice: 25,
-    ),
-    InventoryItemLookup(
-      id: '2',
-      name: 'Pencil',
-      stockOnHand: -49,
-      costPrice: 2,
-      imageUrl:
-          'https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?w=200',
-    ),
-    InventoryItemLookup(
-      id: '3',
-      name: 'Notebook',
-      stockOnHand: 34,
-      costPrice: 15,
-    ),
-    InventoryItemLookup(
-      id: '4',
-      name: 'Stapler',
-      stockOnHand: 6,
-      costPrice: 40,
-    ),
-    InventoryItemLookup(
-      id: '5',
-      name: 'Keyboard',
-      stockOnHand: 15,
-      costPrice: 75,
-      imageUrl:
-          'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=200',
-    ),
-    InventoryItemLookup(
-      id: '6',
-      name: 'Monitor',
-      stockOnHand: -3,
-      costPrice: 250,
-      imageUrl:
-          'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=200',
-    ),
-  ];
+  final ItemLookupController _lookupController = ItemLookupController();
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
     _load();
+    _lookupController.addListener(_onLookupChanged);
     final initial = widget.initial;
     if (initial != null) {
       _selectedItem = InventoryItemLookup(
@@ -107,6 +68,9 @@ class _AddLineItemPageState extends State<AddLineItemPage>
 
   @override
   void dispose() {
+    _debounce?.cancel();
+    _lookupController.removeListener(_onLookupChanged);
+    _lookupController.dispose();
     _descriptionController.removeListener(markDirty);
     _itemSearchController.dispose();
     _descriptionController.dispose();
@@ -115,6 +79,27 @@ class _AddLineItemPageState extends State<AddLineItemPage>
     _newQtyFocusNode.dispose();
     _adjustedFocusNode.dispose();
     super.dispose();
+  }
+
+  void _onLookupChanged() {
+    if (mounted) setState(() {});
+  }
+
+  /// Debounced item search against the API.
+  void _onSearchChanged(String value) {
+    _debounce?.cancel();
+    // Typing after a selection means the user wants to search again.
+    if (_selectedItem != null) {
+      setState(() => _selectedItem = null);
+    }
+    final q = value.trim();
+    if (q.isEmpty) {
+      _lookupController.clear();
+      return;
+    }
+    _debounce = Timer(const Duration(milliseconds: 350), () {
+      _lookupController.search(q);
+    });
   }
 
   /// Simulates preparing the form so the shimmer skeleton is shown briefly.
@@ -126,23 +111,10 @@ class _AddLineItemPageState extends State<AddLineItemPage>
   }
 
   List<InventoryItemLookup> get _suggestions {
-    final q = _itemSearchController.text.trim().toLowerCase();
-    appLog(
-      '🔍 Getting suggestions for query: "$q", _selectedItem: ${_selectedItem?.name ?? "null"}',
-      name: 'AddLineItem',
-    );
-    if (q.isEmpty || _selectedItem != null) {
-      appLog(
-        '⚠️ Returning empty suggestions (query empty: ${q.isEmpty}, item selected: ${_selectedItem != null})',
-        name: 'AddLineItem',
-      );
+    if (_itemSearchController.text.trim().isEmpty || _selectedItem != null) {
       return [];
     }
-    final results = _catalog
-        .where((i) => i.name.toLowerCase().contains(q))
-        .toList();
-    appLog('✅ Found ${results.length} suggestions', name: 'AddLineItem');
-    return results;
+    return _lookupController.results;
   }
 
   void _selectItem(InventoryItemLookup item) {
@@ -167,12 +139,14 @@ class _AddLineItemPageState extends State<AddLineItemPage>
 
   void _clearItem() {
     appLog('🗑️ Clearing selected item', name: 'AddLineItem');
+    _debounce?.cancel();
     setState(() {
       _selectedItem = null;
       _itemSearchController.clear();
       _newQtyController.clear();
       _adjustedController.clear();
     });
+    _lookupController.clear();
     appLog('✅ Item cleared. _selectedItem is now: null', name: 'AddLineItem');
   }
 
@@ -203,11 +177,17 @@ class _AddLineItemPageState extends State<AddLineItemPage>
       ToastificationHelper.showWarning(context, 'Please select an item.');
       return;
     }
-    final newQty =
-        double.tryParse(_newQtyController.text) ?? _selectedItem!.stockOnHand;
-    final adjusted =
-        double.tryParse(_adjustedController.text) ??
-        (newQty - _selectedItem!.stockOnHand);
+
+    final newQty = double.tryParse(_newQtyController.text.trim());
+    final adjusted = double.tryParse(_adjustedController.text.trim());
+
+    if (newQty == null || adjusted == null) {
+      ToastificationHelper.showWarning(
+        context,
+        'Please enter New quantity on hand and Quantity Adjusted.',
+      );
+      return;
+    }
 
     final lineItem = LineItem(
       id:
@@ -272,7 +252,7 @@ class _AddLineItemPageState extends State<AddLineItemPage>
                         isItemSelected: _selectedItem != null,
                         suggestions: _suggestions,
                         selectedItemImageUrl: _selectedItem?.imageUrl,
-                        onChanged: (_) => setState(() {}),
+                        onChanged: _onSearchChanged,
                         onClear: _clearItem,
                         onBarcodeScan: () => ToastificationHelper.showInfo(
                           context,
